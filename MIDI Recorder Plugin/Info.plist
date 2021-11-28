@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionAttributes</key>
+		<dict>
+			<key>AudioComponents</key>
+			<array>
+				<dict>
+					<key>description</key>
+					<string>MIDI Recorder</string>
+					<key>factoryFunction</key>
+					<string>AudioUnitViewController</string>
+					<key>manufacturer</key>
+					<string>Uwyn</string>
+					<key>name</key>
+					<string>Uwyn: MIDI Recorder</string>
+					<key>sandboxSafe</key>
+					<true/>
+					<key>subtype</key>
+					<string>mire</string>
+					<key>tags</key>
+					<array>
+						<string>Effects</string>
+					</array>
+					<key>type</key>
+					<string>aumi</string>
+					<key>version</key>
+					<real>67072</real>
+				</dict>
+			</array>
+		</dict>
+		<key>NSExtensionMainStoryboard</key>
+		<string>MainInterface</string>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.AudioUnit-UI</string>
+	</dict>
+</dict>
+</plist>

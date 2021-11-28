@@ -1,0 +1,647 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
+		26BB3834275338B200342496 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3833275338B200342496 /* SceneDelegate.m */; };
+		26BB3837275338B200342496 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3836275338B200342496 /* ViewController.m */; };
+		26BB383A275338B200342496 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3838275338B200342496 /* Main.storyboard */; };
+		26BB383C275338B200342496 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26BB383B275338B200342496 /* Assets.xcassets */; };
+		26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB383D275338B200342496 /* LaunchScreen.storyboard */; };
+		26BB3842275338B200342496 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3841275338B200342496 /* main.m */; };
+		26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */; };
+		26BB3856275338EE00342496 /* DSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3855275338EE00342496 /* DSPKernel.hpp */; };
+		26BB3858275338EE00342496 /* DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3857275338EE00342496 /* DSPKernel.mm */; };
+		26BB385A275338EE00342496 /* BufferedAudioBus.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3859275338EE00342496 /* BufferedAudioBus.hpp */; };
+		26BB385D275338EE00342496 /* MidiRecorderDSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 26BB385C275338EE00342496 /* MidiRecorderDSPKernel.hpp */; };
+		26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB385E275338EE00342496 /* DSPKernelAdapter.mm */; };
+		26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3862275338EE00342496 /* AudioUnitViewController.mm */; };
+		26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3864275338EE00342496 /* MainInterface.storyboard */; };
+		26BB386A275338EE00342496 /* MIDI Recorder Plugin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA262753415D00170CB2 /* AVFAudio.framework */; };
+		26C7DA29275343C500170CB2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA28275343C500170CB2 /* AudioToolbox.framework */; };
+		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
+		26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2C275343DB00170CB2 /* UIKit.framework */; };
+		26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA30275343F800170CB2 /* CoreAudioKit.framework */; };
+		26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		26BB3868275338EE00342496 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 26BB3824275338B200342496 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 26BB384C275338EE00342496;
+			remoteInfo = "MIDI Recorder Plugin";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		26BB386E275338EE00342496 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				26BB386A275338EE00342496 /* MIDI Recorder Plugin.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		26BB382C275338B200342496 /* MIDI Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		26BB3832275338B200342496 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
+		26BB3833275338B200342496 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
+		26BB3835275338B200342496 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		26BB3836275338B200342496 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		26BB3839275338B200342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		26BB383B275338B200342496 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		26BB383E275338B200342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		26BB3840275338B200342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26BB3841275338B200342496 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		26BB3848275338C700342496 /* MIDI Recorder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Recorder.entitlements"; sourceTree = "<group>"; };
+		26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MIDI Recorder Plugin.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		26BB3850275338EE00342496 /* MidiRecorderAudioUnit.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MidiRecorderAudioUnit.hpp; sourceTree = "<group>"; };
+		26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderAudioUnit.mm; sourceTree = "<group>"; };
+		26BB3855275338EE00342496 /* DSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DSPKernel.hpp; sourceTree = "<group>"; };
+		26BB3857275338EE00342496 /* DSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernel.mm; sourceTree = "<group>"; };
+		26BB3859275338EE00342496 /* BufferedAudioBus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BufferedAudioBus.hpp; sourceTree = "<group>"; };
+		26BB385B275338EE00342496 /* DSPKernelAdapter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DSPKernelAdapter.hpp; sourceTree = "<group>"; };
+		26BB385C275338EE00342496 /* MidiRecorderDSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MidiRecorderDSPKernel.hpp; sourceTree = "<group>"; };
+		26BB385E275338EE00342496 /* DSPKernelAdapter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernelAdapter.mm; sourceTree = "<group>"; };
+		26BB3861275338EE00342496 /* AudioUnitViewController.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitViewController.hpp; sourceTree = "<group>"; };
+		26BB3862275338EE00342496 /* AudioUnitViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioUnitViewController.mm; sourceTree = "<group>"; };
+		26BB3865275338EE00342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		26BB3867275338EE00342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26BB386F275338F400342496 /* MIDI Recorder Plugin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Recorder Plugin.entitlements"; sourceTree = "<group>"; };
+		26BB387027533A3400342496 /* AudioUnitIOState.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitIOState.hpp; sourceTree = "<group>"; };
+		26C7DA262753415D00170CB2 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AVFAudio.framework; sourceTree = DEVELOPER_DIR; };
+		26C7DA28275343C500170CB2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
+		26C7DA2A275343CF00170CB2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
+		26C7DA2C275343DB00170CB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		26C7DA2E275343E400170CB2 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioUnit.framework; sourceTree = DEVELOPER_DIR; };
+		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
+		26C7DA322753485300170CB2 /* AudioUnitGUIState.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitGUIState.hpp; sourceTree = "<group>"; };
+		26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderDSPKernel.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		26BB3829275338B200342496 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26BB384A275338EE00342496 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26C7DA29275343C500170CB2 /* AudioToolbox.framework in Frameworks */,
+				26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */,
+				26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */,
+				26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */,
+				26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		26BB3823275338B200342496 = {
+			isa = PBXGroup;
+			children = (
+				26BB382E275338B200342496 /* MIDI Recorder */,
+				26BB384E275338EE00342496 /* MIDI Recorder Plugin */,
+				26BB382D275338B200342496 /* Products */,
+				26C7DA252753415D00170CB2 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		26BB382D275338B200342496 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				26BB382C275338B200342496 /* MIDI Recorder.app */,
+				26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		26BB382E275338B200342496 /* MIDI Recorder */ = {
+			isa = PBXGroup;
+			children = (
+				26BB3848275338C700342496 /* MIDI Recorder.entitlements */,
+				26BB382F275338B200342496 /* AppDelegate.h */,
+				26BB3830275338B200342496 /* AppDelegate.m */,
+				26BB3832275338B200342496 /* SceneDelegate.h */,
+				26BB3833275338B200342496 /* SceneDelegate.m */,
+				26BB3835275338B200342496 /* ViewController.h */,
+				26BB3836275338B200342496 /* ViewController.m */,
+				26BB3838275338B200342496 /* Main.storyboard */,
+				26BB383B275338B200342496 /* Assets.xcassets */,
+				26BB383D275338B200342496 /* LaunchScreen.storyboard */,
+				26BB3840275338B200342496 /* Info.plist */,
+				26BB3841275338B200342496 /* main.m */,
+			);
+			path = "MIDI Recorder";
+			sourceTree = "<group>";
+		};
+		26BB384E275338EE00342496 /* MIDI Recorder Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				26BB386F275338F400342496 /* MIDI Recorder Plugin.entitlements */,
+				26BB3864275338EE00342496 /* MainInterface.storyboard */,
+				26BB3867275338EE00342496 /* Info.plist */,
+				26BB384F275338EE00342496 /* Audio Unit */,
+				26BB3853275338EE00342496 /* DSP */,
+				26BB3860275338EE00342496 /* UI */,
+			);
+			path = "MIDI Recorder Plugin";
+			sourceTree = "<group>";
+		};
+		26BB384F275338EE00342496 /* Audio Unit */ = {
+			isa = PBXGroup;
+			children = (
+				26BB3850275338EE00342496 /* MidiRecorderAudioUnit.hpp */,
+				26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */,
+			);
+			path = "Audio Unit";
+			sourceTree = "<group>";
+		};
+		26BB3853275338EE00342496 /* DSP */ = {
+			isa = PBXGroup;
+			children = (
+				26C7DA322753485300170CB2 /* AudioUnitGUIState.hpp */,
+				26BB387027533A3400342496 /* AudioUnitIOState.hpp */,
+				26BB3859275338EE00342496 /* BufferedAudioBus.hpp */,
+				26BB3855275338EE00342496 /* DSPKernel.hpp */,
+				26BB3857275338EE00342496 /* DSPKernel.mm */,
+				26BB385B275338EE00342496 /* DSPKernelAdapter.hpp */,
+				26BB385E275338EE00342496 /* DSPKernelAdapter.mm */,
+				26BB385C275338EE00342496 /* MidiRecorderDSPKernel.hpp */,
+				26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */,
+			);
+			path = DSP;
+			sourceTree = "<group>";
+		};
+		26BB3860275338EE00342496 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				26BB3861275338EE00342496 /* AudioUnitViewController.hpp */,
+				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		26C7DA252753415D00170CB2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				26C7DA30275343F800170CB2 /* CoreAudioKit.framework */,
+				26C7DA2E275343E400170CB2 /* AudioUnit.framework */,
+				26C7DA2C275343DB00170CB2 /* UIKit.framework */,
+				26C7DA2A275343CF00170CB2 /* CoreAudio.framework */,
+				26C7DA28275343C500170CB2 /* AudioToolbox.framework */,
+				26C7DA262753415D00170CB2 /* AVFAudio.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		26BB382B275338B200342496 /* MIDI Recorder */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26BB3845275338B200342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder" */;
+			buildPhases = (
+				26BB3828275338B200342496 /* Sources */,
+				26BB3829275338B200342496 /* Frameworks */,
+				26BB382A275338B200342496 /* Resources */,
+				26BB386E275338EE00342496 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				26BB3869275338EE00342496 /* PBXTargetDependency */,
+			);
+			name = "MIDI Recorder";
+			productName = "MIDI Recorder";
+			productReference = 26BB382C275338B200342496 /* MIDI Recorder.app */;
+			productType = "com.apple.product-type.application";
+		};
+		26BB384C275338EE00342496 /* MIDI Recorder Plugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26BB386B275338EE00342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder Plugin" */;
+			buildPhases = (
+				26BB3849275338EE00342496 /* Sources */,
+				26BB384A275338EE00342496 /* Frameworks */,
+				26BB384B275338EE00342496 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "MIDI Recorder Plugin";
+			productName = "MIDI Recorder Plugin";
+			productReference = 26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		26BB3824275338B200342496 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1310;
+				TargetAttributes = {
+					26BB382B275338B200342496 = {
+						CreatedOnToolsVersion = 13.1;
+					};
+					26BB384C275338EE00342496 = {
+						CreatedOnToolsVersion = 13.1;
+					};
+				};
+			};
+			buildConfigurationList = 26BB3827275338B200342496 /* Build configuration list for PBXProject "MIDI Recorder" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 26BB3823275338B200342496;
+			productRefGroup = 26BB382D275338B200342496 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				26BB382B275338B200342496 /* MIDI Recorder */,
+				26BB384C275338EE00342496 /* MIDI Recorder Plugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		26BB382A275338B200342496 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */,
+				26BB383C275338B200342496 /* Assets.xcassets in Resources */,
+				26BB383A275338B200342496 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26BB384B275338EE00342496 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26BB385D275338EE00342496 /* MidiRecorderDSPKernel.hpp in Resources */,
+				26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */,
+				26BB3856275338EE00342496 /* DSPKernel.hpp in Resources */,
+				26BB385A275338EE00342496 /* BufferedAudioBus.hpp in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		26BB3828275338B200342496 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26BB3837275338B200342496 /* ViewController.m in Sources */,
+				26BB3831275338B200342496 /* AppDelegate.m in Sources */,
+				26BB3842275338B200342496 /* main.m in Sources */,
+				26BB3834275338B200342496 /* SceneDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26BB3849275338EE00342496 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
+				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
+				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
+				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
+				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		26BB3869275338EE00342496 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = 26BB384C275338EE00342496 /* MIDI Recorder Plugin */;
+			targetProxy = 26BB3868275338EE00342496 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		26BB3838275338B200342496 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				26BB3839275338B200342496 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		26BB383D275338B200342496 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				26BB383E275338B200342496 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		26BB3864275338EE00342496 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				26BB3865275338EE00342496 /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		26BB3843275338B200342496 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_FAST_MATH = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		26BB3844275338B200342496 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_FAST_MATH = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		26BB3846275338B200342496 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder/MIDI Recorder.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AGZT8GVS7G;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MIDI Recorder/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.midirecorder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Debug;
+		};
+		26BB3847275338B200342496 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder/MIDI Recorder.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AGZT8GVS7G;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MIDI Recorder/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.midirecorder;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Release;
+		};
+		26BB386C275338EE00342496 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder Plugin/MIDI Recorder Plugin.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AGZT8GVS7G;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MIDI Recorder Plugin/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Recorder";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.midirecorder.plugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Debug;
+		};
+		26BB386D275338EE00342496 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder Plugin/MIDI Recorder Plugin.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AGZT8GVS7G;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MIDI Recorder Plugin/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Recorder";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.midirecorder.plugin;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		26BB3827275338B200342496 /* Build configuration list for PBXProject "MIDI Recorder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26BB3843275338B200342496 /* Debug */,
+				26BB3844275338B200342496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26BB3845275338B200342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26BB3846275338B200342496 /* Debug */,
+				26BB3847275338B200342496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26BB386B275338EE00342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder Plugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26BB386C275338EE00342496 /* Debug */,
+				26BB386D275338EE00342496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 26BB3824275338B200342496 /* Project object */;
+}
