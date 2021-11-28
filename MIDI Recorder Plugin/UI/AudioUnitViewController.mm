@@ -14,6 +14,9 @@
 
 @property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityInput1;
 @property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityOutput1;
+@property (weak, nonatomic) IBOutlet UIButton* rewindButton;
+@property (weak, nonatomic) IBOutlet UIButton* playButton;
+@property (weak, nonatomic) IBOutlet UIButton* recordButton;
 
 @end
 
@@ -31,6 +34,18 @@
     }
     
     return self;
+}
+
+- (IBAction)rewindPressed:(id)sender {
+}
+
+- (IBAction)playPressed:(id)sender {
+    self.playButton.selected = !self.playButton.selected;
+}
+
+- (IBAction)recordPressed:(id)sender {
+    self.recordButton.selected = !self.recordButton.selected;
+    self.playButton.selected = NO;
 }
 
 - (void)viewDidLoad {
