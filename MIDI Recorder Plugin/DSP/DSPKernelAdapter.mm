@@ -23,12 +23,12 @@
 }
 
 - (instancetype)init {
-
     if (self = [super init]) {
         AVAudioFormat* format = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:44100 channels:2];
         
         // Create a DSP kernel to handle the signal processing.
-        _kernel.init(format.channelCount, format.sampleRate);
+        _kernel._ioState.channelCount = format.channelCount;
+        _kernel._ioState.sampleRate = format.sampleRate;
         _kernel.setParameter(paramOne, 0);
 
         // Create the input and output busses.
@@ -77,7 +77,8 @@
 
 - (void)allocateRenderResources {
     _inputBus.allocateRenderResources(self.maximumFramesToRender);
-    _kernel.init(self.outputBus.format.channelCount, self.outputBus.format.sampleRate);
+    _kernel._ioState.channelCount = self.outputBus.format.channelCount;
+    _kernel._ioState.sampleRate = self.outputBus.format.sampleRate;
     _kernel.reset();
 }
 
@@ -98,14 +99,13 @@
     __block MidiRecorderDSPKernel* kernel = &_kernel;
     __block BufferedInputBus* input = &_inputBus;
 
-    return ^AUAudioUnitStatus(AudioUnitRenderActionFlags*               actionFlags,
-                              const AudioTimeStamp*                     timestamp,
-                              AVAudioFrameCount           				frameCount,
-                              NSInteger                   				outputBusNumber,
-                              AudioBufferList*                          outputData,
-                              const AURenderEvent*                      realtimeEventListHead,
+    return ^AUAudioUnitStatus(AudioUnitRenderActionFlags*                actionFlags,
+                              const AudioTimeStamp*                      timestamp,
+                              AVAudioFrameCount           				 frameCount,
+                              NSInteger                   				 outputBusNumber,
+                              AudioBufferList*                           outputData,
+                              const AURenderEvent*                       realtimeEventListHead,
                               AURenderPullInputBlock __unsafe_unretained pullInputBlock) {
-
         AudioUnitRenderActionFlags pullFlags = 0;
 
         if (frameCount > kernel->maximumFramesToRender()) {
@@ -141,6 +141,8 @@
             }
         }
 
+        kernel->_ioState.currentRenderTimestamp = timestamp;
+        
         kernel->setBuffers(inAudioBufferList, outAudioBufferList);
         kernel->processWithEvents(timestamp, frameCount, realtimeEventListHead);
 

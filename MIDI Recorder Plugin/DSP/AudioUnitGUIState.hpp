@@ -8,5 +8,6 @@
 #pragma once
 
 struct AudioUnitGUIState {
-    float midiActivity[8] = { 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f };
+    float midiActivityInput[8] = { 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f };
+    float midiActivityOutput[8] = { 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f };
 };

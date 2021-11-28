@@ -22,27 +22,36 @@
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dom-KY-gSl" userLabel="MIDI Activity 1">
-                                <rect key="frame" x="54" y="47" width="20" height="20"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dom-KY-gSl" userLabel="MIDI Activity Input 1" customClass="ActivityIndicator">
+                                <rect key="frame" x="54" y="47" width="9" height="9"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="Npp-NL-xab"/>
-                                    <constraint firstAttribute="width" constant="20" id="ae9-Yl-n0y"/>
+                                    <constraint firstAttribute="height" constant="9" id="Npp-NL-xab"/>
+                                    <constraint firstAttribute="width" constant="9" id="ae9-Yl-n0y"/>
                                 </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blx-LE-LOD" userLabel="MIDI Activity Output 1" customClass="ActivityIndicator">
+                                <rect key="frame" x="781" y="47" width="9" height="9"/>
+                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="u2v-qu-mbu"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="blx-LE-LOD" firstAttribute="top" secondItem="dom-KY-gSl" secondAttribute="top" id="0YH-Oe-F7m"/>
+                            <constraint firstItem="blx-LE-LOD" firstAttribute="height" secondItem="dom-KY-gSl" secondAttribute="height" id="7Yz-JS-p4A"/>
+                            <constraint firstItem="blx-LE-LOD" firstAttribute="trailing" secondItem="u2v-qu-mbu" secondAttribute="trailing" constant="-10" id="AKx-K0-lPD"/>
                             <constraint firstItem="j5c-MY-xUb" firstAttribute="centerX" secondItem="u2v-qu-mbu" secondAttribute="centerX" id="GEu-gu-ROi"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="leading" secondItem="u2v-qu-mbu" secondAttribute="leading" constant="10" id="UPc-Id-CSi"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="top" secondItem="j5c-MY-xUb" secondAttribute="bottom" constant="10" id="oij-GQ-rUC"/>
                             <constraint firstItem="j5c-MY-xUb" firstAttribute="top" secondItem="u2v-qu-mbu" secondAttribute="top" constant="20" id="sbA-2i-4eA"/>
+                            <constraint firstItem="blx-LE-LOD" firstAttribute="width" secondItem="dom-KY-gSl" secondAttribute="width" id="xmK-hQ-PaU"/>
                         </constraints>
                     </view>
                     <size key="freeformSize" width="800" height="400"/>
                     <connections>
-                        <outlet property="midiActivity1" destination="dom-KY-gSl" id="N0p-E5-bDB"/>
+                        <outlet property="midiActivityInput1" destination="dom-KY-gSl" id="SfD-tA-CKI"/>
+                        <outlet property="midiActivityOutput1" destination="blx-LE-LOD" id="u2b-fP-Dc1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

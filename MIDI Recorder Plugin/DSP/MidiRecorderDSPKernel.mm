@@ -9,11 +9,6 @@
 
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() {}
 
-void MidiRecorderDSPKernel::init(int channelCount, double inSampleRate) {
-    _chanCount = channelCount;
-    _sampleRate = float(inSampleRate);
-}
-
 void MidiRecorderDSPKernel::reset() {
 }
 
@@ -49,7 +44,7 @@ void MidiRecorderDSPKernel::setBuffers(AudioBufferList* inBufferList, AudioBuffe
 }
 
 void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) {
-    for (int channel = 0; channel < _chanCount; ++channel) {
+    for (int channel = 0; channel < _ioState.channelCount; ++channel) {
         if (_inBufferList->mBuffers[channel].mData ==  _outBufferList->mBuffers[channel].mData) {
             continue;
         }
@@ -64,9 +59,13 @@ void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCo
 }
 
 void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
+    Float64 frame_offset = midiEvent.eventSampleTime - _ioState.currentRenderTimestamp->mSampleTime;
+    
     // pass through MIDI events
     if (_ioState.midiOutputEventBlock) {
-        _ioState.midiOutputEventBlock(midiEvent.eventSampleTime, midiEvent.cable, midiEvent.length, midiEvent.data);
+        _guiState.midiActivityOutput[midiEvent.cable] = 1.f;
+        
+        _ioState.midiOutputEventBlock(_ioState.currentRenderTimestamp->mSampleTime + frame_offset, midiEvent.cable, midiEvent.length, midiEvent.data);
     }
     
     if (midiEvent.cable < 0 || midiEvent.cable >= 8) {
@@ -78,7 +77,7 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     uint8_t data1 = midiEvent.data[1];
     uint8_t data2 = midiEvent.data[2];
     
-    NSLog(@"%lld %d %d %d %d", midiEvent.eventSampleTime, (int)status, (int)channel, (int)data1, (int)data2);
+    NSLog(@"%f %f %d %d %d %d", _ioState.currentRenderTimestamp->mSampleTime, frame_offset, (int)status, (int)channel, (int)data1, (int)data2);
     
-    _guiState.midiActivity[midiEvent.cable] = 1.f;
+    _guiState.midiActivityInput[midiEvent.cable] = 1.f;
 }

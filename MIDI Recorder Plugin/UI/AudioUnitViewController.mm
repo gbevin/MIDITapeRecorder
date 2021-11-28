@@ -7,11 +7,13 @@
 
 #import "AudioUnitViewController.hpp"
 
+#import "ActivityIndicator.hpp"
 #import "MidiRecorderAudioUnit.hpp"
 
 @interface AudioUnitViewController ()
 
-@property (weak, nonatomic) IBOutlet UIView* midiActivity1;
+@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityInput1;
+@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityOutput1;
 
 @end
 
@@ -49,14 +51,22 @@
 }
 
 - (void)renderloop {
-    if (_audioUnit &&
-        _audioUnit.kernelAdapter.guiState->midiActivity[0] == 1.f) {
-        _audioUnit.kernelAdapter.guiState->midiActivity[0] = 0.f;
+    if (_audioUnit) {
+        if (_audioUnit.kernelAdapter.guiState->midiActivityInput[0] == 1.f) {
+            _audioUnit.kernelAdapter.guiState->midiActivityInput[0] = 0.f;
+            _midiActivityInput1.showActivity = YES;
+        }
+        else {
+            _midiActivityInput1.showActivity = NO;
+        }
         
-        _midiActivity1.backgroundColor = [UIColor greenColor];
-    }
-    else {
-        _midiActivity1.backgroundColor = [UIColor darkGrayColor];
+        if (_audioUnit.kernelAdapter.guiState->midiActivityOutput[0] == 1.f) {
+            _audioUnit.kernelAdapter.guiState->midiActivityOutput[0] = 0.f;
+            _midiActivityOutput1.showActivity = YES;
+        }
+        else {
+            _midiActivityOutput1.showActivity = NO;
+        }
     }
 }
 

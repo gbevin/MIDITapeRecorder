@@ -24,7 +24,6 @@ const AudioUnitParameterID myParam1 = 0;
 @implementation MidiRecorderAudioUnit
 
 @synthesize parameterTree = _parameterTree;
-@synthesize MIDIOutputEventBlock = _MIDIOutputEventBlock;
 
 - (instancetype)initWithComponentDescription:(AudioComponentDescription)componentDescription options:(AudioComponentInstantiationOptions)options error:(NSError**)outError {
     self = [super initWithComponentDescription:componentDescription options:options error:outError];
@@ -68,7 +67,7 @@ const AudioUnitParameterID myParam1 = 0;
     param1.value = 0.5;
     
     // Create the parameter tree.
-    _parameterTree = [AUParameterTree createTreeWithChildren:@[ param1 ]];
+    _parameterTree = [AUParameterTree createTreeWithChildren:@[ /* param1 */  ]];
 }
 
 - (void)setupParameterCallbacks {
@@ -118,8 +117,7 @@ const AudioUnitParameterID myParam1 = 0;
 }
 
 - (void)setMIDIOutputEventBlock:(AUMIDIOutputEventBlock)MIDIOutputEventBlock {
-    _MIDIOutputEventBlock = MIDIOutputEventBlock;
-    _kernelAdapter.ioState->midiOutputEventBlock = _MIDIOutputEventBlock;
+    _kernelAdapter.ioState->midiOutputEventBlock = MIDIOutputEventBlock;
 }
 
 // Allocate resources required to render.

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		261342792753D869001FF0BB /* ActivityIndicator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 261342782753D869001FF0BB /* ActivityIndicator.mm */; };
+		2613427B2753D995001FF0BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2613427A2753D995001FF0BB /* Assets.xcassets */; };
+		2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2613427C2753DA69001FF0BB /* CoreGraphics.framework */; };
 		261D69332753BCDA003527B2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261D69322753BCDA003527B2 /* AudioToolbox.framework */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
 		26BB3834275338B200342496 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3833275338B200342496 /* SceneDelegate.m */; };
@@ -57,6 +60,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		261342772753D855001FF0BB /* ActivityIndicator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ActivityIndicator.hpp; sourceTree = "<group>"; };
+		261342782753D869001FF0BB /* ActivityIndicator.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityIndicator.mm; sourceTree = "<group>"; };
+		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2613427C2753DA69001FF0BB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		261D69322753BCDA003527B2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		26BB382C275338B200342496 /* MIDI Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -109,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */,
 				26C7DA29275343C500170CB2 /* AudioToolbox.framework in Frameworks */,
 				26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */,
 				26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */,
@@ -164,6 +172,7 @@
 				26BB386F275338F400342496 /* MIDI Recorder Plugin.entitlements */,
 				26BB3864275338EE00342496 /* MainInterface.storyboard */,
 				26BB3867275338EE00342496 /* Info.plist */,
+				2613427A2753D995001FF0BB /* Assets.xcassets */,
 				26BB384F275338EE00342496 /* Audio Unit */,
 				26BB3853275338EE00342496 /* DSP */,
 				26BB3860275338EE00342496 /* UI */,
@@ -201,6 +210,8 @@
 			children = (
 				26BB3861275338EE00342496 /* AudioUnitViewController.hpp */,
 				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
+				261342772753D855001FF0BB /* ActivityIndicator.hpp */,
+				261342782753D869001FF0BB /* ActivityIndicator.mm */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -208,6 +219,7 @@
 		26C7DA252753415D00170CB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2613427C2753DA69001FF0BB /* CoreGraphics.framework */,
 				261D69322753BCDA003527B2 /* AudioToolbox.framework */,
 				26C7DA30275343F800170CB2 /* CoreAudioKit.framework */,
 				26C7DA2E275343E400170CB2 /* AudioUnit.framework */,
@@ -313,6 +325,7 @@
 				26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */,
 				26BB3856275338EE00342496 /* DSPKernel.hpp in Resources */,
 				26BB385A275338EE00342496 /* BufferedAudioBus.hpp in Resources */,
+				2613427B2753D995001FF0BB /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,6 +349,7 @@
 			files = (
 				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
+				261342792753D869001FF0BB /* ActivityIndicator.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
 				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,

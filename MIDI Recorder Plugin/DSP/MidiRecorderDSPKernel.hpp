@@ -28,7 +28,6 @@ public:
 
     MidiRecorderDSPKernel();
     
-    void init(int channelCount, double inSampleRate);
     void reset();
 
     bool isBypassed();
@@ -48,8 +47,6 @@ public:
     // MARK: Member Variables
 
 private:
-    int _chanCount      { 0 };
-    float _sampleRate   { 44100.0 };
     bool _bypassed      { false };
     
     AudioBufferList* _inBufferList  { nullptr };
