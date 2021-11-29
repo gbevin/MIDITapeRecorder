@@ -121,11 +121,11 @@ void MidiRecorderDSPKernel::processOutput() {
             uint64_t play_counter1;
             while ((play_counter1 = _guiState.playCounter1) < _guiState.recordedLength1) {
                 const double recorded_time_delta = _guiState.recordedBytes1[play_counter1].timestampSeconds - recorded_reference_time;
-                if (recorded_time_delta < current_time_delta) {
+                if (recorded_time_delta < current_time_delta + frame_count_seconds) {
                     const QueuedMidiMessage* message = &_guiState.recordedBytes1[play_counter1];
                     
                     if (_ioState.midiOutputEventBlock) {
-                        const double offset_seconds = recorded_time_delta - (current_time_delta - frame_count_seconds);
+                        const double offset_seconds = recorded_time_delta - current_time_delta;
                         const double offset_samples = offset_seconds * _ioState.sampleRate;
                         
                         _guiState.midiActivityOutput[message->cable] = 1.f;
