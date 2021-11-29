@@ -7,6 +7,8 @@
 
 #import <CoreAudioKit/CoreAudioKit.h>
 
-@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory>
+#import "MidiQueueProcessorDelegate.hpp"
+
+@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiQueueProcessorDelegate>
 
 @end

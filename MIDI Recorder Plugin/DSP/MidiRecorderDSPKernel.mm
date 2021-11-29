@@ -7,6 +7,8 @@
 
 #import "MidiRecorderDSPKernel.hpp"
 
+#import <iostream>
+
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() {
     TPCircularBufferInit(&_guiState.midiBuffer, 16384);
 }
@@ -24,10 +26,31 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
     _bypassed = shouldBypass;
 }
 
+void MidiRecorderDSPKernel::rewind() {
+    if (_isPlaying == YES) {
+        _playStartTime = 0;
+    }
+    _guiState.playCounter1 = 0;
+}
+
+void MidiRecorderDSPKernel::play() {
+    if (_isPlaying == NO) {
+        _guiState.scheduledStop = false;
+        
+        _playStartTime = 0;
+        _isPlaying = YES;
+    }
+}
+
+void MidiRecorderDSPKernel::stop() {
+    if (_isPlaying == YES) {
+        _isPlaying = NO;
+    }
+}
+
 void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue value) {
     switch (address) {
         case paramOne:
-
             break;
     }
 }
@@ -67,18 +90,62 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
         return;
     }
 
-    Float64 frame_offset = midiEvent.eventSampleTime - _ioState.currentRenderTimestamp->mSampleTime;
-    
-    // pass through MIDI events
-    if (_ioState.midiOutputEventBlock) {
-        _guiState.midiActivityOutput[midiEvent.cable] = 1.f;
-        
-        _ioState.midiOutputEventBlock(_ioState.currentRenderTimestamp->mSampleTime + frame_offset, midiEvent.cable, midiEvent.length, midiEvent.data);
-    }
+    Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
     
     _guiState.midiActivityInput[midiEvent.cable] = 1.f;
 
-    queueMIDIEvent(midiEvent);
+    if (isBypassed()) {
+        // pass through MIDI events
+        if (_ioState.midiOutputEventBlock) {
+            _guiState.midiActivityOutput[midiEvent.cable] = 1.f;
+            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, midiEvent.cable, midiEvent.length, midiEvent.data);
+        }
+    }
+    else {
+        queueMIDIEvent(midiEvent);
+    }
+}
+
+void MidiRecorderDSPKernel::processOutput() {
+    if (_isPlaying) {
+        if (_playStartTime == 0) {
+            _playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
+        }
+        
+        if (_guiState.recordedLength1 > 0) {
+            const double recorded_reference_time = _guiState.recordedBytes1[0].timestampSeconds;
+            const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
+            const double current_time_delta = current_time - _playStartTime;
+            const double frame_count_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
+            
+            uint64_t play_counter1;
+            while ((play_counter1 = _guiState.playCounter1) < _guiState.recordedLength1) {
+                const double recorded_time_delta = _guiState.recordedBytes1[play_counter1].timestampSeconds - recorded_reference_time;
+                if (recorded_time_delta < current_time_delta) {
+                    const QueuedMidiMessage* message = &_guiState.recordedBytes1[play_counter1];
+                    
+                    if (_ioState.midiOutputEventBlock) {
+                        const double offset_seconds = recorded_time_delta - (current_time_delta - frame_count_seconds);
+                        const double offset_samples = offset_seconds * _ioState.sampleRate;
+                        
+                        _guiState.midiActivityOutput[message->cable] = 1.f;
+                        _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples, message->cable, message->length, &message->data[0]);
+                    }
+
+                    _guiState.playCounter1 += 1;
+                }
+                else {
+                    break;
+                }
+            }
+            
+            if (_guiState.playCounter1 >= _guiState.recordedLength1) {
+                _isPlaying = NO;
+                _guiState.playCounter1 = 0;
+                _guiState.scheduledStop = true;
+            }
+        }
+    }
 }
 
 void MidiRecorderDSPKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {

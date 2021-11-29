@@ -99,6 +99,12 @@
                                     <constraint firstAttribute="width" constant="9" id="ae9-Yl-n0y"/>
                                 </constraints>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TAv-Nj-6FV">
+                                <rect key="frame" x="73" y="61" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blx-LE-LOD" userLabel="MIDI Activity Output 1" customClass="ActivityIndicator">
                                 <rect key="frame" x="781" y="67" width="9" height="9"/>
                                 <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -111,7 +117,9 @@
                             <constraint firstItem="ESp-f1-BSZ" firstAttribute="centerY" secondItem="j5c-MY-xUb" secondAttribute="centerY" id="2df-8W-8wb"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="height" secondItem="dom-KY-gSl" secondAttribute="height" id="7Yz-JS-p4A"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="trailing" secondItem="u2v-qu-mbu" secondAttribute="trailing" constant="-10" id="AKx-K0-lPD"/>
+                            <constraint firstItem="TAv-Nj-6FV" firstAttribute="centerY" secondItem="dom-KY-gSl" secondAttribute="centerY" id="Dxo-2U-yF8"/>
                             <constraint firstItem="j5c-MY-xUb" firstAttribute="centerX" secondItem="u2v-qu-mbu" secondAttribute="centerX" id="GEu-gu-ROi"/>
+                            <constraint firstItem="TAv-Nj-6FV" firstAttribute="leading" secondItem="dom-KY-gSl" secondAttribute="trailing" constant="10" id="POa-5A-8zu"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="leading" secondItem="u2v-qu-mbu" secondAttribute="leading" constant="10" id="UPc-Id-CSi"/>
                             <constraint firstItem="j5c-MY-xUb" firstAttribute="leading" secondItem="ESp-f1-BSZ" secondAttribute="trailing" constant="10" id="dnn-qK-7cJ"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="top" secondItem="j5c-MY-xUb" secondAttribute="bottom" constant="30" id="oij-GQ-rUC"/>
@@ -126,6 +134,7 @@
                     <connections>
                         <outlet property="midiActivityInput1" destination="dom-KY-gSl" id="SfD-tA-CKI"/>
                         <outlet property="midiActivityOutput1" destination="blx-LE-LOD" id="u2b-fP-Dc1"/>
+                        <outlet property="midiCount1" destination="TAv-Nj-6FV" id="jWL-UW-77E"/>
                         <outlet property="playButton" destination="K2s-Jg-CsH" id="n0h-K8-xXi"/>
                         <outlet property="recordButton" destination="o1O-TV-EyB" id="XAb-3f-btd"/>
                         <outlet property="rewindButton" destination="IuJ-5c-4Lw" id="GBN-OS-J6L"/>

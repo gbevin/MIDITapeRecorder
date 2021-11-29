@@ -30,8 +30,9 @@ void DSPKernel::performAllSimultaneousEvents(AUEventSampleTime now, AURenderEven
         // Go to next event.
         event = event->head.next;
 
-        // While event is not null and is simultaneous (or late).
-    } while (event && event->head.eventSampleTime <= now);
+    }
+    // While event is not null and is simultaneous (or late).
+    while (event && event->head.eventSampleTime <= now);
 }
 
 /**

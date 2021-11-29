@@ -12,8 +12,9 @@
 struct AudioUnitIOState {
     int32_t channelCount    { 0 };
     float sampleRate        { 44100.f };
-    
-    const AudioTimeStamp* currentRenderTimestamp    { nullptr };
+    uint32_t frameCount     { 0 };
+
+    const AudioTimeStamp* timestamp    { nullptr };
 
     AUMIDIOutputEventBlock midiOutputEventBlock     { nullptr };
     AUHostTransportStateBlock transportStateBlock   { nullptr };
@@ -22,8 +23,9 @@ struct AudioUnitIOState {
     void reset() {
         channelCount = 0;
         sampleRate = 44100.f;
+        frameCount = 0;
         
-        currentRenderTimestamp = nullptr;
+        timestamp = nullptr;
         
         midiOutputEventBlock = nullptr;
         transportStateBlock = nullptr;

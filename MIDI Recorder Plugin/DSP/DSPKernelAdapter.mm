@@ -51,6 +51,18 @@
     return &_kernel._ioState;
 }
 
+- (void)rewind {
+    _kernel.rewind();
+}
+
+- (void)play {
+    _kernel.play();
+}
+
+- (void)stop {
+    _kernel.stop();
+}
+
 - (void)setParameter:(AUParameter*)parameter value:(AUValue)value {
     _kernel.setParameter(parameter.address, value);
 }
@@ -140,10 +152,12 @@
             }
         }
 
-        kernel->_ioState.currentRenderTimestamp = timestamp;
+        kernel->_ioState.frameCount = frameCount;
+        kernel->_ioState.timestamp = timestamp;
         
         kernel->setBuffers(inAudioBufferList, outAudioBufferList);
         kernel->processWithEvents(timestamp, frameCount, realtimeEventListHead);
+        kernel->processOutput();
 
         return noErr;
     };

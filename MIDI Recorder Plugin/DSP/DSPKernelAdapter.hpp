@@ -12,12 +12,16 @@
 
 @interface DSPKernelAdapter : NSObject
 
-@property (nonatomic) AUAudioFrameCount maximumFramesToRender;
-@property (nonatomic, readonly) AUAudioUnitBus* inputBus;
-@property (nonatomic, readonly) AUAudioUnitBus* outputBus;
+@property(nonatomic) AUAudioFrameCount maximumFramesToRender;
+@property(nonatomic, readonly) AUAudioUnitBus* inputBus;
+@property(nonatomic, readonly) AUAudioUnitBus* outputBus;
 
 - (AudioUnitGUIState*)guiState;
 - (AudioUnitIOState*)ioState;
+
+- (void)rewind;
+- (void)play;
+- (void)stop;
 
 - (void)setParameter:(AUParameter*)parameter value:(AUValue)value;
 - (AUValue)valueForParameter:(AUParameter*)parameter;
