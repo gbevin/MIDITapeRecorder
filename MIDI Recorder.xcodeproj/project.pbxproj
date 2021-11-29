@@ -11,6 +11,8 @@
 		2613427B2753D995001FF0BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2613427A2753D995001FF0BB /* Assets.xcassets */; };
 		2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2613427C2753DA69001FF0BB /* CoreGraphics.framework */; };
 		261D69332753BCDA003527B2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261D69322753BCDA003527B2 /* AudioToolbox.framework */; };
+		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
+		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
 		26BB3834275338B200342496 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3833275338B200342496 /* SceneDelegate.m */; };
 		26BB3837275338B200342496 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3836275338B200342496 /* ViewController.m */; };
@@ -65,6 +67,10 @@
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2613427C2753DA69001FF0BB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		261D69322753BCDA003527B2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
+		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
+		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
+		26B140882754590300748F00 /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		26BB382C275338B200342496 /* MIDI Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -128,6 +134,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26B140822754590300748F00 /* TPCircularBuffer */ = {
+			isa = PBXGroup;
+			children = (
+				26B140832754590300748F00 /* TPCircularBuffer.h */,
+				26B140872754590300748F00 /* TPCircularBuffer.c */,
+				26B140882754590300748F00 /* TPCircularBuffer+AudioBufferList.h */,
+				26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */,
+			);
+			path = TPCircularBuffer;
+			sourceTree = "<group>";
+		};
 		26BB3823275338B200342496 = {
 			isa = PBXGroup;
 			children = (
@@ -157,9 +174,9 @@
 				26BB3833275338B200342496 /* SceneDelegate.m */,
 				26BB3835275338B200342496 /* ViewController.h */,
 				26BB3836275338B200342496 /* ViewController.m */,
+				26BB383D275338B200342496 /* LaunchScreen.storyboard */,
 				26BB3838275338B200342496 /* Main.storyboard */,
 				26BB383B275338B200342496 /* Assets.xcassets */,
-				26BB383D275338B200342496 /* LaunchScreen.storyboard */,
 				26BB3840275338B200342496 /* Info.plist */,
 				26BB3841275338B200342496 /* main.m */,
 			);
@@ -175,6 +192,7 @@
 				2613427A2753D995001FF0BB /* Assets.xcassets */,
 				26BB384F275338EE00342496 /* Audio Unit */,
 				26BB3853275338EE00342496 /* DSP */,
+				26B140822754590300748F00 /* TPCircularBuffer */,
 				26BB3860275338EE00342496 /* UI */,
 			);
 			path = "MIDI Recorder Plugin";
@@ -347,11 +365,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicator.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
+				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
 				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

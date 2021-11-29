@@ -28,7 +28,7 @@ public:
 
     MidiRecorderDSPKernel();
     
-    void reset();
+    void cleanup();
 
     bool isBypassed();
     void setBypass(bool shouldBypass);
@@ -47,6 +47,8 @@ public:
     // MARK: Member Variables
 
 private:
+    void queueMIDIEvent(AUMIDIEvent const& midiEvent);
+    
     bool _bypassed      { false };
     
     AudioBufferList* _inBufferList  { nullptr };

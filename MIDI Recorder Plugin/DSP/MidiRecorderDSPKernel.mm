@@ -7,9 +7,13 @@
 
 #import "MidiRecorderDSPKernel.hpp"
 
-MidiRecorderDSPKernel::MidiRecorderDSPKernel() {}
+MidiRecorderDSPKernel::MidiRecorderDSPKernel() {
+    TPCircularBufferInit(&_guiState.midiBuffer, 16384);
+}
 
-void MidiRecorderDSPKernel::reset() {
+void MidiRecorderDSPKernel::cleanup() {
+    TPCircularBufferCleanup(&_guiState.midiBuffer);
+    _ioState.reset();
 }
 
 bool MidiRecorderDSPKernel::isBypassed() {
@@ -59,6 +63,10 @@ void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCo
 }
 
 void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
+    if (midiEvent.cable < 0 || midiEvent.cable >= 8) {
+        return;
+    }
+
     Float64 frame_offset = midiEvent.eventSampleTime - _ioState.currentRenderTimestamp->mSampleTime;
     
     // pass through MIDI events
@@ -68,16 +76,21 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
         _ioState.midiOutputEventBlock(_ioState.currentRenderTimestamp->mSampleTime + frame_offset, midiEvent.cable, midiEvent.length, midiEvent.data);
     }
     
-    if (midiEvent.cable < 0 || midiEvent.cable >= 8) {
-        return;
-    }
-    
-    uint8_t status = midiEvent.data[0] & 0xf0;
-    uint8_t channel = midiEvent.data[0] & 0x0f;
-    uint8_t data1 = midiEvent.data[1];
-    uint8_t data2 = midiEvent.data[2];
-    
-    NSLog(@"%f %f %d %d %d %d", _ioState.currentRenderTimestamp->mSampleTime, frame_offset, (int)status, (int)channel, (int)data1, (int)data2);
-    
     _guiState.midiActivityInput[midiEvent.cable] = 1.f;
+
+    queueMIDIEvent(midiEvent);
+}
+
+void MidiRecorderDSPKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
+    const int32_t length = sizeof(QueuedMidiMessage);
+    
+    QueuedMidiMessage message;
+    message.timestampSeconds = midiEvent.eventSampleTime / _ioState.sampleRate;
+    message.cable = midiEvent.cable;
+    message.length = midiEvent.length;
+    message.data[0] = midiEvent.data[0];
+    message.data[1] = midiEvent.data[1];
+    message.data[2] = midiEvent.data[2];
+    
+    TPCircularBufferProduceBytes(&_guiState.midiBuffer, &message, length);
 }

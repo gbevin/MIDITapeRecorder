@@ -79,11 +79,10 @@
     _inputBus.allocateRenderResources(self.maximumFramesToRender);
     _kernel._ioState.channelCount = self.outputBus.format.channelCount;
     _kernel._ioState.sampleRate = self.outputBus.format.sampleRate;
-    _kernel.reset();
 }
 
 - (void)deallocateRenderResources {
-    _kernel._ioState.reset();
+    _kernel.cleanup();
     _inputBus.deallocateRenderResources();
 }
 
