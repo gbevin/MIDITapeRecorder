@@ -11,5 +11,4 @@
 #import "MidiRecorderDelegate.h"
 
 @interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate>
-
 @end

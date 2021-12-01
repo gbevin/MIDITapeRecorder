@@ -160,9 +160,7 @@
     _recordButton.selected = !_recordButton.selected;
     _playButton.selected = NO;
     
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].record);
-    }
+    [self updateRecordEnableState];
 }
 
 - (IBAction)recordEnablePressed:(UIButton*)sender {
@@ -194,7 +192,7 @@
     UIButton* record_enabled_button[MIDI_TRACKS] = { _recordEnableButton1, _recordEnableButton2, _recordEnableButton3, _recordEnableButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state->track[t].record = record_enabled_button[t].selected;
+        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && record_enabled_button[t].selected);
     }
 }
 
@@ -325,16 +323,18 @@
 }
 
 - (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count {
-    _state->track[ordinal].recording = NO;
-    _state->track[ordinal].recordedMessages = data;
-    _state->track[ordinal].recordedLength = count;
+    MidiTrackState& state = _state->track[ordinal];
+    state.recording = NO;
+    state.recordedMessages = data;
+    state.recordedLength = count;
     
     [_audioUnit.kernelAdapter stop];
 }
 
 - (void)invalidateRecording:(int)ordinal {
-    _state->track[ordinal].recordedMessages = nullptr;
-    _state->track[ordinal].recordedLength = 0;
+    MidiTrackState& state = _state->track[ordinal];
+    state.recordedMessages = nullptr;
+    state.recordedLength = 0;
 }
 
 @end

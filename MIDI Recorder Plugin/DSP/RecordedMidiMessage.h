@@ -14,7 +14,6 @@ struct RecordedMidiMessage {
     RecordedMidiMessage& operator= (const RecordedMidiMessage&) = delete;
     
     double offsetSeconds    { 0.0 };
-    uint8_t cable           { 0 };
     uint16_t length         { 0 };
     uint8_t data[3]         { 0, 0, 0 };
 };

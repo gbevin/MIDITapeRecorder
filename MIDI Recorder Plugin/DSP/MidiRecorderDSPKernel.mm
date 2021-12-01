@@ -160,7 +160,7 @@ void MidiRecorderDSPKernel::processOutput() {
 
                             // send the MIDI output message
                             _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
-                                                          message->cable, message->length, &message->data[0]);
+                                                          t, message->length, &message->data[0]);
                         }
                         else {
                             turnOffAllNotesForTrack(t);

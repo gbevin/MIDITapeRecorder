@@ -14,7 +14,7 @@
 
 @interface MidiRecorder : NSObject
 
-@property(readonly) BOOL ordinal;
+@property(readonly) int ordinal;
 @property(nonatomic) BOOL record;
 
 @property id<MidiRecorderDelegate> delegate;

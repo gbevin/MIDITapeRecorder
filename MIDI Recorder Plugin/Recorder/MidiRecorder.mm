@@ -95,58 +95,69 @@
 #pragma mark Recording
 
 - (void)startRecord:(double)machTimeSeconds {
-    if (_record && _recordingStartMachSeconds == 0.0) {
-        _recordingStartMachSeconds = machTimeSeconds;
-        _recordingDurationSeconds = 0.0;
-    }
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        if (_record && _recordingStartMachSeconds == 0.0) {
+            _recordingStartMachSeconds = machTimeSeconds;
+            _recordingDurationSeconds = 0.0;
+        }
+    });
 }
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
+    double now_mach = HOST_TIME.currentMachTimeInSeconds();
+    __block bool perform_recording = false;
+    __block bool auto_start_recording = false;
+    
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record == NO) {
-            return;
+        if (_record && _recording != nil) {
+            perform_recording = true;
+            
+            // auto start the recording on the first received message
+            // if the recording hasn't started yet
+            if (_recordingCount == 0 && _recordingStartMachSeconds == 0.0) {
+                auto_start_recording = true;
+            }
+        }
+    });
+    
+    if (!perform_recording) {
+        return;
+    }
+    
+    if (auto_start_recording) {
+        if (_delegate) {
+            [_delegate startRecord:now_mach];
+        }
+    }
+        
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        // keep track of the time of the first message so that the offset of all messages
+        // can be calculated off of this
+        // if the recording of this track started later than the others, compensate that
+        // with an additional offset to the time of the first message
+        if (_recordingCount == 0) {
+            _recordingFirstMessageTime = message.timeSampleSeconds - (now_mach - _recordingStartMachSeconds);
         }
         
-        if (_record && _recording != nil) {
-            if (_recordingCount == 0) {
-                double now_mach = HOST_TIME.currentMachTimeInSeconds();
-                
-                // auto start the recording on the first received message
-                // if the recording hasn't started yet
-                if (_recordingStartMachSeconds == 0.0) {
-                    if (_delegate) {
-                        [_delegate startRecord:now_mach];
-                    }
-                }
-                
-                // keep track of the time of the first message so that the offset of all messages
-                // can be calculated off of this
-                // if the recording of this track started later than the others, compensate that
-                // with an additional offset to the time of the first message
-                _recordingFirstMessageTime = message.timeSampleSeconds - (now_mach - _recordingStartMachSeconds);
-            }
-            
-            // add message to the recording
-            RecordedMidiMessage recorded_message;
-            recorded_message.cable = _ordinal;
-            recorded_message.offsetSeconds = message.timeSampleSeconds - _recordingFirstMessageTime;
-            recorded_message.length = message.length;
-            recorded_message.data[0] = message.data[0];
-            recorded_message.data[1] = message.data[1];
-            recorded_message.data[2] = message.data[2];
-            [_recording appendBytes:&recorded_message length:RECORDED_MSG_SIZE];
-            _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _recordingStartMachSeconds;
-            _recordingCount += 1;
-            
-            // update the preview
-            int32_t pixel = int32_t(recorded_message.offsetSeconds * PIXELS_PER_SECOND + 0.5);
-            if (pixel >= _recordingPreview.length) {
-                [_recordingPreview setLength:pixel + 1];
-            }
-            uint8_t* preview = (uint8_t*)_recordingPreview.mutableBytes;
-            if (preview[pixel] < MAX_PREVIEW_EVENTS) {
-                preview[pixel] += 1;
-            }
+        // add message to the recording
+        RecordedMidiMessage recorded_message;
+        recorded_message.offsetSeconds = message.timeSampleSeconds - _recordingFirstMessageTime;
+        recorded_message.length = message.length;
+        recorded_message.data[0] = message.data[0];
+        recorded_message.data[1] = message.data[1];
+        recorded_message.data[2] = message.data[2];
+        [_recording appendBytes:&recorded_message length:RECORDED_MSG_SIZE];
+        _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _recordingStartMachSeconds;
+        _recordingCount += 1;
+        
+        // update the preview
+        int32_t pixel = int32_t(recorded_message.offsetSeconds * PIXELS_PER_SECOND + 0.5);
+        if (pixel >= _recordingPreview.length) {
+            [_recordingPreview setLength:pixel + 1];
+        }
+        uint8_t* preview = (uint8_t*)_recordingPreview.mutableBytes;
+        if (preview[pixel] < MAX_PREVIEW_EVENTS) {
+            preview[pixel] += 1;
         }
     });
 }
