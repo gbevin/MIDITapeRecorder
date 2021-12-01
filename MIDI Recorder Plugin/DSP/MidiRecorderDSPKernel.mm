@@ -40,6 +40,7 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 void MidiRecorderDSPKernel::rewind() {
     if (_isPlaying == YES) {
         _state.playStartTime = 0;
+        _state.playDuration = 0.0;
     }
     _state.playDuration = 0;
     for (int i = 0; i < MIDI_TRACKS; ++i) {
@@ -124,7 +125,7 @@ void MidiRecorderDSPKernel::processOutput() {
     }
     else {
         if (_state.playStartTime == 0) {
-            _state.playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
+            _state.playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate - _state.playDuration;
         }
         
         const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;

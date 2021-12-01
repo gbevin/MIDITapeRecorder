@@ -137,18 +137,18 @@
 
 - (IBAction)playPressed:(id)sender {
     [self setPlay:!_playButton.selected];
-    
+}
+
+- (void)setPlay:(BOOL)state {
+    _playButton.selected = state;
+    _recordButton.selected = NO;
+
     if (_playButton.selected) {
         [_audioUnit.kernelAdapter play];
     }
     else {
         [_audioUnit.kernelAdapter stop];
     }
-}
-
-- (void)setPlay:(BOOL)state {
-    _playButton.selected = state;
-    _recordButton.selected = NO;
 }
 
 - (IBAction)recordPressed:(id)sender {
