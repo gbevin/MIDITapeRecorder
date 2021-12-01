@@ -53,9 +53,14 @@ public:
 
 private:
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
+    void turnOffAllNotes();
+    void turnOffAllNotesForTrack(int track);
     
     bool _bypassed          { false };
     bool _isPlaying         { false };
+    
+    bool _noteStates[MIDI_TRACKS][16][128];
+    uint32_t _noteCounts[MIDI_TRACKS];
 
     AudioBufferList* _inBufferList  { nullptr };
     AudioBufferList* _outBufferList { nullptr };

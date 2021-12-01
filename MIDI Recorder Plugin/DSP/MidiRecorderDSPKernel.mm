@@ -12,6 +12,16 @@
 
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() : _state() {
     TPCircularBufferInit(&_state.midiBuffer, 16384);
+    
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        for (int ch = 0; ch < 16; ++ch) {
+            for (int n = 0; n < 128; ++n) {
+                _noteStates[t][ch][n] = false;
+            }
+        }
+        
+        _noteCounts[t] = 0;
+    }
 }
 
 void MidiRecorderDSPKernel::cleanup() {
@@ -109,7 +119,10 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
 }
 
 void MidiRecorderDSPKernel::processOutput() {
-    if (_isPlaying) {
+    if (!_isPlaying) {
+        turnOffAllNotes();
+    }
+    else {
         if (_state.playStartTime == 0) {
             _state.playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
         }
@@ -120,8 +133,8 @@ void MidiRecorderDSPKernel::processOutput() {
         _state.playDuration = current_time - _state.playStartTime;
 
         BOOL reached_end = YES;
-        for (int i = 0; i < MIDI_TRACKS; ++i) {
-            MidiTrackState& state = _state.track[i];
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            MidiTrackState& state = _state.track[t];
             if (state.recording) {
                 reached_end = NO;
             }
@@ -136,8 +149,35 @@ void MidiRecorderDSPKernel::processOutput() {
                             const double offset_seconds = recorded_delta - _state.playDuration;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
+                            // indicate output activity
                             state.activityOutput = 1.f;
-                            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples, message->cable, message->length, &message->data[0]);
+                            
+                            // track note on/off states
+                            int status = message->data[0];
+                            int type = status & 0xf0;
+                            int chan = (status & 0x0f);
+                            int val = message->data[2];
+                            if (type == MIDI_NOTE_OFF ||
+                                (type == MIDI_NOTE_ON && val == 0)) {
+                                if (_noteStates[t][chan][message->data[1]] == true &&
+                                    _noteCounts[t] > 0) {
+                                    _noteCounts[t] -= 1;
+                                }
+                                _noteStates[t][chan][message->data[1]] = false;
+                            }
+                            else if (type == MIDI_NOTE_ON) {
+                                if (_noteStates[t][chan][message->data[1]] == false) {
+                                    _noteCounts[t] += 1;
+                                }
+                                _noteStates[t][chan][message->data[1]] = true;
+                            }
+
+                            // send the MIDI output message
+                            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
+                                                          message->cable, message->length, &message->data[0]);
+                        }
+                        else {
+                            turnOffAllNotesForTrack(t);
                         }
 
                         state.playCounter += 1;
@@ -159,6 +199,39 @@ void MidiRecorderDSPKernel::processOutput() {
                 _state.track[i].playCounter = 0;
             }
             _state.scheduledStop = true;
+        }
+    }
+}
+
+void MidiRecorderDSPKernel::turnOffAllNotes() {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        turnOffAllNotesForTrack(t);
+    }
+}
+
+void MidiRecorderDSPKernel::turnOffAllNotesForTrack(int track) {
+    if (track < 0 || track >= MIDI_TRACKS) {
+        return;
+    }
+    
+    if (_noteCounts[track] == 0) {
+        return;
+    }
+    
+    if (_ioState.midiOutputEventBlock) {
+        for (int ch = 0; ch < 16; ++ch) {
+            for (int n = 0; n < 128; ++n) {
+                if (_noteStates[track][ch][n]) {
+                    uint8_t data[3];
+                    data[0] = MIDI_NOTE_OFF | ch;
+                    data[1] = n;
+                    data[2] = 0x07;
+                    _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + _ioState.frameCount,
+                                                  track, 3, &data[0]);
+                    _noteStates[track][ch][n] = false;
+                    _noteCounts[track] -= 1;
+                };
+            }
         }
     }
 }
