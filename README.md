@@ -2,7 +2,7 @@
 
 Created by Geert Bevin.
 
-This work is freely distributed under the CC BY-SA 4.0 License.
+This work is freely distributed under the CC BY 4.0 License.
 
 If you want to support my efforts, please consider donating through:
 http://paypal.me/geertbevin

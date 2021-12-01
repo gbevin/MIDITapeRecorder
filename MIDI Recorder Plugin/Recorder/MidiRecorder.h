@@ -3,7 +3,7 @@
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 12/1/21.
-//  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY-SA 4.0
+//  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import <Foundation/Foundation.h>
