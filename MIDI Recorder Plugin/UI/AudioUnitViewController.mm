@@ -224,8 +224,8 @@
             content_offset = 0.0;
         }
         else {
-            content_offset = MIN(_playhead.frame.origin.x - _tracks.frame.size.width / 2.0,
-                                 _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left);
+            content_offset = MAX(MIN(_playhead.frame.origin.x - _tracks.frame.size.width / 2.0,
+                                 _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left), 0.0);
         }
         [_tracks setContentOffset:CGPointMake(content_offset, 0) animated:NO];
     }
