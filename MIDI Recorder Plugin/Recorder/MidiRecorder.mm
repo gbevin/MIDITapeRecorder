@@ -14,8 +14,6 @@
 #include "HostTime.h"
 
 @implementation MidiRecorder {
-    int _ordinal;
-    
     dispatch_queue_t _dispatchQueue;
     
     NSMutableData* _recording;
@@ -66,11 +64,13 @@
         _record = record;
         
         if (record == NO) {
+            // when recording is stopped, we move the recording data to the recorded data
             _recorded = _recording;
             _recordedPreview = _recordingPreview;
             _recordedDuration = _recordingDuration;
             _recordedCount = _recordingCount;
 
+            // then re-initialize the recording for the next time
             _recordingStart = 0.0;
             _recordingFirstMessageTime = 0.0;
 
@@ -78,12 +78,15 @@
             _recordingPreview = [NSMutableData new];
             _recordingDuration = 0.0;
             _recordingCount = 0;
+            
+            if (_delegate) {
+                [_delegate finishRecording:_ordinal data:(const QueuedMidiMessage*)_recorded.bytes count:_recordedCount];
+            }
         }
         else {
-            _recorded = nil;
-            _recordedPreview = nil;
-            _recordedDuration = 0;
-            _recordedCount = 0;
+            if (_delegate) {
+                [_delegate invalidateRecording:_ordinal];
+            }
         }
     });
 }
@@ -92,18 +95,32 @@
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
+        if (_record == NO) {
+            return;
+        }
+        
         if (_record && _recording != nil) {
+            // keep track of when the recording started
             if (_recordingCount == 0) {
                 _recordingStart = HOST_TIME.currentHostTimeInSeconds();
                 _recordingDuration = 0.0;
                 _recordingFirstMessageTime = message.timestampSeconds;
+                
+                if (_delegate) {
+                    [_delegate startRecord:_ordinal];
+                }
             }
             
+            // adapt message data for recorded format
+            message.cable = _ordinal;
             message.timestampSeconds -= _recordingFirstMessageTime;
+            
+            // add message to the recording
             [_recording appendBytes:&message length:MSG_SIZE];
             _recordingDuration = HOST_TIME.currentHostTimeInSeconds() - _recordingStart;
             _recordingCount += 1;
             
+            // update the preview
             int32_t pixel = int32_t(message.timestampSeconds * PIXELS_PER_SECOND + 0.5);
             if (pixel >= _recordingPreview.length) {
                 [_recordingPreview setLength:pixel + 1];
@@ -117,7 +134,7 @@
 }
 
 - (void)ping {
-    dispatch_sync(_dispatchQueue, ^{
+    dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record && _recording != nil) {
             if (_recordingStart == 0.0) {
                 _recordingDuration = 0.0;
@@ -131,55 +148,30 @@
 
 #pragma mark Getters
 
-- (NSData*)recorded {
-    __block NSData* recorded = nil;
-    
-    dispatch_sync(_dispatchQueue, ^{
-        recorded = _recorded;
-    });
-    
-    return recorded;
-}
-
 - (double)duration {
     __block double duration = 0.0;
     
     dispatch_sync(_dispatchQueue, ^{
-        if (_recorded != nil) {
-            duration = _recordedDuration;
+        if (_record == YES) {
+            duration = _recordingDuration;
         }
         else {
-            duration = _recordingDuration;
+            duration = _recordedDuration;
         }
     });
     
     return duration;
 }
 
-- (uint32_t)count {
-    __block uint32_t count = 0;
-    
-    dispatch_sync(_dispatchQueue, ^{
-        if (_recorded != nil) {
-            count = _recordedCount;
-        }
-        else {
-            count = _recordingCount;
-        }
-    });
-    
-    return count;
-}
-
 - (NSData*)preview {
     __block NSData* preview = nil;
     
     dispatch_sync(_dispatchQueue, ^{
-        if (_recorded != nil) {
-            preview = _recordedPreview;
+        if (_record == YES) {
+            preview = _recordingPreview;
         }
         else {
-            preview = _recordingPreview;
+            preview = _recordedPreview;
         }
     });
     

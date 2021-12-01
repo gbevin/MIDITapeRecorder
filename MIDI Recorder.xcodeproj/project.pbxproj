@@ -71,7 +71,6 @@
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2613427C2753DA69001FF0BB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		261D69322753BCDA003527B2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		263A47E727547EEB0000DBCD /* MidiQueueProcessorDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiQueueProcessorDelegate.h; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -114,13 +113,16 @@
 		26C540C22757C11B004E4813 /* MidiRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorder.h; sourceTree = "<group>"; };
 		26C540C32757C11B004E4813 /* MidiRecorder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorder.mm; sourceTree = "<group>"; };
 		26C540C62757C541004E4813 /* HostTime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostTime.h; sourceTree = "<group>"; };
+		26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderDelegate.h; sourceTree = "<group>"; };
+		26C540C82757E801004E4813 /* QueuedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueuedMidiMessage.h; sourceTree = "<group>"; };
+		26C540C92757EC28004E4813 /* MidiTrackState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackState.h; sourceTree = "<group>"; };
 		26C7DA262753415D00170CB2 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AVFAudio.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA28275343C500170CB2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2A275343CF00170CB2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2C275343DB00170CB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2E275343E400170CB2 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioUnit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
-		26C7DA322753485300170CB2 /* AudioUnitGUIState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioUnitGUIState.h; sourceTree = "<group>"; };
+		26C7DA322753485300170CB2 /* MidiRecorderState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderDSPKernel.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -165,9 +167,9 @@
 			children = (
 				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
-				263A47E727547EEB0000DBCD /* MidiQueueProcessorDelegate.h */,
 				26C540C22757C11B004E4813 /* MidiRecorder.h */,
 				26C540C32757C11B004E4813 /* MidiRecorder.mm */,
+				26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -239,10 +241,12 @@
 			isa = PBXGroup;
 			children = (
 				26FA446E2756F4FA00EA133C /* Infrastructure */,
-				26C7DA322753485300170CB2 /* AudioUnitGUIState.h */,
 				26BB387027533A3400342496 /* AudioUnitIOState.h */,
 				26BB385C275338EE00342496 /* MidiRecorderDSPKernel.h */,
 				26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */,
+				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
+				26C540C92757EC28004E4813 /* MidiTrackState.h */,
+				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
 			);
 			path = DSP;
 			sourceTree = "<group>";

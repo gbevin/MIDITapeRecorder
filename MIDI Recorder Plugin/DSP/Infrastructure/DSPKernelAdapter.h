@@ -8,7 +8,7 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 
-#import "AudioUnitGUIState.h"
+#import "MidiRecorderState.h"
 #import "AudioUnitIOState.h"
 
 @interface DSPKernelAdapter : NSObject
@@ -17,7 +17,7 @@
 @property(nonatomic, readonly) AUAudioUnitBus* inputBus;
 @property(nonatomic, readonly) AUAudioUnitBus* outputBus;
 
-- (AudioUnitGUIState*)guiState;
+- (MidiRecorderState*)state;
 - (AudioUnitIOState*)ioState;
 
 - (void)rewind;

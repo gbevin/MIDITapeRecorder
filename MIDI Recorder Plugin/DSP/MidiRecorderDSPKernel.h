@@ -8,7 +8,7 @@
 
 #pragma once
 
-#import "AudioUnitGUIState.h"
+#import "MidiRecorderState.h"
 #import "AudioUnitIOState.h"
 #import "DSPKernel.h"
 
@@ -46,7 +46,7 @@ public:
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
     void processOutput() override;
 
-    AudioUnitGUIState _guiState;
+    MidiRecorderState _state;
     AudioUnitIOState _ioState;
 
     // MARK: Member Variables

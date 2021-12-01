@@ -8,8 +8,8 @@
 
 #import <CoreAudioKit/CoreAudioKit.h>
 
-#import "MidiQueueProcessorDelegate.h"
+#import "MidiRecorderDelegate.h"
 
-@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiQueueProcessorDelegate>
+@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate>
 
 @end

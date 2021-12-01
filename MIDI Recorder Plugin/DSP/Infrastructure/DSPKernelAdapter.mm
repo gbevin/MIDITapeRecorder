@@ -45,8 +45,8 @@
     return _inputBus.bus;
 }
 
-- (AudioUnitGUIState*)guiState {
-    return &_kernel._guiState;
+- (MidiRecorderState*)state {
+    return &_kernel._state;
 }
 
 - (AudioUnitIOState*)ioState {

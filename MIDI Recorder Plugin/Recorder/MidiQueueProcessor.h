@@ -10,21 +10,15 @@
 
 #include "TPCircularBuffer.h"
 
-#import "MidiQueueProcessorDelegate.h"
-
 @class MidiRecorder;
+class MidiRecorderState;
 
 @interface MidiQueueProcessor : NSObject
 
-@property id<MidiQueueProcessorDelegate> delegate;
-
-@property(nonatomic) BOOL play;
-@property(nonatomic) BOOL record;
-
 - (void)processMidiQueue:(TPCircularBuffer*)queue;
-
 - (void)ping;
 
+- (void)setState:(MidiRecorderState*)state;
 - (MidiRecorder*)recorder:(int)ordinal;
 
 @end

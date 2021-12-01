@@ -11,62 +11,29 @@
 #import <CoreAudioKit/CoreAudioKit.h>
 
 #include "Constants.h"
-#include "HostTime.h"
 
-#import "AudioUnitGUIState.h"
 #import "MidiRecorder.h"
+#import "MidiRecorderState.h"
 
 #define DEBUG_MIDI_INPUT 0
 
 @implementation MidiQueueProcessor {
-    dispatch_queue_t _dispatchQueue;
-    
-    MidiRecorder* _recorder1;
+    MidiRecorderState* _state;
+    MidiRecorder* _recorder[MIDI_TRACKS];
 }
 
 - (instancetype)init {
     self = [super init];
     
     if (self) {
-        _dispatchQueue = dispatch_queue_create("com.uwyn.midirecorder.MidiQueue", DISPATCH_QUEUE_CONCURRENT);
+        _state = nullptr;
         
-        _recorder1 = [[MidiRecorder alloc] initWithOrdinal:0];
+        for (int i = 0; i < MIDI_TRACKS; ++i) {
+            _recorder[i] = [[MidiRecorder alloc] initWithOrdinal:i];
+        }
     }
     
     return self;
-}
-
-#pragma mark Transport
-
-- (void)setPlay:(BOOL)play {
-    if (_play == play) {
-        return;
-    }
-    
-    _play = play;
-    
-    _recorder1.record = NO;
-
-    dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_delegate) {
-            if (play == YES) {
-                [_delegate playRecorded:_recorder1];
-            }
-            else {
-                [_delegate stopRecorded];
-            }
-        }
-    });
-}
-
-- (void)setRecord:(BOOL)record {
-    dispatch_barrier_sync(_dispatchQueue, ^{
-        _recorder1.record = record;
-        
-        if (_delegate) {
-            [_delegate invalidateRecorded];
-        }
-    });
 }
 
 #pragma mark Queue Processing
@@ -86,8 +53,15 @@
         [self logMidiMessage:message];
 #endif
         
-        [_recorder1 recordMidiMessage:message];
-        
+        if (_state) {
+            for (int i = 0; i < MIDI_TRACKS; ++i) {
+                if (_state->track[i].sourceCable == message.cable) {
+                    _state->track[i].activityInput = 1.0;
+                    [_recorder[i] recordMidiMessage:message];
+                }
+            }
+        }
+
         TPCircularBufferConsume(queue, MSG_SIZE);
         bufferedBytes -= MSG_SIZE;
         bytes = TPCircularBufferTail(queue, &availableBytes);
@@ -118,18 +92,23 @@
 }
 
 - (void)ping {
-    [_recorder1 ping];
+    for (int i = 0; i < MIDI_TRACKS; ++i) {
+        [_recorder[i] ping];
+    }
 }
 
-#pragma mark Getters
+#pragma mark Getters and Setter
+
+- (void)setState:(MidiRecorderState*)state {
+    _state = state;
+}
 
 - (MidiRecorder*)recorder:(int)ordinal {
-    switch (ordinal) {
-        case 0:
-            return _recorder1;
+    if (ordinal < 0 || ordinal >= MIDI_TRACKS) {
+        return nil;
     }
     
-    return nil;
+    return _recorder[ordinal];
 }
 
 @end

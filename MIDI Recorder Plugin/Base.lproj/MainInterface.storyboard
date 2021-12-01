@@ -117,7 +117,7 @@
                                     <constraint firstAttribute="width" constant="9" id="ae9-Yl-n0y"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiJ-Fl-4eE" userLabel="Record Enable 1">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiJ-Fl-4eE" userLabel="Record Enable 1">
                                 <rect key="frame" x="63" y="78.5" width="50" height="53"/>
                                 <gestureRecognizers/>
                                 <constraints>

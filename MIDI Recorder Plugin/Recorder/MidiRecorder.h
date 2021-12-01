@@ -8,11 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AudioUnitGUIState.h"
+#include "QueuedMidiMessage.h"
+
+#import "MidiRecorderDelegate.h"
 
 @interface MidiRecorder : NSObject
 
+@property(readonly) BOOL ordinal;
 @property(nonatomic) BOOL record;
+
+@property id<MidiRecorderDelegate> delegate;
 
 - (instancetype)init  __attribute__((unavailable("init not available")));
 - (instancetype)initWithOrdinal:(int)ordinal;
@@ -21,10 +26,7 @@
 
 - (void)ping;
 
-- (NSData*)recorded;
-
 - (double_t)duration;
-- (uint32_t)count;
 - (NSData*)preview;
 
 @end
