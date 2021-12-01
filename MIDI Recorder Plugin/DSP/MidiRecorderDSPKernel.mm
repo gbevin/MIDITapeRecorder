@@ -153,24 +153,7 @@ void MidiRecorderDSPKernel::processOutput() {
                             state.activityOutput = 1.f;
                             
                             // track note on/off states
-                            int status = message->data[0];
-                            int type = status & 0xf0;
-                            int chan = (status & 0x0f);
-                            int val = message->data[2];
-                            if (type == MIDI_NOTE_OFF ||
-                                (type == MIDI_NOTE_ON && val == 0)) {
-                                if (_noteStates[t][chan][message->data[1]] == true &&
-                                    _noteCounts[t] > 0) {
-                                    _noteCounts[t] -= 1;
-                                }
-                                _noteStates[t][chan][message->data[1]] = false;
-                            }
-                            else if (type == MIDI_NOTE_ON) {
-                                if (_noteStates[t][chan][message->data[1]] == false) {
-                                    _noteCounts[t] += 1;
-                                }
-                                _noteStates[t][chan][message->data[1]] = true;
-                            }
+                            trackNotesForTrack(t, message);
 
                             // send the MIDI output message
                             _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
@@ -200,6 +183,27 @@ void MidiRecorderDSPKernel::processOutput() {
             }
             _state.scheduledStop = true;
         }
+    }
+}
+
+void MidiRecorderDSPKernel::trackNotesForTrack(int track, const QueuedMidiMessage* message) {
+    int status = message->data[0];
+    int type = status & 0xf0;
+    int chan = (status & 0x0f);
+    int val = message->data[2];
+    if (type == MIDI_NOTE_OFF ||
+        (type == MIDI_NOTE_ON && val == 0)) {
+        if (_noteStates[track][chan][message->data[1]] == true &&
+            _noteCounts[track] > 0) {
+            _noteCounts[track] -= 1;
+        }
+        _noteStates[track][chan][message->data[1]] = false;
+    }
+    else if (type == MIDI_NOTE_ON) {
+        if (_noteStates[track][chan][message->data[1]] == false) {
+            _noteCounts[track] += 1;
+        }
+        _noteStates[track][chan][message->data[1]] = true;
     }
 }
 

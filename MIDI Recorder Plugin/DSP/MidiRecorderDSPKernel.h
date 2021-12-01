@@ -53,6 +53,7 @@ public:
 
 private:
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
+    void trackNotesForTrack(int track, const QueuedMidiMessage* message);
     void turnOffAllNotes();
     void turnOffAllNotesForTrack(int track);
     
