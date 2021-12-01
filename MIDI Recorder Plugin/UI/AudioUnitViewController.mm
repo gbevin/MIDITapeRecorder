@@ -83,8 +83,8 @@
         _timer = nil;
         
         _midiQueueProcessor = [MidiQueueProcessor new];
-        for (int i = 0; i < MIDI_TRACKS; ++i) {
-            [_midiQueueProcessor recorder:i].delegate = self;
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            [_midiQueueProcessor recorder:t].delegate = self;
         }
     }
     
@@ -127,8 +127,8 @@
 - (IBAction)rewindPressed:(id)sender {
     _recordButton.selected = NO;
     
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        [_midiQueueProcessor recorder:i].record = NO;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [_midiQueueProcessor recorder:t].record = NO;
     }
     
     [_audioUnit.kernelAdapter rewind];
@@ -157,8 +157,8 @@
     _recordButton.selected = !_recordButton.selected;
     _playButton.selected = NO;
     
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        [_midiQueueProcessor recorder:i].record = (_recordButton.selected && _state->track[i].record);
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].record);
     }
 }
 
@@ -177,12 +177,12 @@
 #pragma mark - State
 
 - (void)updateRoutingState {
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (_routingButton.selected) {
-            _state->track[i].sourceCable = i;
+            _state->track[t].sourceCable = t;
         }
         else {
-            _state->track[i].sourceCable = 0;
+            _state->track[t].sourceCable = 0;
         }
     }
 }
@@ -190,16 +190,16 @@
 - (void)updateRecordEnableState {
     UIButton* record_enabled_button[MIDI_TRACKS] = { _recordEnableButton1, _recordEnableButton2, _recordEnableButton3, _recordEnableButton4 };
 
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        _state->track[i].record = record_enabled_button[i].selected;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        _state->track[t].record = record_enabled_button[t].selected;
     }
 }
 
 - (void)updateMuteState {
     UIButton* mute_button[MIDI_TRACKS] = { _muteButton1, _muteButton2, _muteButton3, _muteButton4 };
 
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        _state->track[i].mute = mute_button[i].selected;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        _state->track[t].mute = mute_button[t].selected;
     }
 }
 
@@ -209,21 +209,21 @@
     ActivityIndicatorView* inputs[MIDI_TRACKS] = { _midiActivityInput1, _midiActivityInput2, _midiActivityInput3, _midiActivityInput4 };
     ActivityIndicatorView* outputs[MIDI_TRACKS] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
 
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        if (_state->track[i].activityInput == 1.f) {
-            _state->track[i].activityInput = 0.f;
-            inputs[i].showActivity = YES;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if (_state->track[t].activityInput == 1.f) {
+            _state->track[t].activityInput = 0.f;
+            inputs[t].showActivity = YES;
         }
         else {
-            inputs[i].showActivity = NO;
+            inputs[t].showActivity = NO;
         }
         
-        if (_state->track[i].activityOutput == 1.f) {
-            _state->track[i].activityOutput = 0.f;
-            outputs[i].showActivity = YES;
+        if (_state->track[t].activityOutput == 1.f) {
+            _state->track[t].activityOutput = 0.f;
+            outputs[t].showActivity = YES;
         }
         else {
-            outputs[i].showActivity = NO;
+            outputs[t].showActivity = NO;
         }
     }
 }
@@ -240,13 +240,13 @@
     double max_duration = 0.0;
     
     MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        midi_track[i].preview = [_midiQueueProcessor recorder:i].preview;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        midi_track[t].preview = [_midiQueueProcessor recorder:t].preview;
         
-        max_duration = MAX(max_duration, [_midiQueueProcessor recorder:i].duration);
+        max_duration = MAX(max_duration, [_midiQueueProcessor recorder:t].duration);
         
         if (_recordButton.selected) {
-            [midi_track[i] setNeedsDisplay];
+            [midi_track[t] setNeedsDisplay];
         }
     }
     _timelineWidth.constant = max_duration * PIXELS_PER_SECOND;
@@ -254,8 +254,8 @@
 
 - (void)renderPlayhead {
     BOOL has_recorder_duration = NO;
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        if ([_midiQueueProcessor recorder:i].duration != 0.0) {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if ([_midiQueueProcessor recorder:t].duration != 0.0) {
             has_recorder_duration = YES;
             break;
         }
@@ -283,12 +283,12 @@
     // statistics counts at the bottom
     UILabel* midi_count[MIDI_TRACKS] = { _midiCount1, _midiCount2, _midiCount3, _midiCount4 };
 
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (_playButton.selected) {
-            midi_count[i].text = [NSString stringWithFormat:@"%llu", _state->track[i].playCounter.load()];
+            midi_count[t].text = [NSString stringWithFormat:@"%llu", _state->track[t].playCounter.load()];
         }
         else {
-            midi_count[i].text = [NSString stringWithFormat:@"%llu", _state->track[i].recordedLength.load()];
+            midi_count[t].text = [NSString stringWithFormat:@"%llu", _state->track[t].recordedLength.load()];
         }
     }
 }

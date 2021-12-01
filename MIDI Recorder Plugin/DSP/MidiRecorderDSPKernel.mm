@@ -43,8 +43,8 @@ void MidiRecorderDSPKernel::rewind() {
         _state.playDuration = 0.0;
     }
     _state.playDuration = 0;
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        _state.track[i].playCounter = 0;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        _state.track[t].playCounter = 0;
     }
 }
 
@@ -179,8 +179,8 @@ void MidiRecorderDSPKernel::processOutput() {
         
         if (reached_end) {
             _isPlaying = NO;
-            for (int i = 0; i < MIDI_TRACKS; ++i) {
-                _state.track[i].playCounter = 0;
+            for (int t = 0; t < MIDI_TRACKS; ++t) {
+                _state.track[t].playCounter = 0;
             }
             _state.scheduledStop = true;
         }

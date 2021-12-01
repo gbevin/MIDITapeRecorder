@@ -28,8 +28,8 @@
     if (self) {
         _state = nullptr;
         
-        for (int i = 0; i < MIDI_TRACKS; ++i) {
-            _recorder[i] = [[MidiRecorder alloc] initWithOrdinal:i];
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            _recorder[t] = [[MidiRecorder alloc] initWithOrdinal:t];
         }
     }
     
@@ -54,10 +54,10 @@
 #endif
         
         if (_state) {
-            for (int i = 0; i < MIDI_TRACKS; ++i) {
-                if (_state->track[i].sourceCable == message.cable) {
-                    _state->track[i].activityInput = 1.0;
-                    [_recorder[i] recordMidiMessage:message];
+            for (int t = 0; t < MIDI_TRACKS; ++t) {
+                if (_state->track[t].sourceCable == message.cable) {
+                    _state->track[t].activityInput = 1.0;
+                    [_recorder[t] recordMidiMessage:message];
                 }
             }
         }
@@ -92,8 +92,8 @@
 }
 
 - (void)ping {
-    for (int i = 0; i < MIDI_TRACKS; ++i) {
-        [_recorder[i] ping];
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [_recorder[t] ping];
     }
 }
 
