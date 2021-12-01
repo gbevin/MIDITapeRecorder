@@ -1,18 +1,18 @@
 //
-//  MidiTrack.mm
+//  MidiTrackView.mm
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/30/21.
 //  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY-SA 4.0
 //
 
-#import "MidiTrack.h"
+#import "MidiTrackView.h"
 
 #import <CoreGraphics/CoreGraphics.h>
 
-#import "Constants.h"
+#include "Constants.h"
 
-@implementation MidiTrack
+@implementation MidiTrackView
 
 - (void)layoutSubviews {
     [super layoutSubviews];

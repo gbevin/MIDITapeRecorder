@@ -8,25 +8,26 @@
 
 #import "AudioUnitViewController.h"
 
+#include "Constants.h"
 
-#import "ActivityIndicator.h"
-#import "Constants.h"
+#import "ActivityIndicatorView.h"
 #import "MidiQueueProcessor.h"
+#import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
-#import "MidiTrack.h"
-#import "Timeline.h"
+#import "MidiTrackView.h"
+#import "TimelineView.h"
 
 @interface AudioUnitViewController ()
 
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityInput1;
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityInput2;
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityInput3;
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityInput4;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityInput1;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityInput2;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityInput3;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityInput4;
 
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityOutput1;
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityOutput2;
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityOutput3;
-@property (weak, nonatomic) IBOutlet ActivityIndicator* midiActivityOutput4;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput1;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput2;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput3;
+@property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput4;
 
 @property (weak, nonatomic) IBOutlet UILabel* midiCount1;
 @property (weak, nonatomic) IBOutlet UILabel* midiCount2;
@@ -53,15 +54,15 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView* tracks;
 
-@property (weak, nonatomic) IBOutlet Timeline* timeline;
+@property (weak, nonatomic) IBOutlet TimelineView* timeline;
 
 @property (weak, nonatomic) IBOutlet UIView* playhead;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* playheadLeading;
 
-@property (weak, nonatomic) IBOutlet MidiTrack* midiTrack1;
-@property (weak, nonatomic) IBOutlet MidiTrack* midiTrack2;
-@property (weak, nonatomic) IBOutlet MidiTrack* midiTrack3;
-@property (weak, nonatomic) IBOutlet MidiTrack* midiTrack4;
+@property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack1;
+@property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack2;
+@property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack3;
+@property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack4;
 
 @end
 
@@ -172,8 +173,8 @@
 #pragma mark - Rendering
 
 - (void)checkActivityIndicators {
-    ActivityIndicator* inputs[4] = { _midiActivityInput1, _midiActivityInput2, _midiActivityInput3, _midiActivityInput4 };
-    ActivityIndicator* outputs[4] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
+    ActivityIndicatorView* inputs[4] = { _midiActivityInput1, _midiActivityInput2, _midiActivityInput3, _midiActivityInput4 };
+    ActivityIndicatorView* outputs[4] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
 
     for (int i = 0; i < 4; ++i) {
         if (_guiState->midiActivityInput[i] == 1.f) {
@@ -203,8 +204,8 @@
 
 - (void)renderPreviews {
     // update the previews and the timeline
-    _midiTrack1.preview = _midiQueueProcessor.recordedPreview;
-    _timelineWidth.constant = _midiQueueProcessor.recordedTime * PIXELS_PER_SECOND;
+    _midiTrack1.preview = [_midiQueueProcessor recorder:0].preview;
+    _timelineWidth.constant = [_midiQueueProcessor recorder:0].duration * PIXELS_PER_SECOND;
 }
 
 - (void)renderPlayhead {
@@ -217,7 +218,7 @@
     }
     
     // scroll view location
-    _playhead.hidden = (_midiQueueProcessor.recordedTime == 0.0);
+    _playhead.hidden = ([_midiQueueProcessor recorder:0].duration == 0.0);
     if (!_playhead.hidden && (_playButton.selected || _recordButton.selected)) {
         CGFloat content_offset;
         if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
@@ -237,7 +238,7 @@
         _midiCount1.text = [NSString stringWithFormat:@"%llu", _guiState->playCounter1.load()];
     }
     else {
-        _midiCount1.text = [NSString stringWithFormat:@"%d", _midiQueueProcessor.recordedCount];
+        _midiCount1.text = [NSString stringWithFormat:@"%d", [_midiQueueProcessor recorder:0].count];
     }
 }
 
@@ -268,9 +269,9 @@
     }
 }
 
-- (void)playRecorded:(const void*)buffer length:(uint64_t)length {
-    _guiState->recordedBytes1 = (const QueuedMidiMessage*)buffer;
-    _guiState->recordedLength1 = length;
+- (void)playRecorded:(MidiRecorder*)recorder {
+    _guiState->recordedBytes1 = (const QueuedMidiMessage*)recorder.recorded.bytes;
+    _guiState->recordedLength1 = recorder.count;
     
     [_audioUnit.kernelAdapter play];
 }

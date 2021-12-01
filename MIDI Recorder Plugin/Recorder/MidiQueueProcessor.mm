@@ -8,76 +8,32 @@
 
 #import "MidiQueueProcessor.h"
 
-#include <mach/mach_time.h>
-
 #import <CoreAudioKit/CoreAudioKit.h>
 
-#import "Constants.h"
+#include "Constants.h"
+#include "HostTime.h"
+
+#import "AudioUnitGUIState.h"
+#import "MidiRecorder.h"
 
 #define DEBUG_MIDI_INPUT 0
-
-static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
-
-@interface MidiQueueProcessor ()
-@end
 
 @implementation MidiQueueProcessor {
     dispatch_queue_t _dispatchQueue;
     
-    double _hostTimeToSeconds;
-    double _secondsToHostTime;
-
-    NSMutableData* _recording;
-    NSMutableData* _recordingPreview;
-    double _recordingStart;
-    double _recordingTime;
-    double _recordingFirstMessageTime;
-    uint32_t _recordingCount;
-    
-    NSData* _recorded;
-    NSData* _recordedPreview;
-    double _recordedTime;
-    uint32_t _recordedCount;
+    MidiRecorder* _recorder1;
 }
 
 - (instancetype)init {
     self = [super init];
     
     if (self) {
-        _dispatchQueue = dispatch_queue_create("com.uwyn.midirecorder.Recording", DISPATCH_QUEUE_CONCURRENT);
+        _dispatchQueue = dispatch_queue_create("com.uwyn.midirecorder.MidiQueue", DISPATCH_QUEUE_CONCURRENT);
         
-        mach_timebase_info_data_t info;
-        mach_timebase_info(&info);
-        _hostTimeToSeconds = ((double)info.numer) / ((double)info.denom) * 1.0e-9;
-        _secondsToHostTime = (1.0e9 * (double)info.denom) / ((double)info.numer);
-
-        _recordingStart = 0.0;
-        _recordingFirstMessageTime = 0.0;
-
-        _recording = [NSMutableData new];
-        _recordingPreview = [NSMutableData new];
-        _recordingTime = 0.0;
-        _recordingCount = 0;
-        
-        _recorded = nil;
-        _recordedPreview = nil;
-        _recordedTime = 0.0;
-        _recordedCount = 0;
+        _recorder1 = [[MidiRecorder alloc] initWithOrdinal:0];
     }
     
     return self;
-}
-
-- (double)hostTimeInSeconds:(double)time {
-    return time * _hostTimeToSeconds;
-}
-
-- (double)secondsInHostTime:(double)time {
-    return time * _secondsToHostTime;
-}
-
-- (double)currentHostTimeInSeconds {
-    return ((double)mach_absolute_time()) * _hostTimeToSeconds;
 }
 
 #pragma mark Transport
@@ -89,12 +45,12 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
     
     _play = play;
     
-    [self setRecord:NO];
-    
+    _recorder1.record = NO;
+
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_delegate) {
             if (play == YES) {
-                [_delegate playRecorded:_recorded.bytes length:_recordedCount];
+                [_delegate playRecorded:_recorder1];
             }
             else {
                 [_delegate stopRecorded];
@@ -105,35 +61,10 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
 
 - (void)setRecord:(BOOL)record {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record == record) {
-            return;
-        }
+        _recorder1.record = record;
         
         if (_delegate) {
             [_delegate invalidateRecorded];
-        }
-        
-        _record = record;
-        
-        if (record == NO) {
-            _recorded = _recording;
-            _recordedPreview = _recordingPreview;
-            _recordedTime = _recordingTime;
-            _recordedCount = _recordingCount;
-
-            _recordingStart = 0.0;
-            _recordingFirstMessageTime = 0.0;
-
-            _recording = [NSMutableData new];
-            _recordingPreview = [NSMutableData new];
-            _recordingTime = 0.0;
-            _recordingCount = 0;
-        }
-        else {
-            _recorded = nil;
-            _recordedPreview = nil;
-            _recordedTime = 0;
-            _recordedCount = 0;
         }
     });
 }
@@ -155,7 +86,7 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
         [self logMidiMessage:message];
 #endif
         
-        [self recordMidiMessage:message];
+        [_recorder1 recordMidiMessage:message];
         
         TPCircularBufferConsume(queue, MSG_SIZE);
         bufferedBytes -= MSG_SIZE;
@@ -187,91 +118,18 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
 }
 
 - (void)ping {
-    dispatch_sync(_dispatchQueue, ^{
-        if (_record && _recording != nil) {
-            if (_recordingStart == 0.0) {
-                _recordingTime = 0.0;
-            }
-            else {
-                _recordingTime = [self currentHostTimeInSeconds] - _recordingStart;
-            }
-        }
-    });
-}
-
-#pragma mark Recording
-
-- (void)recordMidiMessage:(QueuedMidiMessage&)message {
-    dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record && _recording != nil) {
-            if (_recordingCount == 0) {
-                _recordingStart = [self currentHostTimeInSeconds];
-                _recordingTime = 0.0;
-                _recordingFirstMessageTime = message.timestampSeconds;
-            }
-            
-            message.timestampSeconds -= _recordingFirstMessageTime;
-            [_recording appendBytes:&message length:MSG_SIZE];
-            _recordingTime = [self currentHostTimeInSeconds] - _recordingStart;
-            _recordingCount += 1;
-            
-            int32_t pixel = int32_t(message.timestampSeconds * PIXELS_PER_SECOND + 0.5);
-            if (pixel >= _recordingPreview.length) {
-                [_recordingPreview setLength:pixel + 1];
-            }
-            uint8_t* preview = (uint8_t*)_recordingPreview.mutableBytes;
-            if (preview[pixel] < MAX_PREVIEW_EVENTS) {
-                preview[pixel] += 1;
-            }
-        }
-    });
+    [_recorder1 ping];
 }
 
 #pragma mark Getters
 
-- (double)recordedTime {
-    __block double time = 0.0;
+- (MidiRecorder*)recorder:(int)ordinal {
+    switch (ordinal) {
+        case 0:
+            return _recorder1;
+    }
     
-    dispatch_sync(_dispatchQueue, ^{
-        if (_recorded != nil) {
-            time = _recordedTime;
-        }
-        else {
-            time = _recordingTime;
-        }
-    });
-    
-    return time;
-}
-
-- (uint32_t)recordedCount {
-    __block uint32_t count = 0;
-    
-    dispatch_sync(_dispatchQueue, ^{
-        if (_recorded != nil) {
-            count = _recordedCount;
-        }
-        else {
-            count = _recordingCount;
-        }
-    });
-    
-    return count;
-}
-
-- (NSData*)recordedPreview {
-    __block NSData* preview = nil;
-    
-    dispatch_sync(_dispatchQueue, ^{
-        if (_recorded != nil) {
-            preview = _recordedPreview;
-        }
-        else {
-            preview = _recordingPreview;
-        }
-    });
-    
-    return preview;
+    return nil;
 }
 
 @end

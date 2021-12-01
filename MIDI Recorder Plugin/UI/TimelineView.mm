@@ -1,19 +1,19 @@
 //
-//  Timeline.mm
+//  TimelineView.mm
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/30/21.
 //  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY-SA 4.0
 //
 
-#import "Timeline.h"
+#import "TimelineView.h"
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <CoreText/CoreText.h>
 
-#import "Constants.h"
+#include "Constants.h"
 
-@implementation Timeline
+@implementation TimelineView
 
 - (void)layoutSubviews {
     [super layoutSubviews];

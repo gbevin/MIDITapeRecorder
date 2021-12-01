@@ -1,5 +1,5 @@
 //
-//  ActivityIndicator.h
+//  ActivityIndicatorView.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/28/21.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ActivityIndicator : UIView
+@interface ActivityIndicatorView : UIView
 
 @property(nonatomic) BOOL showActivity;
 

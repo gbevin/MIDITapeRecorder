@@ -1,5 +1,5 @@
 //
-//  MidiTrack.h
+//  MidiTrackView.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/30/21.
@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MidiTrack : UIView
+@interface MidiTrackView : UIView
 
 @property(weak) NSData* preview;
 

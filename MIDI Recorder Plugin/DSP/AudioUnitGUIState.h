@@ -19,6 +19,8 @@ struct QueuedMidiMessage {
     uint8_t data[3];
 };
 
+static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
+
 struct AudioUnitGUIState {
     float midiActivityInput[4] = { 0.f, 0.f, 0.f, 0.f };
     float midiActivityOutput[4] = { 0.f, 0.f, 0.f, 0.f };

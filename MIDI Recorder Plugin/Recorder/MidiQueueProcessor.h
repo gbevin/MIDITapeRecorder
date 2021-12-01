@@ -8,8 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AudioUnitGUIState.h"
+#include "TPCircularBuffer.h"
+
 #import "MidiQueueProcessorDelegate.h"
+
+@class MidiRecorder;
 
 @interface MidiQueueProcessor : NSObject
 
@@ -22,8 +25,6 @@
 
 - (void)ping;
 
-- (double_t)recordedTime;
-- (uint32_t)recordedCount;
-- (NSData*)recordedPreview;
+- (MidiRecorder*)recorder:(int)ordinal;
 
 @end
