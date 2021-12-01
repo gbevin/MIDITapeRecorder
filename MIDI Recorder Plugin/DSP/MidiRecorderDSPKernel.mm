@@ -132,7 +132,7 @@ void MidiRecorderDSPKernel::processOutput() {
                     if (recorded_delta < _state.playDuration + frames_seconds) {
                         const QueuedMidiMessage* message = &state.recordedMessages[play_counter];
                         
-                        if (_ioState.midiOutputEventBlock) {
+                        if (!state.mute && _ioState.midiOutputEventBlock) {
                             const double offset_seconds = recorded_delta - _state.playDuration;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
