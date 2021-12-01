@@ -45,9 +45,9 @@
     
     bytes = TPCircularBufferTail(queue, &bufferedBytes);
     availableBytes = bufferedBytes;
-    while (bytes && availableBytes >= MSG_SIZE && bufferedBytes >= MSG_SIZE) {
+    while (bytes && availableBytes >= QUEUED_MSG_SIZE && bufferedBytes >= QUEUED_MSG_SIZE) {
         QueuedMidiMessage message;
-        memcpy(&message, bytes, MSG_SIZE);
+        memcpy(&message, bytes, QUEUED_MSG_SIZE);
         
 #if DEBUG_MIDI_INPUT
         [self logMidiMessage:message];
@@ -62,8 +62,8 @@
             }
         }
 
-        TPCircularBufferConsume(queue, MSG_SIZE);
-        bufferedBytes -= MSG_SIZE;
+        TPCircularBufferConsume(queue, QUEUED_MSG_SIZE);
+        bufferedBytes -= QUEUED_MSG_SIZE;
         bytes = TPCircularBufferTail(queue, &availableBytes);
     }
 }
@@ -76,14 +76,14 @@
     
     if (message.length == 2) {
         NSLog(@"%f %d : %d - %2s [%3s %3s    ]",
-              message.timestampSeconds, message.cable, message.length,
+              message.timeSampleSeconds, message.cable, message.length,
               [NSString stringWithFormat:@"%d", channel].UTF8String,
               [NSString stringWithFormat:@"%d", status].UTF8String,
               [NSString stringWithFormat:@"%d", data1].UTF8String);
     }
     else {
         NSLog(@"%f %d : %d - %2s [%3s %3s %3s]",
-              message.timestampSeconds, message.cable, message.length,
+              message.timeSampleSeconds, message.cable, message.length,
               [NSString stringWithFormat:@"%d", channel].UTF8String,
               [NSString stringWithFormat:@"%d", status].UTF8String,
               [NSString stringWithFormat:@"%d", data1].UTF8String,

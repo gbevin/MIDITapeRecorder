@@ -22,6 +22,7 @@
 - (instancetype)init  __attribute__((unavailable("init not available")));
 - (instancetype)initWithOrdinal:(int)ordinal;
 
+- (void)startRecord:(double)machTimeSeconds;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 
 - (void)ping;

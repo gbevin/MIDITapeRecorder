@@ -21,11 +21,11 @@ public:
         return time * _secondsToHostTime;
     }
 
-    uint64_t currentHostTime() {
+    uint64_t currentMachTime() {
         return mach_absolute_time();
     }
 
-    double currentHostTimeInSeconds() {
+    double currentMachTimeInSeconds() {
         return ((double)mach_absolute_time()) * _hostTimeToSeconds;
     }
 

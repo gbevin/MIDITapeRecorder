@@ -9,6 +9,7 @@
 #import "AudioUnitViewController.h"
 
 #include "Constants.h"
+#include "HostTime.h"
 
 #import "ActivityIndicatorView.h"
 #import "MidiQueueProcessor.h"
@@ -141,7 +142,9 @@
 
 - (void)setPlay:(BOOL)state {
     _playButton.selected = state;
-    _recordButton.selected = NO;
+    if (_recordButton.selected) {
+        [self startRecord:HOST_TIME.currentMachTimeInSeconds()];
+    }
 
     if (_playButton.selected) {
         [_audioUnit.kernelAdapter play];
@@ -262,7 +265,7 @@
     }
 
     // playhead positioning
-    _playheadLeading.constant = _state->playDuration * PIXELS_PER_SECOND;
+    _playheadLeading.constant = _state->playDurationSeconds * PIXELS_PER_SECOND;
     
     // scroll view location
     _playhead.hidden = !has_recorder_duration;
@@ -311,13 +314,17 @@
 
 #pragma mark - MidiRecorderDelegate methods
 
-- (void)startRecord:(int)ordinal {
-    _state->track[ordinal].recording = YES;
-    
+- (void)startRecord:(double)machTimeSeconds {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if ([_midiQueueProcessor recorder:t].record) {
+            [[_midiQueueProcessor recorder:t] startRecord:machTimeSeconds];
+            _state->track[t].recording = YES;
+        }
+    }
     [_audioUnit.kernelAdapter play];
 }
 
-- (void)finishRecording:(int)ordinal data:(const QueuedMidiMessage*)data count:(uint32_t)count {
+- (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count {
     _state->track[ordinal].recording = NO;
     _state->track[ordinal].recordedMessages = data;
     _state->track[ordinal].recordedLength = count;

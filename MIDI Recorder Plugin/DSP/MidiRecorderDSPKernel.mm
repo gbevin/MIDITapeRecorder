@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+#include "QueuedMidiMessage.h"
+
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() : _state() {
     TPCircularBufferInit(&_state.midiBuffer, 16384);
     
@@ -39,10 +41,10 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 
 void MidiRecorderDSPKernel::rewind() {
     if (_isPlaying == YES) {
-        _state.playStartTime = 0;
-        _state.playDuration = 0.0;
+        _state.playStartSampleSeconds = 0;
+        _state.playDurationSeconds = 0.0;
     }
-    _state.playDuration = 0;
+    _state.playDurationSeconds = 0;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         _state.track[t].playCounter = 0;
     }
@@ -52,7 +54,7 @@ void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
         _state.scheduledStop = false;
         
-        _state.playStartTime = 0;
+        _state.playStartSampleSeconds = 0;
         _isPlaying = YES;
     }
 }
@@ -124,14 +126,14 @@ void MidiRecorderDSPKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
-        if (_state.playStartTime == 0) {
-            _state.playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate - _state.playDuration;
+        if (_state.playStartSampleSeconds == 0) {
+            _state.playStartSampleSeconds = _ioState.timestamp->mSampleTime / _ioState.sampleRate - _state.playDurationSeconds;
         }
         
         const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
         
-        _state.playDuration = current_time - _state.playStartTime;
+        _state.playDurationSeconds = current_time - _state.playStartSampleSeconds;
 
         BOOL reached_end = YES;
         for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -142,12 +144,12 @@ void MidiRecorderDSPKernel::processOutput() {
             else if (state.recordedMessages != nullptr && state.recordedLength > 0) {
                 uint64_t play_counter;
                 while ((play_counter = state.playCounter) < state.recordedLength) {
-                    const double recorded_delta = state.recordedMessages[play_counter].timestampSeconds;
-                    if (recorded_delta < _state.playDuration + frames_seconds) {
-                        const QueuedMidiMessage* message = &state.recordedMessages[play_counter];
+                    const RecordedMidiMessage* message = &state.recordedMessages[play_counter];
+                    const double recorded_delta = message->offsetSeconds;
+                    if (recorded_delta < _state.playDurationSeconds + frames_seconds) {
                         
                         if (!state.mute && _ioState.midiOutputEventBlock) {
-                            const double offset_seconds = recorded_delta - _state.playDuration;
+                            const double offset_seconds = recorded_delta - _state.playDurationSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
@@ -187,7 +189,7 @@ void MidiRecorderDSPKernel::processOutput() {
     }
 }
 
-void MidiRecorderDSPKernel::trackNotesForTrack(int track, const QueuedMidiMessage* message) {
+void MidiRecorderDSPKernel::trackNotesForTrack(int track, const RecordedMidiMessage* message) {
     int status = message->data[0];
     int type = status & 0xf0;
     int chan = (status & 0x0f);
@@ -245,7 +247,7 @@ void MidiRecorderDSPKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     const int32_t length = sizeof(QueuedMidiMessage);
     
     QueuedMidiMessage message;
-    message.timestampSeconds = midiEvent.eventSampleTime / _ioState.sampleRate;
+    message.timeSampleSeconds = midiEvent.eventSampleTime / _ioState.sampleRate;
     message.cable = midiEvent.cable;
     message.length = midiEvent.length;
     message.data[0] = midiEvent.data[0];

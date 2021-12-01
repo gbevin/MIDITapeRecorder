@@ -6,14 +6,14 @@
 //  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
-class QueuedMidiMessage;
+class RecordedMidiMessage;
 
 @class MidiRecorder;
 
 @protocol MidiRecorderDelegate <NSObject>
 
-- (void)startRecord:(int)ordinal;
-- (void)finishRecording:(int)ordinal data:(const QueuedMidiMessage*)data count:(uint32_t)count;
+- (void)startRecord:(double)machTimeSeconds;
+- (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count;
 - (void)invalidateRecording:(int)ordinal;
 
 @end

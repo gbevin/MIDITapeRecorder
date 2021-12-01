@@ -8,9 +8,9 @@
 
 #pragma once
 
-#import "MidiRecorderState.h"
 #import "AudioUnitIOState.h"
 #import "DSPKernel.h"
+#import "MidiRecorderState.h"
 
 enum {
     paramOne = 0,
@@ -53,7 +53,7 @@ public:
 
 private:
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
-    void trackNotesForTrack(int track, const QueuedMidiMessage* message);
+    void trackNotesForTrack(int track, const RecordedMidiMessage* message);
     void turnOffAllNotes();
     void turnOffAllNotesForTrack(int track);
     

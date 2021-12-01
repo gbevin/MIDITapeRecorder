@@ -13,10 +13,10 @@ struct QueuedMidiMessage {
     QueuedMidiMessage(const QueuedMidiMessage&) = delete;
     QueuedMidiMessage& operator= (const QueuedMidiMessage&) = delete;
     
-    double timestampSeconds { 0.0 };
-    uint8_t cable           { 0 };
-    uint16_t length         { 0 };
-    uint8_t data[3]         { 0, 0, 0};
+    double timeSampleSeconds    { 0.0 };
+    uint8_t cable               { 0 };
+    uint16_t length             { 0 };
+    uint8_t data[3]             { 0, 0, 0};
 };
 
-static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
+static const int32_t QUEUED_MSG_SIZE = sizeof(QueuedMidiMessage);

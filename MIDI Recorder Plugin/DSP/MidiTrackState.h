@@ -10,7 +10,7 @@
 
 #include <atomic>
 
-#include "QueuedMidiMessage.h"
+#include "RecordedMidiMessage.h"
 
 struct MidiTrackState {
     MidiTrackState() {};
@@ -24,7 +24,7 @@ struct MidiTrackState {
     int32_t mute         = false;
 
     std::atomic<int32_t>                    recording = 0;
-    std::atomic<const QueuedMidiMessage*>   recordedMessages = nullptr;
+    std::atomic<const RecordedMidiMessage*> recordedMessages = nullptr;
     std::atomic<uint64_t>                   recordedLength = 0;
     std::atomic<uint64_t>                   playCounter = 0;
 };
