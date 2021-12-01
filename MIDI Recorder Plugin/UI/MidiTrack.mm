@@ -33,6 +33,19 @@
             CGContextAddLineToPoint(context, x, self.frame.size.height);
         }
         CGContextStrokePath(context);
+        
+        NSData* preview = self.preview;
+        if (preview != nil && x < preview.length) {
+            uint8_t activity = ((uint8_t*)preview.bytes)[x];
+            if (activity != 0) {
+                CGContextSetStrokeColorWithColor(context, [UIColor systemTealColor].CGColor);
+                CGContextMoveToPoint(context, x, self.frame.size.height);
+                float v = MIN(((float)activity / MAX_PREVIEW_EVENTS), 1.f);
+                v = pow(v, 1.0/2.0);
+                CGContextAddLineToPoint(context, x, self.frame.size.height - v * self.frame.size.height);
+                CGContextStrokePath(context);
+            }
+        }
     }
     
     CGContextRestoreGState(context);

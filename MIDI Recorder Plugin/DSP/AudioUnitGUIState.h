@@ -29,4 +29,7 @@ struct AudioUnitGUIState {
     std::atomic<int32_t> scheduledStop  { false };
 
     TPCircularBuffer midiBuffer;
+    
+    double playStartTime    { 0.0 };
+    double playDuration     { 0.0 };
 };

@@ -13,6 +13,7 @@
 #import "MidiQueueProcessor.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiTrack.h"
+#import "Timeline.h"
 
 @interface AudioUnitViewController ()
 
@@ -48,6 +49,13 @@
 @property (weak, nonatomic) IBOutlet UIButton* muteButton2;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton3;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton4;
+
+@property (weak, nonatomic) IBOutlet UIScrollView* tracks;
+
+@property (weak, nonatomic) IBOutlet Timeline* timeline;
+
+@property (weak, nonatomic) IBOutlet UIView* playhead;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* playheadLeading;
 
 @property (weak, nonatomic) IBOutlet MidiTrack* midiTrack1;
 @property (weak, nonatomic) IBOutlet MidiTrack* midiTrack2;
@@ -115,6 +123,7 @@
     _midiQueueProcessor.record = NO;
     
     [_audioUnit.kernelAdapter rewind];
+    [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
 - (IBAction)playPressed:(id)sender {
@@ -184,26 +193,66 @@
     }
 }
 
+- (void)handleScheduledActions {
+    int32_t one = true;
+    if (_guiState->scheduledStop.compare_exchange_strong(one, false)) {
+        [self setPlay:NO];
+    }
+}
+
+- (void)renderPreviews {
+    // update the previews and the timeline
+    _midiTrack1.preview = _midiQueueProcessor.recordedPreview;
+    _timelineWidth.constant = _midiQueueProcessor.recordedTime * PIXELS_PER_SECOND;
+}
+
+- (void)renderPlayhead {
+    // playhead positioning
+    if (_recordButton.selected) {
+        _playheadLeading.constant = _timelineWidth.constant;
+    }
+    else {
+        _playheadLeading.constant = _guiState->playDuration * PIXELS_PER_SECOND;;
+    }
+    
+    // scroll view location
+    _playhead.hidden = (_midiQueueProcessor.recordedTime == 0.0);
+    if (!_playhead.hidden && (_playButton.selected || _recordButton.selected)) {
+        CGFloat content_offset;
+        if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
+            content_offset = 0.0;
+        }
+        else {
+            content_offset = MIN(_playhead.frame.origin.x - _tracks.frame.size.width / 2.0,
+                                 _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left);
+        }
+        [_tracks setContentOffset:CGPointMake(content_offset, 0) animated:NO];
+    }
+}
+
+- (void)renderStatistics {
+    // statistics counts at the bottom
+    if (_playButton.selected) {
+        _midiCount1.text = [NSString stringWithFormat:@"%llu", _guiState->playCounter1.load()];
+    }
+    else {
+        _midiCount1.text = [NSString stringWithFormat:@"%d", _midiQueueProcessor.recordedCount];
+    }
+}
+
 - (void)renderloop {
     if (_audioUnit) {
         [_midiQueueProcessor ping];
         
         [self checkActivityIndicators];
+        
         [_midiQueueProcessor processMidiQueue:&_guiState->midiBuffer];
+
+        [self handleScheduledActions];
         
-        int32_t one = true;
-        if (_guiState->scheduledStop.compare_exchange_strong(one, false)) {
-            [self setPlay:NO];
-        }
-        
-        _timelineWidth.constant = _midiQueueProcessor.recordedTime * PIXELS_PER_SECOND;
-        
-        if (_playButton.selected == YES) {
-            _midiCount1.text = [NSString stringWithFormat:@"%llu", _guiState->playCounter1.load()];
-        }
-        else {
-            _midiCount1.text = [NSString stringWithFormat:@"%d", _midiQueueProcessor.recordedCount];
-        }
+        [self renderPreviews];
+        [self renderPlayhead];
+        [self renderStatistics];
     }
 }
 

@@ -20,7 +20,7 @@ struct AudioUnitIOState {
     AUMIDIOutputEventBlock midiOutputEventBlock     { nullptr };
     AUHostTransportStateBlock transportStateBlock   { nullptr };
     AUHostMusicalContextBlock musicalContext        { nullptr };
- 
+
     void reset() {
         channelCount = 0;
         sampleRate = 44100.f;

@@ -9,4 +9,6 @@
 
 @interface MidiTrack : UIView
 
+@property(weak) NSData* preview;
+
 @end

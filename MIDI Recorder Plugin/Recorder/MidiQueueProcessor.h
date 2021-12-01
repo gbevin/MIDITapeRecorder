@@ -23,6 +23,6 @@
 
 - (double_t)recordedTime;
 - (uint32_t)recordedCount;
-
+- (NSData*)recordedPreview;
 
 @end

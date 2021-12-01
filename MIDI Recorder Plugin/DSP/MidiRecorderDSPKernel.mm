@@ -28,8 +28,9 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 
 void MidiRecorderDSPKernel::rewind() {
     if (_isPlaying == YES) {
-        _playStartTime = 0;
+        _guiState.playStartTime = 0;
     }
+    _guiState.playDuration = 0;
     _guiState.playCounter1 = 0;
 }
 
@@ -37,7 +38,7 @@ void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
         _guiState.scheduledStop = false;
         
-        _playStartTime = 0;
+        _guiState.playStartTime = 0;
         _isPlaying = YES;
     }
 }
@@ -107,23 +108,24 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
 
 void MidiRecorderDSPKernel::processOutput() {
     if (_isPlaying) {
-        if (_playStartTime == 0) {
-            _playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
+        if (_guiState.playStartTime == 0) {
+            _guiState.playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
         }
         
         const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
-        const double current_delta = current_time - _playStartTime;
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
+        
+        _guiState.playDuration = current_time - _guiState.playStartTime;
 
         if (_guiState.recordedLength1 > 0) {
             uint64_t play_counter1;
             while ((play_counter1 = _guiState.playCounter1) < _guiState.recordedLength1) {
                 const double recorded_delta = _guiState.recordedBytes1[play_counter1].timestampSeconds;
-                if (recorded_delta < current_delta + frames_seconds) {
+                if (recorded_delta < _guiState.playDuration + frames_seconds) {
                     const QueuedMidiMessage* message = &_guiState.recordedBytes1[play_counter1];
                     
                     if (_ioState.midiOutputEventBlock) {
-                        const double offset_seconds = recorded_delta - current_delta;
+                        const double offset_seconds = recorded_delta - _guiState.playDuration;
                         const double offset_samples = offset_seconds * _ioState.sampleRate;
                         
                         _guiState.midiActivityOutput[message->cable] = 1.f;

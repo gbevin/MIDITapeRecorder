@@ -55,7 +55,6 @@ private:
     
     bool _bypassed          { false };
     bool _isPlaying         { false };
-    double _playStartTime   { 0.0 };
 
     AudioBufferList* _inBufferList  { nullptr };
     AudioBufferList* _outBufferList { nullptr };

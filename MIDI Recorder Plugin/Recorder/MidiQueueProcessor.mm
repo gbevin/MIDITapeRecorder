@@ -11,6 +11,8 @@
 
 #import <CoreAudioKit/CoreAudioKit.h>
 
+#import "Constants.h"
+
 #define DEBUG_MIDI_INPUT 0
 
 static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
@@ -25,12 +27,14 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
     double _secondsToHostTime;
 
     NSMutableData* _recording;
+    NSMutableData* _recordingPreview;
     double _recordingStart;
     double _recordingTime;
     double _recordingFirstMessageTime;
     uint32_t _recordingCount;
     
     NSData* _recorded;
+    NSData* _recordedPreview;
     double _recordedTime;
     uint32_t _recordedCount;
 }
@@ -46,13 +50,16 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
         _hostTimeToSeconds = ((double)info.numer) / ((double)info.denom) * 1.0e-9;
         _secondsToHostTime = (1.0e9 * (double)info.denom) / ((double)info.numer);
 
-        _recording = [NSMutableData new];
         _recordingStart = 0.0;
-        _recordingTime = 0.0;
         _recordingFirstMessageTime = 0.0;
+
+        _recording = [NSMutableData new];
+        _recordingPreview = [NSMutableData new];
+        _recordingTime = 0.0;
         _recordingCount = 0;
         
         _recorded = nil;
+        _recordedPreview = nil;
         _recordedTime = 0.0;
         _recordedCount = 0;
     }
@@ -109,17 +116,21 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
         
         if (record == NO) {
             _recorded = _recording;
+            _recordedPreview = _recordingPreview;
             _recordedTime = _recordingTime;
             _recordedCount = _recordingCount;
 
-            _recording = [NSMutableData new];
             _recordingStart = 0.0;
-            _recordingTime = 0.0;
             _recordingFirstMessageTime = 0.0;
+
+            _recording = [NSMutableData new];
+            _recordingPreview = [NSMutableData new];
+            _recordingTime = 0.0;
             _recordingCount = 0;
         }
         else {
             _recorded = nil;
+            _recordedPreview = nil;
             _recordedTime = 0;
             _recordedCount = 0;
         }
@@ -202,6 +213,15 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
             [_recording appendBytes:&message length:MSG_SIZE];
             _recordingTime = [self currentHostTimeInSeconds] - _recordingStart;
             _recordingCount += 1;
+            
+            int32_t pixel = int32_t(message.timestampSeconds * PIXELS_PER_SECOND + 0.5);
+            if (pixel >= _recordingPreview.length) {
+                [_recordingPreview setLength:pixel + 1];
+            }
+            uint8_t* preview = (uint8_t*)_recordingPreview.mutableBytes;
+            if (preview[pixel] < MAX_PREVIEW_EVENTS) {
+                preview[pixel] += 1;
+            }
         }
     });
 }
@@ -236,6 +256,21 @@ static const int32_t MSG_SIZE = sizeof(QueuedMidiMessage);
     });
     
     return count;
+}
+
+- (NSData*)recordedPreview {
+    __block NSData* preview = nil;
+    
+    dispatch_sync(_dispatchQueue, ^{
+        if (_recorded != nil) {
+            preview = _recordedPreview;
+        }
+        else {
+            preview = _recordingPreview;
+        }
+    });
+    
+    return preview;
 }
 
 @end
