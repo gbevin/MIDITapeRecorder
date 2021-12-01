@@ -1,5 +1,5 @@
 //
-//  MidiRecorderAudioUnit.hpp
+//  MidiRecorderAudioUnit.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -7,7 +7,7 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 
-#import "DSPKernelAdapter.hpp"
+#import "DSPKernelAdapter.h"
 
 // Define parameter addresses.
 extern const AudioUnitParameterID myParam1;

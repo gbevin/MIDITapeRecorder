@@ -1,5 +1,5 @@
 //
-//  DSPKernelAdapter.hpp
+//  DSPKernelAdapter.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -7,8 +7,8 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 
-#import "AudioUnitGUIState.hpp"
-#import "AudioUnitIOState.hpp"
+#import "AudioUnitGUIState.h"
+#import "AudioUnitIOState.h"
 
 @interface DSPKernelAdapter : NSObject
 

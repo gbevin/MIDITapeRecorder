@@ -1,5 +1,5 @@
 //
-//  MidiRecorderDSPKernel.hpp
+//  MidiRecorderDSPKernel.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -7,10 +7,9 @@
 
 #pragma once
 
-#import "DSPKernel.hpp"
-
-#import "AudioUnitGUIState.hpp"
-#import "AudioUnitIOState.hpp"
+#import "AudioUnitGUIState.h"
+#import "AudioUnitIOState.h"
+#import "DSPKernel.h"
 
 enum {
     paramOne = 0,

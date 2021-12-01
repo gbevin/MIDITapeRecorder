@@ -7,6 +7,7 @@
 
 #pragma once
 
+#import <AudioToolbox/AUAudioUnit.h>
 #import <CoreAudio/CoreAudioTypes.h>
 
 struct AudioUnitIOState {

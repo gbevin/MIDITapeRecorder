@@ -5,16 +5,17 @@
 //  Created by Geert Bevin on 11/27/21.
 //
 
-#import "DSPKernel.hpp"
+#import "DSPKernel.h"
+
+#include <atomic>
 
 #import <AVFoundation/AVFoundation.h>
 #import <CoreAudioKit/AUViewController.h>
 
-#import "BufferedAudioBus.hpp"
-#import "MidiRecorderDSPKernel.hpp"
-#import "DSPKernelAdapter.hpp"
+#include "BufferedAudioBus.hpp"
 
-#include <atomic>
+#import "MidiRecorderDSPKernel.h"
+#import "DSPKernelAdapter.h"
 
 @implementation DSPKernelAdapter {
     // C++ members need to be ivars; they would be copied on access if they were properties.

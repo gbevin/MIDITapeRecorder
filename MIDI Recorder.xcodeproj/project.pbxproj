@@ -22,14 +22,16 @@
 		26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB383D275338B200342496 /* LaunchScreen.storyboard */; };
 		26BB3842275338B200342496 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3841275338B200342496 /* main.m */; };
 		26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */; };
-		26BB3856275338EE00342496 /* DSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3855275338EE00342496 /* DSPKernel.hpp */; };
+		26BB3856275338EE00342496 /* DSPKernel.h in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3855275338EE00342496 /* DSPKernel.h */; };
 		26BB3858275338EE00342496 /* DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3857275338EE00342496 /* DSPKernel.mm */; };
 		26BB385A275338EE00342496 /* BufferedAudioBus.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3859275338EE00342496 /* BufferedAudioBus.hpp */; };
-		26BB385D275338EE00342496 /* MidiRecorderDSPKernel.hpp in Resources */ = {isa = PBXBuildFile; fileRef = 26BB385C275338EE00342496 /* MidiRecorderDSPKernel.hpp */; };
+		26BB385D275338EE00342496 /* MidiRecorderDSPKernel.h in Resources */ = {isa = PBXBuildFile; fileRef = 26BB385C275338EE00342496 /* MidiRecorderDSPKernel.h */; };
 		26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB385E275338EE00342496 /* DSPKernelAdapter.mm */; };
 		26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3862275338EE00342496 /* AudioUnitViewController.mm */; };
 		26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3864275338EE00342496 /* MainInterface.storyboard */; };
 		26BB386A275338EE00342496 /* MIDI Recorder Plugin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26C49D182756D04400A6FAB4 /* MidiTrack.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrack.mm */; };
+		26C49D1B2756D41700A6FAB4 /* Timeline.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* Timeline.mm */; };
 		26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA262753415D00170CB2 /* AVFAudio.framework */; };
 		26C7DA29275343C500170CB2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA28275343C500170CB2 /* AudioToolbox.framework */; };
 		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
@@ -63,17 +65,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		261342772753D855001FF0BB /* ActivityIndicator.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ActivityIndicator.hpp; sourceTree = "<group>"; };
+		261342772753D855001FF0BB /* ActivityIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActivityIndicator.h; sourceTree = "<group>"; };
 		261342782753D869001FF0BB /* ActivityIndicator.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityIndicator.mm; sourceTree = "<group>"; };
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2613427C2753DA69001FF0BB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		261D69322753BCDA003527B2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		263A47E727547EEB0000DBCD /* MidiQueueProcessorDelegate.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MidiQueueProcessorDelegate.hpp; sourceTree = "<group>"; };
+		263A47E727547EEB0000DBCD /* MidiQueueProcessorDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiQueueProcessorDelegate.h; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
 		26B140882754590300748F00 /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
-		26B1408F2754717700748F00 /* MidiQueueProcessor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MidiQueueProcessor.hpp; sourceTree = "<group>"; };
+		26B1408F2754717700748F00 /* MidiQueueProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiQueueProcessor.h; sourceTree = "<group>"; };
 		26B140902754717900748F00 /* MidiQueueProcessor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiQueueProcessor.mm; sourceTree = "<group>"; };
 		26BB382C275338B200342496 /* MIDI Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -89,27 +91,32 @@
 		26BB3841275338B200342496 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		26BB3848275338C700342496 /* MIDI Recorder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Recorder.entitlements"; sourceTree = "<group>"; };
 		26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MIDI Recorder Plugin.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		26BB3850275338EE00342496 /* MidiRecorderAudioUnit.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MidiRecorderAudioUnit.hpp; sourceTree = "<group>"; };
+		26BB3850275338EE00342496 /* MidiRecorderAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderAudioUnit.h; sourceTree = "<group>"; };
 		26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderAudioUnit.mm; sourceTree = "<group>"; };
-		26BB3855275338EE00342496 /* DSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DSPKernel.hpp; sourceTree = "<group>"; };
+		26BB3855275338EE00342496 /* DSPKernel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSPKernel.h; sourceTree = "<group>"; };
 		26BB3857275338EE00342496 /* DSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernel.mm; sourceTree = "<group>"; };
 		26BB3859275338EE00342496 /* BufferedAudioBus.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BufferedAudioBus.hpp; sourceTree = "<group>"; };
-		26BB385B275338EE00342496 /* DSPKernelAdapter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = DSPKernelAdapter.hpp; sourceTree = "<group>"; };
-		26BB385C275338EE00342496 /* MidiRecorderDSPKernel.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MidiRecorderDSPKernel.hpp; sourceTree = "<group>"; };
+		26BB385B275338EE00342496 /* DSPKernelAdapter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSPKernelAdapter.h; sourceTree = "<group>"; };
+		26BB385C275338EE00342496 /* MidiRecorderDSPKernel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderDSPKernel.h; sourceTree = "<group>"; };
 		26BB385E275338EE00342496 /* DSPKernelAdapter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernelAdapter.mm; sourceTree = "<group>"; };
-		26BB3861275338EE00342496 /* AudioUnitViewController.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitViewController.hpp; sourceTree = "<group>"; };
+		26BB3861275338EE00342496 /* AudioUnitViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioUnitViewController.h; sourceTree = "<group>"; };
 		26BB3862275338EE00342496 /* AudioUnitViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioUnitViewController.mm; sourceTree = "<group>"; };
 		26BB3865275338EE00342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		26BB3867275338EE00342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26BB386F275338F400342496 /* MIDI Recorder Plugin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Recorder Plugin.entitlements"; sourceTree = "<group>"; };
-		26BB387027533A3400342496 /* AudioUnitIOState.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitIOState.hpp; sourceTree = "<group>"; };
+		26BB387027533A3400342496 /* AudioUnitIOState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUnitIOState.h; sourceTree = "<group>"; };
+		26C49D162756D04400A6FAB4 /* MidiTrack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrack.h; sourceTree = "<group>"; };
+		26C49D172756D04400A6FAB4 /* MidiTrack.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiTrack.mm; sourceTree = "<group>"; };
+		26C49D192756D41700A6FAB4 /* Timeline.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Timeline.mm; sourceTree = "<group>"; };
+		26C49D1A2756D41700A6FAB4 /* Timeline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Timeline.h; sourceTree = "<group>"; };
+		26C540C127570B3F004E4813 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		26C7DA262753415D00170CB2 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AVFAudio.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA28275343C500170CB2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2A275343CF00170CB2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2C275343DB00170CB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2E275343E400170CB2 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioUnit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
-		26C7DA322753485300170CB2 /* AudioUnitGUIState.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AudioUnitGUIState.hpp; sourceTree = "<group>"; };
+		26C7DA322753485300170CB2 /* AudioUnitGUIState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioUnitGUIState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderDSPKernel.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,9 +159,9 @@
 		26B1408E2754716500748F00 /* Recorder */ = {
 			isa = PBXGroup;
 			children = (
-				26B1408F2754717700748F00 /* MidiQueueProcessor.hpp */,
+				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
-				263A47E727547EEB0000DBCD /* MidiQueueProcessorDelegate.hpp */,
+				263A47E727547EEB0000DBCD /* MidiQueueProcessorDelegate.h */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -207,8 +214,8 @@
 				26BB384F275338EE00342496 /* Audio Unit */,
 				26BB3853275338EE00342496 /* DSP */,
 				26B1408E2754716500748F00 /* Recorder */,
-				26B140822754590300748F00 /* TPCircularBuffer */,
 				26BB3860275338EE00342496 /* UI */,
+				26C540BF27570B06004E4813 /* Utils */,
 			);
 			path = "MIDI Recorder Plugin";
 			sourceTree = "<group>";
@@ -216,7 +223,7 @@
 		26BB384F275338EE00342496 /* Audio Unit */ = {
 			isa = PBXGroup;
 			children = (
-				26BB3850275338EE00342496 /* MidiRecorderAudioUnit.hpp */,
+				26BB3850275338EE00342496 /* MidiRecorderAudioUnit.h */,
 				26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */,
 			);
 			path = "Audio Unit";
@@ -225,14 +232,10 @@
 		26BB3853275338EE00342496 /* DSP */ = {
 			isa = PBXGroup;
 			children = (
-				26C7DA322753485300170CB2 /* AudioUnitGUIState.hpp */,
-				26BB387027533A3400342496 /* AudioUnitIOState.hpp */,
-				26BB3859275338EE00342496 /* BufferedAudioBus.hpp */,
-				26BB3855275338EE00342496 /* DSPKernel.hpp */,
-				26BB3857275338EE00342496 /* DSPKernel.mm */,
-				26BB385B275338EE00342496 /* DSPKernelAdapter.hpp */,
-				26BB385E275338EE00342496 /* DSPKernelAdapter.mm */,
-				26BB385C275338EE00342496 /* MidiRecorderDSPKernel.hpp */,
+				26FA446E2756F4FA00EA133C /* Infrastructure */,
+				26C7DA322753485300170CB2 /* AudioUnitGUIState.h */,
+				26BB387027533A3400342496 /* AudioUnitIOState.h */,
+				26BB385C275338EE00342496 /* MidiRecorderDSPKernel.h */,
 				26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */,
 			);
 			path = DSP;
@@ -241,12 +244,25 @@
 		26BB3860275338EE00342496 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				26BB3861275338EE00342496 /* AudioUnitViewController.hpp */,
+				26BB3861275338EE00342496 /* AudioUnitViewController.h */,
 				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
-				261342772753D855001FF0BB /* ActivityIndicator.hpp */,
+				261342772753D855001FF0BB /* ActivityIndicator.h */,
 				261342782753D869001FF0BB /* ActivityIndicator.mm */,
+				26C49D162756D04400A6FAB4 /* MidiTrack.h */,
+				26C49D172756D04400A6FAB4 /* MidiTrack.mm */,
+				26C49D1A2756D41700A6FAB4 /* Timeline.h */,
+				26C49D192756D41700A6FAB4 /* Timeline.mm */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		26C540BF27570B06004E4813 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				26C540C127570B3F004E4813 /* Constants.h */,
+				26B140822754590300748F00 /* TPCircularBuffer */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		26C7DA252753415D00170CB2 /* Frameworks */ = {
@@ -262,6 +278,18 @@
 				26C7DA262753415D00170CB2 /* AVFAudio.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		26FA446E2756F4FA00EA133C /* Infrastructure */ = {
+			isa = PBXGroup;
+			children = (
+				26BB3859275338EE00342496 /* BufferedAudioBus.hpp */,
+				26BB3855275338EE00342496 /* DSPKernel.h */,
+				26BB3857275338EE00342496 /* DSPKernel.mm */,
+				26BB385B275338EE00342496 /* DSPKernelAdapter.h */,
+				26BB385E275338EE00342496 /* DSPKernelAdapter.mm */,
+			);
+			path = Infrastructure;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -354,9 +382,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26BB385D275338EE00342496 /* MidiRecorderDSPKernel.hpp in Resources */,
+				26BB385D275338EE00342496 /* MidiRecorderDSPKernel.h in Resources */,
 				26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */,
-				26BB3856275338EE00342496 /* DSPKernel.hpp in Resources */,
+				26BB3856275338EE00342496 /* DSPKernel.h in Resources */,
 				26BB385A275338EE00342496 /* BufferedAudioBus.hpp in Resources */,
 				2613427B2753D995001FF0BB /* Assets.xcassets in Resources */,
 			);
@@ -386,7 +414,9 @@
 				261342792753D869001FF0BB /* ActivityIndicator.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */,
+				26C49D182756D04400A6FAB4 /* MidiTrack.mm in Sources */,
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
+				26C49D1B2756D41700A6FAB4 /* Timeline.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
 				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,
 			);

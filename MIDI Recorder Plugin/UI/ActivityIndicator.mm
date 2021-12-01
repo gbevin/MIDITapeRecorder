@@ -5,7 +5,7 @@
 //  Created by Geert Bevin on 11/28/21.
 //
 
-#import "ActivityIndicator.hpp"
+#import "ActivityIndicator.h"
 
 #import <CoreGraphics/CoreGraphics.h>
 

@@ -1,5 +1,5 @@
 //
-//  MidiQueueProcessorDelegate.hpp
+//  MidiQueueProcessorDelegate.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/28/21.

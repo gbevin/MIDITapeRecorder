@@ -1,5 +1,5 @@
 //
-//  DSPKernel.hpp
+//  DSPKernel.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -7,8 +7,9 @@
 
 #pragma once
 
+#include <algorithm>
+
 #import <AudioToolbox/AudioToolbox.h>
-#import <algorithm>
 
 // Put your DSP code into a subclass of DSPKernel.
 class DSPKernel {

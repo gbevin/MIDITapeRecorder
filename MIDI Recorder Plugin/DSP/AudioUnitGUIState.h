@@ -7,9 +7,9 @@
 
 #pragma once
 
-#import "TPCircularBuffer.h"
+#include <atomic>
 
-#import <atomic>
+#include "TPCircularBuffer.h"
 
 struct QueuedMidiMessage {
     double timestampSeconds;
@@ -19,12 +19,12 @@ struct QueuedMidiMessage {
 };
 
 struct AudioUnitGUIState {
-    float midiActivityInput[8] = { 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f };
-    float midiActivityOutput[8] = { 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f };
+    float midiActivityInput[4] = { 0.f, 0.f, 0.f, 0.f };
+    float midiActivityOutput[4] = { 0.f, 0.f, 0.f, 0.f };
     
     std::atomic<const QueuedMidiMessage*>   recordedBytes1      { nullptr };
     std::atomic<uint64_t>                   recordedLength1     { 0 };
-    std::atomic<uint64_t>                   playCounter1         { 0 };
+    std::atomic<uint64_t>                   playCounter1        { 0 };
 
     std::atomic<int32_t> scheduledStop  { false };
 

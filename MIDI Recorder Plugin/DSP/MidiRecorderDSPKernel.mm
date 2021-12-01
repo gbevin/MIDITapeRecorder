@@ -5,9 +5,9 @@
 //  Created by Geert Bevin on 11/28/21.
 //
 
-#import "MidiRecorderDSPKernel.hpp"
+#import "MidiRecorderDSPKernel.h"
 
-#import <iostream>
+#include <iostream>
 
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() {
     TPCircularBufferInit(&_guiState.midiBuffer, 16384);
@@ -86,22 +86,21 @@ void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCo
 }
 
 void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
-    if (midiEvent.cable < 0 || midiEvent.cable >= 8) {
+    if (midiEvent.cable < 0 || midiEvent.cable >= 4) {
         return;
     }
-
-    Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
-    
-    _guiState.midiActivityInput[midiEvent.cable] = 1.f;
 
     if (isBypassed()) {
         // pass through MIDI events
         if (_ioState.midiOutputEventBlock) {
+
+            Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
             _guiState.midiActivityOutput[midiEvent.cable] = 1.f;
             _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, midiEvent.cable, midiEvent.length, midiEvent.data);
         }
     }
     else {
+        _guiState.midiActivityInput[midiEvent.cable] = 1.f;
         queueMIDIEvent(midiEvent);
     }
 }
@@ -112,20 +111,19 @@ void MidiRecorderDSPKernel::processOutput() {
             _playStartTime = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
         }
         
+        const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
+        const double current_delta = current_time - _playStartTime;
+        const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
+
         if (_guiState.recordedLength1 > 0) {
-            const double recorded_reference_time = _guiState.recordedBytes1[0].timestampSeconds;
-            const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
-            const double current_time_delta = current_time - _playStartTime;
-            const double frame_count_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
-            
             uint64_t play_counter1;
             while ((play_counter1 = _guiState.playCounter1) < _guiState.recordedLength1) {
-                const double recorded_time_delta = _guiState.recordedBytes1[play_counter1].timestampSeconds - recorded_reference_time;
-                if (recorded_time_delta < current_time_delta + frame_count_seconds) {
+                const double recorded_delta = _guiState.recordedBytes1[play_counter1].timestampSeconds;
+                if (recorded_delta < current_delta + frames_seconds) {
                     const QueuedMidiMessage* message = &_guiState.recordedBytes1[play_counter1];
                     
                     if (_ioState.midiOutputEventBlock) {
-                        const double offset_seconds = recorded_time_delta - current_time_delta;
+                        const double offset_seconds = recorded_delta - current_delta;
                         const double offset_samples = offset_seconds * _ioState.sampleRate;
                         
                         _guiState.midiActivityOutput[message->cable] = 1.f;

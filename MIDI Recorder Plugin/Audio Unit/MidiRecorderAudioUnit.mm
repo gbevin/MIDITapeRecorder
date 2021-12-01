@@ -5,7 +5,7 @@
 //  Created by Geert Bevin on 11/27/21.
 //
 
-#import "MidiRecorderAudioUnit.hpp"
+#import "MidiRecorderAudioUnit.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -159,12 +159,11 @@ const AudioUnitParameterID myParam1 = 0;
 }
 
 - (NSInteger)virtualMIDICableCount {
-    return 8;
+    return 4;
 }
 
 - (NSArray<NSString*>*)MIDIOutputNames {
-    return @[@"MIDI Recorder Out 1", @"MIDI Recorder Out 2", @"MIDI Recorder Out 3", @"MIDI Recorder Out 4",
-             @"MIDI Recorder Out 5", @"MIDI Recorder Out 6", @"MIDI Recorder Out 7", @"MIDI Recorder Out 8"];
+    return @[@"MIDI Recorder Out 1", @"MIDI Recorder Out 2", @"MIDI Recorder Out 3", @"MIDI Recorder Out 4"];
 }
 
 - (BOOL)supportsMPE {

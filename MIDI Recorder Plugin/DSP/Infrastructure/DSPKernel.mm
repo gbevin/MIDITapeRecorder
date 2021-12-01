@@ -5,7 +5,7 @@
 //  Created by Geert Bevin on 11/27/21.
 //
 
-#import "DSPKernel.hpp"
+#import "DSPKernel.h"
 
 void DSPKernel::handleOneEvent(AURenderEvent const* event) {
     switch (event->head.eventType) {

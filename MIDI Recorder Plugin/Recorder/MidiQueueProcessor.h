@@ -1,5 +1,5 @@
 //
-//  MidiQueueProcessor.hpp
+//  MidiQueueProcessor.h
 //  MIDI Recorder Plugin
 //
 //  Created by Geert Bevin on 11/28/21.
@@ -7,8 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AudioUnitGUIState.hpp"
-#import "MidiQueueProcessorDelegate.hpp"
+#import "AudioUnitGUIState.h"
+#import "MidiQueueProcessorDelegate.h"
 
 @interface MidiQueueProcessor : NSObject
 
@@ -19,6 +19,9 @@
 
 - (void)processMidiQueue:(TPCircularBuffer*)queue;
 
+- (void)ping;
+
+- (double_t)recordedTime;
 - (uint32_t)recordedCount;
 
 
