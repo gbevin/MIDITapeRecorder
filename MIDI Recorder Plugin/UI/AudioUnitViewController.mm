@@ -156,8 +156,9 @@
         }
     }
     else {
-        [_audioUnit.kernelAdapter stop];
         [self setRecord:NO];
+        [_audioUnit.kernelAdapter stop];
+        [_audioUnit.kernelAdapter rewind];
     }
 }
 
@@ -169,12 +170,15 @@
         if (_playButton.selected) {
             [self startRecord];
         }
+        else {
+            _state->transportStartMachSeconds = 0.0;
+        }
     }
     else {
         if (_autoPlayFromRecord) {
+            _playButton.selected = NO;
             [_audioUnit.kernelAdapter stop];
             [_audioUnit.kernelAdapter rewind];
-            _playButton.selected = NO;
         }
     }
 }
