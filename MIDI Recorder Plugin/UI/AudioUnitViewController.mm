@@ -258,10 +258,10 @@
 }
 
 - (void)handleScheduledActions {
-    int32_t one = true;
-    if (_state->scheduledStopAndRewind.compare_exchange_strong(one, false)) {
+    if (_state->scheduledStopAndRewind) {
         [self setPlay:NO];
         [_audioUnit.kernelAdapter rewind];
+        _state->scheduledStopAndRewind = false;
     }
 }
 
