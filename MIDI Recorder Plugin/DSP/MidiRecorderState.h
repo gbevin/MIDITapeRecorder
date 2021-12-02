@@ -21,7 +21,7 @@ struct MidiRecorderState {
     
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic<int32_t> scheduledStop  { false };
+    std::atomic<int32_t> scheduledStopAndRewind  { false };
 
     TPCircularBuffer midiBuffer;
     

@@ -128,10 +128,7 @@
 - (IBAction)rewindPressed:(id)sender {
     _recordButton.selected = NO;
     
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_midiQueueProcessor recorder:t].record = NO;
-    }
-    
+    [self setRecord:NO];
     [_audioUnit.kernelAdapter rewind];
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
@@ -247,8 +244,9 @@
 
 - (void)handleScheduledActions {
     int32_t one = true;
-    if (_state->scheduledStop.compare_exchange_strong(one, false)) {
+    if (_state->scheduledStopAndRewind.compare_exchange_strong(one, false)) {
         [self setPlay:NO];
+        [_audioUnit.kernelAdapter rewind];
     }
 }
 

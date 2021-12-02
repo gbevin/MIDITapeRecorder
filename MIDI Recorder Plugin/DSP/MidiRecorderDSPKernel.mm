@@ -53,7 +53,7 @@ void MidiRecorderDSPKernel::rewind() {
 
 void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
-        _state.scheduledStop = false;
+        _state.scheduledStopAndRewind = false;
         
         _state.playStartSampleSeconds = 0.0;
         _isPlaying = YES;
@@ -130,6 +130,9 @@ void MidiRecorderDSPKernel::processOutput() {
     }
     else {
         if (_state.playStartSampleSeconds == 0.0) {
+            // turn off all notes in case we're doing a live rewind
+            turnOffAllNotes();
+            
             // get a reference timestamp to measure the play duration
             _state.playStartSampleSeconds = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
             
@@ -201,7 +204,7 @@ void MidiRecorderDSPKernel::processOutput() {
         
         if (reached_end) {
             _isPlaying = NO;
-            _state.scheduledStop = true;
+            _state.scheduledStopAndRewind = true;
         }
     }
 }
