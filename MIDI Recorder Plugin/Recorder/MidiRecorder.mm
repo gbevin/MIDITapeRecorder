@@ -106,11 +106,10 @@
 
         // auto start the recording on the first received message
         // if the recording hasn't started yet
-        // auto start the recording on the first received message
-        // if the recording hasn't started yet
         if (_recordingCount == 0 && _state->transportStartMachSeconds == 0.0) {
             if (_delegate) {
                 _state->transportStartMachSeconds = now_mach;
+                _state->playDurationSeconds = 0;
                 [_delegate startRecord];
             }
         }

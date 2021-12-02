@@ -155,19 +155,28 @@
     }
     else {
         [_audioUnit.kernelAdapter stop];
+        [self setRecord:NO];
     }
 }
 
 - (IBAction)recordPressed:(id)sender {
-    _state->scheduledStop = false;
+    [self setRecord:!_recordButton.selected];
     
-    _recordButton.selected = !_recordButton.selected;
+    if (_recordButton.selected) {
+        if (_playButton.selected) {
+            [self startRecord];
+        }
+    }
+    else {
+        [_audioUnit.kernelAdapter stop];
+        _playButton.selected = NO;
+    }
+}
+
+- (void)setRecord:(BOOL)state {
+    _recordButton.selected = state;
     
     [self updateRecordEnableState];
-    
-    if (_recordButton.selected && _playButton.selected) {
-        [self startRecord];
-    }
 }
 
 - (IBAction)recordEnablePressed:(UIButton*)sender {
@@ -325,6 +334,7 @@
             _state->track[t].recording = YES;
         }
     }
+    self.playButton.selected = YES;
     [_audioUnit.kernelAdapter play];
 }
 
