@@ -20,10 +20,6 @@
 - (MidiRecorderState*)state;
 - (AudioUnitIOState*)ioState;
 
-- (void)rewind;
-- (void)play;
-- (void)stop;
-
 - (void)setParameter:(AUParameter*)parameter value:(AUValue)value;
 - (AUValue)valueForParameter:(AUParameter*)parameter;
 

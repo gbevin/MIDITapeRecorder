@@ -21,7 +21,15 @@ struct MidiRecorderState {
     
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic<int32_t> scheduledStopAndRewind  { false };
+    std::atomic<int32_t> scheduledRewind                        { false };
+    std::atomic<int32_t> scheduledPlay                          { false };
+    std::atomic<int32_t> scheduledStop                          { false };
+    std::atomic<int32_t> scheduledStopAndRewind                 { false };
+    std::atomic<int32_t> scheduledBeginRecording[MIDI_TRACKS]   { false, false, false, false };
+    std::atomic<int32_t> scheduledEndRecording[MIDI_TRACKS]     { false, false, false, false };
+    std::atomic<int32_t> scheduledReachEnd                      { false };
+    
+    std::atomic<int32_t> scheduledUIStopAndRewind               { false };
 
     TPCircularBuffer midiBuffer;
     

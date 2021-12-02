@@ -17,13 +17,15 @@ struct MidiTrackState {
     MidiTrackState(const MidiTrackState&) = delete;
     MidiTrackState& operator= (const MidiTrackState&) = delete;
     
-    int32_t sourceCable  = 0;
-    float activityInput  = 0.f;
-    float activityOutput = 0.f;
-    int32_t record       = false;
-    int32_t mute         = false;
-
-    std::atomic<int32_t>                    recording = 0;
+    // using 32-bit variables ensures no partial reads or write,
+    // nor cache inconsistancies amongst threads or core
+    int32_t sourceCable     = 0;
+    float activityInput     = 0.f;
+    float activityOutput    = 0.f;
+    int32_t recordEnabled   = false;
+    int32_t muteEnabled     = false;
+    int32_t recording       = 0;
+    
     std::atomic<const RecordedMidiMessage*> recordedMessages = nullptr;
     std::atomic<uint64_t>                   recordedLength = 0;
     std::atomic<uint64_t>                   playCounter = 0;

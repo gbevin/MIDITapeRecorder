@@ -15,6 +15,8 @@
 // Put your DSP code into a subclass of DSPKernel.
 class DSPKernel {
 public:
+    virtual void handleScheduledTransitions() {}
+
     virtual void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) = 0;
 
     virtual void handleMIDIEvent(AUMIDIEvent const& midiEvent) {}

@@ -135,7 +135,7 @@
     _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
 
     [self setRecord:NO];
-    [_audioUnit.kernelAdapter rewind];
+    _state->scheduledRewind = true;
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
@@ -154,23 +154,24 @@
             [self startRecord];
         }
         else {
-            [_audioUnit.kernelAdapter play];
+            _state->scheduledPlay = true;
         }
     }
     else {
         if (_recordButton.selected) {
             [self setRecord:NO];
-            [_audioUnit.kernelAdapter rewind];
+            _state->scheduledRewind = true;
         }
-        [_audioUnit.kernelAdapter stop];
+        _state->scheduledStop = true;
     }
 }
 
 - (IBAction)recordPressed:(id)sender {
-    _autoPlayFromRecord = NO;
-    [self setRecord:!_recordButton.selected];
+    BOOL selected = !_recordButton.selected;
     
-    if (_recordButton.selected) {
+    if (selected) {
+        _autoPlayFromRecord = NO;
+        
         if (_playButton.selected) {
             [self startRecord];
         }
@@ -181,10 +182,11 @@
     else {
         if (_autoPlayFromRecord) {
             _playButton.selected = NO;
-            [_audioUnit.kernelAdapter stop];
-            [_audioUnit.kernelAdapter rewind];
+            _state->scheduledStopAndRewind = true;
         }
     }
+    
+    [self setRecord:selected];
 }
 
 - (void)setRecord:(BOOL)state {
@@ -299,7 +301,8 @@
     UIButton* record_button[MIDI_TRACKS] = { _recordButton1, _recordButton2, _recordButton3, _recordButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && record_button[t].selected);
+        _state->track[t].recordEnabled = record_button[t].selected;
+        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].recordEnabled);
     }
 }
 
@@ -307,7 +310,7 @@
     UIButton* mute_button[MIDI_TRACKS] = { _muteButton1, _muteButton2, _muteButton3, _muteButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state->track[t].mute = mute_button[t].selected;
+        _state->track[t].muteEnabled = mute_button[t].selected;
     }
 }
 
@@ -337,10 +340,10 @@
 }
 
 - (void)handleScheduledActions {
-    if (_state->scheduledStopAndRewind) {
+    int32_t one = true;
+    if (_state->scheduledUIStopAndRewind.compare_exchange_strong(one, false)) {
         [self setPlay:NO];
-        [_audioUnit.kernelAdapter rewind];
-        _state->scheduledStopAndRewind = false;
+        _state->scheduledRewind = true;
     }
 }
 
@@ -422,20 +425,21 @@
 
 - (void)startRecord {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if ([_midiQueueProcessor recorder:t].record) {
-            _state->track[t].recording = YES;
+        if (_state->track[t].recordEnabled) {
+            _state->scheduledBeginRecording[t] = true;
         }
     }
     if (!self.playButton.selected) {
         _autoPlayFromRecord = YES;
         self.playButton.selected = YES;
     }
-    [_audioUnit.kernelAdapter play];
+    _state->scheduledPlay = true;
 }
 
 - (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count {
+    _state->scheduledEndRecording[ordinal] = true;
+    
     MidiTrackState& state = _state->track[ordinal];
-    state.recording = NO;
     state.recordedMessages = data;
     state.recordedLength = count;
 }

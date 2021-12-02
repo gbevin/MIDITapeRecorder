@@ -53,7 +53,8 @@ void MidiRecorderDSPKernel::rewind() {
 void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
         _state.scheduledStopAndRewind = false;
-        
+        _state.scheduledUIStopAndRewind = false;
+
         _state.playStartSampleSeconds = 0.0;
         _isPlaying = YES;
     }
@@ -61,10 +62,7 @@ void MidiRecorderDSPKernel::play() {
 
 void MidiRecorderDSPKernel::stop() {
     _state.transportStartMachSeconds = 0.0;
-
-    if (_isPlaying == YES) {
-        _isPlaying = NO;
-    }
+    _isPlaying = NO;
 }
 
 void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue value) {
@@ -89,6 +87,72 @@ void MidiRecorderDSPKernel::setBuffers(AudioBufferList* inBufferList, AudioBuffe
     _outBufferList = outBufferList;
 }
 
+void MidiRecorderDSPKernel::handleScheduledTransitions() {
+    // we rely on the single-threaded nature of the audio callback thread to coordinate
+    // important state transitions at the beginning of the callback, before anything else
+    // this prevents split-state conditions to change semantics in the middle of processing
+    
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        // begin recording
+        {
+            int32_t expected = true;
+            if (_state.scheduledBeginRecording[t].compare_exchange_strong(expected, false)) {
+                turnOffAllNotesForTrack(t);
+                _state.track[t].recording = YES;
+            }
+        }
+        // end recording
+        {
+            int32_t expected = true;
+            if (_state.scheduledEndRecording[t].compare_exchange_strong(expected, false)) {
+                _state.track[t].recording = NO;
+            }
+        }
+    }
+    
+    // rewind
+    {
+        int32_t expected = true;
+        if (_state.scheduledRewind.compare_exchange_strong(expected, false)) {
+            rewind();
+        }
+    }
+
+    // play
+    {
+        int32_t expected = true;
+        if (_state.scheduledPlay.compare_exchange_strong(expected, false)) {
+            play();
+        }
+    }
+
+    // stop
+    {
+        int32_t expected = true;
+        if (_state.scheduledStop.compare_exchange_strong(expected, false)) {
+            stop();
+        }
+    }
+
+    // stop and rewind
+    {
+        int32_t expected = true;
+        if (_state.scheduledStopAndRewind.compare_exchange_strong(expected, false)) {
+            stop();
+            rewind();
+        }
+    }
+
+    // reach end
+    {
+        int32_t expected = true;
+        if (_state.scheduledReachEnd.compare_exchange_strong(expected, false)) {
+            _isPlaying = NO;
+            _state.scheduledUIStopAndRewind = true;
+        }
+    }
+}
+
 void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) {
     for (int channel = 0; channel < _ioState.channelCount; ++channel) {
         if (_inBufferList->mBuffers[channel].mData ==  _outBufferList->mBuffers[channel].mData) {
@@ -105,7 +169,7 @@ void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCo
 }
 
 void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
-    if (midiEvent.cable < 0 || midiEvent.cable >= 4) {
+    if (midiEvent.cable < 0 || midiEvent.cable >= MIDI_TRACKS) {
         return;
     }
 
@@ -167,7 +231,7 @@ void MidiRecorderDSPKernel::processOutput() {
                         
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
-                        if (!state.mute && _ioState.midiOutputEventBlock) {
+                        if (!state.muteEnabled && _ioState.midiOutputEventBlock) {
                             const double offset_seconds = message->offsetSeconds - _state.playDurationSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
@@ -202,8 +266,7 @@ void MidiRecorderDSPKernel::processOutput() {
         }
         
         if (reached_end) {
-            _isPlaying = NO;
-            _state.scheduledStopAndRewind = true;
+            _state.scheduledReachEnd = true;
         }
     }
 }

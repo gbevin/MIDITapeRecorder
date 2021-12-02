@@ -30,15 +30,12 @@ public:
     bool isBypassed();
     void setBypass(bool shouldBypass);
     
-    void rewind();
-    void play();
-    void stop();
-
     void setParameter(AUParameterAddress address, AUValue value);
     AUValue getParameter(AUParameterAddress address);
 
     void setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList);
     
+    void handleScheduledTransitions() override;
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
     void processOutput() override;
@@ -47,7 +44,10 @@ public:
     AudioUnitIOState _ioState;
 
 private:
-    
+    void rewind();
+    void play();
+    void stop();
+
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
     void trackNotesForTrack(int track, const RecordedMidiMessage* message);
     void turnOffAllNotes();
