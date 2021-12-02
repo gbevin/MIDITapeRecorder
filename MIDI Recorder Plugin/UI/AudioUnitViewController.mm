@@ -156,9 +156,11 @@
         }
     }
     else {
-        [self setRecord:NO];
+        if (_recordButton.selected) {
+            [self setRecord:NO];
+            [_audioUnit.kernelAdapter rewind];
+        }
         [_audioUnit.kernelAdapter stop];
-        [_audioUnit.kernelAdapter rewind];
     }
 }
 
