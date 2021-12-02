@@ -73,6 +73,8 @@
     CADisplayLink* _timer;
 
     MidiQueueProcessor* _midiQueueProcessor;
+    
+    BOOL _autoPlayFromRecord;
 }
 
 - (instancetype)initWithCoder:(NSCoder*)coder {
@@ -87,6 +89,8 @@
         for (int t = 0; t < MIDI_TRACKS; ++t) {
             [_midiQueueProcessor recorder:t].delegate = self;
         }
+        
+        _autoPlayFromRecord = NO;
     }
     
     return self;
@@ -134,6 +138,7 @@
 }
 
 - (IBAction)playPressed:(id)sender {
+    _autoPlayFromRecord = NO;
     [self setPlay:!_playButton.selected];
 }
 
@@ -157,6 +162,7 @@
 }
 
 - (IBAction)recordPressed:(id)sender {
+    _autoPlayFromRecord = NO;
     [self setRecord:!_recordButton.selected];
     
     if (_recordButton.selected) {
@@ -165,9 +171,11 @@
         }
     }
     else {
-        [_audioUnit.kernelAdapter stop];
-        [_audioUnit.kernelAdapter rewind];
-        _playButton.selected = NO;
+        if (_autoPlayFromRecord) {
+            [_audioUnit.kernelAdapter stop];
+            [_audioUnit.kernelAdapter rewind];
+            _playButton.selected = NO;
+        }
     }
 }
 
@@ -333,7 +341,10 @@
             _state->track[t].recording = YES;
         }
     }
-    self.playButton.selected = YES;
+    if (!self.playButton.selected) {
+        _autoPlayFromRecord = YES;
+        self.playButton.selected = YES;
+    }
     [_audioUnit.kernelAdapter play];
 }
 
