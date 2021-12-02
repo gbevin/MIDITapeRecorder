@@ -5,7 +5,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -17,8 +16,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="896" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The MIDI Recorder audio unit has been installed." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="icy-BD-jpe">
+                                <rect key="frame" x="264" y="96.5" width="368" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xME-Ij-7jb">
-                                <rect key="frame" x="299.5" y="206.5" width="297" height="81.5"/>
+                                <rect key="frame" x="299.5" y="275.5" width="297" height="81.5"/>
                                 <string key="text">You can now open MIDI Recorder
 using a compatible plugin host or DAW.
 
@@ -27,20 +32,24 @@ Have fun!</string>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The MIDI Recorder audio unit has been installed." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="icy-BD-jpe">
-                                <rect key="frame" x="264" y="165.5" width="368" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="uwyn.png" translatesAutoresizingMaskIntoConstraints="NO" id="aIl-eM-Wyd">
+                                <rect key="frame" x="-63.5" y="137.5" width="1023" height="118"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="aIl-eM-Wyd" secondAttribute="height" multiplier="512:59" id="PIc-3Y-ujX"/>
+                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="120" id="aKF-C5-6kL"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="aIl-eM-Wyd" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="1hg-jk-nW1"/>
                             <constraint firstItem="xME-Ij-7jb" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="BeW-1y-kuk"/>
                             <constraint firstItem="icy-BD-jpe" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="BiQ-Y2-U1l"/>
-                            <constraint firstItem="icy-BD-jpe" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" multiplier="0.5" constant="-10" id="XcL-cG-7Ot"/>
-                            <constraint firstItem="xME-Ij-7jb" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="bottom" multiplier="0.5" constant="10" id="m0n-6U-k41"/>
+                            <constraint firstItem="aIl-eM-Wyd" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="MNT-08-to7"/>
+                            <constraint firstItem="icy-BD-jpe" firstAttribute="bottom" secondItem="aIl-eM-Wyd" secondAttribute="top" constant="-20" id="XcL-cG-7Ot"/>
+                            <constraint firstItem="aIl-eM-Wyd" firstAttribute="height" relation="lessThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="height" multiplier="0.3" id="i66-Dc-8zr"/>
+                            <constraint firstItem="xME-Ij-7jb" firstAttribute="top" secondItem="aIl-eM-Wyd" secondAttribute="bottom" constant="20" id="m0n-6U-k41"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -50,8 +59,6 @@ Have fun!</string>
         </scene>
     </scenes>
     <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
+        <image name="uwyn.png" width="1024" height="1024"/>
     </resources>
 </document>

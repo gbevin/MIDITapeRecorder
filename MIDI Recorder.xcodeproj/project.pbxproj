@@ -38,6 +38,7 @@
 		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
 		26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2C275343DB00170CB2 /* UIKit.framework */; };
 		26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA30275343F800170CB2 /* CoreAudioKit.framework */; };
+		26E06B8C2759358C00D7257E /* uwyn.png in Resources */ = {isa = PBXBuildFile; fileRef = 26E06B8B2759358C00D7257E /* uwyn.png */; };
 		26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */; };
 /* End PBXBuildFile section */
 
@@ -125,6 +126,7 @@
 		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA322753485300170CB2 /* MidiRecorderState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderDSPKernel.mm; sourceTree = "<group>"; };
+		26E06B8B2759358C00D7257E /* uwyn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uwyn.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +199,7 @@
 		26BB382E275338B200342496 /* MIDI Recorder */ = {
 			isa = PBXGroup;
 			children = (
+				26E06B8B2759358C00D7257E /* uwyn.png */,
 				26BB3848275338C700342496 /* MIDI Recorder.entitlements */,
 				26BB382F275338B200342496 /* AppDelegate.h */,
 				26BB3830275338B200342496 /* AppDelegate.m */,
@@ -387,6 +390,7 @@
 			files = (
 				26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */,
 				26BB383C275338B200342496 /* Assets.xcassets in Resources */,
+				26E06B8C2759358C00D7257E /* uwyn.png in Resources */,
 				26BB383A275338B200342496 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
