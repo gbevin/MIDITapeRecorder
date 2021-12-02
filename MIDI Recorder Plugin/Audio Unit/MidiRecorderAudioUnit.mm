@@ -10,6 +10,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+#import "AudioUnitViewController.h"
+
 // Define parameter addresses.
 const AudioUnitParameterID myParam1 = 0;
 
@@ -22,7 +24,9 @@ const AudioUnitParameterID myParam1 = 0;
 @end
 
 
-@implementation MidiRecorderAudioUnit
+@implementation MidiRecorderAudioUnit {
+    AudioUnitViewController* _vc;
+}
 
 @synthesize parameterTree = _parameterTree;
 
@@ -36,7 +40,14 @@ const AudioUnitParameterID myParam1 = 0;
     [self setupAudioBuses];
     [self setupParameterTree];
     [self setupParameterCallbacks];
+    
+    _vc = nil;
+    
     return self;
+}
+
+- (void)setVC:(AudioUnitViewController*)vc {
+    _vc = vc;
 }
 
 #pragma mark - AUAudioUnit Setup
@@ -169,6 +180,30 @@ const AudioUnitParameterID myParam1 = 0;
 
 - (BOOL)supportsMPE {
     return YES;
+}
+
+#pragma mark - AUAudioUnit fullState
+- (void)setFullState:(NSDictionary<NSString *,id>*)fullState {
+    [super setFullState:fullState];
+    
+    if (_vc == nil) {
+        return;
+    }
+
+    [_vc readSettingsFromDict:fullState];
+    [_vc readRecordingsFromDict:fullState];
+}
+
+- (NSDictionary<NSString *,id>*)fullState {
+    if (_vc == nil) {
+        return [super fullState];
+    }
+
+    NSMutableDictionary* state = [NSMutableDictionary new];
+    [state addEntriesFromDictionary:[_vc currentSettingsToDict]];
+    [state addEntriesFromDictionary:[_vc currentRecordingsToDict]];
+    [state addEntriesFromDictionary:[super fullState]];
+    return state;
 }
 
 @end

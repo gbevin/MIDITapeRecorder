@@ -11,4 +11,10 @@
 #import "MidiRecorderDelegate.h"
 
 @interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate>
+
+- (void)readSettingsFromDict:(NSDictionary*)data;
+- (void)readRecordingsFromDict:(NSDictionary*)data;
+- (NSDictionary*)currentSettingsToDict;
+- (NSDictionary*)currentRecordingsToDict;
+
 @end

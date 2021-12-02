@@ -24,6 +24,9 @@ class MidiRecorderState;
 - (instancetype)init  __attribute__((unavailable("init not available")));
 - (instancetype)initWithOrdinal:(int)ordinal;
 
+- (NSDictionary*)recordedAsDict;
+- (void)dictToRecorded:(NSDictionary*)dict;
+
 - (void)setState:(MidiRecorderState*)state;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 

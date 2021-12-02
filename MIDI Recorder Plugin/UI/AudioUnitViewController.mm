@@ -43,10 +43,10 @@
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
-@property (weak, nonatomic) IBOutlet UIButton* recordEnableButton1;
-@property (weak, nonatomic) IBOutlet UIButton* recordEnableButton2;
-@property (weak, nonatomic) IBOutlet UIButton* recordEnableButton3;
-@property (weak, nonatomic) IBOutlet UIButton* recordEnableButton4;
+@property (weak, nonatomic) IBOutlet UIButton* recordButton1;
+@property (weak, nonatomic) IBOutlet UIButton* recordButton2;
+@property (weak, nonatomic) IBOutlet UIButton* recordButton3;
+@property (weak, nonatomic) IBOutlet UIButton* recordButton4;
 
 @property (weak, nonatomic) IBOutlet UIButton* muteButton1;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton2;
@@ -115,6 +115,8 @@
 
 - (AUAudioUnit*)createAudioUnitWithComponentDescription:(AudioComponentDescription)desc error:(NSError **)error {
     _audioUnit = [[MidiRecorderAudioUnit alloc] initWithComponentDescription:desc error:error];
+    [_audioUnit setVC:self];
+    
     _state = _audioUnit.kernelAdapter.state;
     [_midiQueueProcessor setState:_state];
     
@@ -205,6 +207,83 @@
 
 #pragma mark - State
 
+- (void)readSettingsFromDict:(NSDictionary*)dict {
+    id routing = [dict objectForKey:@"Routing"];
+    id record1 = [dict objectForKey:@"Record1"];
+    id record2 = [dict objectForKey:@"Record2"];
+    id record3 = [dict objectForKey:@"Record3"];
+    id record4 = [dict objectForKey:@"Record4"];
+    id mute1 = [dict objectForKey:@"Mute1"];
+    id mute2 = [dict objectForKey:@"Mute2"];
+    id mute3 = [dict objectForKey:@"Mute3"];
+    id mute4 = [dict objectForKey:@"Mute4"];
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (routing) {
+            self->_routingButton.selected = [routing boolValue];
+        }
+        if (record1) {
+            self->_recordButton1.selected = [record1 boolValue];
+        }
+        if (record2) {
+            self->_recordButton2.selected = [record2 boolValue];
+        }
+        if (record3) {
+            self->_recordButton3.selected = [record3 boolValue];
+        }
+        if (record4) {
+            self->_recordButton4.selected = [record4 boolValue];
+        }
+
+        if (mute1) {
+            self->_muteButton1.selected = [mute1 boolValue];
+        }
+        if (mute2) {
+            self->_muteButton2.selected = [mute2 boolValue];
+        }
+        if (mute3) {
+            self->_muteButton3.selected = [mute3 boolValue];
+        }
+        if (mute4) {
+            self->_muteButton4.selected = [mute4 boolValue];
+        }
+
+        [self updateRecordEnableState];
+    });
+}
+
+- (void)readRecordingsFromDict:(NSDictionary*)dict {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        NSString* key = [NSString stringWithFormat:@"Recorder%d", t];
+        id recorded = [dict objectForKey:key];
+        if (recorded) {
+            [[_midiQueueProcessor recorder:t] dictToRecorded:recorded];
+        }
+    }
+}
+
+- (NSDictionary*)currentSettingsToDict {
+    return @{
+        @"Routing" : @(_routingButton.selected),
+        @"Record1" : @(_recordButton1.selected),
+        @"Record2" : @(_recordButton2.selected),
+        @"Record3" : @(_recordButton3.selected),
+        @"Record4" : @(_recordButton4.selected),
+        @"Mute1" : @(_muteButton1.selected),
+        @"Mute2" : @(_muteButton2.selected),
+        @"Mute3" : @(_muteButton3.selected),
+        @"Mute4" : @(_muteButton4.selected)
+    };
+}
+
+- (NSDictionary*)currentRecordingsToDict {
+    NSMutableDictionary* result = [NSMutableDictionary new];
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [result setObject:[[_midiQueueProcessor recorder:t] recordedAsDict] forKey:[NSString stringWithFormat:@"Recorder%d", t]];
+    }
+    return result;
+}
+
 - (void)updateRoutingState {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (_routingButton.selected) {
@@ -217,10 +296,10 @@
 }
 
 - (void)updateRecordEnableState {
-    UIButton* record_enabled_button[MIDI_TRACKS] = { _recordEnableButton1, _recordEnableButton2, _recordEnableButton3, _recordEnableButton4 };
+    UIButton* record_button[MIDI_TRACKS] = { _recordButton1, _recordButton2, _recordButton3, _recordButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && record_enabled_button[t].selected);
+        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && record_button[t].selected);
     }
 }
 

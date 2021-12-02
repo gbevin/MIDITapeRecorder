@@ -535,10 +535,10 @@
                         <outlet property="playhead" destination="L2y-q6-jop" id="wG4-Fw-krm"/>
                         <outlet property="playheadLeading" destination="cTi-we-c8t" id="ag4-Bi-EVh"/>
                         <outlet property="recordButton" destination="o1O-TV-EyB" id="XAb-3f-btd"/>
-                        <outlet property="recordEnableButton1" destination="jiJ-Fl-4eE" id="sCs-3s-dvh"/>
-                        <outlet property="recordEnableButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
-                        <outlet property="recordEnableButton3" destination="3pU-49-ygj" id="SGm-AW-hgY"/>
-                        <outlet property="recordEnableButton4" destination="kFp-mR-8eu" id="3ap-5b-qrI"/>
+                        <outlet property="recordButton1" destination="jiJ-Fl-4eE" id="sCs-3s-dvh"/>
+                        <outlet property="recordButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
+                        <outlet property="recordButton3" destination="3pU-49-ygj" id="SGm-AW-hgY"/>
+                        <outlet property="recordButton4" destination="kFp-mR-8eu" id="3ap-5b-qrI"/>
                         <outlet property="rewindButton" destination="IuJ-5c-4Lw" id="GBN-OS-J6L"/>
                         <outlet property="routingButton" destination="5s5-fr-Amh" id="xra-8t-WwU"/>
                         <outlet property="timeline" destination="k5P-YR-lyM" id="iLw-rk-VBV"/>

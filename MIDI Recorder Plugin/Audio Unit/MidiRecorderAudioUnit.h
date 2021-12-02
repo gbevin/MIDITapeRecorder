@@ -13,9 +13,13 @@
 // Define parameter addresses.
 extern const AudioUnitParameterID myParam1;
 
+@class AudioUnitViewController;
+
 @interface MidiRecorderAudioUnit : AUAudioUnit
 
 @property (nonatomic, readonly) DSPKernelAdapter* kernelAdapter;
+
+- (void)setVC:(AudioUnitViewController*)vc;
 
 - (void)setupAudioBuses;
 - (void)setupParameterTree;

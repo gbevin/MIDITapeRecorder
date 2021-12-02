@@ -94,6 +94,61 @@
     });
 }
 
+#pragma mark State
+
+- (NSDictionary*)recordedAsDict {
+    __block NSDictionary* result;
+    
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        if (_recording == nil) {
+            result = @{};
+        }
+        else {
+            result = @{
+                @"Recorded" : [NSData dataWithData:_recorded],
+                @"Preview" : [NSData dataWithData:_recordedPreview],
+                @"Duration" : @(_recordedDurationSeconds),
+                @"Count" : @(_recordedCount)
+            };
+        }
+    });
+    
+    return result;
+}
+
+- (void)dictToRecorded:(NSDictionary*)dict {
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        _recorded = nil;
+        _recordedPreview = nil;
+        _recordedDurationSeconds = 0.0;
+        _recordedCount = 0;
+        
+        id recorded = [dict objectForKey:@"Recorded"];
+        if (recorded) {
+            _recorded = recorded;
+        }
+        
+        id preview = [dict objectForKey:@"Preview"];
+        if (preview) {
+            _recordedPreview = preview;
+        }
+        
+        id duration = [dict objectForKey:@"Duration"];
+        if (duration) {
+            _recordedDurationSeconds = [duration doubleValue];
+        }
+        
+        id count = [dict objectForKey:@"Count"];
+        if (count) {
+            _recordedCount = [count intValue];
+        }
+        
+        if (_delegate) {
+            [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount];
+        }
+    });
+}
+
 #pragma mark Recording
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {

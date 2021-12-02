@@ -23,9 +23,6 @@ enum {
  */
 class MidiRecorderDSPKernel : public DSPKernel {
 public:
-    
-    // MARK: Member Functions
-
     MidiRecorderDSPKernel();
     
     void cleanup();
@@ -49,9 +46,8 @@ public:
     MidiRecorderState _state;
     AudioUnitIOState _ioState;
 
-    // MARK: Member Variables
-
 private:
+    
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
     void trackNotesForTrack(int track, const RecordedMidiMessage* message);
     void turnOffAllNotes();
