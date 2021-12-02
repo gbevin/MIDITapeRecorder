@@ -126,8 +126,8 @@
 }
 
 - (IBAction)rewindPressed:(id)sender {
-    _recordButton.selected = NO;
-    
+    _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
+
     [self setRecord:NO];
     [_audioUnit.kernelAdapter rewind];
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
@@ -166,6 +166,7 @@
     }
     else {
         [_audioUnit.kernelAdapter stop];
+        [_audioUnit.kernelAdapter rewind];
         _playButton.selected = NO;
     }
 }
@@ -341,8 +342,6 @@
     state.recording = NO;
     state.recordedMessages = data;
     state.recordedLength = count;
-    
-    [_audioUnit.kernelAdapter stop];
 }
 
 - (void)invalidateRecording:(int)ordinal {

@@ -41,7 +41,6 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 
 void MidiRecorderDSPKernel::rewind() {
     if (_isPlaying == YES) {
-        _state.transportStartMachSeconds = 0.0;
         _state.playStartSampleSeconds = 0.0;
         _state.playDurationSeconds = 0.0;
     }
