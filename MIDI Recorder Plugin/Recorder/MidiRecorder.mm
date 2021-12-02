@@ -12,14 +12,16 @@
 
 #include "Constants.h"
 #include "HostTime.h"
+#include "MidiRecorderState.h"
 #include "RecordedMidiMessage.h"
 
 @implementation MidiRecorder {
     dispatch_queue_t _dispatchQueue;
     
+    MidiRecorderState* _state;
+
     NSMutableData* _recording;
     NSMutableData* _recordingPreview;
-    double _recordingStartMachSeconds;
     double _recordingDurationSeconds;
     double _recordingFirstMessageTime;
     uint32_t _recordingCount;
@@ -37,7 +39,8 @@
         _ordinal = ordinal;
         _dispatchQueue = dispatch_queue_create([NSString stringWithFormat:@"com.uwyn.midirecorder.Recording%d", ordinal].UTF8String, DISPATCH_QUEUE_CONCURRENT);
         
-        _recordingStartMachSeconds = 0.0;
+        _state = nil;
+        
         _recordingFirstMessageTime = 0.0;
 
         _recording = [NSMutableData new];
@@ -72,7 +75,6 @@
             _recordedCount = _recordingCount;
 
             // then re-initialize the recording for the next time
-            _recordingStartMachSeconds = 0.0;
             _recordingFirstMessageTime = 0.0;
 
             _recording = [NSMutableData new];
@@ -94,49 +96,31 @@
 
 #pragma mark Recording
 
-- (void)startRecord:(double)machTimeSeconds {
-    dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record && _recordingStartMachSeconds == 0.0) {
-            _recordingStartMachSeconds = machTimeSeconds;
-            _recordingDurationSeconds = 0.0;
-        }
-    });
-}
-
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
     double now_mach = HOST_TIME.currentMachTimeInSeconds();
-    __block bool perform_recording = false;
-    __block bool auto_start_recording = false;
     
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record && _recording != nil) {
-            perform_recording = true;
-            
-            // auto start the recording on the first received message
-            // if the recording hasn't started yet
-            if (_recordingCount == 0 && _recordingStartMachSeconds == 0.0) {
-                auto_start_recording = true;
+        if (!_record || _recording == nil) {
+            return;
+        }
+
+        // auto start the recording on the first received message
+        // if the recording hasn't started yet
+        // auto start the recording on the first received message
+        // if the recording hasn't started yet
+        if (_recordingCount == 0 && _state->transportStartMachSeconds == 0.0) {
+            if (_delegate) {
+                _state->transportStartMachSeconds = now_mach;
+                [_delegate startRecord];
             }
         }
-    });
-    
-    if (!perform_recording) {
-        return;
-    }
-    
-    if (auto_start_recording) {
-        if (_delegate) {
-            [_delegate startRecord:now_mach];
-        }
-    }
-        
-    dispatch_barrier_sync(_dispatchQueue, ^{
+
         // keep track of the time of the first message so that the offset of all messages
         // can be calculated off of this
         // if the recording of this track started later than the others, compensate that
         // with an additional offset to the time of the first message
         if (_recordingCount == 0) {
-            _recordingFirstMessageTime = message.timeSampleSeconds - (now_mach - _recordingStartMachSeconds);
+            _recordingFirstMessageTime = message.timeSampleSeconds - (now_mach - _state->transportStartMachSeconds);
         }
         
         // add message to the recording
@@ -147,7 +131,7 @@
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
         [_recording appendBytes:&recorded_message length:RECORDED_MSG_SIZE];
-        _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _recordingStartMachSeconds;
+        _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds;
         _recordingCount += 1;
         
         // update the preview
@@ -165,17 +149,21 @@
 - (void)ping {
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record && _recording != nil) {
-            if (_recordingStartMachSeconds == 0.0) {
+            if (_state->transportStartMachSeconds == 0.0) {
                 _recordingDurationSeconds = 0.0;
             }
             else {
-                _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _recordingStartMachSeconds;
+                _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds;
             }
         }
     });
 }
 
-#pragma mark Getters
+#pragma mark Getters and Setter
+
+- (void)setState:(MidiRecorderState*)state {
+    _state = state;
+}
 
 - (double)duration {
     __block double duration = 0.0;

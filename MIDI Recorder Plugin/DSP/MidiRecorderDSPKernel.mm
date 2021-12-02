@@ -41,7 +41,8 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 
 void MidiRecorderDSPKernel::rewind() {
     if (_isPlaying == YES) {
-        _state.playStartSampleSeconds = 0;
+        _state.transportStartMachSeconds = 0.0;
+        _state.playStartSampleSeconds = 0.0;
         _state.playDurationSeconds = 0.0;
     }
     _state.playDurationSeconds = 0;
@@ -54,12 +55,14 @@ void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
         _state.scheduledStop = false;
         
-        _state.playStartSampleSeconds = 0;
+        _state.playStartSampleSeconds = 0.0;
         _isPlaying = YES;
     }
 }
 
 void MidiRecorderDSPKernel::stop() {
+    _state.transportStartMachSeconds = 0.0;
+
     if (_isPlaying == YES) {
         _isPlaying = NO;
     }
@@ -126,7 +129,7 @@ void MidiRecorderDSPKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
-        if (_state.playStartSampleSeconds == 0) {
+        if (_state.playStartSampleSeconds == 0.0) {
             _state.playStartSampleSeconds = _ioState.timestamp->mSampleTime / _ioState.sampleRate - _state.playDurationSeconds;
         }
         

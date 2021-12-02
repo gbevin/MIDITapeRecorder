@@ -12,6 +12,8 @@
 
 #import "MidiRecorderDelegate.h"
 
+class MidiRecorderState;
+
 @interface MidiRecorder : NSObject
 
 @property(readonly) int ordinal;
@@ -22,7 +24,7 @@
 - (instancetype)init  __attribute__((unavailable("init not available")));
 - (instancetype)initWithOrdinal:(int)ordinal;
 
-- (void)startRecord:(double)machTimeSeconds;
+- (void)setState:(MidiRecorderState*)state;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 
 - (void)ping;

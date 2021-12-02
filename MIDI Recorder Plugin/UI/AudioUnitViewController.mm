@@ -142,12 +142,16 @@
 
 - (void)setPlay:(BOOL)state {
     _playButton.selected = state;
-    if (_recordButton.selected) {
-        [self startRecord:HOST_TIME.currentMachTimeInSeconds()];
-    }
 
     if (_playButton.selected) {
-        [_audioUnit.kernelAdapter play];
+        _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
+        
+        if (_recordButton.selected) {
+            [self startRecord];
+        }
+        else {
+            [_audioUnit.kernelAdapter play];
+        }
     }
     else {
         [_audioUnit.kernelAdapter stop];
@@ -158,9 +162,12 @@
     _state->scheduledStop = false;
     
     _recordButton.selected = !_recordButton.selected;
-    _playButton.selected = NO;
     
     [self updateRecordEnableState];
+    
+    if (_recordButton.selected && _playButton.selected) {
+        [self startRecord];
+    }
 }
 
 - (IBAction)recordEnablePressed:(UIButton*)sender {
@@ -312,10 +319,9 @@
 
 #pragma mark - MidiRecorderDelegate methods
 
-- (void)startRecord:(double)machTimeSeconds {
+- (void)startRecord {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if ([_midiQueueProcessor recorder:t].record) {
-            [[_midiQueueProcessor recorder:t] startRecord:machTimeSeconds];
             _state->track[t].recording = YES;
         }
     }

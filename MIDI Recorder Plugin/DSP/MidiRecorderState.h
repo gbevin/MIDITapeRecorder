@@ -25,6 +25,7 @@ struct MidiRecorderState {
 
     TPCircularBuffer midiBuffer;
     
-    double playStartSampleSeconds   { 0.0 };
-    double playDurationSeconds      { 0.0 };
+    double transportStartMachSeconds    { 0.0 };
+    double playStartSampleSeconds       { 0.0 };
+    double playDurationSeconds          { 0.0 };
 };

@@ -101,6 +101,10 @@
 
 - (void)setState:(MidiRecorderState*)state {
     _state = state;
+
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [_recorder[t] setState:state];
+    }
 }
 
 - (MidiRecorder*)recorder:(int)ordinal {

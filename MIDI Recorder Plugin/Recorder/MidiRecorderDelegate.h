@@ -12,7 +12,7 @@ class RecordedMidiMessage;
 
 @protocol MidiRecorderDelegate <NSObject>
 
-- (void)startRecord:(double)machTimeSeconds;
+- (void)startRecord;
 - (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count;
 - (void)invalidateRecording:(int)ordinal;
 
