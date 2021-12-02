@@ -741,6 +741,7 @@ RECORDER</string>
                         <outlet property="recordButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
                         <outlet property="recordButton3" destination="3pU-49-ygj" id="SGm-AW-hgY"/>
                         <outlet property="recordButton4" destination="kFp-mR-8eu" id="3ap-5b-qrI"/>
+                        <outlet property="repeatButton" destination="c7Q-aj-bBd" id="87T-Wd-5jZ"/>
                         <outlet property="rewindButton" destination="IuJ-5c-4Lw" id="GBN-OS-J6L"/>
                         <outlet property="routingButton" destination="5s5-fr-Amh" id="xra-8t-WwU"/>
                         <outlet property="timeline" destination="k5P-YR-lyM" id="iLw-rk-VBV"/>

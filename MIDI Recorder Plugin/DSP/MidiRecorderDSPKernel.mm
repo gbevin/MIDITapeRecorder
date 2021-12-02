@@ -176,14 +176,27 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     if (isBypassed()) {
         // pass through MIDI events
         if (_ioState.midiOutputEventBlock) {
-
-            Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
-            _state.track[midiEvent.cable].activityOutput = 1.f;
-            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, midiEvent.cable, midiEvent.length, midiEvent.data);
+            passThroughMIDIEvent(midiEvent, midiEvent.cable);
         }
     }
     else {
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            MidiTrackState& state = _state.track[t];
+            
+            if (state.monitorEnabled && !state.muteEnabled && state.sourceCable == midiEvent.cable) {
+                _state.track[t].activityOutput = 1.f;
+                passThroughMIDIEvent(midiEvent, t);
+            }
+        }
+        
         queueMIDIEvent(midiEvent);
+    }
+}
+
+void MidiRecorderDSPKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable) {
+    if (_ioState.midiOutputEventBlock) {
+        Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
+        _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
     }
 }
 

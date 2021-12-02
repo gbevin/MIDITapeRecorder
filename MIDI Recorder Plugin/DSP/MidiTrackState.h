@@ -23,6 +23,7 @@ struct MidiTrackState {
     float activityInput     = 0.f;
     float activityOutput    = 0.f;
     int32_t recordEnabled   = false;
+    int32_t monitorEnabled  = false;
     int32_t muteEnabled     = false;
     int32_t recording       = 0;
     

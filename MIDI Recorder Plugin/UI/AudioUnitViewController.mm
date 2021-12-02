@@ -40,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* rewindButton;
 @property (weak, nonatomic) IBOutlet UIButton* playButton;
 @property (weak, nonatomic) IBOutlet UIButton* recordButton;
+@property (weak, nonatomic) IBOutlet UIButton* repeatButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
@@ -200,6 +201,8 @@
 
 - (IBAction)monitorPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
+    
+    [self updateMonitorState];
 }
 
 - (void)setRecord:(BOOL)state {
@@ -224,16 +227,25 @@
 
 - (void)readSettingsFromDict:(NSDictionary*)dict {
     id routing = [dict objectForKey:@"Routing"];
+    id repeat = [dict objectForKey:@"Repeat"];
     id record1 = [dict objectForKey:@"Record1"];
     id record2 = [dict objectForKey:@"Record2"];
     id record3 = [dict objectForKey:@"Record3"];
     id record4 = [dict objectForKey:@"Record4"];
+    id monitor1 = [dict objectForKey:@"Monitor1"];
+    id monitor2 = [dict objectForKey:@"Monitor2"];
+    id monitor3 = [dict objectForKey:@"Monitor3"];
+    id monitor4 = [dict objectForKey:@"Monitor4"];
     id mute1 = [dict objectForKey:@"Mute1"];
     id mute2 = [dict objectForKey:@"Mute2"];
     id mute3 = [dict objectForKey:@"Mute3"];
     id mute4 = [dict objectForKey:@"Mute4"];
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (repeat) {
+            self->_repeatButton.selected = [repeat boolValue];
+        }
+        
         if (routing) {
             self->_routingButton.selected = [routing boolValue];
         }
@@ -250,6 +262,19 @@
             self->_recordButton4.selected = [record4 boolValue];
         }
 
+        if (monitor1) {
+            self->_monitorButton1.selected = [monitor1 boolValue];
+        }
+        if (monitor2) {
+            self->_monitorButton2.selected = [monitor2 boolValue];
+        }
+        if (monitor3) {
+            self->_monitorButton3.selected = [monitor3 boolValue];
+        }
+        if (monitor4) {
+            self->_monitorButton4.selected = [monitor4 boolValue];
+        }
+
         if (mute1) {
             self->_muteButton1.selected = [mute1 boolValue];
         }
@@ -263,7 +288,9 @@
             self->_muteButton4.selected = [mute4 boolValue];
         }
 
+        [self updateMonitorState];
         [self updateRecordEnableState];
+        [self updateMuteState];
     });
 }
 
@@ -280,10 +307,15 @@
 - (NSDictionary*)currentSettingsToDict {
     return @{
         @"Routing" : @(_routingButton.selected),
+        @"Repeat" : @(_repeatButton.selected),
         @"Record1" : @(_recordButton1.selected),
         @"Record2" : @(_recordButton2.selected),
         @"Record3" : @(_recordButton3.selected),
         @"Record4" : @(_recordButton4.selected),
+        @"Monitor1" : @(_monitorButton1.selected),
+        @"Monitor2" : @(_monitorButton2.selected),
+        @"Monitor3" : @(_monitorButton3.selected),
+        @"Monitor4" : @(_monitorButton4.selected),
         @"Mute1" : @(_muteButton1.selected),
         @"Mute2" : @(_muteButton2.selected),
         @"Mute3" : @(_muteButton3.selected),
@@ -316,6 +348,14 @@
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         _state->track[t].recordEnabled = record_button[t].selected;
         [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].recordEnabled);
+    }
+}
+
+- (void)updateMonitorState {
+    UIButton* monitor_button[MIDI_TRACKS] = { _monitorButton1, _monitorButton2, _monitorButton3, _monitorButton4 };
+
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        _state->track[t].monitorEnabled = monitor_button[t].selected;
     }
 }
 
