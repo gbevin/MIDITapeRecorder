@@ -1,4 +1,4 @@
-# MIDI Recorder
+# MIDI Tape Recorder
 
 Created by Geert Bevin.
 

@@ -1,9 +1,9 @@
 //
 //  MidiRecorderAudioUnit.mm
-//  MIDI Recorder Plugin
+//  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
-//  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "MidiRecorderAudioUnit.h"
@@ -175,7 +175,7 @@ const AudioUnitParameterID myParam1 = 0;
 }
 
 - (NSArray<NSString*>*)MIDIOutputNames {
-    return @[@"MIDI Recorder Out 1", @"MIDI Recorder Out 2", @"MIDI Recorder Out 3", @"MIDI Recorder Out 4"];
+    return @[@"MIDI Out 1", @"MIDI Out 2", @"MIDI Out 3", @"MIDI Out 4"];
 }
 
 - (BOOL)supportsMPE {

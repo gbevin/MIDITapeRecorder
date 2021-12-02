@@ -1,6 +1,6 @@
 //
 //  BufferedAudioBus.hpp
-//  MIDI Recorder Plugin
+//  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
 //

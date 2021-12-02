@@ -10,13 +10,13 @@
 			<array>
 				<dict>
 					<key>description</key>
-					<string>MIDI Recorder</string>
+					<string>MIDI Tape Recorder</string>
 					<key>factoryFunction</key>
 					<string>AudioUnitViewController</string>
 					<key>manufacturer</key>
 					<string>Uwyn</string>
 					<key>name</key>
-					<string>Uwyn: MIDI Recorder</string>
+					<string>Uwyn: MIDI Tape Recorder</string>
 					<key>sandboxSafe</key>
 					<true/>
 					<key>subtype</key>

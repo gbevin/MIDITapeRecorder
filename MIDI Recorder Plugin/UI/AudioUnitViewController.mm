@@ -1,9 +1,9 @@
 //
 //  AudioUnitViewController.m
-//  MIDI Recorder Plugin
+//  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
-//  MIDI Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "AudioUnitViewController.h"
@@ -47,6 +47,11 @@
 @property (weak, nonatomic) IBOutlet UIButton* recordButton2;
 @property (weak, nonatomic) IBOutlet UIButton* recordButton3;
 @property (weak, nonatomic) IBOutlet UIButton* recordButton4;
+
+@property (weak, nonatomic) IBOutlet UIButton* monitorButton1;
+@property (weak, nonatomic) IBOutlet UIButton* monitorButton2;
+@property (weak, nonatomic) IBOutlet UIButton* monitorButton3;
+@property (weak, nonatomic) IBOutlet UIButton* monitorButton4;
 
 @property (weak, nonatomic) IBOutlet UIButton* muteButton1;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton2;
@@ -131,7 +136,7 @@
     [self updateRoutingState];
 }
 
-- (IBAction)rewindPressed:(id)sender {
+- (IBAction)rewindPressed:(UIButton*)sender {
     _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
 
     [self setRecord:NO];
@@ -139,7 +144,7 @@
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
-- (IBAction)playPressed:(id)sender {
+- (IBAction)playPressed:(UIButton*)sender {
     _autoPlayFromRecord = NO;
     [self setPlay:!_playButton.selected];
 }
@@ -166,7 +171,7 @@
     }
 }
 
-- (IBAction)recordPressed:(id)sender {
+- (IBAction)recordPressed:(UIButton*)sender {
     BOOL selected = !_recordButton.selected;
     
     if (selected) {
@@ -187,6 +192,14 @@
     }
     
     [self setRecord:selected];
+}
+
+- (IBAction)repeatPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+}
+
+- (IBAction)monitorPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
 }
 
 - (void)setRecord:(BOOL)state {

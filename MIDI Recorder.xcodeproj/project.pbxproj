@@ -11,6 +11,7 @@
 		2613427B2753D995001FF0BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2613427A2753D995001FF0BB /* Assets.xcassets */; };
 		2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2613427C2753DA69001FF0BB /* CoreGraphics.framework */; };
 		261D69332753BCDA003527B2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261D69322753BCDA003527B2 /* AudioToolbox.framework */; };
+		266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EC27596B50002D4459 /* ToolBarButton.mm */; };
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
@@ -39,6 +40,7 @@
 		26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2C275343DB00170CB2 /* UIKit.framework */; };
 		26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA30275343F800170CB2 /* CoreAudioKit.framework */; };
 		26E06B8C2759358C00D7257E /* uwyn.png in Resources */ = {isa = PBXBuildFile; fileRef = 26E06B8B2759358C00D7257E /* uwyn.png */; };
+		26E06B8F2759427300D7257E /* MenuButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26E06B8D2759427300D7257E /* MenuButton.mm */; };
 		26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +74,8 @@
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2613427C2753DA69001FF0BB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		261D69322753BCDA003527B2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		266465EB27596B50002D4459 /* ToolBarButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ToolBarButton.h; sourceTree = "<group>"; };
+		266465EC27596B50002D4459 /* ToolBarButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ToolBarButton.mm; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -127,6 +131,8 @@
 		26C7DA322753485300170CB2 /* MidiRecorderState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderDSPKernel.mm; sourceTree = "<group>"; };
 		26E06B8B2759358C00D7257E /* uwyn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uwyn.png; sourceTree = "<group>"; };
+		26E06B8D2759427300D7257E /* MenuButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuButton.mm; sourceTree = "<group>"; };
+		26E06B8E2759427300D7257E /* MenuButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,6 +269,10 @@
 				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
 				261342772753D855001FF0BB /* ActivityIndicatorView.h */,
 				261342782753D869001FF0BB /* ActivityIndicatorView.mm */,
+				26E06B8E2759427300D7257E /* MenuButton.h */,
+				26E06B8D2759427300D7257E /* MenuButton.mm */,
+				266465EB27596B50002D4459 /* ToolBarButton.h */,
+				266465EC27596B50002D4459 /* ToolBarButton.mm */,
 				26C49D162756D04400A6FAB4 /* MidiTrackView.h */,
 				26C49D172756D04400A6FAB4 /* MidiTrackView.mm */,
 				26C49D1A2756D41700A6FAB4 /* TimelineView.h */,
@@ -436,6 +446,8 @@
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
+				26E06B8F2759427300D7257E /* MenuButton.mm in Sources */,
+				266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */,
 				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -603,6 +615,7 @@
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Recorder/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -635,6 +648,7 @@
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Recorder/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -665,7 +679,7 @@
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Recorder Plugin/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Recorder";
+				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Recorder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -693,7 +707,7 @@
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Recorder Plugin/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Recorder";
+				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Recorder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
