@@ -295,7 +295,7 @@
 }
 
 - (IBAction)leaveRating:(id)sender {
-    NSURL* url = [NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1597631168&pageNumber=0&sortOrdering=3&mt=8"];
+    NSURL* url = [NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1598618004&pageNumber=0&sortOrdering=3&mt=8"];
     [self openURL:url];
 }
 
