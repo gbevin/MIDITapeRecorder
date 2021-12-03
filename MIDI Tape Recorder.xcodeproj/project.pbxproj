@@ -17,7 +17,6 @@
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
-		26BB3834275338B200342496 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3833275338B200342496 /* SceneDelegate.m */; };
 		26BB3837275338B200342496 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3836275338B200342496 /* ViewController.m */; };
 		26BB383A275338B200342496 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3838275338B200342496 /* Main.storyboard */; };
 		26BB383C275338B200342496 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26BB383B275338B200342496 /* Assets.xcassets */; };
@@ -90,8 +89,6 @@
 		26BB382C275338B200342496 /* MIDI Tape Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Tape Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		26BB3832275338B200342496 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		26BB3833275338B200342496 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		26BB3835275338B200342496 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		26BB3836275338B200342496 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		26BB3839275338B200342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -216,8 +213,6 @@
 				26BB3848275338C700342496 /* MIDI Tape Recorder.entitlements */,
 				26BB382F275338B200342496 /* AppDelegate.h */,
 				26BB3830275338B200342496 /* AppDelegate.m */,
-				26BB3832275338B200342496 /* SceneDelegate.h */,
-				26BB3833275338B200342496 /* SceneDelegate.m */,
 				26BB3835275338B200342496 /* ViewController.h */,
 				26BB3836275338B200342496 /* ViewController.m */,
 				26BB383D275338B200342496 /* LaunchScreen.storyboard */,
@@ -438,7 +433,6 @@
 				26BB3837275338B200342496 /* ViewController.m in Sources */,
 				26BB3831275338B200342496 /* AppDelegate.m in Sources */,
 				26BB3842275338B200342496 /* main.m in Sources */,
-				26BB3834275338B200342496 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,7 +629,8 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -669,7 +664,8 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -695,7 +691,8 @@
 				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Recorder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -723,7 +720,8 @@
 				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Recorder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -12,12 +12,6 @@
 
 @implementation ActivityIndicatorView
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    
-    self.backgroundColor = UIColor.clearColor;
-}
-
 - (void)layoutSubviews {
     [super layoutSubviews];
     
@@ -34,6 +28,8 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextSaveGState(context);
+    
+    CGContextClearRect(context, self.bounds);
 
     if (self.showActivity) {
         CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOn"].CGColor);

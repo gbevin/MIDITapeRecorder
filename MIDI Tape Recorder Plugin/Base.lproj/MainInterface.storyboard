@@ -26,10 +26,10 @@
                                         <rect key="frame" x="24" y="-1" width="60" height="32"/>
                                         <gestureRecognizers/>
                                         <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
-                                        <color key="tintColor" name="ActivityOff"/>
+                                        <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" title="1▶︎4">
-                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="titleColor" name="Gray0"/>
                                         </state>
                                         <state key="selected" title="4▶︎4"/>
                                         <connections>
@@ -40,34 +40,34 @@
                                         <rect key="frame" x="84" y="0.0" width="171" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IuJ-5c-4Lw" userLabel="Rewind" customClass="ToolBarButton">
-                                                <rect key="frame" x="0.5" y="-5" width="35" height="40"/>
+                                                <rect key="frame" x="0.5" y="-2.5" width="35" height="35"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="40" id="thn-yN-3fx"/>
+                                                    <constraint firstAttribute="height" constant="35" id="thn-yN-3fx"/>
                                                     <constraint firstAttribute="width" constant="35" id="xwo-xs-NAZ"/>
                                                 </constraints>
-                                                <color key="tintColor" systemColor="systemBlueColor"/>
+                                                <color key="tintColor" name="Blue"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
-                                                    <color key="titleColor" systemColor="systemBlueColor"/>
-                                                    <imageReference key="image" image="backward.end" catalog="system" symbolScale="large"/>
+                                                    <color key="titleColor" name="Blue"/>
+                                                    <imageReference key="image" image="backward_end" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
                                                 </state>
-                                                <state key="selected" image="backward.end.fill" catalog="system"/>
+                                                <state key="selected" image="backward_end_fill"/>
                                                 <connections>
                                                     <action selector="rewindPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ggY-Om-6FM"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K2s-Jg-CsH" userLabel="Play" customClass="ToolBarButton">
-                                                <rect key="frame" x="45.5" y="-5" width="35" height="40"/>
-                                                <color key="tintColor" systemColor="systemGreenColor"/>
+                                                <rect key="frame" x="45.5" y="-2.5" width="35" height="35"/>
+                                                <color key="tintColor" name="Green"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
-                                                    <color key="titleColor" systemColor="systemGreenColor"/>
-                                                    <imageReference key="image" image="play" catalog="system" symbolScale="large"/>
+                                                    <color key="titleColor" name="Green"/>
+                                                    <imageReference key="image" image="play" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
                                                 </state>
                                                 <state key="selected">
-                                                    <imageReference key="image" image="play.fill" catalog="system" symbolScale="large"/>
+                                                    <imageReference key="image" image="play_fill" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="bold"/>
                                                 </state>
                                                 <connections>
@@ -75,16 +75,17 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o1O-TV-EyB" userLabel="Record" customClass="ToolBarButton">
-                                                <rect key="frame" x="90.5" y="-5" width="35" height="40"/>
-                                                <color key="tintColor" systemColor="systemRedColor"/>
+                                                <rect key="frame" x="90.5" y="-2.5" width="35" height="35"/>
+                                                <color key="tintColor" name="Red"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
-                                                    <color key="titleColor" systemColor="systemRedColor"/>
-                                                    <imageReference key="image" image="record.circle" catalog="system" symbolScale="large"/>
+                                                    <color key="titleColor" name="Red"/>
+                                                    <imageReference key="image" image="record_circle" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
                                                 </state>
                                                 <state key="selected">
-                                                    <imageReference key="image" image="record.circle.fill" catalog="system" symbolScale="large"/>
+                                                    <color key="titleColor" name="Red"/>
+                                                    <imageReference key="image" image="record_circle_fill" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="bold"/>
                                                 </state>
                                                 <connections>
@@ -92,12 +93,12 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c7Q-aj-bBd" userLabel="Repeat" customClass="ToolBarButton">
-                                                <rect key="frame" x="135.5" y="-5" width="35" height="40"/>
-                                                <color key="tintColor" systemColor="systemOrangeColor"/>
+                                                <rect key="frame" x="135.5" y="-2.5" width="35" height="35"/>
+                                                <color key="tintColor" name="Orange"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
-                                                    <color key="titleColor" systemColor="systemOrangeColor"/>
-                                                    <imageReference key="image" image="repeat" catalog="system" symbolScale="large"/>
+                                                    <color key="titleColor" name="Orange"/>
+                                                    <imageReference key="image" image="repeat" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
                                                 </state>
                                                 <connections>
@@ -145,33 +146,49 @@ RECORDER</string>
                                         </attributedString>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JCp-rm-sDC" userLabel="About">
-                                        <rect key="frame" x="531" y="3" width="79" height="24"/>
-                                        <gestureRecognizers/>
-                                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
-                                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal">
-                                            <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <imageReference key="image" image="questionmark.circle" catalog="system" symbolScale="large"/>
-                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
-                                        </state>
-                                        <state key="selected">
-                                            <imageReference key="image" image="questionmark.circle.fill" catalog="system" symbolScale="large"/>
-                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="aboutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Aw6-0W-xUV"/>
-                                        </connections>
-                                    </button>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-KR-jE3" userLabel="About View">
+                                        <rect key="frame" x="531" y="-17" width="79" height="64"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JCp-rm-sDC" userLabel="About">
+                                                <rect key="frame" x="24.5" y="17" width="30" height="30"/>
+                                                <gestureRecognizers/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="30" id="Zhs-UC-Ac5"/>
+                                                    <constraint firstAttribute="height" constant="30" id="jRM-lQ-FnY"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
+                                                <color key="tintColor" name="Gray0"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal">
+                                                    <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <imageReference key="image" image="questionmark_circle" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                                </state>
+                                                <state key="selected">
+                                                    <color key="titleColor" name="Gray0"/>
+                                                    <imageReference key="image" image="questionmark_circle_fill" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="aboutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Aw6-0W-xUV"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="JCp-rm-sDC" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="5mn-8a-jFZ"/>
+                                            <constraint firstItem="JCp-rm-sDC" firstAttribute="centerX" secondItem="Ia4-KR-jE3" secondAttribute="centerX" id="Xzo-4F-SdL"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="Ia4-KR-jE3" firstAttribute="height" secondItem="bKj-4Y-TLw" secondAttribute="height" multiplier="2.13333" id="2Ge-yJ-RuO"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerX" secondItem="bKj-4Y-TLw" secondAttribute="centerX" id="7MN-dv-hpE"/>
                                     <constraint firstAttribute="height" constant="30" id="AMi-cf-cbc"/>
                                     <constraint firstItem="ESp-f1-BSZ" firstAttribute="leading" secondItem="5s5-fr-Amh" secondAttribute="trailing" id="ByR-RR-1h6"/>
-                                    <constraint firstItem="JCp-rm-sDC" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="Csh-Tw-z2J"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="DfR-Ij-zpC"/>
+                                    <constraint firstItem="Ia4-KR-jE3" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="PlU-Gi-2KI"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="leading" secondItem="ESp-f1-BSZ" secondAttribute="trailing" id="UuW-CJ-OWA"/>
                                     <constraint firstAttribute="width" priority="950" constant="620" id="VMz-hs-c5P"/>
                                     <constraint firstItem="ESp-f1-BSZ" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="YeY-an-lJZ"/>
@@ -187,7 +204,7 @@ RECORDER</string>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k5P-YR-lyM" userLabel="Timeline" customClass="TimelineView">
                                         <rect key="frame" x="10" y="0.0" width="50" height="20"/>
-                                        <color key="backgroundColor" systemColor="systemGray2Color"/>
+                                        <color key="backgroundColor" name="Gray2"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="HUg-bg-jWJ"/>
                                             <constraint firstAttribute="height" constant="20" id="xMq-RR-lYI"/>
@@ -246,7 +263,7 @@ RECORDER</string>
                                         </constraints>
                                     </view>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                <color key="backgroundColor" name="Gray6"/>
                                 <constraints>
                                     <constraint firstItem="gzW-Zc-U4q" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="1t5-Wa-Kzd"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="3D2-fK-3Ww"/>
@@ -291,7 +308,7 @@ RECORDER</string>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dom-KY-gSl" userLabel="Activity Input 1" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="10" y="137.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="9" id="Npp-NL-xab"/>
                                     <constraint firstAttribute="width" constant="9" id="ae9-Yl-n0y"/>
@@ -371,86 +388,86 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ovp-GH-bJD"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
                                 <rect key="frame" x="446" y="120.5" width="150" height="43"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
-                                        <rect key="frame" x="115" y="0.0" width="30" height="43"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
+                                        <rect key="frame" x="115" y="6.5" width="30" height="30"/>
                                         <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="fed-vR-Ihx"/>
                                             <constraint firstAttribute="width" constant="30" id="u9i-6b-A2Q"/>
                                         </constraints>
-                                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <buttonConfiguration key="configuration" style="plain"/>
+                                        <state key="normal" image="xmark"/>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Swn-cj-3wN"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYd-rc-sVS" userLabel="Clear 1">
-                                        <rect key="frame" x="80" y="0.0" width="30" height="43"/>
+                                        <rect key="frame" x="80" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="IPl-4M-El7"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemRedColor"/>
+                                        <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="trash" catalog="system">
+                                        <state key="normal" image="trash">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
-                                        <state key="selected" image="questionmark" catalog="system"/>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oh0-MD-u2b"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNR-dr-WIg" userLabel="Export 1">
-                                        <rect key="frame" x="45" y="0.0" width="30" height="43"/>
+                                        <rect key="frame" x="45" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="CIb-AI-dHB"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemGreenColor"/>
+                                        <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.up" catalog="system">
+                                        <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M47-0G-FMz" userLabel="Import 1">
-                                        <rect key="frame" x="10" y="0.0" width="30" height="43"/>
+                                        <rect key="frame" x="10" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="0dM-or-D6A"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemBlueColor"/>
+                                        <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.down" catalog="system">
+                                        <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="M47-0G-FMz" firstAttribute="height" secondItem="al1-3s-PG4" secondAttribute="height" id="1Oz-Er-VIr"/>
                                     <constraint firstItem="LNR-dr-WIg" firstAttribute="trailing" secondItem="iYd-rc-sVS" secondAttribute="leading" constant="-5" id="2Ku-oU-dGs"/>
-                                    <constraint firstItem="iYd-rc-sVS" firstAttribute="height" secondItem="al1-3s-PG4" secondAttribute="height" id="8VX-8h-gSM"/>
                                     <constraint firstItem="LNR-dr-WIg" firstAttribute="centerY" secondItem="al1-3s-PG4" secondAttribute="centerY" id="9aS-kz-JNl"/>
-                                    <constraint firstItem="LNR-dr-WIg" firstAttribute="height" secondItem="al1-3s-PG4" secondAttribute="height" id="JcS-Cj-Yp1"/>
+                                    <constraint firstItem="iYd-rc-sVS" firstAttribute="height" secondItem="2QK-Kb-gVy" secondAttribute="height" id="ALU-Df-x3V"/>
+                                    <constraint firstItem="LNR-dr-WIg" firstAttribute="height" secondItem="2QK-Kb-gVy" secondAttribute="height" id="Agc-KX-5ft"/>
                                     <constraint firstItem="M47-0G-FMz" firstAttribute="centerY" secondItem="al1-3s-PG4" secondAttribute="centerY" id="Kbe-WA-qzP"/>
                                     <constraint firstItem="iYd-rc-sVS" firstAttribute="centerY" secondItem="al1-3s-PG4" secondAttribute="centerY" id="TDT-rU-AnW"/>
+                                    <constraint firstItem="M47-0G-FMz" firstAttribute="height" secondItem="2QK-Kb-gVy" secondAttribute="height" id="Ugy-sF-9gL"/>
                                     <constraint firstItem="M47-0G-FMz" firstAttribute="trailing" secondItem="LNR-dr-WIg" secondAttribute="leading" constant="-5" id="Vu2-hm-TIn"/>
                                     <constraint firstItem="2QK-Kb-gVy" firstAttribute="leading" secondItem="iYd-rc-sVS" secondAttribute="trailing" constant="5" id="Wlj-dV-PFw"/>
                                     <constraint firstItem="2QK-Kb-gVy" firstAttribute="centerY" secondItem="al1-3s-PG4" secondAttribute="centerY" id="g0k-W6-AA9"/>
                                     <constraint firstAttribute="trailing" secondItem="2QK-Kb-gVy" secondAttribute="trailing" constant="5" id="hvj-5I-Ev3"/>
-                                    <constraint firstItem="2QK-Kb-gVy" firstAttribute="height" secondItem="al1-3s-PG4" secondAttribute="height" id="n3z-tN-gqt"/>
                                     <constraint firstAttribute="width" constant="150" id="uGU-Zw-cdA"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blx-LE-LOD" userLabel="Activity Output 1" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="601" y="137.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ea-4c-QY8" userLabel="Activity Input 2" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="10" y="191.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="9" id="8yC-Ii-qxh"/>
                                     <constraint firstAttribute="width" constant="9" id="shz-Dr-w1L"/>
@@ -529,91 +546,86 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pAH-6j-kwp"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="PopupView">
-                                <rect key="frame" x="446" y="175.5" width="150" height="41"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="PopupView">
+                                <rect key="frame" x="446" y="174.5" width="150" height="43"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
-                                        <rect key="frame" x="115" y="0.0" width="30" height="41"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
+                                        <rect key="frame" x="115" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="IMD-Q5-czK"/>
+                                            <constraint firstAttribute="height" constant="30" id="NiN-xX-gpO"/>
                                         </constraints>
-                                        <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal">
-                                            <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
-                                        <buttonConfiguration key="configuration" style="plain">
-                                            <color key="baseForegroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </buttonConfiguration>
+                                        <state key="normal" image="xmark"/>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="m8d-O9-pCl"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yUW-33-hCc" userLabel="Clear 2">
-                                        <rect key="frame" x="80" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="80" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="gdL-wp-GST"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemRedColor"/>
+                                        <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="trash" catalog="system">
+                                        <state key="normal" image="trash">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
-                                        <state key="selected" image="questionmark" catalog="system"/>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Ka-U5-xP8"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AsM-3p-e3J" userLabel="Export 2">
-                                        <rect key="frame" x="45" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="45" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="r5O-bR-N6r"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemGreenColor"/>
+                                        <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.up" catalog="system">
+                                        <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NAv-nC-Upf" userLabel="Import 2">
-                                        <rect key="frame" x="10" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="10" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="lmD-Nb-gU5"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemBlueColor"/>
+                                        <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.down" catalog="system">
+                                        <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="yUW-33-hCc" firstAttribute="height" secondItem="UOr-iO-bt0" secondAttribute="height" id="0yL-S1-Xrx"/>
-                                    <constraint firstItem="AsM-3p-e3J" firstAttribute="height" secondItem="UOr-iO-bt0" secondAttribute="height" id="DiM-Ho-jql"/>
+                                    <constraint firstItem="AsM-3p-e3J" firstAttribute="height" secondItem="KNS-Fz-TPp" secondAttribute="height" id="Aeb-4b-FQP"/>
+                                    <constraint firstItem="yUW-33-hCc" firstAttribute="height" secondItem="KNS-Fz-TPp" secondAttribute="height" id="GDU-uO-2jE"/>
                                     <constraint firstItem="KNS-Fz-TPp" firstAttribute="centerY" secondItem="UOr-iO-bt0" secondAttribute="centerY" id="Kiy-45-9mQ"/>
-                                    <constraint firstItem="KNS-Fz-TPp" firstAttribute="height" secondItem="UOr-iO-bt0" secondAttribute="height" id="Mzf-Cq-y9q"/>
                                     <constraint firstItem="NAv-nC-Upf" firstAttribute="trailing" secondItem="AsM-3p-e3J" secondAttribute="leading" constant="-5" id="QYm-9X-tIX"/>
                                     <constraint firstItem="yUW-33-hCc" firstAttribute="centerY" secondItem="UOr-iO-bt0" secondAttribute="centerY" id="Rjn-hD-s3W"/>
                                     <constraint firstAttribute="width" constant="150" id="VFN-lg-oEQ"/>
                                     <constraint firstItem="KNS-Fz-TPp" firstAttribute="leading" secondItem="yUW-33-hCc" secondAttribute="trailing" constant="5" id="VuR-d3-tHU"/>
                                     <constraint firstAttribute="trailing" secondItem="KNS-Fz-TPp" secondAttribute="trailing" constant="5" id="YAy-9P-DAF"/>
                                     <constraint firstItem="NAv-nC-Upf" firstAttribute="centerY" secondItem="UOr-iO-bt0" secondAttribute="centerY" id="aSt-Ff-Mk5"/>
+                                    <constraint firstItem="NAv-nC-Upf" firstAttribute="height" secondItem="KNS-Fz-TPp" secondAttribute="height" id="bXo-XU-kRu"/>
                                     <constraint firstItem="AsM-3p-e3J" firstAttribute="trailing" secondItem="yUW-33-hCc" secondAttribute="leading" constant="-5" id="iea-4z-Jsz"/>
                                     <constraint firstItem="AsM-3p-e3J" firstAttribute="centerY" secondItem="UOr-iO-bt0" secondAttribute="centerY" id="oXT-jY-cGx"/>
-                                    <constraint firstItem="NAv-nC-Upf" firstAttribute="height" secondItem="UOr-iO-bt0" secondAttribute="height" id="urH-ga-h9Y"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uiz-2Z-3Gl" userLabel="Activity Output 2" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="601" y="191.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DG3-EF-njW" userLabel="Activity Input 3" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="10" y="245.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="9" id="KDh-Vp-r6h"/>
                                     <constraint firstAttribute="width" constant="9" id="WHE-aQ-50I"/>
@@ -692,86 +704,86 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mAh-Wq-Kbe"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="PopupView">
-                                <rect key="frame" x="446" y="229.5" width="150" height="41"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="PopupView">
+                                <rect key="frame" x="446" y="228.5" width="150" height="43"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
-                                        <rect key="frame" x="115" y="0.0" width="30" height="41"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
+                                        <rect key="frame" x="115" y="6.5" width="30" height="30"/>
                                         <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="KWv-IY-mrg"/>
                                             <constraint firstAttribute="width" constant="30" id="odi-43-OhZ"/>
                                         </constraints>
-                                        <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <buttonConfiguration key="configuration" style="plain"/>
+                                        <state key="normal" image="xmark"/>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wiE-nB-Qxw"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sqh-Tr-1XP" userLabel="Clear 3">
-                                        <rect key="frame" x="80" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="80" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="tZR-nY-Jmf"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemRedColor"/>
+                                        <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="trash" catalog="system">
+                                        <state key="normal" image="trash">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
-                                        <state key="selected" image="questionmark" catalog="system"/>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oxs-ze-1a8"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fTN-8v-HzS" userLabel="Export 3">
-                                        <rect key="frame" x="45" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="45" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="Dcc-jW-QcZ"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemGreenColor"/>
+                                        <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.up" catalog="system">
+                                        <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YtR-ZD-uKp" userLabel="Import 3">
-                                        <rect key="frame" x="10" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="10" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="Lac-Xr-guO"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemBlueColor"/>
+                                        <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.down" catalog="system">
+                                        <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="150" id="0qh-yn-Zfn"/>
-                                    <constraint firstItem="fTN-8v-HzS" firstAttribute="height" secondItem="W3w-9u-4Gg" secondAttribute="height" id="52p-Vk-X0f"/>
                                     <constraint firstItem="YtR-ZD-uKp" firstAttribute="centerY" secondItem="W3w-9u-4Gg" secondAttribute="centerY" id="B5P-ab-IyB"/>
+                                    <constraint firstItem="YtR-ZD-uKp" firstAttribute="height" secondItem="mCd-Bd-dSz" secondAttribute="height" id="BmU-Rp-4Yc"/>
                                     <constraint firstItem="Sqh-Tr-1XP" firstAttribute="centerY" secondItem="W3w-9u-4Gg" secondAttribute="centerY" id="Eti-cf-qbC"/>
+                                    <constraint firstItem="Sqh-Tr-1XP" firstAttribute="height" secondItem="mCd-Bd-dSz" secondAttribute="height" id="GZm-Mz-qyy"/>
                                     <constraint firstAttribute="trailing" secondItem="mCd-Bd-dSz" secondAttribute="trailing" constant="5" id="HLV-Zx-XSv"/>
                                     <constraint firstItem="fTN-8v-HzS" firstAttribute="centerY" secondItem="W3w-9u-4Gg" secondAttribute="centerY" id="Hws-qQ-F28"/>
                                     <constraint firstItem="mCd-Bd-dSz" firstAttribute="leading" secondItem="Sqh-Tr-1XP" secondAttribute="trailing" constant="5" id="ID3-YG-4cX"/>
                                     <constraint firstItem="mCd-Bd-dSz" firstAttribute="centerY" secondItem="W3w-9u-4Gg" secondAttribute="centerY" id="JM6-4t-u0D"/>
-                                    <constraint firstItem="Sqh-Tr-1XP" firstAttribute="height" secondItem="W3w-9u-4Gg" secondAttribute="height" id="VSg-8v-Zvh"/>
                                     <constraint firstItem="YtR-ZD-uKp" firstAttribute="trailing" secondItem="fTN-8v-HzS" secondAttribute="leading" constant="-5" id="Ymt-Xt-tpL"/>
+                                    <constraint firstItem="fTN-8v-HzS" firstAttribute="height" secondItem="mCd-Bd-dSz" secondAttribute="height" id="adt-pU-tPo"/>
                                     <constraint firstItem="fTN-8v-HzS" firstAttribute="trailing" secondItem="Sqh-Tr-1XP" secondAttribute="leading" constant="-5" id="dNZ-eQ-uEV"/>
-                                    <constraint firstItem="mCd-Bd-dSz" firstAttribute="height" secondItem="W3w-9u-4Gg" secondAttribute="height" id="fms-cf-6to"/>
-                                    <constraint firstItem="YtR-ZD-uKp" firstAttribute="height" secondItem="W3w-9u-4Gg" secondAttribute="height" id="g5e-rm-EJp"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHo-mc-gVi" userLabel="Activity Output 3" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="601" y="245.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0P-wN-aiS" userLabel="Activity Input 4" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="10" y="299.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="9" id="NvQ-ph-v9t"/>
                                     <constraint firstAttribute="height" constant="9" id="zcR-O3-she"/>
@@ -850,87 +862,84 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2ZB-wz-a4c"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="PopupView">
-                                <rect key="frame" x="446" y="283.5" width="150" height="41"/>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="PopupView">
+                                <rect key="frame" x="446" y="282.5" width="150" height="43"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
-                                        <rect key="frame" x="115" y="0.0" width="30" height="41"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
+                                        <rect key="frame" x="115" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="BZa-R8-yPz"/>
+                                            <constraint firstAttribute="height" constant="30" id="Gke-sl-vbo"/>
                                         </constraints>
-                                        <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal">
+                                        <state key="normal" image="xmark">
                                             <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
-                                        <buttonConfiguration key="configuration" style="plain">
-                                            <color key="baseForegroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jX5-45-yPY"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="USs-du-xYp" userLabel="Clear 4">
-                                        <rect key="frame" x="80" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="80" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="c5a-eP-x8h"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemRedColor"/>
+                                        <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="trash" catalog="system">
+                                        <state key="normal" image="trash">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
-                                        <state key="selected" image="questionmark" catalog="system"/>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L93-Y7-Px0"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wBn-hq-Mac" userLabel="Export 4">
-                                        <rect key="frame" x="45" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="45" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="VSP-an-wES"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemGreenColor"/>
+                                        <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.up" catalog="system">
+                                        <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EM-YM-mRQ" userLabel="Import 4">
-                                        <rect key="frame" x="10" y="0.0" width="30" height="41"/>
+                                        <rect key="frame" x="10" y="6.5" width="30" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="X8t-WP-RU5"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                        <color key="tintColor" systemColor="systemBlueColor"/>
+                                        <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="square.and.arrow.down" catalog="system">
+                                        <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="ActivityOff"/>
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="wBn-hq-Mac" firstAttribute="trailing" secondItem="USs-du-xYp" secondAttribute="leading" constant="-5" id="0Dn-do-I7O"/>
-                                    <constraint firstItem="wBn-hq-Mac" firstAttribute="height" secondItem="w3P-gv-2c3" secondAttribute="height" id="4fb-kU-rld"/>
+                                    <constraint firstItem="wBn-hq-Mac" firstAttribute="height" secondItem="eTs-9f-lX9" secondAttribute="height" id="0jr-jD-4da"/>
                                     <constraint firstItem="USs-du-xYp" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="8q2-xC-Ldb"/>
                                     <constraint firstItem="5EM-YM-mRQ" firstAttribute="trailing" secondItem="wBn-hq-Mac" secondAttribute="leading" constant="-5" id="9O2-iN-JA6"/>
                                     <constraint firstItem="eTs-9f-lX9" firstAttribute="leading" secondItem="USs-du-xYp" secondAttribute="trailing" constant="5" id="H8h-s6-h1b"/>
-                                    <constraint firstItem="USs-du-xYp" firstAttribute="height" secondItem="w3P-gv-2c3" secondAttribute="height" id="U9f-gy-6bl"/>
-                                    <constraint firstItem="5EM-YM-mRQ" firstAttribute="height" secondItem="w3P-gv-2c3" secondAttribute="height" id="WAh-aZ-h0f"/>
+                                    <constraint firstItem="5EM-YM-mRQ" firstAttribute="height" secondItem="eTs-9f-lX9" secondAttribute="height" id="LcI-1N-Hge"/>
+                                    <constraint firstItem="USs-du-xYp" firstAttribute="height" secondItem="eTs-9f-lX9" secondAttribute="height" id="Sja-wo-TeP"/>
                                     <constraint firstAttribute="trailing" secondItem="eTs-9f-lX9" secondAttribute="trailing" constant="5" id="bJ4-fz-Zdu"/>
                                     <constraint firstItem="eTs-9f-lX9" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="gsc-xU-YPw"/>
                                     <constraint firstItem="5EM-YM-mRQ" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="jvK-aD-eZm"/>
                                     <constraint firstAttribute="width" constant="150" id="tOX-eg-yRu"/>
-                                    <constraint firstItem="eTs-9f-lX9" firstAttribute="height" secondItem="w3P-gv-2c3" secondAttribute="height" id="y9X-I9-PTC"/>
                                     <constraint firstItem="wBn-hq-Mac" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="yhT-WT-Ucc"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JvP-xG-YoT" userLabel="Activity Output 4" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="601" y="299.5" width="9" height="9"/>
-                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="6lC-67-2Tl" userLabel="Statistics">
                                 <rect key="frame" x="89" y="330" width="437" height="30"/>
@@ -965,10 +974,10 @@ RECORDER</string>
                                 </constraints>
                             </stackView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ThN-br-DQT" userLabel="About" customClass="PopupView">
-                                <rect key="frame" x="144" y="138" width="327.5" height="170"/>
+                                <rect key="frame" x="155.5" y="138" width="304" height="170"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DhA-sn-ssN">
-                                        <rect key="frame" x="61.5" y="25" width="204.5" height="45.5"/>
+                                        <rect key="frame" x="50" y="25" width="204.5" height="45.5"/>
                                         <string key="text">Created by Geert Bevin as free and
 open-source software, distributed
 under the CC BY 4.0 License.</string>
@@ -976,10 +985,10 @@ under the CC BY 4.0 License.</string>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yXG-nZ-ST5">
-                                        <rect key="frame" x="20" y="80.5" width="287.5" height="29.5"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yXG-nZ-ST5" userLabel="Website">
+                                        <rect key="frame" x="20" y="80.5" width="264" height="27"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Button">
                                             <attributedString key="attributedTitle">
                                                 <fragment content="https://github.com/gbevin/MIDITapeRecorder">
                                                     <attributes>
@@ -991,49 +1000,43 @@ under the CC BY 4.0 License.</string>
                                                     </attributes>
                                                 </fragment>
                                             </attributedString>
-                                        </buttonConfiguration>
+                                        </state>
                                         <connections>
                                             <action selector="openWebSite:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gsM-uH-Nam"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x2Z-ji-q1f">
-                                        <rect key="frame" x="91.5" y="120" width="144" height="28"/>
-                                        <color key="tintColor" systemColor="systemOrangeColor"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="tinted">
-                                            <attributedString key="attributedTitle">
-                                                <fragment content="RATE ON APP STORE">
-                                                    <attributes>
-                                                        <font key="NSFont" size="12" name="HelveticaNeue"/>
-                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                    </attributes>
-                                                </fragment>
-                                            </attributedString>
-                                        </buttonConfiguration>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x2Z-ji-q1f" userLabel="Rate on App Store">
+                                        <rect key="frame" x="92" y="117.5" width="120" height="26"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        <color key="tintColor" name="Orange"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="RATE ON APP STORE">
+                                            <color key="titleColor" name="Orange"/>
+                                        </state>
                                         <connections>
                                             <action selector="leaveRating:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NG9-nA-evW"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8o1-AK-uJN" userLabel="Close About">
-                                        <rect key="frame" x="302.5" y="5" width="20" height="20"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8o1-AK-uJN" userLabel="Close About">
+                                        <rect key="frame" x="279" y="5" width="20" height="20"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="20" id="aWK-Zv-QGJ"/>
                                             <constraint firstAttribute="height" constant="20" id="pq4-j2-adA"/>
                                         </constraints>
                                         <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <buttonConfiguration key="configuration" style="plain"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="xmark"/>
                                         <connections>
                                             <action selector="closeAboutView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rvB-0f-XLE"/>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="yXG-nZ-ST5" firstAttribute="trailing" secondItem="ThN-br-DQT" secondAttribute="trailing" constant="-20" id="Fwu-DB-6Ph"/>
                                     <constraint firstAttribute="height" constant="170" id="Gae-5f-foU"/>
                                     <constraint firstItem="yXG-nZ-ST5" firstAttribute="leading" secondItem="ThN-br-DQT" secondAttribute="leading" constant="20" id="Ixc-h3-gqG"/>
                                     <constraint firstItem="8o1-AK-uJN" firstAttribute="top" secondItem="ThN-br-DQT" secondAttribute="top" constant="5" id="Kzy-HA-Xp6"/>
-                                    <constraint firstItem="yXG-nZ-ST5" firstAttribute="centerX" secondItem="ThN-br-DQT" secondAttribute="centerX" id="Np8-Ne-Fbj"/>
                                     <constraint firstItem="DhA-sn-ssN" firstAttribute="centerX" secondItem="ThN-br-DQT" secondAttribute="centerX" id="WMQ-nN-ydF"/>
                                     <constraint firstItem="x2Z-ji-q1f" firstAttribute="centerX" secondItem="ThN-br-DQT" secondAttribute="centerX" id="bI3-TI-cR1"/>
                                     <constraint firstItem="yXG-nZ-ST5" firstAttribute="top" secondItem="DhA-sn-ssN" secondAttribute="bottom" constant="10" id="f0H-G6-CFr"/>
@@ -1048,6 +1051,7 @@ under the CC BY 4.0 License.</string>
                         <constraints>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="top" secondItem="dom-KY-gSl" secondAttribute="top" id="0YH-Oe-F7m"/>
                             <constraint firstItem="YHo-mc-gVi" firstAttribute="height" secondItem="DG3-EF-njW" secondAttribute="height" id="1qZ-W5-Vu4"/>
+                            <constraint firstItem="Ia4-KR-jE3" firstAttribute="leading" secondItem="qqe-xS-Dtb" secondAttribute="leading" id="2MD-pT-Vg9"/>
                             <constraint firstItem="hXW-n3-IFc" firstAttribute="centerX" secondItem="if6-Qg-HAU" secondAttribute="centerX" id="2lQ-if-cRU"/>
                             <constraint firstItem="3pU-49-ygj" firstAttribute="centerY" secondItem="8lV-Pg-F8C" secondAttribute="centerY" id="2xc-5A-837"/>
                             <constraint firstItem="bKj-4Y-TLw" firstAttribute="top" secondItem="u2v-qu-mbu" secondAttribute="top" constant="20" id="2yB-Xk-CIx"/>
@@ -1055,7 +1059,6 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="w3P-gv-2c3" firstAttribute="trailing" secondItem="y7b-zS-fgR" secondAttribute="trailing" id="4rm-vQ-gPH"/>
                             <constraint firstItem="p1L-p9-aSY" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="5FN-Xq-UKT"/>
                             <constraint firstItem="w3P-gv-2c3" firstAttribute="centerY" secondItem="y7b-zS-fgR" secondAttribute="centerY" id="5Hr-8G-4Ed"/>
-                            <constraint firstItem="JCp-rm-sDC" firstAttribute="leading" secondItem="qqe-xS-Dtb" secondAttribute="leading" id="5O1-a2-Tgb"/>
                             <constraint firstItem="UOr-iO-bt0" firstAttribute="centerY" secondItem="JdH-dA-fdD" secondAttribute="centerY" id="6YJ-wI-JZh"/>
                             <constraint firstItem="JdH-dA-fdD" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="6b5-DF-Lff"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="height" secondItem="dom-KY-gSl" secondAttribute="height" id="7Yz-JS-p4A"/>
@@ -1074,9 +1077,11 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="leading" secondItem="jiJ-Fl-4eE" secondAttribute="trailing" id="L0r-3C-zBW"/>
                             <constraint firstItem="bKj-4Y-TLw" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="u2v-qu-mbu" secondAttribute="trailing" id="Lcy-op-daL"/>
                             <constraint firstItem="0ea-4c-QY8" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="MIR-v0-RY4"/>
+                            <constraint firstItem="w3P-gv-2c3" firstAttribute="height" secondItem="y7b-zS-fgR" secondAttribute="height" constant="-10" id="MrP-Jh-5HH"/>
                             <constraint firstItem="5s5-fr-Amh" firstAttribute="trailing" secondItem="if6-Qg-HAU" secondAttribute="trailing" id="N4G-TG-8TO"/>
                             <constraint firstItem="ThN-br-DQT" firstAttribute="centerX" secondItem="tCM-sv-7no" secondAttribute="centerX" id="N5i-Ep-ZWF"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="height" secondItem="w1R-ec-Xai" secondAttribute="height" constant="-10" id="Ptz-Id-hzK"/>
+                            <constraint firstItem="W3w-9u-4Gg" firstAttribute="height" secondItem="Vnj-Hq-OLf" secondAttribute="height" constant="-10" id="S4n-wv-Uyn"/>
                             <constraint firstItem="VuI-3k-Ts7" firstAttribute="centerX" secondItem="xcR-Mq-hiL" secondAttribute="centerX" id="Slo-I0-WM7"/>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="TGK-Fj-WcC"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="leading" secondItem="u2v-qu-mbu" secondAttribute="leading" constant="10" id="UPc-Id-CSi"/>
@@ -1100,6 +1105,7 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="cml-GG-nYY" firstAttribute="centerX" secondItem="p1L-p9-aSY" secondAttribute="centerX" id="eMI-Tc-qYp"/>
                             <constraint firstItem="6lC-67-2Tl" firstAttribute="top" secondItem="tCM-sv-7no" secondAttribute="bottom" id="edH-Pn-ugR"/>
                             <constraint firstItem="jiJ-Fl-4eE" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="f16-Uh-nfj"/>
+                            <constraint firstItem="UOr-iO-bt0" firstAttribute="height" secondItem="JdH-dA-fdD" secondAttribute="height" constant="-10" id="f4C-1Y-tEH"/>
                             <constraint firstItem="xcR-Mq-hiL" firstAttribute="centerY" secondItem="8lV-Pg-F8C" secondAttribute="centerY" id="fqz-X5-XMf"/>
                             <constraint firstItem="y7b-zS-fgR" firstAttribute="centerX" secondItem="Vnj-Hq-OLf" secondAttribute="centerX" id="gqP-sy-6eX"/>
                             <constraint firstItem="c0P-wN-aiS" firstAttribute="centerX" secondItem="DG3-EF-njW" secondAttribute="centerX" id="hS2-VW-1gs"/>
@@ -1117,9 +1123,9 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="W3w-9u-4Gg" firstAttribute="centerY" secondItem="Vnj-Hq-OLf" secondAttribute="centerY" id="sBM-FU-VHV"/>
                             <constraint firstItem="YHo-mc-gVi" firstAttribute="width" secondItem="DG3-EF-njW" secondAttribute="width" id="tOu-qi-av1"/>
                             <constraint firstItem="uiz-2Z-3Gl" firstAttribute="height" secondItem="0ea-4c-QY8" secondAttribute="height" id="u0T-TT-f1l"/>
+                            <constraint firstItem="Ia4-KR-jE3" firstAttribute="trailing" secondItem="blx-LE-LOD" secondAttribute="trailing" id="uMR-G6-1Yc"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="trailing" secondItem="w1R-ec-Xai" secondAttribute="trailing" id="uc2-2X-PUP"/>
                             <constraint firstItem="6lC-67-2Tl" firstAttribute="trailing" secondItem="tCM-sv-7no" secondAttribute="trailing" id="vBM-XW-nO2"/>
-                            <constraint firstItem="JCp-rm-sDC" firstAttribute="trailing" secondItem="blx-LE-LOD" secondAttribute="trailing" id="wLN-ti-6Ci"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="centerY" secondItem="w1R-ec-Xai" secondAttribute="centerY" id="wUU-8e-fTP"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="width" secondItem="dom-KY-gSl" secondAttribute="width" id="xmK-hQ-PaU"/>
                             <constraint firstItem="kFp-mR-8eu" firstAttribute="centerX" secondItem="3pU-49-ygj" secondAttribute="centerX" id="xnX-GL-FPi"/>
@@ -1210,39 +1216,46 @@ under the CC BY 4.0 License.</string>
         </scene>
     </scenes>
     <resources>
-        <image name="backward.end" catalog="system" width="128" height="120"/>
-        <image name="backward.end.fill" catalog="system" width="128" height="102"/>
-        <image name="play" catalog="system" width="120" height="128"/>
-        <image name="play.fill" catalog="system" width="116" height="128"/>
-        <image name="questionmark" catalog="system" width="96" height="128"/>
-        <image name="questionmark.circle" catalog="system" width="128" height="121"/>
-        <image name="questionmark.circle.fill" catalog="system" width="128" height="121"/>
-        <image name="record.circle" catalog="system" width="128" height="121"/>
-        <image name="record.circle.fill" catalog="system" width="128" height="121"/>
-        <image name="repeat" catalog="system" width="128" height="98"/>
-        <image name="square.and.arrow.down" catalog="system" width="121" height="128"/>
-        <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
-        <image name="trash" catalog="system" width="121" height="128"/>
+        <image name="backward_end" width="135" height="135"/>
+        <image name="backward_end_fill" width="135" height="135"/>
+        <image name="play" width="135" height="135"/>
+        <image name="play_fill" width="135" height="135"/>
+        <image name="questionmark" width="135" height="135"/>
+        <image name="questionmark_circle" width="135" height="135"/>
+        <image name="questionmark_circle_fill" width="135" height="135"/>
+        <image name="record_circle" width="135" height="135"/>
+        <image name="record_circle_fill" width="135" height="135"/>
+        <image name="repeat" width="135" height="135"/>
+        <image name="square_and_arrow_down" width="135" height="135"/>
+        <image name="square_and_arrow_up" width="135" height="135"/>
+        <image name="trash" width="135" height="135"/>
+        <image name="xmark" width="135" height="135"/>
         <namedColor name="ActivityOff">
-            <color white="0.31000000238418579" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <color red="0.30980392156862746" green="0.30980392156862746" blue="0.32156862745098042" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
         </namedColor>
-        <systemColor name="systemBlueColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemGray2Color">
-            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemGray5Color">
-            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemGray6Color">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
+        <namedColor name="Blue">
+            <color red="0.039215686274509803" green="0.51764705882352946" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Gray0">
+            <color red="0.66666666666666663" green="0.66666666666666663" blue="0.68627450980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Gray2">
+            <color red="0.33333333333333331" green="0.33333333333333331" blue="0.34509803921568627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Gray6">
+            <color red="0.10980392156862745" green="0.10980392156862745" blue="0.11764705882352941" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Green">
+            <color red="0.18823529411764706" green="0.81960784313725488" blue="0.34509803921568627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Orange">
+            <color red="1" green="0.62352941176470589" blue="0.039215686274509803" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Red">
+            <color red="1" green="0.27058823529411763" blue="0.22745098039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemOrangeColor">
-            <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

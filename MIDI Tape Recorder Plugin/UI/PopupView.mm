@@ -17,8 +17,6 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     
-    self.backgroundColor = UIColor.clearColor;
-    
     self.layer.shadowColor = UIColor.blackColor.CGColor;
     self.layer.shadowOffset = CGSizeMake(0.0, 0.0);
     self.layer.shadowOpacity = 0.7;
@@ -42,7 +40,7 @@
     CGContextAddPath(context, createRoundedCornerPath(CGRectInset(self.bounds, outline_stroke_width, outline_stroke_width),
                                                       outline_corner_radius));
 
-    CGContextSetFillColorWithColor(context, UIColor.systemGray5Color.CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray5"].CGColor);
     CGContextSetStrokeColorWithColor(context, UIColor.blackColor.CGColor);
     CGContextSetLineWidth(context, outline_stroke_width);
     CGContextDrawPath(context, kCGPathFillStroke);

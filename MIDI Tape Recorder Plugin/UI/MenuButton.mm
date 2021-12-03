@@ -12,12 +12,6 @@
 
 @implementation MenuButton
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    
-    self.backgroundColor = UIColor.clearColor;
-}
-
 - (void)layoutSubviews {
     [super layoutSubviews];
     
@@ -28,6 +22,8 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextSaveGState(context);
+    
+    CGContextClearRect(context, self.bounds);
 
     if (self.highlighted) {
         CGContextSetFillColorWithColor(context, UIColor.lightGrayColor.CGColor);

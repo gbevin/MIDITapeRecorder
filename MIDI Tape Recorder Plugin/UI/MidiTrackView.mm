@@ -17,8 +17,6 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.backgroundColor = UIColor.systemGray4Color;
-    
     [self setNeedsDisplay];
 }
 
@@ -27,8 +25,11 @@
     
     CGContextSaveGState(context);
 
+    CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray4"].CGColor);
+    CGContextFillRect(context, self.bounds);
+
     for (int x = 0; x < self.frame.size.width; ++x) {
-        CGContextSetStrokeColorWithColor(context, [UIColor darkGrayColor].CGColor);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorNamed:@"Gray2"].CGColor);
         if (x % PIXELS_PER_SECOND == 0) {
             CGContextMoveToPoint(context, x, 0.0);
             CGContextAddLineToPoint(context, x, self.frame.size.height);
@@ -39,7 +40,7 @@
         if (preview != nil && x < preview.length) {
             uint8_t activity = ((uint8_t*)preview.bytes)[x];
             if (activity != 0) {
-                CGContextSetStrokeColorWithColor(context, [UIColor systemTealColor].CGColor);
+                CGContextSetStrokeColorWithColor(context, [UIColor colorNamed:@"Teal"].CGColor);
                 CGContextMoveToPoint(context, x, self.frame.size.height);
                 float v = MIN(((float)activity / MAX_PREVIEW_EVENTS), 1.f);
                 v = pow(v, 1.0/2.0);
