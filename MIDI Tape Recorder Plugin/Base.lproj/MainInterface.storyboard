@@ -6,7 +6,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,11 +14,11 @@
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="AudioUnitViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                    <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="620" height="428"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bKj-4Y-TLw" userLabel="Toolbar">
+                            <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bKj-4Y-TLw" userLabel="Toolbar">
                                 <rect key="frame" x="0.0" y="44" width="620" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5s5-fr-Amh" userLabel="Routing">
@@ -1046,7 +1045,6 @@ under the CC BY 4.0 License.</string>
                                 </constraints>
                             </view>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="u2v-qu-mbu"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="top" secondItem="dom-KY-gSl" secondAttribute="top" id="0YH-Oe-F7m"/>
@@ -1084,7 +1082,7 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="W3w-9u-4Gg" firstAttribute="height" secondItem="Vnj-Hq-OLf" secondAttribute="height" constant="-10" id="S4n-wv-Uyn"/>
                             <constraint firstItem="VuI-3k-Ts7" firstAttribute="centerX" secondItem="xcR-Mq-hiL" secondAttribute="centerX" id="Slo-I0-WM7"/>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="TGK-Fj-WcC"/>
-                            <constraint firstItem="dom-KY-gSl" firstAttribute="leading" secondItem="u2v-qu-mbu" secondAttribute="leading" constant="10" id="UPc-Id-CSi"/>
+                            <constraint firstItem="dom-KY-gSl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="UPc-Id-CSi"/>
                             <constraint firstItem="W3w-9u-4Gg" firstAttribute="trailing" secondItem="Vnj-Hq-OLf" secondAttribute="trailing" id="Uim-WL-hxx"/>
                             <constraint firstItem="YHo-mc-gVi" firstAttribute="top" secondItem="DG3-EF-njW" secondAttribute="top" id="VfH-LP-m9w"/>
                             <constraint firstItem="c0P-wN-aiS" firstAttribute="centerY" secondItem="ckn-XQ-W53" secondAttribute="centerY" id="Vr2-Y9-gmK"/>
