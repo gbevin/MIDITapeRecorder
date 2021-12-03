@@ -12,6 +12,7 @@
 #include "HostTime.h"
 
 #import "ActivityIndicatorView.h"
+#import "MenuPopupView.h"
 #import "MidiQueueProcessor.h"
 #import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
@@ -59,6 +60,41 @@
 @property (weak, nonatomic) IBOutlet UIButton* muteButton3;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton4;
 
+@property (weak, nonatomic) IBOutlet UIButton* menuButton1;
+@property (weak, nonatomic) IBOutlet UIButton* menuButton2;
+@property (weak, nonatomic) IBOutlet UIButton* menuButton3;
+@property (weak, nonatomic) IBOutlet UIButton* menuButton4;
+
+@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup1;
+@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup2;
+@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup3;
+@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup4;
+
+@property (weak, nonatomic) IBOutlet UIButton* closeMenuButton1;
+@property (weak, nonatomic) IBOutlet UIButton* closeMenuButton2;
+@property (weak, nonatomic) IBOutlet UIButton* closeMenuButton3;
+@property (weak, nonatomic) IBOutlet UIButton* closeMenuButton4;
+
+@property (weak, nonatomic) IBOutlet UIButton* clearButton1;
+@property (weak, nonatomic) IBOutlet UIButton* clearButton2;
+@property (weak, nonatomic) IBOutlet UIButton* clearButton3;
+@property (weak, nonatomic) IBOutlet UIButton* clearButton4;
+
+@property (weak, nonatomic) IBOutlet UIButton* exportButton1;
+@property (weak, nonatomic) IBOutlet UIButton* exportButton2;
+@property (weak, nonatomic) IBOutlet UIButton* exportButton3;
+@property (weak, nonatomic) IBOutlet UIButton* exportButton4;
+
+@property (weak, nonatomic) IBOutlet UIButton* importButton1;
+@property (weak, nonatomic) IBOutlet UIButton* importButton2;
+@property (weak, nonatomic) IBOutlet UIButton* importButton3;
+@property (weak, nonatomic) IBOutlet UIButton* importButton4;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth1;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth2;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth3;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth4;
+
 @property (weak, nonatomic) IBOutlet UIScrollView* tracks;
 
 @property (weak, nonatomic) IBOutlet TimelineView* timeline;
@@ -105,6 +141,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _menuPopup1.hidden = YES;
+    _menuPopup2.hidden = YES;
+    _menuPopup3.hidden = YES;
+    _menuPopup4.hidden = YES;
+
     _timer = [[UIScreen mainScreen] displayLinkWithTarget:self
                                                  selector:@selector(renderloop)];
     _timer.preferredFramesPerSecond = 30;
@@ -221,6 +262,97 @@
     sender.selected = !sender.selected;
     
     [self updateMuteState];
+}
+
+- (IBAction)menuPressed:(UIButton*)sender {
+    _menuPopup1.hidden = YES;
+    _menuPopup2.hidden = YES;
+    _menuPopup3.hidden = YES;
+    _menuPopup4.hidden = YES;
+
+    NSLayoutConstraint* width_constraint = nil;
+    UIView* menu_popup_view = nil;
+    
+    if (sender == _menuButton1) {
+        width_constraint = _menuPopupWidth1;
+        menu_popup_view = _menuPopup1;
+    }
+    else if (sender == _menuButton2) {
+        width_constraint = _menuPopupWidth2;
+        menu_popup_view = _menuPopup2;
+    }
+    else if (sender == _menuButton3) {
+        width_constraint = _menuPopupWidth3;
+        menu_popup_view = _menuPopup3;
+    }
+    else if (sender == _menuButton4) {
+        width_constraint = _menuPopupWidth4;
+        menu_popup_view = _menuPopup4;
+    }
+    
+    if (width_constraint != nil && menu_popup_view != nil) {
+        width_constraint.constant = 40.0;
+        
+        menu_popup_view.alpha = 0.0;
+        for (UIButton* b in menu_popup_view.subviews) {
+            b.selected = NO;
+            b.alpha = 0.0;
+        }
+        
+        menu_popup_view.hidden = NO;
+        
+        [self.view layoutIfNeeded];
+        
+        [UIView animateWithDuration:0.2
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^() {
+            width_constraint.constant = 150.0;
+            
+            menu_popup_view.alpha = 1.0;
+            for (UIView* v in menu_popup_view.subviews) {
+                v.alpha = 1.0;
+            }
+
+            [self.view layoutIfNeeded];
+        }
+                         completion:^(BOOL finished) {}];
+    }
+}
+
+- (IBAction)closeMenuPressed:(UIButton*)sender {
+    _menuPopup1.hidden = YES;
+    _menuPopup2.hidden = YES;
+    _menuPopup3.hidden = YES;
+    _menuPopup4.hidden = YES;
+}
+
+- (IBAction)clearPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (!sender.selected) {
+        if (sender == _clearButton1) {
+            [[_midiQueueProcessor recorder:0] clear];
+            [_midiTrack1 setNeedsDisplay];
+        }
+        else if (sender == _clearButton2) {
+            [[_midiQueueProcessor recorder:1] clear];
+            [_midiTrack2 setNeedsDisplay];
+        }
+        else if (sender == _clearButton3) {
+            [[_midiQueueProcessor recorder:2] clear];
+            [_midiTrack3 setNeedsDisplay];
+        }
+        else if (sender == _clearButton4) {
+            [[_midiQueueProcessor recorder:3] clear];
+            [_midiTrack4 setNeedsDisplay];
+        }
+    }
+}
+
+- (IBAction)exportPressed:(UIButton*)sender {
+}
+
+- (IBAction)importPressed:(UIButton*)sender {
 }
 
 #pragma mark - State

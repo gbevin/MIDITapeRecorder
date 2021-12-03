@@ -29,7 +29,12 @@
     
     CGContextSaveGState(context);
 
-    CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOff"].CGColor);
+    if (self.highlighted) {
+        CGContextSetFillColorWithColor(context, UIColor.lightGrayColor.CGColor);
+    }
+    else {
+        CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOff"].CGColor);
+    }
     CGFloat y_center = self.bounds.size.height / 2 - 1;
     CGContextFillRect(context, CGRectMake(5, y_center - 9, self.bounds.size.width - 10, 2));
     CGContextFillRect(context, CGRectMake(5, y_center, self.bounds.size.width - 10, 2));

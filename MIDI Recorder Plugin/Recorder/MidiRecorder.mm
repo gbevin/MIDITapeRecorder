@@ -200,6 +200,26 @@
     });
 }
 
+- (void)clear {
+    _record = NO;
+
+    _recordingFirstMessageTime = 0.0;
+
+    _recording = [NSMutableData new];
+    _recordingPreview = [NSMutableData new];
+    _recordingDurationSeconds = 0.0;
+    _recordingCount = 0;
+
+    _recorded = nil;
+    _recordedPreview = nil;
+    _recordedDurationSeconds = 0.0;
+    _recordedCount = 0;
+    
+    if (_delegate) {
+        [_delegate invalidateRecording:_ordinal];
+    }
+}
+
 - (void)ping {
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record && _recording != nil) {

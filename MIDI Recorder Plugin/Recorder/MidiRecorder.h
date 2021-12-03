@@ -29,6 +29,7 @@ class MidiRecorderState;
 
 - (void)setState:(MidiRecorderState*)state;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
+- (void)clear;
 
 - (void)ping;
 
