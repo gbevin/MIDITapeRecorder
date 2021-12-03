@@ -140,37 +140,6 @@
         }
         
         _autoPlayFromRecord = NO;
-        
-//        UIColor* color;
-//        CGFloat red, green, blue, alpha;
-//
-//        color = UIColor.systemRedColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"systemRedColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
-//
-//        color = UIColor.systemGreenColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"systemGreenColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
-//
-//        color = UIColor.systemBlueColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"systemBlueColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
-//
-//        color = UIColor.systemOrangeColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"systemOrangeColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
-//
-//        color = UIColor.systemTealColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"systemTealColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
-//
-//        color = UIColor.darkGrayColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"darkGrayColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
-//
-//        color = UIColor.lightGrayColor;
-//        [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//        NSLog(@"lightGrayColor #%02x%02x%02x", int(red * 255), int(green * 255), int(blue * 255));
     }
     
     return self;
