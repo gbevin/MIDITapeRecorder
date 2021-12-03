@@ -145,12 +145,32 @@ RECORDER</string>
                                         </attributedString>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JCp-rm-sDC" userLabel="About">
+                                        <rect key="frame" x="531" y="3" width="79" height="24"/>
+                                        <gestureRecognizers/>
+                                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
+                                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal">
+                                            <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <imageReference key="image" image="questionmark.circle" catalog="system" symbolScale="large"/>
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                        </state>
+                                        <state key="selected">
+                                            <imageReference key="image" image="questionmark.circle.fill" catalog="system" symbolScale="large"/>
+                                            <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="aboutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Aw6-0W-xUV"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerX" secondItem="bKj-4Y-TLw" secondAttribute="centerX" id="7MN-dv-hpE"/>
                                     <constraint firstAttribute="height" constant="30" id="AMi-cf-cbc"/>
                                     <constraint firstItem="ESp-f1-BSZ" firstAttribute="leading" secondItem="5s5-fr-Amh" secondAttribute="trailing" id="ByR-RR-1h6"/>
+                                    <constraint firstItem="JCp-rm-sDC" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="Csh-Tw-z2J"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="DfR-Ij-zpC"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="leading" secondItem="ESp-f1-BSZ" secondAttribute="trailing" id="UuW-CJ-OWA"/>
                                     <constraint firstAttribute="width" priority="950" constant="620" id="VMz-hs-c5P"/>
@@ -351,20 +371,17 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ovp-GH-bJD"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="MenuPopupView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
                                 <rect key="frame" x="446" y="120.5" width="150" height="43"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
                                         <rect key="frame" x="115" y="0.0" width="30" height="43"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="u9i-6b-A2Q"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="multiply" catalog="system">
-                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
+                                        <buttonConfiguration key="configuration" style="plain"/>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Swn-cj-3wN"/>
                                         </connections>
@@ -512,20 +529,22 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pAH-6j-kwp"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="MenuPopupView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="PopupView">
                                 <rect key="frame" x="446" y="175.5" width="150" height="41"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
                                         <rect key="frame" x="115" y="0.0" width="30" height="41"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="IMD-Q5-czK"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="multiply" catalog="system">
+                                        <state key="normal">
                                             <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <buttonConfiguration key="configuration" style="plain">
+                                            <color key="baseForegroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="m8d-O9-pCl"/>
                                         </connections>
@@ -673,20 +692,17 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mAh-Wq-Kbe"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="MenuPopupView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="PopupView">
                                 <rect key="frame" x="446" y="229.5" width="150" height="41"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
                                         <rect key="frame" x="115" y="0.0" width="30" height="41"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="odi-43-OhZ"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="multiply" catalog="system">
-                                            <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
+                                        <buttonConfiguration key="configuration" style="plain"/>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wiE-nB-Qxw"/>
                                         </connections>
@@ -834,20 +850,22 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2ZB-wz-a4c"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="MenuPopupView">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="PopupView">
                                 <rect key="frame" x="446" y="283.5" width="150" height="41"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
                                         <rect key="frame" x="115" y="0.0" width="30" height="41"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="30" id="BZa-R8-yPz"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="multiply" catalog="system">
+                                        <state key="normal">
                                             <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <buttonConfiguration key="configuration" style="plain">
+                                            <color key="baseForegroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jX5-45-yPY"/>
                                         </connections>
@@ -946,6 +964,84 @@ RECORDER</string>
                                     <constraint firstAttribute="height" constant="30" id="pyv-nC-Yjf"/>
                                 </constraints>
                             </stackView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ThN-br-DQT" userLabel="About" customClass="PopupView">
+                                <rect key="frame" x="144" y="138" width="327.5" height="170"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DhA-sn-ssN">
+                                        <rect key="frame" x="61.5" y="25" width="204.5" height="45.5"/>
+                                        <string key="text">Created by Geert Bevin as free and
+open-source software, distributed
+under the CC BY 4.0 License.</string>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yXG-nZ-ST5">
+                                        <rect key="frame" x="20" y="80.5" width="287.5" height="29.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain">
+                                            <attributedString key="attributedTitle">
+                                                <fragment content="https://github.com/gbevin/MIDITapeRecorder">
+                                                    <attributes>
+                                                        <color key="NSColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <font key="NSFont" size="13" name="HelveticaNeue"/>
+                                                        <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                        <integer key="NSUnderline" value="1"/>
+                                                        <color key="NSUnderlineColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="openWebSite:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gsM-uH-Nam"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x2Z-ji-q1f">
+                                        <rect key="frame" x="91.5" y="120" width="144" height="28"/>
+                                        <color key="tintColor" systemColor="systemOrangeColor"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="tinted">
+                                            <attributedString key="attributedTitle">
+                                                <fragment content="RATE ON APP STORE">
+                                                    <attributes>
+                                                        <font key="NSFont" size="12" name="HelveticaNeue"/>
+                                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                    </attributes>
+                                                </fragment>
+                                            </attributedString>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="leaveRating:" destination="BYZ-38-t0r" eventType="touchUpInside" id="NG9-nA-evW"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="close" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8o1-AK-uJN" userLabel="Close About">
+                                        <rect key="frame" x="302.5" y="5" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="20" id="aWK-Zv-QGJ"/>
+                                            <constraint firstAttribute="height" constant="20" id="pq4-j2-adA"/>
+                                        </constraints>
+                                        <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <buttonConfiguration key="configuration" style="plain"/>
+                                        <connections>
+                                            <action selector="closeAboutView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rvB-0f-XLE"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                <constraints>
+                                    <constraint firstItem="yXG-nZ-ST5" firstAttribute="trailing" secondItem="ThN-br-DQT" secondAttribute="trailing" constant="-20" id="Fwu-DB-6Ph"/>
+                                    <constraint firstAttribute="height" constant="170" id="Gae-5f-foU"/>
+                                    <constraint firstItem="yXG-nZ-ST5" firstAttribute="leading" secondItem="ThN-br-DQT" secondAttribute="leading" constant="20" id="Ixc-h3-gqG"/>
+                                    <constraint firstItem="8o1-AK-uJN" firstAttribute="top" secondItem="ThN-br-DQT" secondAttribute="top" constant="5" id="Kzy-HA-Xp6"/>
+                                    <constraint firstItem="yXG-nZ-ST5" firstAttribute="centerX" secondItem="ThN-br-DQT" secondAttribute="centerX" id="Np8-Ne-Fbj"/>
+                                    <constraint firstItem="DhA-sn-ssN" firstAttribute="centerX" secondItem="ThN-br-DQT" secondAttribute="centerX" id="WMQ-nN-ydF"/>
+                                    <constraint firstItem="x2Z-ji-q1f" firstAttribute="centerX" secondItem="ThN-br-DQT" secondAttribute="centerX" id="bI3-TI-cR1"/>
+                                    <constraint firstItem="yXG-nZ-ST5" firstAttribute="top" secondItem="DhA-sn-ssN" secondAttribute="bottom" constant="10" id="f0H-G6-CFr"/>
+                                    <constraint firstAttribute="trailing" secondItem="8o1-AK-uJN" secondAttribute="trailing" constant="5" id="hAU-ag-wp1"/>
+                                    <constraint firstItem="x2Z-ji-q1f" firstAttribute="top" secondItem="yXG-nZ-ST5" secondAttribute="bottom" constant="10" id="n7f-1I-eCl"/>
+                                    <constraint firstItem="DhA-sn-ssN" firstAttribute="top" secondItem="ThN-br-DQT" secondAttribute="top" constant="25" id="yNF-ju-nXh"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="u2v-qu-mbu"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -959,9 +1055,11 @@ RECORDER</string>
                             <constraint firstItem="w3P-gv-2c3" firstAttribute="trailing" secondItem="y7b-zS-fgR" secondAttribute="trailing" id="4rm-vQ-gPH"/>
                             <constraint firstItem="p1L-p9-aSY" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="5FN-Xq-UKT"/>
                             <constraint firstItem="w3P-gv-2c3" firstAttribute="centerY" secondItem="y7b-zS-fgR" secondAttribute="centerY" id="5Hr-8G-4Ed"/>
+                            <constraint firstItem="JCp-rm-sDC" firstAttribute="leading" secondItem="qqe-xS-Dtb" secondAttribute="leading" id="5O1-a2-Tgb"/>
                             <constraint firstItem="UOr-iO-bt0" firstAttribute="centerY" secondItem="JdH-dA-fdD" secondAttribute="centerY" id="6YJ-wI-JZh"/>
                             <constraint firstItem="JdH-dA-fdD" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="6b5-DF-Lff"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="height" secondItem="dom-KY-gSl" secondAttribute="height" id="7Yz-JS-p4A"/>
+                            <constraint firstItem="ThN-br-DQT" firstAttribute="centerY" secondItem="gzW-Zc-U4q" secondAttribute="centerY" id="7mj-a1-4Ty"/>
                             <constraint firstItem="qqe-xS-Dtb" firstAttribute="leading" secondItem="tCM-sv-7no" secondAttribute="trailing" constant="5" id="92U-kX-nJm"/>
                             <constraint firstItem="DIz-1j-u10" firstAttribute="centerX" secondItem="jiJ-Fl-4eE" secondAttribute="centerX" id="9Bg-dN-LNZ"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="trailing" secondItem="bKj-4Y-TLw" secondAttribute="trailing" constant="-10" id="AKx-K0-lPD"/>
@@ -977,6 +1075,7 @@ RECORDER</string>
                             <constraint firstItem="bKj-4Y-TLw" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="u2v-qu-mbu" secondAttribute="trailing" id="Lcy-op-daL"/>
                             <constraint firstItem="0ea-4c-QY8" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="MIR-v0-RY4"/>
                             <constraint firstItem="5s5-fr-Amh" firstAttribute="trailing" secondItem="if6-Qg-HAU" secondAttribute="trailing" id="N4G-TG-8TO"/>
+                            <constraint firstItem="ThN-br-DQT" firstAttribute="centerX" secondItem="tCM-sv-7no" secondAttribute="centerX" id="N5i-Ep-ZWF"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="height" secondItem="w1R-ec-Xai" secondAttribute="height" constant="-10" id="Ptz-Id-hzK"/>
                             <constraint firstItem="VuI-3k-Ts7" firstAttribute="centerX" secondItem="xcR-Mq-hiL" secondAttribute="centerX" id="Slo-I0-WM7"/>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="TGK-Fj-WcC"/>
@@ -1020,6 +1119,7 @@ RECORDER</string>
                             <constraint firstItem="uiz-2Z-3Gl" firstAttribute="height" secondItem="0ea-4c-QY8" secondAttribute="height" id="u0T-TT-f1l"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="trailing" secondItem="w1R-ec-Xai" secondAttribute="trailing" id="uc2-2X-PUP"/>
                             <constraint firstItem="6lC-67-2Tl" firstAttribute="trailing" secondItem="tCM-sv-7no" secondAttribute="trailing" id="vBM-XW-nO2"/>
+                            <constraint firstItem="JCp-rm-sDC" firstAttribute="trailing" secondItem="blx-LE-LOD" secondAttribute="trailing" id="wLN-ti-6Ci"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="centerY" secondItem="w1R-ec-Xai" secondAttribute="centerY" id="wUU-8e-fTP"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="width" secondItem="dom-KY-gSl" secondAttribute="width" id="xmK-hQ-PaU"/>
                             <constraint firstItem="kFp-mR-8eu" firstAttribute="centerX" secondItem="3pU-49-ygj" secondAttribute="centerX" id="xnX-GL-FPi"/>
@@ -1034,6 +1134,8 @@ RECORDER</string>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <size key="freeformSize" width="620" height="428"/>
                     <connections>
+                        <outlet property="aboutButton" destination="JCp-rm-sDC" id="jm6-u8-fSE"/>
+                        <outlet property="aboutView" destination="ThN-br-DQT" id="Ntx-5d-e7p"/>
                         <outlet property="clearButton1" destination="iYd-rc-sVS" id="aXl-Vg-cLH"/>
                         <outlet property="clearButton2" destination="yUW-33-hCc" id="tF9-sv-RiP"/>
                         <outlet property="clearButton3" destination="Sqh-Tr-1XP" id="NMU-d3-f2T"/>
@@ -1110,10 +1212,11 @@ RECORDER</string>
     <resources>
         <image name="backward.end" catalog="system" width="128" height="120"/>
         <image name="backward.end.fill" catalog="system" width="128" height="102"/>
-        <image name="multiply" catalog="system" width="128" height="111"/>
         <image name="play" catalog="system" width="120" height="128"/>
         <image name="play.fill" catalog="system" width="116" height="128"/>
         <image name="questionmark" catalog="system" width="96" height="128"/>
+        <image name="questionmark.circle" catalog="system" width="128" height="121"/>
+        <image name="questionmark.circle.fill" catalog="system" width="128" height="121"/>
         <image name="record.circle" catalog="system" width="128" height="121"/>
         <image name="record.circle.fill" catalog="system" width="128" height="121"/>
         <image name="repeat" catalog="system" width="128" height="98"/>

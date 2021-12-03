@@ -1,5 +1,5 @@
 //
-//  MenuPopupView.h
+//  PopupView.h
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 12/2/21.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MenuPopupView : UIView
+@interface PopupView : UIView
 
 @end

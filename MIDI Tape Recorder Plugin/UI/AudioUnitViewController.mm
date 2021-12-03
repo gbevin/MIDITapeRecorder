@@ -8,11 +8,13 @@
 
 #import "AudioUnitViewController.h"
 
+#import <StoreKit/StoreKit.h>
+
 #include "Constants.h"
 #include "HostTime.h"
 
 #import "ActivityIndicatorView.h"
-#import "MenuPopupView.h"
+#import "PopupView.h"
 #import "MidiQueueProcessor.h"
 #import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
@@ -42,6 +44,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* playButton;
 @property (weak, nonatomic) IBOutlet UIButton* recordButton;
 @property (weak, nonatomic) IBOutlet UIButton* repeatButton;
+@property (weak, nonatomic) IBOutlet UIButton* aboutButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
@@ -65,10 +68,10 @@
 @property (weak, nonatomic) IBOutlet UIButton* menuButton3;
 @property (weak, nonatomic) IBOutlet UIButton* menuButton4;
 
-@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup1;
-@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup2;
-@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup3;
-@property (weak, nonatomic) IBOutlet MenuPopupView* menuPopup4;
+@property (weak, nonatomic) IBOutlet PopupView* menuPopup1;
+@property (weak, nonatomic) IBOutlet PopupView* menuPopup2;
+@property (weak, nonatomic) IBOutlet PopupView* menuPopup3;
+@property (weak, nonatomic) IBOutlet PopupView* menuPopup4;
 
 @property (weak, nonatomic) IBOutlet UIButton* closeMenuButton1;
 @property (weak, nonatomic) IBOutlet UIButton* closeMenuButton2;
@@ -107,6 +110,8 @@
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack3;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack4;
 
+@property (weak, nonatomic) IBOutlet PopupView* aboutView;
+
 @end
 
 @implementation AudioUnitViewController {
@@ -118,6 +123,8 @@
     
     BOOL _autoPlayFromRecord;
 }
+
+#pragma mark - Init
 
 - (instancetype)initWithCoder:(NSCoder*)coder {
     self = [super initWithCoder:coder];
@@ -172,11 +179,15 @@
 
 #pragma mark - IBActions
 
+#pragma mark IBAction - Routing
+
 - (IBAction)routingPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     
     [self updateRoutingState];
 }
+
+#pragma mark IBAction - Rewind
 
 - (IBAction)rewindPressed:(UIButton*)sender {
     _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
@@ -185,6 +196,8 @@
     _state->scheduledRewind = true;
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
+
+#pragma mark IBAction - Play
 
 - (IBAction)playPressed:(UIButton*)sender {
     _autoPlayFromRecord = NO;
@@ -213,6 +226,8 @@
     }
 }
 
+#pragma mark IBAction - Record
+
 - (IBAction)recordPressed:(UIButton*)sender {
     BOOL selected = !_recordButton.selected;
     
@@ -236,9 +251,60 @@
     [self setRecord:selected];
 }
 
+- (void)setRecord:(BOOL)state {
+    _recordButton.selected = state;
+    
+    [self updateRecordEnableState];
+}
+
+#pragma mark IBAction - Repeat
+
 - (IBAction)repeatPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
 }
+
+#pragma mark IBAction - About
+
+- (IBAction)aboutPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    
+    _aboutView.alpha = 0.0;
+    _aboutView.hidden = !sender.selected;
+    
+    if (sender.selected) {
+        [UIView animateWithDuration:0.2
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^() { self->_aboutView.alpha = 1.0; }
+                         completion:^(BOOL finished) {}];
+    }
+}
+
+- (void)openURL:(NSURL*)url {
+    Class UIApplicationClass = NSClassFromString(@"UIApplication");
+    if (UIApplicationClass && [UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
+        UIApplication* application = [UIApplication performSelector:@selector(sharedApplication)];
+        if (application && [application respondsToSelector:@selector(openURL:)]) {
+            [application performSelector:@selector(openURL:) withObject:url];
+        }
+    }
+}
+
+- (IBAction)openWebSite:(id)sender {
+    [self openURL:[NSURL URLWithString:@"https://github.com/gbevin/MIDITapeRecorder"]];
+}
+
+- (IBAction)leaveRating:(id)sender {
+    NSURL* url = [NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1597631168&pageNumber=0&sortOrdering=3&mt=8"];
+    [self openURL:url];
+}
+
+- (IBAction)closeAboutView:(id)sender {
+    _aboutButton.selected = NO;
+    _aboutView.hidden = YES;
+}
+
+#pragma mark IBAction - Monitor Enable
 
 - (IBAction)monitorPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
@@ -246,11 +312,7 @@
     [self updateMonitorState];
 }
 
-- (void)setRecord:(BOOL)state {
-    _recordButton.selected = state;
-    
-    [self updateRecordEnableState];
-}
+#pragma mark IBAction - Record Enable
 
 - (IBAction)recordEnablePressed:(UIButton*)sender {
     sender.selected = !sender.selected;
@@ -258,11 +320,15 @@
     [self updateRecordEnableState];
 }
 
+#pragma mark IBAction - Mute
+
 - (IBAction)mutePressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     
     [self updateMuteState];
 }
+
+#pragma mark IBAction - Menu
 
 - (IBAction)menuPressed:(UIButton*)sender {
     _menuPopup1.hidden = YES;
@@ -326,6 +392,8 @@
     _menuPopup3.hidden = YES;
     _menuPopup4.hidden = YES;
 }
+
+#pragma mark IBAction - Clear
 
 - (IBAction)clearPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
@@ -462,6 +530,8 @@
     }
     return result;
 }
+
+#pragma mark Update State
 
 - (void)updateRoutingState {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
