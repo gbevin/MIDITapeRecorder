@@ -108,6 +108,13 @@ void MidiRecorderDSPKernel::handleScheduledTransitions() {
                 _state.track[t].recording = NO;
             }
         }
+        // ensure notes off
+        {
+            int32_t expected = true;
+            if (_state.scheduledNotesOff[t].compare_exchange_strong(expected, false)) {
+                turnOffAllNotesForTrack(t);
+            }
+        }
     }
     
     // rewind

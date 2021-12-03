@@ -27,6 +27,7 @@ struct MidiRecorderState {
     std::atomic<int32_t> scheduledStopAndRewind                 { false };
     std::atomic<int32_t> scheduledBeginRecording[MIDI_TRACKS]   { false, false, false, false };
     std::atomic<int32_t> scheduledEndRecording[MIDI_TRACKS]     { false, false, false, false };
+    std::atomic<int32_t> scheduledNotesOff[MIDI_TRACKS]         { false, false, false, false };
     std::atomic<int32_t> scheduledReachEnd                      { false };
     
     std::atomic<int32_t> scheduledUIStopAndRewind               { false };

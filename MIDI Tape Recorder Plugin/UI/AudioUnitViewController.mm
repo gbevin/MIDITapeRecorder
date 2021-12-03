@@ -630,6 +630,8 @@
 }
 
 - (void)invalidateRecording:(int)ordinal {
+    _state->scheduledNotesOff[ordinal] = true;
+
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = nullptr;
     state.recordedLength = 0;
