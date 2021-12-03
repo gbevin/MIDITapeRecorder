@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1310"
-   wasCreatedForAppExtension = "YES"
-   version = "2.0">
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -15,24 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "26BB384C275338EE00342496"
-               BuildableName = "MIDI Recorder Plugin.appex"
-               BlueprintName = "MIDI Recorder Plugin"
-               ReferencedContainer = "container:MIDI Recorder.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "26BB382B275338B200342496"
-               BuildableName = "MIDI Recorder.app"
-               BlueprintName = "MIDI Recorder"
-               ReferencedContainer = "container:MIDI Recorder.xcodeproj">
+               BuildableName = "MIDI Tape Recorder.app"
+               BlueprintName = "MIDI Tape Recorder"
+               ReferencedContainer = "container:MIDI Tape Recorder.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,47 +32,39 @@
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
-      launchStyle = "1"
-      askForAppToLaunch = "Yes"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES"
-      launchAutomaticallySubstyle = "2">
-      <RemoteRunnable
-         runnableDebuggingMode = "1"
-         BundleIdentifier = "com.kymatica.AUM"
-         RemotePath = "/var/containers/Bundle/Application/DEF350F1-C8E9-4A36-B5D8-9E6A3C3F7699/AUM.app">
-      </RemoteRunnable>
-      <MacroExpansion>
+      allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26BB382B275338B200342496"
-            BuildableName = "MIDI Recorder.app"
-            BlueprintName = "MIDI Recorder"
-            ReferencedContainer = "container:MIDI Recorder.xcodeproj">
+            BuildableName = "MIDI Tape Recorder.app"
+            BlueprintName = "MIDI Tape Recorder"
+            ReferencedContainer = "container:MIDI Tape Recorder.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES"
-      askForAppToLaunch = "Yes"
-      launchAutomaticallySubstyle = "2">
+      debugDocumentVersioning = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "26BB382B275338B200342496"
-            BuildableName = "MIDI Recorder.app"
-            BlueprintName = "MIDI Recorder"
-            ReferencedContainer = "container:MIDI Recorder.xcodeproj">
+            BuildableName = "MIDI Tape Recorder.app"
+            BlueprintName = "MIDI Tape Recorder"
+            ReferencedContainer = "container:MIDI Tape Recorder.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -31,7 +31,7 @@
 		26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB385E275338EE00342496 /* DSPKernelAdapter.mm */; };
 		26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3862275338EE00342496 /* AudioUnitViewController.mm */; };
 		26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3864275338EE00342496 /* MainInterface.storyboard */; };
-		26BB386A275338EE00342496 /* MIDI Recorder Plugin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26BB386A275338EE00342496 /* MIDI Tape Recorder Plugin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrackView.mm */; };
 		26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* TimelineView.mm */; };
 		26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiRecorder.mm */; };
@@ -51,7 +51,7 @@
 			containerPortal = 26BB3824275338B200342496 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 26BB384C275338EE00342496;
-			remoteInfo = "MIDI Recorder Plugin";
+			remoteInfo = "MIDI Tape Recorder Plugin";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -62,7 +62,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				26BB386A275338EE00342496 /* MIDI Recorder Plugin.appex in Embed App Extensions */,
+				26BB386A275338EE00342496 /* MIDI Tape Recorder Plugin.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -86,7 +86,7 @@
 		26B140882754590300748F00 /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		26B1408F2754717700748F00 /* MidiQueueProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiQueueProcessor.h; sourceTree = "<group>"; };
 		26B140902754717900748F00 /* MidiQueueProcessor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiQueueProcessor.mm; sourceTree = "<group>"; };
-		26BB382C275338B200342496 /* MIDI Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		26BB382C275338B200342496 /* MIDI Tape Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Tape Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		26BB3832275338B200342496 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
@@ -98,8 +98,8 @@
 		26BB383E275338B200342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		26BB3840275338B200342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26BB3841275338B200342496 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		26BB3848275338C700342496 /* MIDI Recorder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Recorder.entitlements"; sourceTree = "<group>"; };
-		26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MIDI Recorder Plugin.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		26BB3848275338C700342496 /* MIDI Tape Recorder.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Tape Recorder.entitlements"; sourceTree = "<group>"; };
+		26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "MIDI Tape Recorder Plugin.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB3850275338EE00342496 /* MidiRecorderAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderAudioUnit.h; sourceTree = "<group>"; };
 		26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderAudioUnit.mm; sourceTree = "<group>"; };
 		26BB3855275338EE00342496 /* DSPKernel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DSPKernel.h; sourceTree = "<group>"; };
@@ -112,7 +112,7 @@
 		26BB3862275338EE00342496 /* AudioUnitViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioUnitViewController.mm; sourceTree = "<group>"; };
 		26BB3865275338EE00342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		26BB3867275338EE00342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		26BB386F275338F400342496 /* MIDI Recorder Plugin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Recorder Plugin.entitlements"; sourceTree = "<group>"; };
+		26BB386F275338F400342496 /* MIDI Tape Recorder Plugin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Tape Recorder Plugin.entitlements"; sourceTree = "<group>"; };
 		26BB387027533A3400342496 /* AudioUnitIOState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUnitIOState.h; sourceTree = "<group>"; };
 		26C49D162756D04400A6FAB4 /* MidiTrackView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackView.h; sourceTree = "<group>"; };
 		26C49D172756D04400A6FAB4 /* MidiTrackView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiTrackView.mm; sourceTree = "<group>"; };
@@ -190,8 +190,8 @@
 		26BB3823275338B200342496 = {
 			isa = PBXGroup;
 			children = (
-				26BB382E275338B200342496 /* MIDI Recorder */,
-				26BB384E275338EE00342496 /* MIDI Recorder Plugin */,
+				26BB382E275338B200342496 /* MIDI Tape Recorder */,
+				26BB384E275338EE00342496 /* MIDI Tape Recorder Plugin */,
 				26BB382D275338B200342496 /* Products */,
 				26C7DA252753415D00170CB2 /* Frameworks */,
 			);
@@ -200,17 +200,17 @@
 		26BB382D275338B200342496 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				26BB382C275338B200342496 /* MIDI Recorder.app */,
-				26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */,
+				26BB382C275338B200342496 /* MIDI Tape Recorder.app */,
+				26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		26BB382E275338B200342496 /* MIDI Recorder */ = {
+		26BB382E275338B200342496 /* MIDI Tape Recorder */ = {
 			isa = PBXGroup;
 			children = (
 				26E06B8B2759358C00D7257E /* uwyn.png */,
-				26BB3848275338C700342496 /* MIDI Recorder.entitlements */,
+				26BB3848275338C700342496 /* MIDI Tape Recorder.entitlements */,
 				26BB382F275338B200342496 /* AppDelegate.h */,
 				26BB3830275338B200342496 /* AppDelegate.m */,
 				26BB3832275338B200342496 /* SceneDelegate.h */,
@@ -223,13 +223,13 @@
 				26BB3840275338B200342496 /* Info.plist */,
 				26BB3841275338B200342496 /* main.m */,
 			);
-			path = "MIDI Recorder";
+			path = "MIDI Tape Recorder";
 			sourceTree = "<group>";
 		};
-		26BB384E275338EE00342496 /* MIDI Recorder Plugin */ = {
+		26BB384E275338EE00342496 /* MIDI Tape Recorder Plugin */ = {
 			isa = PBXGroup;
 			children = (
-				26BB386F275338F400342496 /* MIDI Recorder Plugin.entitlements */,
+				26BB386F275338F400342496 /* MIDI Tape Recorder Plugin.entitlements */,
 				26BB3864275338EE00342496 /* MainInterface.storyboard */,
 				26BB3867275338EE00342496 /* Info.plist */,
 				2613427A2753D995001FF0BB /* Assets.xcassets */,
@@ -239,7 +239,7 @@
 				26BB3860275338EE00342496 /* UI */,
 				26C540BF27570B06004E4813 /* Utils */,
 			);
-			path = "MIDI Recorder Plugin";
+			path = "MIDI Tape Recorder Plugin";
 			sourceTree = "<group>";
 		};
 		26BB384F275338EE00342496 /* Audio Unit */ = {
@@ -328,9 +328,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		26BB382B275338B200342496 /* MIDI Recorder */ = {
+		26BB382B275338B200342496 /* MIDI Tape Recorder */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 26BB3845275338B200342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder" */;
+			buildConfigurationList = 26BB3845275338B200342496 /* Build configuration list for PBXNativeTarget "MIDI Tape Recorder" */;
 			buildPhases = (
 				26BB3828275338B200342496 /* Sources */,
 				26BB3829275338B200342496 /* Frameworks */,
@@ -342,14 +342,14 @@
 			dependencies = (
 				26BB3869275338EE00342496 /* PBXTargetDependency */,
 			);
-			name = "MIDI Recorder";
-			productName = "MIDI Recorder";
-			productReference = 26BB382C275338B200342496 /* MIDI Recorder.app */;
+			name = "MIDI Tape Recorder";
+			productName = "MIDI Tape Recorder";
+			productReference = 26BB382C275338B200342496 /* MIDI Tape Recorder.app */;
 			productType = "com.apple.product-type.application";
 		};
-		26BB384C275338EE00342496 /* MIDI Recorder Plugin */ = {
+		26BB384C275338EE00342496 /* MIDI Tape Recorder Plugin */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 26BB386B275338EE00342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder Plugin" */;
+			buildConfigurationList = 26BB386B275338EE00342496 /* Build configuration list for PBXNativeTarget "MIDI Tape Recorder Plugin" */;
 			buildPhases = (
 				26BB3849275338EE00342496 /* Sources */,
 				26BB384A275338EE00342496 /* Frameworks */,
@@ -359,9 +359,9 @@
 			);
 			dependencies = (
 			);
-			name = "MIDI Recorder Plugin";
-			productName = "MIDI Recorder Plugin";
-			productReference = 26BB384D275338EE00342496 /* MIDI Recorder Plugin.appex */;
+			name = "MIDI Tape Recorder Plugin";
+			productName = "MIDI Tape Recorder Plugin";
+			productReference = 26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -381,7 +381,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 26BB3827275338B200342496 /* Build configuration list for PBXProject "MIDI Recorder" */;
+			buildConfigurationList = 26BB3827275338B200342496 /* Build configuration list for PBXProject "MIDI Tape Recorder" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -394,8 +394,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				26BB382B275338B200342496 /* MIDI Recorder */,
-				26BB384C275338EE00342496 /* MIDI Recorder Plugin */,
+				26BB382B275338B200342496 /* MIDI Tape Recorder */,
+				26BB384C275338EE00342496 /* MIDI Tape Recorder Plugin */,
 			);
 		};
 /* End PBXProject section */
@@ -465,7 +465,7 @@
 /* Begin PBXTargetDependency section */
 		26BB3869275338EE00342496 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 26BB384C275338EE00342496 /* MIDI Recorder Plugin */;
+			target = 26BB384C275338EE00342496 /* MIDI Tape Recorder Plugin */;
 			targetProxy = 26BB3868275338EE00342496 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -617,13 +617,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder/MIDI Recorder.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder/MIDI Tape Recorder.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "MIDI Recorder/Info.plist";
+				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -650,13 +651,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder/MIDI Recorder.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder/MIDI Tape Recorder.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "MIDI Recorder/Info.plist";
+				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -681,12 +683,12 @@
 		26BB386C275338EE00342496 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder Plugin/MIDI Recorder Plugin.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder Plugin/MIDI Tape Recorder Plugin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "MIDI Recorder Plugin/Info.plist";
+				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Recorder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
@@ -709,12 +711,12 @@
 		26BB386D275338EE00342496 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "MIDI Recorder Plugin/MIDI Recorder Plugin.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder Plugin/MIDI Tape Recorder Plugin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "MIDI Recorder Plugin/Info.plist";
+				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Recorder";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
@@ -737,7 +739,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		26BB3827275338B200342496 /* Build configuration list for PBXProject "MIDI Recorder" */ = {
+		26BB3827275338B200342496 /* Build configuration list for PBXProject "MIDI Tape Recorder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26BB3843275338B200342496 /* Debug */,
@@ -746,7 +748,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		26BB3845275338B200342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder" */ = {
+		26BB3845275338B200342496 /* Build configuration list for PBXNativeTarget "MIDI Tape Recorder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26BB3846275338B200342496 /* Debug */,
@@ -755,7 +757,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		26BB386B275338EE00342496 /* Build configuration list for PBXNativeTarget "MIDI Recorder Plugin" */ = {
+		26BB386B275338EE00342496 /* Build configuration list for PBXNativeTarget "MIDI Tape Recorder Plugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26BB386C275338EE00342496 /* Debug */,
