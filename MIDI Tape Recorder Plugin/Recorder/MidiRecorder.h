@@ -33,7 +33,7 @@ class MidiRecorderState;
 
 - (void)ping;
 
-- (double_t)duration;
+- (double)duration;
 - (NSData*)preview;
 
 @end

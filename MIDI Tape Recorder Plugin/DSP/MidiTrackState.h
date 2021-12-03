@@ -29,5 +29,6 @@ struct MidiTrackState {
     
     std::atomic<const RecordedMidiMessage*> recordedMessages = nullptr;
     std::atomic<uint64_t>                   recordedLength = 0;
+    std::atomic<double>                     recordedDurationSeconds = 0.0;
     std::atomic<uint64_t>                   playCounter = 0;
 };

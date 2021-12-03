@@ -83,7 +83,7 @@
             _recordingCount = 0;
             
             if (_delegate) {
-                [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount];
+                [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationSeconds];
             }
         }
         else {
@@ -144,7 +144,7 @@
         }
         
         if (_delegate) {
-            [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount];
+            [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationSeconds];
         }
     });
 }

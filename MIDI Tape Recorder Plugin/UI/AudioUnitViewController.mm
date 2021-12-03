@@ -621,12 +621,13 @@
     _state->scheduledPlay = true;
 }
 
-- (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count {
+- (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count duration:(double)duration {
     _state->scheduledEndRecording[ordinal] = true;
     
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = data;
     state.recordedLength = count;
+    state.recordedDurationSeconds = duration;
 }
 
 - (void)invalidateRecording:(int)ordinal {
@@ -635,6 +636,7 @@
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = nullptr;
     state.recordedLength = 0;
+    state.recordedDurationSeconds = 0.0;
 }
 
 @end

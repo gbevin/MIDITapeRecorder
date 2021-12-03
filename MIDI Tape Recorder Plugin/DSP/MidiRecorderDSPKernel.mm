@@ -279,7 +279,7 @@ void MidiRecorderDSPKernel::processOutput() {
                     }
                 }
                 
-                if (state.playCounter < state.recordedLength) {
+                if (_state.playDurationSeconds < state.recordedDurationSeconds) {
                     reached_end = NO;
                 }
             }
