@@ -32,6 +32,7 @@
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
     
     // draw vertical second bars and the shorter quarter dividers
+    
     CGContextBeginPath(context);
 
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
