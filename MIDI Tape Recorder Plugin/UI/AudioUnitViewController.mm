@@ -122,6 +122,8 @@
     MidiQueueProcessor* _midiQueueProcessor;
     
     BOOL _autoPlayFromRecord;
+    
+    CGFloat _extended_menupopup_width;
 }
 
 #pragma mark - Init
@@ -152,6 +154,8 @@
     _menuPopup2.hidden = YES;
     _menuPopup3.hidden = YES;
     _menuPopup4.hidden = YES;
+    
+    _extended_menupopup_width = _menuPopupWidth1.constant;
 
     _timer = [[UIScreen mainScreen] displayLinkWithTarget:self
                                                  selector:@selector(renderloop)];
@@ -373,7 +377,7 @@
                               delay:0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^() {
-            width_constraint.constant = 150.0;
+            width_constraint.constant = self->_extended_menupopup_width;
             
             menu_popup_view.alpha = 1.0;
             for (UIView* v in menu_popup_view.subviews) {
