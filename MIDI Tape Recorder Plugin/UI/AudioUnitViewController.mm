@@ -44,6 +44,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* playButton;
 @property (weak, nonatomic) IBOutlet UIButton* recordButton;
 @property (weak, nonatomic) IBOutlet UIButton* repeatButton;
+@property (weak, nonatomic) IBOutlet UIButton* settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* aboutButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
@@ -110,6 +111,7 @@
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack3;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack4;
 
+@property (weak, nonatomic) IBOutlet PopupView* settingsView;
 @property (weak, nonatomic) IBOutlet PopupView* aboutView;
 
 @end
@@ -123,7 +125,7 @@
     
     BOOL _autoPlayFromRecord;
     
-    CGFloat _extended_menupopup_width;
+    CGFloat _extendedMenuPopupWidth;
 }
 
 #pragma mark - Init
@@ -158,13 +160,13 @@
     _midiTrack2.tracks = _tracks;
     _midiTrack3.tracks = _tracks;
     _midiTrack4.tracks = _tracks;
+    
+    _extendedMenuPopupWidth = _menuPopupWidth1.constant;
 
     _menuPopup1.hidden = YES;
     _menuPopup2.hidden = YES;
     _menuPopup3.hidden = YES;
     _menuPopup4.hidden = YES;
-    
-    _extended_menupopup_width = _menuPopupWidth1.constant;
 
     _timer = [[UIScreen mainScreen] displayLinkWithTarget:self
                                                  selector:@selector(renderloop)];
@@ -276,20 +278,89 @@
     sender.selected = !sender.selected;
 }
 
+#pragma mark IBAction - Import All
+
+- (IBAction)importAllPressed:(UIButton*)sender {
+}
+
+#pragma mark IBAction - Export All
+
+- (IBAction)exportAllPressed:(UIButton*)sender {
+}
+
+#pragma mark IBAction - Clear All
+
+- (IBAction)clearAllPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (!sender.selected) {
+        [[_midiQueueProcessor recorder:0] clear];
+        [_midiTrack1 setNeedsDisplay];
+        
+        [[_midiQueueProcessor recorder:1] clear];
+        [_midiTrack2 setNeedsDisplay];
+        
+        [[_midiQueueProcessor recorder:2] clear];
+        [_midiTrack3 setNeedsDisplay];
+        
+        [[_midiQueueProcessor recorder:3] clear];
+        [_midiTrack4 setNeedsDisplay];
+    }
+}
+
+#pragma mark IBAction - Settings
+
+- (IBAction)settingsPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    
+    _settingsView.alpha = 0.0;
+    _settingsView.hidden = !sender.selected;
+    
+    if (_aboutView.hidden) {
+        if (sender.selected) {
+            [UIView animateWithDuration:0.2
+                                  delay:0
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^() {
+                                 self->_settingsView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {}];
+        }
+    }
+    else {
+        self->_settingsView.alpha = 1.0;
+        [self closeAboutView:nil];
+    }
+}
+
+- (IBAction)closeSettingsView:(id)sender {
+    _settingsButton.selected = NO;
+    _settingsView.hidden = YES;
+}
+
 #pragma mark IBAction - About
 
 - (IBAction)aboutPressed:(UIButton*)sender {
+    
     sender.selected = !sender.selected;
     
     _aboutView.alpha = 0.0;
     _aboutView.hidden = !sender.selected;
     
-    if (sender.selected) {
-        [UIView animateWithDuration:0.2
-                              delay:0
-                            options:UIViewAnimationOptionCurveEaseOut
-                         animations:^() { self->_aboutView.alpha = 1.0; }
-                         completion:^(BOOL finished) {}];
+    if (_settingsView.hidden) {
+        if (sender.selected) {
+            [UIView animateWithDuration:0.2
+                                  delay:0
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^() {
+                                 self->_aboutView.alpha = 1.0;
+                             }
+                             completion:^(BOOL finished) {}];
+        }
+    }
+    else {
+        self->_aboutView.alpha = 1.0;
+        
+        [self closeSettingsView:nil];
     }
 }
 
@@ -386,15 +457,15 @@
                               delay:0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^() {
-            width_constraint.constant = self->_extended_menupopup_width;
-            
-            menu_popup_view.alpha = 1.0;
-            for (UIView* v in menu_popup_view.subviews) {
-                v.alpha = 1.0;
-            }
+                             width_constraint.constant = self->_extendedMenuPopupWidth;
+                             
+                             menu_popup_view.alpha = 1.0;
+                             for (UIView* v in menu_popup_view.subviews) {
+                                 v.alpha = 1.0;
+                             }
 
-            [self.view layoutIfNeeded];
-        }
+                             [self.view layoutIfNeeded];
+                         }
                          completion:^(BOOL finished) {}];
     }
 }
@@ -404,6 +475,16 @@
     _menuPopup2.hidden = YES;
     _menuPopup3.hidden = YES;
     _menuPopup4.hidden = YES;
+}
+
+#pragma mark IBAction - Import
+
+- (IBAction)importPressed:(UIButton*)sender {
+}
+
+#pragma mark IBAction - Export
+
+- (IBAction)exportPressed:(UIButton*)sender {
 }
 
 #pragma mark IBAction - Clear
@@ -428,12 +509,6 @@
             [_midiTrack4 setNeedsDisplay];
         }
     }
-}
-
-- (IBAction)exportPressed:(UIButton*)sender {
-}
-
-- (IBAction)importPressed:(UIButton*)sender {
 }
 
 #pragma mark - State

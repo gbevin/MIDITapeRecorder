@@ -10,12 +10,46 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 
-@implementation ToolBarButton
+@implementation ToolBarButton {
+    NSTimer* _unselectTimer;
+}
 
 - (void)setSelected:(BOOL)selected {
+    if (_unselectTimer) {
+        [_unselectTimer invalidate];
+        _unselectTimer = nil;
+    }
+    
     super.selected = selected;
     
     [self updateButtonStyle];
+    
+    if (_timedUnselect && selected) {
+        _unselectTimer = [NSTimer scheduledTimerWithTimeInterval:2.0
+                                                          target:self
+                                                        selector:@selector(timedUnselect:)
+                                                        userInfo:nil
+                                                         repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:_unselectTimer forMode:NSRunLoopCommonModes];
+    }
+}
+
+- (void)timedUnselect:(NSTimer*)timer {
+    [timer invalidate];
+    timer = nil;
+    
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^() {
+                         self.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         self.alpha = 1.0;
+                         super.selected = NO;
+                         
+                         [self updateButtonStyle];
+                     }];
 }
 
 - (void)setHighlighted:(BOOL)highlighted {

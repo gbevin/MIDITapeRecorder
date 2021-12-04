@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="ipad7_9" orientation="landscape" layout="fullscreen" appearance="dark"/>
+    <device id="retina4_0" orientation="landscape" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,14 +16,14 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="AudioUnitViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="1133" height="744"/>
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bKj-4Y-TLw" userLabel="Toolbar">
-                                <rect key="frame" x="0.0" y="10" width="1133" height="30"/>
+                                <rect key="frame" x="0.0" y="10" width="568" height="20"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5s5-fr-Amh" userLabel="Routing">
-                                        <rect key="frame" x="24" y="-1" width="60" height="32"/>
+                                        <rect key="frame" x="20" y="-4.5" width="52" height="29"/>
                                         <gestureRecognizers/>
                                         <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
                                         <color key="tintColor" name="Gray0"/>
@@ -39,10 +40,10 @@
                                         </connections>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ESp-f1-BSZ" userLabel="Transport">
-                                        <rect key="frame" x="84" y="0.0" width="427.5" height="30"/>
+                                        <rect key="frame" x="72" y="-5" width="157" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IuJ-5c-4Lw" userLabel="Rewind" customClass="ToolBarButton">
-                                                <rect key="frame" x="129" y="-2.5" width="35" height="35"/>
+                                                <rect key="frame" x="3.5" y="0.0" width="30" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="IuJ-5c-4Lw" secondAttribute="height" multiplier="1:1" id="tHg-PM-Bhd"/>
                                                     <constraint firstAttribute="width" constant="35" id="xwo-xs-NAZ">
@@ -62,7 +63,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K2s-Jg-CsH" userLabel="Play" customClass="ToolBarButton">
-                                                <rect key="frame" x="174" y="-2.5" width="35" height="35"/>
+                                                <rect key="frame" x="43.5" y="0.0" width="30" height="30"/>
                                                 <color key="tintColor" name="Green"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
@@ -79,7 +80,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o1O-TV-EyB" userLabel="Record" customClass="ToolBarButton">
-                                                <rect key="frame" x="219" y="-2.5" width="35" height="35"/>
+                                                <rect key="frame" x="83.5" y="0.0" width="30" height="30"/>
                                                 <color key="tintColor" name="Red"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
@@ -97,7 +98,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c7Q-aj-bBd" userLabel="Repeat" customClass="ToolBarButton">
-                                                <rect key="frame" x="264" y="-2.5" width="35" height="35"/>
+                                                <rect key="frame" x="123.5" y="0.0" width="30" height="30"/>
                                                 <color key="tintColor" name="Orange"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="">
@@ -132,7 +133,7 @@
                                         </constraints>
                                     </view>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j5c-MY-xUb">
-                                        <rect key="frame" x="511.5" y="-7.5" width="110" height="45"/>
+                                        <rect key="frame" x="229" y="-12.5" width="110" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="110" id="PaX-bo-QIb"/>
                                             <constraint firstAttribute="height" constant="45" id="qd5-DC-0wi"/>
@@ -163,16 +164,112 @@ RECORDER</string>
                                             </attributedString>
                                         </variation>
                                     </label>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-KR-jE3" userLabel="About View">
-                                        <rect key="frame" x="1044" y="-17" width="79" height="64"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t63-nw-aik" userLabel="Tools">
+                                        <rect key="frame" x="339" y="-5" width="159" height="30"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JCp-rm-sDC" userLabel="About">
-                                                <rect key="frame" x="24.5" y="17" width="30" height="30"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rMb-cB-tTb" userLabel="Import All" customClass="ToolBarButton">
+                                                <rect key="frame" x="49.5" y="2.5" width="25" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="30" id="24o-Yn-5ws">
+                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="width" secondItem="rMb-cB-tTb" secondAttribute="height" multiplier="1:1" id="Loh-ey-Mne"/>
+                                                </constraints>
+                                                <color key="tintColor" name="Blue"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="">
+                                                    <color key="titleColor" name="Blue"/>
+                                                    <imageReference key="image" image="square_and_arrow_down" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="importAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="SXi-yz-WLy"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggp-z3-sKG" userLabel="Export All" customClass="ToolBarButton">
+                                                <rect key="frame" x="84.5" y="2.5" width="25" height="25"/>
+                                                <color key="tintColor" name="Green"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="">
+                                                    <color key="titleColor" name="Green"/>
+                                                    <imageReference key="image" image="square_and_arrow_up" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="exportAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Z5o-mE-c8p"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IKB-8s-9oN" userLabel="Clear All" customClass="ToolBarButton">
+                                                <rect key="frame" x="119.5" y="2.5" width="25" height="25"/>
+                                                <color key="tintColor" name="Red"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="">
+                                                    <color key="titleColor" name="Red"/>
+                                                    <imageReference key="image" image="trash" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
+                                                </state>
+                                                <state key="selected" image="questionmark">
+                                                    <color key="titleColor" name="Red"/>
+                                                </state>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="clearAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1iT-hA-pjJ"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="leading" secondItem="t63-nw-aik" secondAttribute="centerX" constant="5" id="73E-sp-nJd"/>
+                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="ApI-qd-9Cf"/>
+                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="GNr-Hd-4VO"/>
+                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="height" secondItem="rMb-cB-tTb" secondAttribute="height" id="Jq4-gl-Kva"/>
+                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="leading" secondItem="ggp-z3-sKG" secondAttribute="trailing" constant="10" id="KQq-nd-DCh"/>
+                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="width" secondItem="rMb-cB-tTb" secondAttribute="width" id="KwI-Dc-0AO"/>
+                                            <constraint firstAttribute="height" constant="30" id="Zvd-51-oxl"/>
+                                            <constraint firstItem="rMb-cB-tTb" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="t63-nw-aik" secondAttribute="leading" id="iEE-px-F7Q"/>
+                                            <constraint firstItem="rMb-cB-tTb" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="naT-hH-9Oo"/>
+                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="width" secondItem="rMb-cB-tTb" secondAttribute="width" id="ndR-G4-KE3"/>
+                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="height" secondItem="rMb-cB-tTb" secondAttribute="height" id="pM1-rO-xwb"/>
+                                            <constraint firstItem="rMb-cB-tTb" firstAttribute="trailing" secondItem="t63-nw-aik" secondAttribute="centerX" constant="-5" id="qrp-sN-MaE"/>
+                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="leading" secondItem="rMb-cB-tTb" secondAttribute="trailing" constant="10" id="tVJ-Kw-7rV"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-KR-jE3" userLabel="Top Right Toolbar">
+                                        <rect key="frame" x="498" y="-11.5" width="60" height="43"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JCp-rm-sDC" userLabel="Settings">
+                                                <rect key="frame" x="3" y="9" width="25" height="25"/>
                                                 <gestureRecognizers/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="JCp-rm-sDC" secondAttribute="height" multiplier="1:1" id="L8E-69-JcB"/>
                                                     <constraint firstAttribute="width" constant="30" id="Zhs-UC-Ac5">
-                                                        <variation key="heightClass=compact-widthClass=compact" constant="30"/>
+                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                                                    </constraint>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
+                                                <color key="tintColor" name="Gray0"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="gearshape">
+                                                    <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <state key="selected">
+                                                    <color key="titleColor" name="Gray0"/>
+                                                    <imageReference key="image" image="gearshape_fill" symbolScale="large"/>
+                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="settingsPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="WAS-iw-IoF"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nja-eO-rX7" userLabel="About">
+                                                <rect key="frame" x="32" y="9" width="25" height="25"/>
+                                                <gestureRecognizers/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="Nja-eO-rX7" secondAttribute="height" multiplier="1:1" id="VIU-Hp-sX6"/>
+                                                    <constraint firstAttribute="width" constant="30" id="wxz-9j-5tM">
+                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
                                                     </constraint>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
@@ -189,14 +286,20 @@ RECORDER</string>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="aboutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Aw6-0W-xUV"/>
+                                                    <action selector="aboutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FGF-2N-1lV"/>
                                                 </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="JCp-rm-sDC" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="5mn-8a-jFZ"/>
-                                            <constraint firstItem="JCp-rm-sDC" firstAttribute="centerX" secondItem="Ia4-KR-jE3" secondAttribute="centerX" id="Xzo-4F-SdL"/>
+                                            <constraint firstItem="Nja-eO-rX7" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="6WL-e7-BU2"/>
+                                            <constraint firstItem="JCp-rm-sDC" firstAttribute="trailing" secondItem="Ia4-KR-jE3" secondAttribute="centerX" constant="-5" id="Xzo-4F-SdL">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="-2"/>
+                                            </constraint>
+                                            <constraint firstItem="Nja-eO-rX7" firstAttribute="leading" secondItem="Ia4-KR-jE3" secondAttribute="centerX" constant="5" id="diJ-Mt-Vys">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="2"/>
+                                            </constraint>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -204,6 +307,7 @@ RECORDER</string>
                                 <constraints>
                                     <constraint firstItem="Ia4-KR-jE3" firstAttribute="height" secondItem="bKj-4Y-TLw" secondAttribute="height" multiplier="2.13333" id="2Ge-yJ-RuO"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerX" secondItem="bKj-4Y-TLw" secondAttribute="centerX" id="7MN-dv-hpE"/>
+                                    <constraint firstItem="t63-nw-aik" firstAttribute="leading" secondItem="j5c-MY-xUb" secondAttribute="trailing" id="9J7-95-U2M"/>
                                     <constraint firstAttribute="height" constant="30" id="AMi-cf-cbc">
                                         <variation key="heightClass=compact-widthClass=compact" constant="20"/>
                                     </constraint>
@@ -211,16 +315,18 @@ RECORDER</string>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="DfR-Ij-zpC"/>
                                     <constraint firstItem="Ia4-KR-jE3" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="PlU-Gi-2KI"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="leading" secondItem="ESp-f1-BSZ" secondAttribute="trailing" id="UuW-CJ-OWA"/>
+                                    <constraint firstItem="t63-nw-aik" firstAttribute="trailing" secondItem="Ia4-KR-jE3" secondAttribute="leading" id="WTr-rD-Wzq"/>
                                     <constraint firstItem="ESp-f1-BSZ" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="YeY-an-lJZ"/>
                                     <constraint firstItem="5s5-fr-Amh" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="d7a-cd-x7B"/>
                                     <constraint firstAttribute="width" priority="950" constant="568" id="trV-IX-Riw"/>
+                                    <constraint firstItem="t63-nw-aik" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="zhB-Sv-eUW"/>
                                 </constraints>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tCM-sv-7no" userLabel="Tracks">
-                                <rect key="frame" x="89" y="50" width="950" height="236"/>
+                                <rect key="frame" x="77" y="40" width="416" height="204"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cNu-Gm-9pP" userLabel="Timeline Background">
-                                        <rect key="frame" x="0.0" y="0.0" width="950" height="22"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="416" height="22"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k5P-YR-lyM" userLabel="Timeline" customClass="TimelineView">
@@ -232,7 +338,7 @@ RECORDER</string>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GXf-2A-NeK" userLabel="Recorded 1" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="32" width="50" height="32"/>
+                                        <rect key="frame" x="10" y="30" width="50" height="28"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="9hu-Z2-Okl">
                                                 <variation key="heightClass=compact-widthClass=compact" constant="28"/>
@@ -240,37 +346,37 @@ RECORDER</string>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q3i-Q2-tin" userLabel="Seperator 1">
-                                        <rect key="frame" x="0.0" y="74" width="950" height="2"/>
+                                        <rect key="frame" x="0.0" y="66" width="416" height="2"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="jEp-HD-y9A"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IWD-hQ-i8x" userLabel="Recorded 2" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="86" width="50" height="32"/>
+                                        <rect key="frame" x="10" y="76" width="50" height="28"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gzW-Zc-U4q" userLabel="Seperator 2">
-                                        <rect key="frame" x="0.0" y="128" width="950" height="2"/>
+                                        <rect key="frame" x="0.0" y="112" width="416" height="2"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="zpu-AV-ayO"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8lV-Pg-F8C" userLabel="Recorded 3" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="140" width="50" height="32"/>
+                                        <rect key="frame" x="10" y="122" width="50" height="28"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4hw-x8-hn8" userLabel="Seperator 3">
-                                        <rect key="frame" x="0.0" y="182" width="950" height="2"/>
+                                        <rect key="frame" x="0.0" y="158" width="416" height="2"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="6bn-ZP-b6N"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ckn-XQ-W53" userLabel="Recorded 4" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="194" width="50" height="32"/>
+                                        <rect key="frame" x="10" y="168" width="50" height="28"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead">
-                                        <rect key="frame" x="10" y="0.0" width="1" height="236"/>
+                                        <rect key="frame" x="10" y="0.0" width="1" height="204"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="1" id="Xru-0r-srh"/>
@@ -340,7 +446,7 @@ RECORDER</string>
                                 <viewLayoutGuide key="frameLayoutGuide" id="FZ7-pN-WjG"/>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dom-KY-gSl" userLabel="Activity Input 1" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="93.5" width="9" height="9"/>
+                                <rect key="frame" x="10" y="81.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="9" id="ae9-Yl-n0y">
@@ -350,7 +456,7 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiJ-Fl-4eE" userLabel="Record Enable 1">
-                                <rect key="frame" x="24" y="71.5" width="30" height="53"/>
+                                <rect key="frame" x="20" y="61" width="26" height="46"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="Boh-rt-v4L">
@@ -374,7 +480,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="if6-Qg-HAU" userLabel="Monitor Enable 1">
-                                <rect key="frame" x="54" y="71.5" width="30" height="53"/>
+                                <rect key="frame" x="46" y="61" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -392,7 +498,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qqe-xS-Dtb" userLabel="Mute Enable 1">
-                                <rect key="frame" x="1044" y="71.5" width="30" height="53"/>
+                                <rect key="frame" x="498" y="61" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -410,7 +516,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w1R-ec-Xai" userLabel="Menu 1" customClass="MenuButton">
-                                <rect key="frame" x="1079" y="71.5" width="30" height="53"/>
+                                <rect key="frame" x="524" y="57.5" width="26" height="53"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
@@ -425,11 +531,11 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ovp-GH-bJD"/>
                                 </connections>
                             </button>
-                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
-                                <rect key="frame" x="959" y="76.5" width="150" height="43"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
+                                <rect key="frame" x="416" y="62.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
-                                        <rect key="frame" x="115" y="6.5" width="30" height="30"/>
+                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="2QK-Kb-gVy" secondAttribute="height" multiplier="1:1" id="T5f-W1-qRO"/>
                                         </constraints>
@@ -440,35 +546,38 @@ RECORDER</string>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Swn-cj-3wN"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYd-rc-sVS" userLabel="Clear 1">
-                                        <rect key="frame" x="80" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYd-rc-sVS" userLabel="Clear 1" customClass="ToolBarButton">
+                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="trash">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Red"/>
                                         </state>
                                         <state key="selected" image="questionmark"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oh0-MD-u2b"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNR-dr-WIg" userLabel="Export 1">
-                                        <rect key="frame" x="45" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNR-dr-WIg" userLabel="Export 1" customClass="ToolBarButton">
+                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_up">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Green"/>
                                         </state>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M47-0G-FMz" userLabel="Import 1">
-                                        <rect key="frame" x="10" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M47-0G-FMz" userLabel="Import 1" customClass="ToolBarButton">
+                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_down">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Blue"/>
                                         </state>
                                     </button>
                                 </subviews>
@@ -494,18 +603,18 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blx-LE-LOD" userLabel="Activity Output 1" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="1114" y="93.5" width="9" height="9"/>
+                                <rect key="frame" x="553" y="81.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ea-4c-QY8" userLabel="Activity Input 2" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="147.5" width="9" height="9"/>
+                                <rect key="frame" x="10" y="127.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="0ea-4c-QY8" secondAttribute="height" multiplier="1:1" id="M2G-BY-MYe"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIz-1j-u10" userLabel="Record Enable 2">
-                                <rect key="frame" x="24" y="125.5" width="30" height="53"/>
+                                <rect key="frame" x="20" y="107" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -523,7 +632,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hXW-n3-IFc" userLabel="Monitor Enable 2">
-                                <rect key="frame" x="54" y="125.5" width="30" height="53"/>
+                                <rect key="frame" x="46" y="107" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -541,7 +650,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p1L-p9-aSY" userLabel="Mute Enable 2">
-                                <rect key="frame" x="1044" y="125.5" width="30" height="53"/>
+                                <rect key="frame" x="498" y="107" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -559,7 +668,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JdH-dA-fdD" userLabel="Menu 2" customClass="MenuButton">
-                                <rect key="frame" x="1079" y="125.5" width="30" height="53"/>
+                                <rect key="frame" x="524" y="103.5" width="26" height="53"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
@@ -575,10 +684,10 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="PopupView">
-                                <rect key="frame" x="959" y="130.5" width="150" height="43"/>
+                                <rect key="frame" x="416" y="108.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
-                                        <rect key="frame" x="115" y="6.5" width="30" height="30"/>
+                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="KNS-Fz-TPp" secondAttribute="height" multiplier="1:1" id="6wh-eo-3H9"/>
                                         </constraints>
@@ -589,35 +698,38 @@ RECORDER</string>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="m8d-O9-pCl"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yUW-33-hCc" userLabel="Clear 2">
-                                        <rect key="frame" x="80" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yUW-33-hCc" userLabel="Clear 2" customClass="ToolBarButton">
+                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="trash">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Red"/>
                                         </state>
                                         <state key="selected" image="questionmark"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2Ka-U5-xP8"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AsM-3p-e3J" userLabel="Export 2">
-                                        <rect key="frame" x="45" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AsM-3p-e3J" userLabel="Export 2" customClass="ToolBarButton">
+                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_up">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Green"/>
                                         </state>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NAv-nC-Upf" userLabel="Import 2">
-                                        <rect key="frame" x="10" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NAv-nC-Upf" userLabel="Import 2" customClass="ToolBarButton">
+                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_down">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Blue"/>
                                         </state>
                                     </button>
                                 </subviews>
@@ -643,18 +755,18 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uiz-2Z-3Gl" userLabel="Activity Output 2" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="1114" y="147.5" width="9" height="9"/>
+                                <rect key="frame" x="553" y="127.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DG3-EF-njW" userLabel="Activity Input 3" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="201.5" width="9" height="9"/>
+                                <rect key="frame" x="10" y="173.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="DG3-EF-njW" secondAttribute="height" multiplier="1:1" id="a4H-ve-A0d"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3pU-49-ygj" userLabel="Record Enable 3">
-                                <rect key="frame" x="24" y="179.5" width="30" height="53"/>
+                                <rect key="frame" x="20" y="153" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -672,7 +784,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcR-Mq-hiL" userLabel="Monitor Enable 3">
-                                <rect key="frame" x="54" y="179.5" width="30" height="53"/>
+                                <rect key="frame" x="46" y="153" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -690,7 +802,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cml-GG-nYY" userLabel="Mute Enable 3">
-                                <rect key="frame" x="1044" y="179.5" width="30" height="53"/>
+                                <rect key="frame" x="498" y="153" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -708,7 +820,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vnj-Hq-OLf" userLabel="Menu 3" customClass="MenuButton">
-                                <rect key="frame" x="1079" y="179.5" width="30" height="53"/>
+                                <rect key="frame" x="524" y="149.5" width="26" height="53"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
@@ -724,10 +836,10 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="PopupView">
-                                <rect key="frame" x="975" y="184.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="154.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
-                                        <rect key="frame" x="99" y="6.5" width="30" height="30"/>
+                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="mCd-Bd-dSz" secondAttribute="height" multiplier="1:1" id="wa7-BJ-efD"/>
                                         </constraints>
@@ -738,35 +850,38 @@ RECORDER</string>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wiE-nB-Qxw"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sqh-Tr-1XP" userLabel="Clear 3">
-                                        <rect key="frame" x="64" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sqh-Tr-1XP" userLabel="Clear 3" customClass="ToolBarButton">
+                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="trash">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Red"/>
                                         </state>
                                         <state key="selected" image="questionmark"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oxs-ze-1a8"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fTN-8v-HzS" userLabel="Export 3">
-                                        <rect key="frame" x="29" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fTN-8v-HzS" userLabel="Export 3" customClass="ToolBarButton">
+                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_up">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Green"/>
                                         </state>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YtR-ZD-uKp" userLabel="Import 3">
-                                        <rect key="frame" x="-6" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YtR-ZD-uKp" userLabel="Import 3" customClass="ToolBarButton">
+                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_down">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Blue"/>
                                         </state>
                                     </button>
                                 </subviews>
@@ -790,18 +905,18 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHo-mc-gVi" userLabel="Activity Output 3" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="1114" y="201.5" width="9" height="9"/>
+                                <rect key="frame" x="553" y="173.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0P-wN-aiS" userLabel="Activity Input 4" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="255.5" width="9" height="9"/>
+                                <rect key="frame" x="10" y="219.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="c0P-wN-aiS" secondAttribute="height" multiplier="1:1" id="hrh-r6-VBg"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kFp-mR-8eu" userLabel="Record Enable 4">
-                                <rect key="frame" x="24" y="233.5" width="30" height="53"/>
+                                <rect key="frame" x="20" y="199" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -819,7 +934,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VuI-3k-Ts7" userLabel="Monitor Enable 4">
-                                <rect key="frame" x="54" y="233.5" width="30" height="53"/>
+                                <rect key="frame" x="46" y="199" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -837,7 +952,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mth-yQ-zQm" userLabel="Mute Enable 4">
-                                <rect key="frame" x="1044" y="233.5" width="30" height="53"/>
+                                <rect key="frame" x="498" y="199" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -855,7 +970,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y7b-zS-fgR" userLabel="Menu 4" customClass="MenuButton">
-                                <rect key="frame" x="1079" y="233.5" width="30" height="53"/>
+                                <rect key="frame" x="524" y="195.5" width="26" height="53"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
@@ -871,10 +986,10 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="PopupView">
-                                <rect key="frame" x="975" y="238.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="200.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
-                                        <rect key="frame" x="99" y="6.5" width="30" height="30"/>
+                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="eTs-9f-lX9" secondAttribute="height" multiplier="1:1" id="rT5-lH-AMi"/>
                                         </constraints>
@@ -887,35 +1002,38 @@ RECORDER</string>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jX5-45-yPY"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="USs-du-xYp" userLabel="Clear 4">
-                                        <rect key="frame" x="64" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="USs-du-xYp" userLabel="Clear 4" customClass="ToolBarButton">
+                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="trash">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Red"/>
                                         </state>
                                         <state key="selected" image="questionmark"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="clearPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="L93-Y7-Px0"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wBn-hq-Mac" userLabel="Export 4">
-                                        <rect key="frame" x="29" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wBn-hq-Mac" userLabel="Export 4" customClass="ToolBarButton">
+                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_up">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Green"/>
                                         </state>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EM-YM-mRQ" userLabel="Import 4">
-                                        <rect key="frame" x="-6" y="6.5" width="30" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EM-YM-mRQ" userLabel="Import 4" customClass="ToolBarButton">
+                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" image="square_and_arrow_down">
-                                            <color key="titleColor" name="ActivityOff"/>
+                                            <color key="titleColor" name="Blue"/>
                                         </state>
                                     </button>
                                 </subviews>
@@ -939,33 +1057,33 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JvP-xG-YoT" userLabel="Activity Output 4" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="1114" y="255.5" width="9" height="9"/>
+                                <rect key="frame" x="553" y="219.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="6lC-67-2Tl" userLabel="Statistics">
-                                <rect key="frame" x="89" y="286" width="950" height="30"/>
+                                <rect key="frame" x="77" y="244" width="416" height="30"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TAv-Nj-6FV" userLabel="Count 1">
-                                        <rect key="frame" x="0.0" y="8" width="237.5" height="14.5"/>
+                                        <rect key="frame" x="0.0" y="8" width="104" height="14.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="ActivityOff"/>
                                         <nil key="highlightedColor"/>
                                         <variation key="heightClass=compact-widthClass=compact" hidden="NO"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ygl-Nw-ND3" userLabel="Count 2">
-                                        <rect key="frame" x="237.5" y="8" width="237.5" height="14.5"/>
+                                        <rect key="frame" x="104" y="8" width="104" height="14.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="ActivityOff"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k8o-UT-ATZ" userLabel="Count 3">
-                                        <rect key="frame" x="475" y="8" width="237.5" height="14.5"/>
+                                        <rect key="frame" x="208" y="8" width="104" height="14.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="ActivityOff"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KfA-Q2-rq6" userLabel="Count 4">
-                                        <rect key="frame" x="712.5" y="8" width="237.5" height="14.5"/>
+                                        <rect key="frame" x="312" y="8" width="104" height="14.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" name="ActivityOff"/>
                                         <nil key="highlightedColor"/>
@@ -976,8 +1094,40 @@ RECORDER</string>
                                 </constraints>
                                 <variation key="heightClass=compact-widthClass=compact" hidden="YES"/>
                             </stackView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ljU-tJ-P0N" userLabel="Settings" customClass="PopupView">
+                                <rect key="frame" x="133" y="68" width="304" height="170"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gpR-DS-ezG">
+                                        <rect key="frame" x="128" y="5" width="48" height="15.5"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YdB-9S-jXR" userLabel="Close Settings">
+                                        <rect key="frame" x="279" y="5" width="20" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="Xac-iD-sQt"/>
+                                            <constraint firstAttribute="width" constant="20" id="k6l-Hj-xqg"/>
+                                        </constraints>
+                                        <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="xmark"/>
+                                        <connections>
+                                            <action selector="closeSettingsView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5q0-4h-Fn1"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="gpR-DS-ezG" firstAttribute="centerX" secondItem="ljU-tJ-P0N" secondAttribute="centerX" id="DVo-mA-5Im"/>
+                                    <constraint firstAttribute="trailing" secondItem="YdB-9S-jXR" secondAttribute="trailing" constant="5" id="W62-kL-jCx"/>
+                                    <constraint firstItem="gpR-DS-ezG" firstAttribute="top" secondItem="ljU-tJ-P0N" secondAttribute="top" constant="5" id="p7i-c4-Is3"/>
+                                    <constraint firstAttribute="height" constant="170" id="pOO-TK-4kh"/>
+                                    <constraint firstItem="YdB-9S-jXR" firstAttribute="top" secondItem="ljU-tJ-P0N" secondAttribute="top" constant="5" id="q7g-2e-UxD"/>
+                                </constraints>
+                            </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ThN-br-DQT" userLabel="About" customClass="PopupView">
-                                <rect key="frame" x="412" y="94" width="304" height="170"/>
+                                <rect key="frame" x="133" y="68" width="304" height="170"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DhA-sn-ssN">
                                         <rect key="frame" x="50" y="28" width="204.5" height="45.5"/>
@@ -1049,6 +1199,7 @@ under the CC BY 4.0 License.</string>
                                 </constraints>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="EtP-OS-bQd"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="top" secondItem="dom-KY-gSl" secondAttribute="top" id="0YH-Oe-F7m"/>
@@ -1090,7 +1241,9 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="0ea-4c-QY8" firstAttribute="centerX" secondItem="dom-KY-gSl" secondAttribute="centerX" id="KfY-lT-I85"/>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="leading" secondItem="jiJ-Fl-4eE" secondAttribute="trailing" id="L0r-3C-zBW"/>
                             <constraint firstItem="bKj-4Y-TLw" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="Lcy-op-daL"/>
+                            <constraint firstItem="ljU-tJ-P0N" firstAttribute="width" secondItem="ThN-br-DQT" secondAttribute="width" id="MD3-93-chJ"/>
                             <constraint firstItem="0ea-4c-QY8" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="MIR-v0-RY4"/>
+                            <constraint firstItem="ljU-tJ-P0N" firstAttribute="centerX" secondItem="tCM-sv-7no" secondAttribute="centerX" id="MKH-hh-Yyg"/>
                             <constraint firstItem="w3P-gv-2c3" firstAttribute="height" secondItem="y7b-zS-fgR" secondAttribute="height" constant="-10" id="MrP-Jh-5HH"/>
                             <constraint firstItem="5s5-fr-Amh" firstAttribute="trailing" secondItem="if6-Qg-HAU" secondAttribute="trailing" id="N4G-TG-8TO"/>
                             <constraint firstItem="ThN-br-DQT" firstAttribute="centerX" secondItem="tCM-sv-7no" secondAttribute="centerX" id="N5i-Ep-ZWF"/>
@@ -1136,6 +1289,7 @@ under the CC BY 4.0 License.</string>
                             </constraint>
                             <constraint firstItem="VuI-3k-Ts7" firstAttribute="centerY" secondItem="ckn-XQ-W53" secondAttribute="centerY" id="mjO-gs-lPo"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="nAT-Xa-MhN"/>
+                            <constraint firstItem="ljU-tJ-P0N" firstAttribute="centerY" secondItem="gzW-Zc-U4q" secondAttribute="centerY" id="nFa-Mm-EbN"/>
                             <constraint firstItem="JvP-xG-YoT" firstAttribute="centerX" secondItem="YHo-mc-gVi" secondAttribute="centerX" id="o6i-ag-baY"/>
                             <constraint firstItem="DG3-EF-njW" firstAttribute="centerX" secondItem="dom-KY-gSl" secondAttribute="centerX" id="oIX-u4-Zs5"/>
                             <constraint firstItem="hXW-n3-IFc" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="oXv-IJ-9n6"/>
@@ -1167,7 +1321,7 @@ under the CC BY 4.0 License.</string>
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="aboutButton" destination="JCp-rm-sDC" id="jm6-u8-fSE"/>
+                        <outlet property="aboutButton" destination="Nja-eO-rX7" id="3EP-vJ-nYU"/>
                         <outlet property="aboutView" destination="ThN-br-DQT" id="Ntx-5d-e7p"/>
                         <outlet property="clearButton1" destination="iYd-rc-sVS" id="aXl-Vg-cLH"/>
                         <outlet property="clearButton2" destination="yUW-33-hCc" id="tF9-sv-RiP"/>
@@ -1232,6 +1386,8 @@ under the CC BY 4.0 License.</string>
                         <outlet property="repeatButton" destination="c7Q-aj-bBd" id="87T-Wd-5jZ"/>
                         <outlet property="rewindButton" destination="IuJ-5c-4Lw" id="GBN-OS-J6L"/>
                         <outlet property="routingButton" destination="5s5-fr-Amh" id="xra-8t-WwU"/>
+                        <outlet property="settingsButton" destination="JCp-rm-sDC" id="P67-2C-noq"/>
+                        <outlet property="settingsView" destination="ljU-tJ-P0N" id="i8t-4l-Y99"/>
                         <outlet property="timeline" destination="k5P-YR-lyM" id="iLw-rk-VBV"/>
                         <outlet property="timelineWidth" destination="HUg-bg-jWJ" id="bIC-Jm-cE0"/>
                         <outlet property="tracks" destination="tCM-sv-7no" id="Hkf-8A-Ysn"/>
@@ -1245,6 +1401,8 @@ under the CC BY 4.0 License.</string>
     <resources>
         <image name="backward_end" width="135" height="135"/>
         <image name="backward_end_fill" width="135" height="135"/>
+        <image name="gearshape" width="135" height="135"/>
+        <image name="gearshape_fill" width="135" height="135"/>
         <image name="play" width="135" height="135"/>
         <image name="play_fill" width="135" height="135"/>
         <image name="questionmark" width="135" height="135"/>
