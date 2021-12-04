@@ -10,6 +10,7 @@
 
 @interface MidiTrackView : UIView
 
-@property(weak) NSData* preview;
+@property(weak, nonatomic) UIScrollView* tracks;
+@property(weak, nonatomic) NSData* preview;
 
 @end

@@ -150,6 +150,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    _tracks.delegate = self;
+    
+    _timeline.tracks = _tracks;
+    
+    _midiTrack1.tracks = _tracks;
+    _midiTrack2.tracks = _tracks;
+    _midiTrack3.tracks = _tracks;
+    _midiTrack4.tracks = _tracks;
+
     _menuPopup1.hidden = YES;
     _menuPopup2.hidden = YES;
     _menuPopup3.hidden = YES;
@@ -711,6 +720,16 @@
     state.recordedMessages = nullptr;
     state.recordedLength = 0;
     state.recordedDurationSeconds = 0.0;
+}
+
+#pragma mark - UIScrollViewDelegate methods
+
+- (void)scrollViewDidScroll:(UIScrollView*)scrollView {
+    [_timeline setNeedsDisplay];
+    [_midiTrack1 setNeedsDisplay];
+    [_midiTrack2 setNeedsDisplay];
+    [_midiTrack3 setNeedsDisplay];
+    [_midiTrack4 setNeedsDisplay];
 }
 
 @end

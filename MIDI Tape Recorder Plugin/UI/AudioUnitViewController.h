@@ -10,7 +10,7 @@
 
 #import "MidiRecorderDelegate.h"
 
-@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate>
+@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate, UIScrollViewDelegate>
 
 - (void)readSettingsFromDict:(NSDictionary*)data;
 - (void)readRecordingsFromDict:(NSDictionary*)data;

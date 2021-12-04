@@ -26,7 +26,7 @@
     CGContextClearRect(context, self.bounds);
 
     if (self.highlighted) {
-        CGContextSetFillColorWithColor(context, UIColor.lightGrayColor.CGColor);
+        CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray0"].CGColor);
     }
     else {
         CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOff"].CGColor);

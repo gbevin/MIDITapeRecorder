@@ -28,8 +28,11 @@
     CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray4"].CGColor);
     CGContextFillRect(context, self.bounds);
 
-    for (int x = 0; x < self.frame.size.width; ++x) {
-        CGContextSetStrokeColorWithColor(context, [UIColor colorNamed:@"Gray2"].CGColor);
+    CGColor* gray2_color = [UIColor colorNamed:@"Gray2"].CGColor;
+    CGColor* teal_color = [UIColor colorNamed:@"Teal"].CGColor;
+    CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
+    for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
+        CGContextSetStrokeColorWithColor(context, gray2_color);
         if (x % PIXELS_PER_SECOND == 0) {
             CGContextMoveToPoint(context, x, 0.0);
             CGContextAddLineToPoint(context, x, self.frame.size.height);
@@ -40,7 +43,7 @@
         if (preview != nil && x < preview.length) {
             uint8_t activity = ((uint8_t*)preview.bytes)[x];
             if (activity != 0) {
-                CGContextSetStrokeColorWithColor(context, [UIColor colorNamed:@"Teal"].CGColor);
+                CGContextSetStrokeColorWithColor(context, teal_color);
                 CGContextMoveToPoint(context, x, self.frame.size.height);
                 float v = MIN(((float)activity / MAX_PREVIEW_EVENTS), 1.f);
                 v = pow(v, 1.0/2.0);

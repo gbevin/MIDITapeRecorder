@@ -26,9 +26,11 @@
     
     CGContextSaveGState(context);
 
-    for (int x = 0; x < self.frame.size.width; ++x) {
+    CGColor* gray0_color = [UIColor colorNamed:@"Gray0"].CGColor;
+    CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
+    for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
         if (x % PIXELS_PER_SECOND == 0) {
-            CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+            CGContextSetStrokeColorWithColor(context, gray0_color);
             CGContextMoveToPoint(context, x, 0.0);
             CGContextAddLineToPoint(context, x, self.frame.size.height);
             CGContextStrokePath(context);
@@ -39,7 +41,7 @@
                                                                                             NSForegroundColorAttributeName: [UIColor lightGrayColor]}];
         }
         else if (x % (PIXELS_PER_SECOND / 4) == 0) {
-            CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+            CGContextSetStrokeColorWithColor(context, gray0_color);
             CGContextMoveToPoint(context, x, 2.0 * self.frame.size.height / 3.0);
             CGContextAddLineToPoint(context, x, self.frame.size.height);
             CGContextStrokePath(context);

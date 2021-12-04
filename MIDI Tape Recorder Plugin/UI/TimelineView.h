@@ -10,4 +10,6 @@
 
 @interface TimelineView : UIView
 
+@property(weak, nonatomic) UIScrollView* tracks;
+
 @end
