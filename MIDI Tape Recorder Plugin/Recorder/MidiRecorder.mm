@@ -170,10 +170,8 @@
 }
 
 - (int32_t)midiBeatTicks {
-    // get as close a millisecond ticks as possible
-    double beat_milliseconds = 1000.0 * 60.0 / _state->tempo;
-    // we can't have more than 0x7fff ticks
-    return MIN(beat_milliseconds, 0x7fff);
+    // use the highest possible precision
+    return 0x7fff;
 }
 
 - (BOOL)needsMidiByteSwap {
