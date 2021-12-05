@@ -623,6 +623,7 @@
 				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -658,6 +659,7 @@
 				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
