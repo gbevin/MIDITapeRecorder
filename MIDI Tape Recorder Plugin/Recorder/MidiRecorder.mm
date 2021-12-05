@@ -149,6 +149,100 @@
     });
 }
 
+- (void)writeMidiVarLen:(NSMutableData*)track value:(uint32_t)value {
+    uint32_t buffer = 0;
+    buffer = value & 0x7f;
+    while ((value >>= 7) > 0) {
+        buffer <<= 8;
+        buffer |= 0x80;
+        buffer += (value & 0x7f);
+    }
+    while (YES) {
+        uint8_t b = buffer & 0xff;
+        [track appendBytes:&b length:1];
+        if (buffer & 0x80) {
+            buffer >>= 8;
+        }
+        else {
+            break;
+        }
+    }
+}
+
+- (NSData*)recordedAsMidiFile {
+    NSMutableData* data = [NSMutableData new];
+
+    BOOL needs_byte_swap = NO;
+    if (CFByteOrderGetCurrent() == CFByteOrderLittleEndian) {
+        needs_byte_swap = YES;
+    }
+    
+    // we know we're using ASCII character, so UTF-8 will only use those characters
+    [data appendBytes:[@"MThd" UTF8String] length:4];
+    
+    uint32_t file_header_length = needs_byte_swap ? CFSwapInt32(6) : 6;
+    [data appendBytes:&file_header_length length:4];
+    
+    uint16_t file_header_format = needs_byte_swap ? CFSwapInt16(1) : 1;
+    [data appendBytes:&file_header_format length:2];
+    
+    uint16_t file_header_ntrks = needs_byte_swap ? CFSwapInt16(1) : 1;
+    [data appendBytes:&file_header_ntrks length:2];
+    
+    double bpm = 120.0;
+    // get as close a millisecond ticks as possible
+    double beat_seconds = 60.0 / bpm;
+    double beat_milliseconds = 1000.0 * beat_seconds;
+    // we can't have more than 0x7fff ticks
+    int32_t beat_ticks = MIN(beat_milliseconds, 0x7fff);
+    
+    // number of ticks per quarter note
+    uint16_t file_header_division = needs_byte_swap ? CFSwapInt16(beat_ticks) : beat_ticks;
+    [data appendBytes:&file_header_division length:2];
+    
+    // we know we're using ASCII character, so UTF-8 will only use those characters
+    [data appendBytes:[@"MTrk" UTF8String] length:4];
+    
+    // accumulate the track data in a seperate object so that
+    // we can provide the length before adding its data
+    NSMutableData* track = [NSMutableData new];
+
+    // add tempo to track
+    [self writeMidiVarLen:track value:0];
+    // we can't have more than 0xffffff microseconds per beat
+    int32_t beat_micros = MIN(1000000.0 * beat_seconds, 0xffffff);
+    uint8_t meta_tempo[] = { 0xff, 0x51, 0x03 };
+    [track appendBytes:&meta_tempo[0] length:3];
+    uint8_t bm1 = (beat_micros >> 16) & 0xff;
+    [track appendBytes:&bm1 length:1];
+    uint8_t bm2 = (beat_micros >> 8) & 0xff;
+    [track appendBytes:&bm2 length:1];
+    uint8_t bm3 = beat_micros & 0xff;
+    [track appendBytes:&bm3 length:1];
+
+    // add midi events to track
+    const RecordedMidiMessage* messages = (const RecordedMidiMessage*)_recorded.bytes;
+    int64_t last_offset_ticks = 0;
+    for (uint32_t i = 0; i < _recordedCount; ++i) {
+        const RecordedMidiMessage& message = messages[i];
+        int64_t offset_ticks = int64_t(((message.offsetSeconds * bpm) / 60.0) * beat_ticks);
+        uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
+        [self writeMidiVarLen:track value:delta_ticks];
+        for (int d = 0; d < message.length; ++d) {
+            [track appendBytes:&message.data[d] length:1];
+        }
+        
+        last_offset_ticks = offset_ticks;
+    }
+
+    uint32_t track_header_length = needs_byte_swap ? CFSwapInt32((uint32_t)track.length) : (uint32_t)track.length;
+    [data appendBytes:&track_header_length length:4];
+    
+    [data appendData:track];
+
+    return data;
+}
+
 #pragma mark Recording
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {

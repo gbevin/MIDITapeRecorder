@@ -142,6 +142,9 @@
             }
         }
 
+        if (kernel->_ioState.musicalContext) {
+            kernel->_ioState.musicalContext(&kernel->_ioState.tempo, nil, nil, &kernel->_ioState.currentBeatPos, nil, nil);
+        }
         kernel->_ioState.frameCount = frameCount;
         kernel->_ioState.timestamp = timestamp;
         

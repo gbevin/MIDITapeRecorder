@@ -487,6 +487,26 @@
 
 - (IBAction)exportPressed:(UIButton*)sender {
     [self closeMenuPressed:nil];
+    
+    NSUInteger index = [@[_exportButton1, _exportButton2, _exportButton3, _exportButton4] indexOfObject:sender];
+    if (index == NSNotFound) {
+        return;
+    }
+
+    NSFileManager* fm = [NSFileManager defaultManager];
+    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"track%lu.midi", (unsigned long)index+1]];
+    NSData* recorded = [[_midiQueueProcessor recorder:(int)index] recordedAsMidiFile];
+    [recorded writeToURL:file_url atomically:YES];
+    
+    UIDocumentPickerViewController* documents = [[UIDocumentPickerViewController alloc] initWithURL:file_url inMode:UIDocumentPickerModeExportToService];
+    [documents setDelegate:self];
+    [self presentViewController:documents animated:NO completion:nil];
+}
+
+- (void)documentPicker:(UIDocumentPickerViewController*)controller didPickDocumentsAtURLs:(NSArray<NSURL*>*)urls {
+}
+
+- (void)documentPickerWasCancelled:(UIDocumentPickerViewController*)controller {
 }
 
 #pragma mark IBAction - Clear
