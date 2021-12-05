@@ -480,11 +480,13 @@
 #pragma mark IBAction - Import
 
 - (IBAction)importPressed:(UIButton*)sender {
+    [self closeMenuPressed:nil];
 }
 
 #pragma mark IBAction - Export
 
 - (IBAction)exportPressed:(UIButton*)sender {
+    [self closeMenuPressed:nil];
 }
 
 #pragma mark IBAction - Clear
@@ -508,6 +510,8 @@
             [[_midiQueueProcessor recorder:3] clear];
             [_midiTrack4 setNeedsDisplay];
         }
+        
+        [self closeMenuPressed:nil];
     }
 }
 

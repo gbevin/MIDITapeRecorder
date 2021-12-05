@@ -570,6 +570,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="Green"/>
                                         </state>
+                                        <connections>
+                                            <action selector="exportPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PSe-79-uPG"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M47-0G-FMz" userLabel="Import 1" customClass="ToolBarButton">
                                         <rect key="frame" x="10" y="8.5" width="26" height="26"/>
@@ -579,6 +582,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <connections>
+                                            <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Tqx-8a-4LT"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -722,6 +728,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="Green"/>
                                         </state>
+                                        <connections>
+                                            <action selector="exportPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Op5-u4-nPa"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NAv-nC-Upf" userLabel="Import 2" customClass="ToolBarButton">
                                         <rect key="frame" x="10" y="8.5" width="26" height="26"/>
@@ -731,6 +740,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <connections>
+                                            <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nvW-vo-H9a"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -874,6 +886,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="Green"/>
                                         </state>
+                                        <connections>
+                                            <action selector="exportPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zjm-XW-Fa6"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YtR-ZD-uKp" userLabel="Import 3" customClass="ToolBarButton">
                                         <rect key="frame" x="10" y="8.5" width="26" height="26"/>
@@ -883,6 +898,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <connections>
+                                            <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zHf-fb-SUS"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1026,6 +1044,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_up">
                                             <color key="titleColor" name="Green"/>
                                         </state>
+                                        <connections>
+                                            <action selector="exportPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="sTi-la-IEh"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EM-YM-mRQ" userLabel="Import 4" customClass="ToolBarButton">
                                         <rect key="frame" x="10" y="8.5" width="26" height="26"/>
@@ -1035,6 +1056,9 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <connections>
+                                            <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1vt-yG-0Qd"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
