@@ -13,9 +13,9 @@ struct RecordedMidiMessage {
     RecordedMidiMessage(const RecordedMidiMessage&) = delete;
     RecordedMidiMessage& operator= (const RecordedMidiMessage&) = delete;
     
-    double offsetSeconds    { 0.0 };
-    uint16_t length         { 0 };
-    uint8_t data[3]         { 0, 0, 0 };
+    double offsetBeats  { 0.0 };
+    uint16_t length     { 0 };
+    uint8_t data[3]     { 0, 0, 0 };
 };
 
 static const int32_t RECORDED_MSG_SIZE = sizeof(RecordedMidiMessage);

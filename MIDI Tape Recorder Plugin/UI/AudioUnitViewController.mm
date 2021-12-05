@@ -722,26 +722,26 @@
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         midi_track[t].preview = [_midiQueueProcessor recorder:t].preview;
         
-        max_duration = MAX(max_duration, [_midiQueueProcessor recorder:t].duration);
+        max_duration = MAX(max_duration, [_midiQueueProcessor recorder:t].durationBeats);
         
         if (_recordButton.selected) {
             [midi_track[t] setNeedsDisplay];
         }
     }
-    _timelineWidth.constant = max_duration * PIXELS_PER_SECOND;
+    _timelineWidth.constant = max_duration * PIXELS_PER_BEAT;
 }
 
 - (void)renderPlayhead {
     BOOL has_recorder_duration = NO;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if ([_midiQueueProcessor recorder:t].duration != 0.0) {
+        if ([_midiQueueProcessor recorder:t].durationBeats != 0.0) {
             has_recorder_duration = YES;
             break;
         }
     }
 
     // playhead positioning
-    _playheadLeading.constant = _state->playDurationSeconds * PIXELS_PER_SECOND;
+    _playheadLeading.constant = _state->playDurationBeats * PIXELS_PER_BEAT;
     
     // scroll view location
     _playhead.hidden = !has_recorder_duration;
@@ -809,7 +809,7 @@
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = data;
     state.recordedLength = count;
-    state.recordedDurationSeconds = duration;
+    state.recordedDurationBeats = duration;
 }
 
 - (void)invalidateRecording:(int)ordinal {
@@ -818,7 +818,7 @@
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = nullptr;
     state.recordedLength = 0;
-    state.recordedDurationSeconds = 0.0;
+    state.recordedDurationBeats = 0.0;
 }
 
 #pragma mark - UIScrollViewDelegate methods

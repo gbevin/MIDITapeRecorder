@@ -27,6 +27,7 @@ class MidiRecorderState;
 - (NSDictionary*)recordedAsDict;
 - (void)dictToRecorded:(NSDictionary*)dict;
 - (NSData*)recordedAsMidiFile;
+- (NSData*)recordedAsMidiTrack;
 
 - (void)setState:(MidiRecorderState*)state;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
@@ -34,7 +35,7 @@ class MidiRecorderState;
 
 - (void)ping;
 
-- (double)duration;
+- (double)durationBeats;
 - (NSData*)preview;
 
 @end

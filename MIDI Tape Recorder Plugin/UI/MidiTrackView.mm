@@ -42,7 +42,7 @@
     CGContextSetStrokeColorWithColor(context, gray2_color);
     
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
-        if (x % PIXELS_PER_SECOND == 0) {
+        if (x % PIXELS_PER_BEAT == 0) {
             CGContextMoveToPoint(context, x, 0.0);
             CGContextAddLineToPoint(context, x, self.frame.size.height);
         }

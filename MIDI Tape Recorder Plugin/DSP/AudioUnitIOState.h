@@ -15,9 +15,11 @@ struct AudioUnitIOState {
     int32_t channelCount    { 0 };
     float sampleRate        { 44100.f };
     uint32_t frameCount     { 0 };
-    double tempo            { 120.0 };
-    double currentBeatPos   { 0.0 };
-
+    
+    bool transportChanged          { false };
+    bool transportMoving           { false };
+    double transportSamplePosition { 0.0 };
+    
     const AudioTimeStamp* timestamp    { nullptr };
 
     AUMIDIOutputEventBlock midiOutputEventBlock     { nullptr };

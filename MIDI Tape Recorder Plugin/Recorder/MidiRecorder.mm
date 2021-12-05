@@ -22,13 +22,13 @@
 
     NSMutableData* _recording;
     NSMutableData* _recordingPreview;
-    double _recordingDurationSeconds;
+    double _recordingDurationBeats;
     double _recordingFirstMessageTime;
     uint32_t _recordingCount;
     
     NSData* _recorded;
     NSData* _recordedPreview;
-    double _recordedDurationSeconds;
+    double _recordedDurationBeats;
     uint32_t _recordedCount;
 }
 
@@ -45,12 +45,12 @@
 
         _recording = [NSMutableData new];
         _recordingPreview = [NSMutableData new];
-        _recordingDurationSeconds = 0.0;
+        _recordingDurationBeats = 0.0;
         _recordingCount = 0;
         
         _recorded = nil;
         _recordedPreview = nil;
-        _recordedDurationSeconds = 0.0;
+        _recordedDurationBeats = 0.0;
         _recordedCount = 0;
     }
     
@@ -71,7 +71,7 @@
             // when recording is stopped, we move the recording data to the recorded data
             _recorded = _recording;
             _recordedPreview = _recordingPreview;
-            _recordedDurationSeconds = _recordingDurationSeconds;
+            _recordedDurationBeats = _recordingDurationBeats;
             _recordedCount = _recordingCount;
 
             // then re-initialize the recording for the next time
@@ -79,11 +79,11 @@
 
             _recording = [NSMutableData new];
             _recordingPreview = [NSMutableData new];
-            _recordingDurationSeconds = 0.0;
+            _recordingDurationBeats = 0.0;
             _recordingCount = 0;
             
             if (_delegate) {
-                [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationSeconds];
+                [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationBeats];
             }
         }
         else {
@@ -107,7 +107,7 @@
             result = @{
                 @"Recorded" : [NSData dataWithData:_recorded],
                 @"Preview" : [NSData dataWithData:_recordedPreview],
-                @"Duration" : @(_recordedDurationSeconds),
+                @"Duration" : @(_recordedDurationBeats),
                 @"Count" : @(_recordedCount)
             };
         }
@@ -120,7 +120,7 @@
     dispatch_barrier_sync(_dispatchQueue, ^{
         _recorded = nil;
         _recordedPreview = nil;
-        _recordedDurationSeconds = 0.0;
+        _recordedDurationBeats = 0.0;
         _recordedCount = 0;
         
         id recorded = [dict objectForKey:@"Recorded"];
@@ -135,7 +135,7 @@
         
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
-            _recordedDurationSeconds = [duration doubleValue];
+            _recordedDurationBeats = [duration doubleValue];
         }
         
         id count = [dict objectForKey:@"Count"];
@@ -144,7 +144,7 @@
         }
         
         if (_delegate) {
-            [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationSeconds];
+            [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationBeats];
         }
     });
 }
@@ -169,13 +169,25 @@
     }
 }
 
+- (int32_t)midiBeatTicks {
+    // get as close a millisecond ticks as possible
+    double beat_milliseconds = 1000.0 * 60.0 / _state->tempo;
+    // we can't have more than 0x7fff ticks
+    return MIN(beat_milliseconds, 0x7fff);
+}
+
+- (BOOL)needsMidiByteSwap {
+    if (CFByteOrderGetCurrent() == CFByteOrderLittleEndian) {
+        return YES;
+    }
+    
+    return NO;
+}
+
 - (NSData*)recordedAsMidiFile {
     NSMutableData* data = [NSMutableData new];
 
-    BOOL needs_byte_swap = NO;
-    if (CFByteOrderGetCurrent() == CFByteOrderLittleEndian) {
-        needs_byte_swap = YES;
-    }
+    BOOL needs_byte_swap = [self needsMidiByteSwap];
     
     // we know we're using ASCII character, so UTF-8 will only use those characters
     [data appendBytes:[@"MThd" UTF8String] length:4];
@@ -189,20 +201,23 @@
     uint16_t file_header_ntrks = needs_byte_swap ? CFSwapInt16(1) : 1;
     [data appendBytes:&file_header_ntrks length:2];
     
-    double bpm = 120.0;
-    // get as close a millisecond ticks as possible
-    double beat_seconds = 60.0 / bpm;
-    double beat_milliseconds = 1000.0 * beat_seconds;
-    // we can't have more than 0x7fff ticks
-    int32_t beat_ticks = MIN(beat_milliseconds, 0x7fff);
-    
     // number of ticks per quarter note
+    int32_t beat_ticks = [self midiBeatTicks];
     uint16_t file_header_division = needs_byte_swap ? CFSwapInt16(beat_ticks) : beat_ticks;
     [data appendBytes:&file_header_division length:2];
     
+    // add the track
+    [data appendData:[self recordedAsMidiTrack]];
+
+    return data;
+}
+
+- (NSData*)recordedAsMidiTrack {
+    NSMutableData* data = [NSMutableData new];
+
     // we know we're using ASCII character, so UTF-8 will only use those characters
     [data appendBytes:[@"MTrk" UTF8String] length:4];
-    
+
     // accumulate the track data in a seperate object so that
     // we can provide the length before adding its data
     NSMutableData* track = [NSMutableData new];
@@ -210,7 +225,7 @@
     // add tempo to track
     [self writeMidiVarLen:track value:0];
     // we can't have more than 0xffffff microseconds per beat
-    int32_t beat_micros = MIN(1000000.0 * beat_seconds, 0xffffff);
+    int32_t beat_micros = MIN(1000000.0 * 60.0 / _state->tempo, 0xffffff);
     uint8_t meta_tempo[] = { 0xff, 0x51, 0x03 };
     [track appendBytes:&meta_tempo[0] length:3];
     uint8_t bm1 = (beat_micros >> 16) & 0xff;
@@ -225,7 +240,7 @@
     int64_t last_offset_ticks = 0;
     for (uint32_t i = 0; i < _recordedCount; ++i) {
         const RecordedMidiMessage& message = messages[i];
-        int64_t offset_ticks = int64_t(((message.offsetSeconds * bpm) / 60.0) * beat_ticks);
+        int64_t offset_ticks = int64_t(message.offsetBeats * [self midiBeatTicks]);
         uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
         [self writeMidiVarLen:track value:delta_ticks];
         for (int d = 0; d < message.length; ++d) {
@@ -234,8 +249,8 @@
         
         last_offset_ticks = offset_ticks;
     }
-
-    uint32_t track_header_length = needs_byte_swap ? CFSwapInt32((uint32_t)track.length) : (uint32_t)track.length;
+    
+    uint32_t track_header_length = [self needsMidiByteSwap] ? CFSwapInt32((uint32_t)track.length) : (uint32_t)track.length;
     [data appendBytes:&track_header_length length:4];
     
     [data appendData:track];
@@ -258,7 +273,7 @@
         if (_recordingCount == 0 && _state->transportStartMachSeconds == 0.0) {
             if (_delegate) {
                 _state->transportStartMachSeconds = now_mach;
-                _state->playDurationSeconds = 0;
+                _state->playDurationBeats = 0.0;
                 [_delegate startRecord];
             }
         }
@@ -273,17 +288,18 @@
         
         // add message to the recording
         RecordedMidiMessage recorded_message;
-        recorded_message.offsetSeconds = message.timeSampleSeconds - _recordingFirstMessageTime;
+        double offset_seconds = message.timeSampleSeconds - _recordingFirstMessageTime;
+        recorded_message.offsetBeats = offset_seconds * _state->secondsToBeats;
         recorded_message.length = message.length;
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
         [_recording appendBytes:&recorded_message length:RECORDED_MSG_SIZE];
-        _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds;
+        _recordingDurationBeats = (now_mach - _state->transportStartMachSeconds) * _state->secondsToBeats;
         _recordingCount += 1;
         
         // update the preview
-        int32_t pixel = int32_t(recorded_message.offsetSeconds * PIXELS_PER_SECOND + 0.5);
+        int32_t pixel = int32_t(recorded_message.offsetBeats * PIXELS_PER_BEAT + 0.5);
         if (pixel >= _recordingPreview.length) {
             [_recordingPreview setLength:pixel + 1];
         }
@@ -301,12 +317,12 @@
 
     _recording = [NSMutableData new];
     _recordingPreview = [NSMutableData new];
-    _recordingDurationSeconds = 0.0;
+    _recordingDurationBeats = 0.0;
     _recordingCount = 0;
 
     _recorded = nil;
     _recordedPreview = nil;
-    _recordedDurationSeconds = 0.0;
+    _recordedDurationBeats = 0.0;
     _recordedCount = 0;
     
     if (_delegate) {
@@ -318,10 +334,10 @@
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record && _recording != nil) {
             if (_state->transportStartMachSeconds == 0.0) {
-                _recordingDurationSeconds = 0.0;
+                _recordingDurationBeats = 0.0;
             }
             else {
-                _recordingDurationSeconds = HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds;
+                _recordingDurationBeats = (HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds) * _state->secondsToBeats;
             }
         }
     });
@@ -333,15 +349,15 @@
     _state = state;
 }
 
-- (double)duration {
+- (double)durationBeats {
     __block double duration = 0.0;
     
     dispatch_sync(_dispatchQueue, ^{
         if (_record == YES) {
-            duration = _recordingDurationSeconds;
+            duration = _recordingDurationBeats;
         }
         else {
-            duration = _recordedDurationSeconds;
+            duration = _recordedDurationBeats;
         }
     });
     

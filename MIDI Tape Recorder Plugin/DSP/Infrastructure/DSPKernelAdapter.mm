@@ -142,9 +142,27 @@
             }
         }
 
-        if (kernel->_ioState.musicalContext) {
-            kernel->_ioState.musicalContext(&kernel->_ioState.tempo, nil, nil, &kernel->_ioState.currentBeatPos, nil, nil);
+        if (kernel->_ioState.transportStateBlock) {
+            AUHostTransportStateFlags transport_state_flags;
+            kernel->_ioState.transportStateBlock(&transport_state_flags, &kernel->_ioState.transportSamplePosition, nil, nil);
+            kernel->_ioState.transportChanged = transport_state_flags & AUHostTransportStateChanged;
+            BOOL moving = transport_state_flags & AUHostTransportStateMoving;
+            if (moving != kernel->_ioState.transportMoving) {
+                kernel->_ioState.transportChanged = YES;
+            }
+            kernel->_ioState.transportMoving = moving;
         }
+        
+        if (kernel->_ioState.musicalContext) {
+            double tempo = 120.0;
+            double beat_pos = 0.0;
+            kernel->_ioState.musicalContext(&tempo, nil, nil, &beat_pos, nil, nil);
+            kernel->_state.tempo = tempo;
+            kernel->_state.currentBeatPos = beat_pos;
+            kernel->_state.secondsToBeats = tempo / 60.0;
+            kernel->_state.beatsToSeconds = 60.0 / tempo;
+        }
+        
         kernel->_ioState.frameCount = frameCount;
         kernel->_ioState.timestamp = timestamp;
         

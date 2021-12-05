@@ -20,6 +20,11 @@ struct MidiRecorderState {
     MidiRecorderState& operator= (const MidiRecorderState&) = delete;
     
     MidiTrackState track[MIDI_TRACKS];
+    
+    std::atomic<double> tempo            { 120.0 };
+    std::atomic<double> currentBeatPos   { 0.0 };
+    std::atomic<double> secondsToBeats   { 2.0 };
+    std::atomic<double> beatsToSeconds   { 0.5 };
 
     std::atomic<int32_t> scheduledRewind                        { false };
     std::atomic<int32_t> scheduledPlay                          { false };
@@ -35,6 +40,5 @@ struct MidiRecorderState {
     TPCircularBuffer midiBuffer;
     
     double transportStartMachSeconds    { 0.0 };
-    double playStartSampleSeconds       { 0.0 };
-    double playDurationSeconds          { 0.0 };
+    double playDurationBeats            { 0.0 };
 };

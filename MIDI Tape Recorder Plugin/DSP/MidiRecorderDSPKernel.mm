@@ -40,14 +40,11 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 }
 
 void MidiRecorderDSPKernel::rewind() {
-    if (_isPlaying == YES) {
-        _state.playStartSampleSeconds = 0.0;
-        _state.playDurationSeconds = 0.0;
-    }
-    _state.playDurationSeconds = 0;
+    _state.playDurationBeats = 0.0;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         _state.track[t].playCounter = 0;
     }
+    turnOffAllNotes();
 }
 
 void MidiRecorderDSPKernel::play() {
@@ -55,7 +52,6 @@ void MidiRecorderDSPKernel::play() {
         _state.scheduledStopAndRewind = false;
         _state.scheduledUIStopAndRewind = false;
 
-        _state.playStartSampleSeconds = 0.0;
         _isPlaying = YES;
     }
 }
@@ -212,21 +208,10 @@ void MidiRecorderDSPKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
-        if (_state.playStartSampleSeconds == 0.0) {
-            // turn off all notes in case we're doing a live rewind
-            turnOffAllNotes();
-            
-            // get a reference timestamp to measure the play duration
-            _state.playStartSampleSeconds = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
-            
-            // if we had a previous play duration, offset the reference timestamp so that we start later on the timeline
-            _state.playStartSampleSeconds -= _state.playDurationSeconds;
-        }
-        
-        const double current_time = _ioState.timestamp->mSampleTime / _ioState.sampleRate;
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
-        
-        _state.playDurationSeconds = current_time - _state.playStartSampleSeconds;
+        const double frames_beats = frames_seconds * _state.secondsToBeats;
+
+        _state.playDurationBeats += frames_beats;
 
         BOOL reached_end = YES;
         
@@ -247,12 +232,12 @@ void MidiRecorderDSPKernel::processOutput() {
                     const RecordedMidiMessage* message = &state.recordedMessages[play_counter];
                     
                     // check if the time offset of the message falls without the advancement of the playhead
-                    if (message->offsetSeconds < _state.playDurationSeconds + frames_seconds) {
+                    if (message->offsetBeats < _state.playDurationBeats + frames_beats) {
                         
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
                         if (!state.muteEnabled && _ioState.midiOutputEventBlock) {
-                            const double offset_seconds = message->offsetSeconds - _state.playDurationSeconds;
+                            const double offset_seconds = (message->offsetBeats - _state.playDurationBeats) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
@@ -279,7 +264,7 @@ void MidiRecorderDSPKernel::processOutput() {
                     }
                 }
                 
-                if (_state.playDurationSeconds < state.recordedDurationSeconds) {
+                if (_state.playDurationBeats < state.recordedDurationBeats) {
                     reached_end = NO;
                 }
             }
