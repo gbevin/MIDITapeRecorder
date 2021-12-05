@@ -286,6 +286,16 @@
 #pragma mark IBAction - Export All
 
 - (IBAction)exportAllPressed:(UIButton*)sender {
+    [self closeMenuPressed:nil];
+
+    NSFileManager* fm = [NSFileManager defaultManager];
+    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:@"tracks.midi"];
+    NSData* recorded = [_midiQueueProcessor recordedTracksAsMidiFile];
+    [recorded writeToURL:file_url atomically:YES];
+    
+    UIDocumentPickerViewController* documents = [[UIDocumentPickerViewController alloc] initWithURL:file_url inMode:UIDocumentPickerModeExportToService];
+    [documents setDelegate:self];
+    [self presentViewController:documents animated:NO completion:nil];
 }
 
 #pragma mark IBAction - Clear All

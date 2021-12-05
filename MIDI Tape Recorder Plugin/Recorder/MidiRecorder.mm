@@ -186,6 +186,21 @@
 
 - (NSData*)recordedAsMidiFile {
     NSMutableData* data = [NSMutableData new];
+    
+    NSData* track = [self recordedAsMidiTrackChunk];
+
+    [data appendData:[self recordedAsMidiFileChunk:track == nil ? 0 : 1]];
+    
+    if (track != nil) {
+        // add the track
+        [data appendData:track];
+    }
+
+    return data;
+}
+
+- (NSData*)recordedAsMidiFileChunk:(int)ntrks {
+    NSMutableData* data = [NSMutableData new];
 
     BOOL needs_byte_swap = [self needsMidiByteSwap];
     
@@ -198,21 +213,22 @@
     uint16_t file_header_format = needs_byte_swap ? CFSwapInt16(1) : 1;
     [data appendBytes:&file_header_format length:2];
     
-    uint16_t file_header_ntrks = needs_byte_swap ? CFSwapInt16(1) : 1;
+    uint16_t file_header_ntrks = needs_byte_swap ? CFSwapInt16(ntrks) : ntrks;
     [data appendBytes:&file_header_ntrks length:2];
     
     // number of ticks per quarter note
     int32_t beat_ticks = [self midiBeatTicks];
     uint16_t file_header_division = needs_byte_swap ? CFSwapInt16(beat_ticks) : beat_ticks;
     [data appendBytes:&file_header_division length:2];
-    
-    // add the track
-    [data appendData:[self recordedAsMidiTrack]];
 
     return data;
 }
 
-- (NSData*)recordedAsMidiTrack {
+- (NSData*)recordedAsMidiTrackChunk {
+    if (_recordedCount == 0) {
+        return nil;
+    }
+    
     NSMutableData* data = [NSMutableData new];
 
     // we know we're using ASCII character, so UTF-8 will only use those characters

@@ -21,4 +21,6 @@ class MidiRecorderState;
 - (void)setState:(MidiRecorderState*)state;
 - (MidiRecorder*)recorder:(int)ordinal;
 
+- (NSData*)recordedTracksAsMidiFile;
+
 @end

@@ -97,7 +97,7 @@
     }
 }
 
-#pragma mark Getters and Setter
+#pragma mark State
 
 - (void)setState:(MidiRecorderState*)state {
     _state = state;
@@ -106,6 +106,27 @@
         [_recorder[t] setState:state];
     }
 }
+
+- (NSData*)recordedTracksAsMidiFile {
+    NSMutableData* data = [NSMutableData new];
+    
+    NSMutableData* tracks = [NSMutableData new];
+    int tracks_count = 0;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        NSData* track = [_recorder[t] recordedAsMidiTrackChunk];
+        if (track != nil) {
+            [tracks appendData:track];
+            tracks_count += 1;
+        }
+    }
+    
+    [data appendData:[_recorder[0] recordedAsMidiFileChunk:tracks_count]];
+    [data appendData:tracks];
+
+    return data;
+}
+
+#pragma mark Getters and Setter
 
 - (MidiRecorder*)recorder:(int)ordinal {
     if (ordinal < 0 || ordinal >= MIDI_TRACKS) {
