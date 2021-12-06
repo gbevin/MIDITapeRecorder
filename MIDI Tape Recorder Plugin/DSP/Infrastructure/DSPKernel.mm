@@ -41,7 +41,6 @@ void DSPKernel::performAllSimultaneousEvents(AUEventSampleTime now, AURenderEven
  Call it inside your internalRenderBlock.
  */
 void DSPKernel::processWithEvents(AudioTimeStamp const* timestamp, AUAudioFrameCount frameCount, AURenderEvent const* events) {
-
     AUEventSampleTime now = AUEventSampleTime(timestamp->mSampleTime);
     AUAudioFrameCount framesRemaining = frameCount;
     AURenderEvent const* event = events;

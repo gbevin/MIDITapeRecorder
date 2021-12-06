@@ -37,6 +37,7 @@ public:
     
     void handleScheduledTransitions() override;
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
+    void handleBufferStart(AudioTimeStamp const* timestamp) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
     void processOutput() override;
 

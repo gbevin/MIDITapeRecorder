@@ -19,6 +19,7 @@ public:
 
     virtual void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) = 0;
 
+    virtual void handleBufferStart(AudioTimeStamp const* timestamp) {}
     virtual void handleMIDIEvent(AUMIDIEvent const& midiEvent) {}
     virtual void handleParameterEvent(AUParameterEvent const& parameterEvent) {}
     virtual void processOutput() {};

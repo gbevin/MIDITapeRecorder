@@ -167,6 +167,7 @@
         kernel->_ioState.timestamp = timestamp;
         
         kernel->setBuffers(inAudioBufferList, outAudioBufferList);
+        kernel->handleBufferStart(timestamp);
         kernel->handleScheduledTransitions();
         kernel->processWithEvents(timestamp, frameCount, realtimeEventListHead);
         kernel->processOutput();

@@ -56,7 +56,10 @@
         
         if (_state) {
             for (int t = 0; t < MIDI_TRACKS; ++t) {
-                if (_state->track[t].sourceCable == message.cable) {
+                if (message.length == 0) {
+                    [_recorder[t] ping:message.timeSampleSeconds];
+                }
+                else if (_state->track[t].sourceCable == message.cable) {
                     _state->track[t].activityInput = 1.0;
                     [_recorder[t] recordMidiMessage:message];
                 }
@@ -89,12 +92,6 @@
               [NSString stringWithFormat:@"%d", status].UTF8String,
               [NSString stringWithFormat:@"%d", data1].UTF8String,
               [NSString stringWithFormat:@"%d", data2].UTF8String);
-    }
-}
-
-- (void)ping {
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_recorder[t] ping];
     }
 }
 

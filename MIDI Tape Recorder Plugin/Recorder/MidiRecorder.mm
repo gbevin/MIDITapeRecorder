@@ -330,6 +330,25 @@
 
 #pragma mark Recording
 
+- (void)ping:(double)timeSampleSeconds {
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        if (_record && _recording != nil) {
+            if (_state->transportStartMachSeconds == 0.0) {
+                _recordingDurationBeats = 0.0;
+            }
+            else {
+                _recordingDurationBeats = (HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds) * _state->secondsToBeats;
+                
+                if (_recordingPreview) {
+                    double offset_seconds = timeSampleSeconds - _recordingFirstMessageTime;
+                    double offset_beats = offset_seconds * _state->secondsToBeats;
+                    [self updatePreview:_recordingPreview withOffsetBeats:offset_beats];
+                }
+            }
+        }
+    });
+}
+
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
     double now_mach = HOST_TIME.currentMachTimeInSeconds();
     
@@ -373,15 +392,56 @@
     });
 }
 
+- (void)updatePreview:(NSMutableData*)preview withOffsetBeats:(double)offsetBeats {
+    int32_t pixel = int32_t(offsetBeats * PIXELS_PER_BEAT + 0.5);
+    pixel *= 2;
+    
+    int8_t active_notes = 0;
+    if (pixel > 0) {
+        active_notes = ((int8_t*)preview.bytes)[preview.length-1];
+    }
+    if (pixel + 1 >= preview.length) {
+        uint8_t zero = 0;
+        while (preview.length < pixel + 2) {
+            [preview appendBytes:&zero length:1];
+            [preview appendBytes:&active_notes length:1];
+        }
+    }
+}
+
 - (void)updatePreview:(NSMutableData*)preview withMessage:(RecordedMidiMessage&)message {
     int32_t pixel = int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5);
-    if (pixel >= preview.length) {
-        [preview setLength:pixel + 1];
-    }
+    pixel *= 2;
+    
+    [self updatePreview:preview withOffsetBeats:message.offsetBeats];
+    
     uint8_t* preview_bytes = (uint8_t*)preview.mutableBytes;
-    if (preview_bytes[pixel] < MAX_PREVIEW_EVENTS) {
+    int8_t active_notes = preview_bytes[pixel + 1];
+
+    // track the note and the events indepdently
+    if (message.length == 3 &&
+        ((message.data[0] & 0xf0) == 0x90 ||
+         (message.data[0] & 0xf0) == 0x80)) {
+        // note on
+        if ((message.data[0] & 0xf0) == 0x90) {
+            // note on with zero velocity == note off
+            if (message.data[2] == 0) {
+                active_notes -= 1;
+            }
+            else {
+                active_notes += 1;
+            }
+        }
+        // note off
+        else if ((message.data[0] & 0xf0) == 0x80) {
+            active_notes -= 1;
+        }
+    }
+    else if (preview_bytes[pixel] < 0xff) {
         preview_bytes[pixel] += 1;
     }
+    
+    preview_bytes[pixel + 1] = active_notes;
 }
 
 - (void)clear {
@@ -402,19 +462,6 @@
     if (_delegate) {
         [_delegate invalidateRecording:_ordinal];
     }
-}
-
-- (void)ping {
-    dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record && _recording != nil) {
-            if (_state->transportStartMachSeconds == 0.0) {
-                _recordingDurationBeats = 0.0;
-            }
-            else {
-                _recordingDurationBeats = (HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds) * _state->secondsToBeats;
-            }
-        }
-    });
 }
 
 #pragma mark Getters and Setter

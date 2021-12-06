@@ -171,6 +171,13 @@ void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCo
     }
 }
 
+void MidiRecorderDSPKernel::handleBufferStart(AudioTimeStamp const* timestamp) {
+    QueuedMidiMessage message;
+    message.timeSampleSeconds = double(timestamp->mSampleTime - _ioState.frameCount) / _ioState.sampleRate;
+    
+    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+}
+
 void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     if (midiEvent.cable < 0 || midiEvent.cable >= MIDI_TRACKS) {
         return;
@@ -331,15 +338,13 @@ void MidiRecorderDSPKernel::turnOffAllNotesForTrack(int track) {
 }
 
 void MidiRecorderDSPKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
-    const int32_t length = sizeof(QueuedMidiMessage);
-    
     QueuedMidiMessage message;
-    message.timeSampleSeconds = midiEvent.eventSampleTime / _ioState.sampleRate;
+    message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
     message.cable = midiEvent.cable;
     message.length = midiEvent.length;
     message.data[0] = midiEvent.data[0];
     message.data[1] = midiEvent.data[1];
     message.data[2] = midiEvent.data[2];
     
-    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, length);
+    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }

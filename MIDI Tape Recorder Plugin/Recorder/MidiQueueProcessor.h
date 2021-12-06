@@ -16,7 +16,6 @@ class MidiRecorderState;
 @interface MidiQueueProcessor : NSObject
 
 - (void)processMidiQueue:(TPCircularBuffer*)queue;
-- (void)ping;
 
 - (void)setState:(MidiRecorderState*)state;
 - (MidiRecorder*)recorder:(int)ordinal;

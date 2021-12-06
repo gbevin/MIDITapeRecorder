@@ -818,8 +818,6 @@
 
 - (void)renderloop {
     if (_audioUnit) {
-        [_midiQueueProcessor ping];
-        
         [self checkActivityIndicators];
         
         [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
