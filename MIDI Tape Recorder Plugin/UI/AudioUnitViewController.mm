@@ -323,6 +323,7 @@
     sender.selected = !sender.selected;
     if (!sender.selected) {
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+            [[self->_midiQueueProcessor recorder:t] clear];
             [view setNeedsDisplay];
         }];
     }
