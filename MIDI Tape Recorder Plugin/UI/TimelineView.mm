@@ -31,7 +31,7 @@
     
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
     
-    // draw vertical second bars and the shorter quarter dividers
+    // draw vertical beat bars
     
     CGContextBeginPath(context);
 
@@ -40,15 +40,11 @@
             CGContextMoveToPoint(context, x, 0.0);
             CGContextAddLineToPoint(context, x, self.frame.size.height);
         }
-        else if (x % (PIXELS_PER_BEAT / 4) == 0) {
-            CGContextMoveToPoint(context, x, 2.0 * self.frame.size.height / 3.0);
-            CGContextAddLineToPoint(context, x, self.frame.size.height);
-        }
     }
     
     CGContextStrokePath(context);
 
-    // draw the second numbers
+    // draw the beat numbers
     
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
         if (x % PIXELS_PER_BEAT == 0) {

@@ -36,7 +36,7 @@
 
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
 
-    // draw the vertical second bars
+    // draw the vertical beat bars
     
     CGContextBeginPath(context);
     CGContextSetStrokeColorWithColor(context, gray2_color);
