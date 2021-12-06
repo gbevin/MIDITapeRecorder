@@ -26,9 +26,8 @@ class MidiRecorderState;
 
 - (NSDictionary*)recordedAsDict;
 - (void)dictToRecorded:(NSDictionary*)dict;
-- (NSData*)recordedAsMidiFile;
-- (NSData*)recordedAsMidiFileChunk:(int)ntrks;
 - (NSData*)recordedAsMidiTrackChunk;
+- (void)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division;
 
 - (void)setState:(MidiRecorderState*)state;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;

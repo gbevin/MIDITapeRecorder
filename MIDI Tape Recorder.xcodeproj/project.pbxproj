@@ -16,6 +16,9 @@
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
+		26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */; };
+		26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */; };
+		26B1D200275E405B003A8A48 /* HostTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FF275E401E003A8A48 /* HostTime.cpp */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
 		26BB3837275338B200342496 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3836275338B200342496 /* ViewController.m */; };
 		26BB383A275338B200342496 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3838275338B200342496 /* Main.storyboard */; };
@@ -86,6 +89,10 @@
 		26B140882754590300748F00 /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		26B1408F2754717700748F00 /* MidiQueueProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiQueueProcessor.h; sourceTree = "<group>"; };
 		26B140902754717900748F00 /* MidiQueueProcessor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiQueueProcessor.mm; sourceTree = "<group>"; };
+		26B1D1FA275E39B8003A8A48 /* MidiHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiHelper.h; sourceTree = "<group>"; };
+		26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiHelper.mm; sourceTree = "<group>"; };
+		26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicsHelper.mm; sourceTree = "<group>"; };
+		26B1D1FF275E401E003A8A48 /* HostTime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HostTime.cpp; sourceTree = "<group>"; };
 		26BB382C275338B200342496 /* MIDI Tape Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Tape Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -290,7 +297,11 @@
 			children = (
 				26C540C127570B3F004E4813 /* Constants.h */,
 				266465F1275980BA002D4459 /* GraphicsHelper.h */,
+				26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */,
 				26C540C62757C541004E4813 /* HostTime.h */,
+				26B1D1FF275E401E003A8A48 /* HostTime.cpp */,
+				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
+				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
 				26B140822754590300748F00 /* TPCircularBuffer */,
 			);
 			path = Utils;
@@ -442,7 +453,9 @@
 			files = (
 				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
+				26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
+				26B1D200275E405B003A8A48 /* HostTime.cpp in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
@@ -452,6 +465,7 @@
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
+				26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */,
 				26E06B8F2759427300D7257E /* MenuButton.mm in Sources */,
 				266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */,
 				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,

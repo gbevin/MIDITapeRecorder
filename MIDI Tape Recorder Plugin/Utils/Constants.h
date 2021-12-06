@@ -15,3 +15,5 @@ static const int MIDI_NOTE_ON = 144;
 
 static const int PIXELS_PER_BEAT = 32;
 static const int MAX_PREVIEW_EVENTS = 0xf;
+
+static const int32_t MIDI_BEAT_TICKS = 0x7fff;

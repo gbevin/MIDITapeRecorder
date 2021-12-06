@@ -12,6 +12,7 @@
 
 #include "Constants.h"
 #include "HostTime.h"
+#include "MidiHelper.h"
 #include "MidiRecorderState.h"
 #include "RecordedMidiMessage.h"
 
@@ -149,95 +150,19 @@
     });
 }
 
-- (void)writeMidiVarLen:(NSMutableData*)track value:(uint32_t)value {
-    uint32_t buffer = 0;
-    buffer = value & 0x7f;
-    while ((value >>= 7) > 0) {
-        buffer <<= 8;
-        buffer |= 0x80;
-        buffer += (value & 0x7f);
-    }
-    while (YES) {
-        uint8_t b = buffer & 0xff;
-        [track appendBytes:&b length:1];
-        if (buffer & 0x80) {
-            buffer >>= 8;
-        }
-        else {
-            break;
-        }
-    }
-}
-
-- (int32_t)midiBeatTicks {
-    // use the highest possible precision
-    return 0x7fff;
-}
-
-- (BOOL)needsMidiByteSwap {
-    if (CFByteOrderGetCurrent() == CFByteOrderLittleEndian) {
-        return YES;
-    }
-    
-    return NO;
-}
-
-- (NSData*)recordedAsMidiFile {
-    NSMutableData* data = [NSMutableData new];
-    
-    NSData* track = [self recordedAsMidiTrackChunk];
-
-    [data appendData:[self recordedAsMidiFileChunk:track == nil ? 0 : 1]];
-    
-    if (track != nil) {
-        // add the track
-        [data appendData:track];
-    }
-
-    return data;
-}
-
-- (NSData*)recordedAsMidiFileChunk:(int)ntrks {
-    NSMutableData* data = [NSMutableData new];
-
-    BOOL needs_byte_swap = [self needsMidiByteSwap];
-    
-    // we know we're using ASCII character, so UTF-8 will only use those characters
-    [data appendBytes:[@"MThd" UTF8String] length:4];
-    
-    uint32_t file_header_length = needs_byte_swap ? CFSwapInt32(6) : 6;
-    [data appendBytes:&file_header_length length:4];
-    
-    uint16_t file_header_format = needs_byte_swap ? CFSwapInt16(1) : 1;
-    [data appendBytes:&file_header_format length:2];
-    
-    uint16_t file_header_ntrks = needs_byte_swap ? CFSwapInt16(ntrks) : ntrks;
-    [data appendBytes:&file_header_ntrks length:2];
-    
-    // number of ticks per quarter note
-    int32_t beat_ticks = [self midiBeatTicks];
-    uint16_t file_header_division = needs_byte_swap ? CFSwapInt16(beat_ticks) : beat_ticks;
-    [data appendBytes:&file_header_division length:2];
-
-    return data;
-}
+#pragma mark MIDI files
 
 - (NSData*)recordedAsMidiTrackChunk {
     if (_recordedCount == 0) {
         return nil;
     }
-    
-    NSMutableData* data = [NSMutableData new];
-
-    // we know we're using ASCII character, so UTF-8 will only use those characters
-    [data appendBytes:[@"MTrk" UTF8String] length:4];
 
     // accumulate the track data in a seperate object so that
     // we can provide the length before adding its data
     NSMutableData* track = [NSMutableData new];
 
     // add tempo to track
-    [self writeMidiVarLen:track value:0];
+    writeMidiVarLen(track, 0);
     // we can't have more than 0xffffff microseconds per beat
     int32_t beat_micros = MIN(1000000.0 * 60.0 / _state->tempo, 0xffffff);
     uint8_t meta_tempo[] = { 0xff, 0x51, 0x03 };
@@ -254,9 +179,9 @@
     int64_t last_offset_ticks = 0;
     for (uint32_t i = 0; i < _recordedCount; ++i) {
         const RecordedMidiMessage& message = messages[i];
-        int64_t offset_ticks = int64_t(message.offsetBeats * [self midiBeatTicks]);
+        int64_t offset_ticks = int64_t(message.offsetBeats * MIDI_BEAT_TICKS);
         uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
-        [self writeMidiVarLen:track value:delta_ticks];
+        writeMidiVarLen(track, delta_ticks);
         for (int d = 0; d < message.length; ++d) {
             [track appendBytes:&message.data[d] length:1];
         }
@@ -264,12 +189,143 @@
         last_offset_ticks = offset_ticks;
     }
     
-    uint32_t track_header_length = [self needsMidiByteSwap] ? CFSwapInt32((uint32_t)track.length) : (uint32_t)track.length;
+    // add end of track meta event
+    int64_t offset_ticks = int64_t(_recordedDurationBeats * MIDI_BEAT_TICKS);
+    uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
+    writeMidiVarLen(track, delta_ticks);
+    uint8_t meta_end_of_track[] = { 0xff, 0x2f, 0x00 };
+    [track appendBytes:&meta_end_of_track[0] length:3];
+    
+    // create the full track chunk, including the header
+    NSMutableData* data = [NSMutableData new];
+
+    // we know we're using ASCII character, so UTF-8 will only use those characters
+    [data appendBytes:[@"MTrk" UTF8String] length:4];
+
+    // track chunk length
+    uint32_t track_header_length = needsMidiByteSwap() ? CFSwapInt32((uint32_t)track.length) : (uint32_t)track.length;
     [data appendBytes:&track_header_length length:4];
     
+    // add the previously accumulated track events
     [data appendData:track];
 
     return data;
+}
+
+- (void)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division{
+    if (track == nil || track.length == 0) {
+        return;
+    }
+
+    // prepare local data to accumulate into
+    
+    NSMutableData* recorded = [NSMutableData new];
+    NSMutableData* recorded_preview = [NSMutableData new];
+    double recorded_duration_beats = 0.0;
+    uint32_t recorded_count = 0;
+
+    // process the track events
+
+    int64_t last_offset_ticks = 0;
+    uint8_t running_status = 0;
+    uint32_t i = 0;
+    uint8_t* track_bytes = (uint8_t*)track.bytes;
+    while (i < track.length) {
+        // read variable length delta time
+        uint32_t delta_ticks;
+        i += readMidiVarLen(&track_bytes[i], delta_ticks);
+        
+        int64_t offset_ticks = last_offset_ticks + delta_ticks;
+        double duration_beats = double(offset_ticks) / division;
+        last_offset_ticks = offset_ticks;
+        
+        // handle event
+        uint8_t event_identifier = track_bytes[i];
+        i += 1;
+        switch (event_identifier) {
+            // sysex event
+            case 0xf0:
+            case 0xf7: {
+                // capture the event length
+                uint32_t length;
+                i += readMidiVarLen(&track_bytes[i], length);
+                // skip over the event data
+                i += length;
+                break;
+            }
+            // meta event
+            case 0xff: {
+                // skip over the event type
+                i += 1;
+                // capture the event length
+                uint32_t length;
+                i += readMidiVarLen(&track_bytes[i], length);
+                // skip over the event data
+                i += length;
+                break;
+            }
+            // midi event
+            default: {
+                uint8_t d0 = event_identifier;
+                // check for status byte
+                if ((d0 & 0x80) != 0) {
+                    running_status = d0;
+                }
+                // not a status byte, we'll reuse the previous one as running status
+                else {
+                    d0 = running_status;
+                }
+                
+                RecordedMidiMessage msg;
+                msg.offsetBeats = duration_beats;
+
+                // get the data bytes based on the active state
+                // one data byte
+                if ((d0 & 0xf0) == 0xc0 || (d0 & 0xf0) == 0xd0) {
+                    uint8_t d1 = track_bytes[i];
+                    i += 1;
+                    
+                    msg.length = 2;
+                    msg.data[0] = d0;
+                    msg.data[1] = d1;
+                    msg.data[2] = 0;
+                }
+                // two data bytes
+                else {
+                    uint8_t d1 = track_bytes[i];
+                    i += 1;
+                    uint8_t d2 = track_bytes[i];
+                    i += 1;
+                    
+                    msg.length = 3;
+                    msg.data[0] = d0;
+                    msg.data[1] = d1;
+                    msg.data[2] = d2;
+                }
+                
+                [recorded appendBytes:&msg length:sizeof(RecordedMidiMessage)];
+                recorded_count += 1;
+                
+                // update the preview
+                [self updatePreview:recorded_preview withMessage:msg];
+
+                break;
+            }
+        }
+    }
+    
+    recorded_duration_beats = double(last_offset_ticks) / division;
+
+    // transfer all the accumulated data to the active recorded data
+    
+    _recorded = recorded;
+    _recordedPreview = recorded_preview;
+    _recordedDurationBeats = recorded_duration_beats;
+    _recordedCount = recorded_count;
+    
+    if (_delegate) {
+        [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationBeats];
+    }
 }
 
 #pragma mark Recording
@@ -313,15 +369,19 @@
         _recordingCount += 1;
         
         // update the preview
-        int32_t pixel = int32_t(recorded_message.offsetBeats * PIXELS_PER_BEAT + 0.5);
-        if (pixel >= _recordingPreview.length) {
-            [_recordingPreview setLength:pixel + 1];
-        }
-        uint8_t* preview = (uint8_t*)_recordingPreview.mutableBytes;
-        if (preview[pixel] < MAX_PREVIEW_EVENTS) {
-            preview[pixel] += 1;
-        }
+        [self updatePreview:_recordingPreview withMessage:recorded_message];
     });
+}
+
+- (void)updatePreview:(NSMutableData*)preview withMessage:(RecordedMidiMessage&)message {
+    int32_t pixel = int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5);
+    if (pixel >= preview.length) {
+        [preview setLength:pixel + 1];
+    }
+    uint8_t* preview_bytes = (uint8_t*)preview.mutableBytes;
+    if (preview_bytes[pixel] < MAX_PREVIEW_EVENTS) {
+        preview_bytes[pixel] += 1;
+    }
 }
 
 - (void)clear {

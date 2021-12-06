@@ -116,6 +116,18 @@
 
 @end
 
+@interface ImportMidiDocumentPickerViewController : UIDocumentPickerViewController
+
+- (instancetype)initWithDocumentTypes:(NSArray<NSString*>*)allowedUTIs inMode:(UIDocumentPickerMode)mode;
+@property int track;
+@end
+
+@implementation ImportMidiDocumentPickerViewController
+- (instancetype)initWithDocumentTypes:(NSArray<NSString*>*)allowedUTIs inMode:(UIDocumentPickerMode)mode {
+    return [super initWithDocumentTypes:allowedUTIs inMode:mode];
+}
+@end
+
 @implementation AudioUnitViewController {
     MidiRecorderAudioUnit* _audioUnit;
     MidiRecorderState* _state;
@@ -156,18 +168,15 @@
     
     _timeline.tracks = _tracks;
     
-    _midiTrack1.tracks = _tracks;
-    _midiTrack2.tracks = _tracks;
-    _midiTrack3.tracks = _tracks;
-    _midiTrack4.tracks = _tracks;
+    MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+    UIView* menu_popup[MIDI_TRACKS] = { _menuPopup1, _menuPopup2, _menuPopup3, _menuPopup4 };
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        midi_track[t].tracks = _tracks;
+        menu_popup[t].hidden = YES;
+    }
     
     _extendedMenuPopupWidth = _menuPopupWidth1.constant;
-
-    _menuPopup1.hidden = YES;
-    _menuPopup2.hidden = YES;
-    _menuPopup3.hidden = YES;
-    _menuPopup4.hidden = YES;
-
+    
     _timer = [[UIScreen mainScreen] displayLinkWithTarget:self
                                                  selector:@selector(renderloop)];
     _timer.preferredFramesPerSecond = 30;
@@ -281,39 +290,43 @@
 #pragma mark IBAction - Import All
 
 - (IBAction)importAllPressed:(UIButton*)sender {
+    [self hideMenuPopups];
+
+    ImportMidiDocumentPickerViewController* import_midi = [[ImportMidiDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.midi-audio"] inMode:UIDocumentPickerModeImport];
+    import_midi.track = -1;
+    import_midi.title = @"Import all tracks";
+    [import_midi setDelegate:self];
+    [self presentViewController:import_midi animated:NO completion:nil];
 }
 
 #pragma mark IBAction - Export All
 
 - (IBAction)exportAllPressed:(UIButton*)sender {
-    [self closeMenuPressed:nil];
+    [self hideMenuPopups];
 
     NSFileManager* fm = [NSFileManager defaultManager];
     NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:@"tracks.midi"];
     NSData* recorded = [_midiQueueProcessor recordedTracksAsMidiFile];
     [recorded writeToURL:file_url atomically:YES];
     
-    UIDocumentPickerViewController* documents = [[UIDocumentPickerViewController alloc] initWithURL:file_url inMode:UIDocumentPickerModeExportToService];
-    [documents setDelegate:self];
-    [self presentViewController:documents animated:NO completion:nil];
+    UIDocumentPickerViewController* export_midi = [[UIDocumentPickerViewController alloc] initWithURL:file_url inMode:UIDocumentPickerModeExportToService];
+    export_midi.title = @"Export all tracks";
+    [export_midi setDelegate:self];
+    [self presentViewController:export_midi animated:NO completion:nil];
 }
 
 #pragma mark IBAction - Clear All
 
 - (IBAction)clearAllPressed:(UIButton*)sender {
+    [self hideMenuPopups];
+
     sender.selected = !sender.selected;
     if (!sender.selected) {
-        [[_midiQueueProcessor recorder:0] clear];
-        [_midiTrack1 setNeedsDisplay];
-        
-        [[_midiQueueProcessor recorder:1] clear];
-        [_midiTrack2 setNeedsDisplay];
-        
-        [[_midiQueueProcessor recorder:2] clear];
-        [_midiTrack3 setNeedsDisplay];
-        
-        [[_midiQueueProcessor recorder:3] clear];
-        [_midiTrack4 setNeedsDisplay];
+        MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            [[_midiQueueProcessor recorder:t] clear];
+            [midi_track[t] setNeedsDisplay];
+        }
     }
 }
 
@@ -425,10 +438,7 @@
 #pragma mark IBAction - Menu
 
 - (IBAction)menuPressed:(UIButton*)sender {
-    _menuPopup1.hidden = YES;
-    _menuPopup2.hidden = YES;
-    _menuPopup3.hidden = YES;
-    _menuPopup4.hidden = YES;
+    [self hideMenuPopups];
 
     NSLayoutConstraint* width_constraint = nil;
     UIView* menu_popup_view = nil;
@@ -480,40 +490,74 @@
     }
 }
 
+- (void)hideMenuPopups {
+    UIView* menu_popup[MIDI_TRACKS] = { _menuPopup1, _menuPopup2, _menuPopup3, _menuPopup4 };
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        menu_popup[t].hidden = YES;
+    }
+}
+
 - (IBAction)closeMenuPressed:(UIButton*)sender {
-    _menuPopup1.hidden = YES;
-    _menuPopup2.hidden = YES;
-    _menuPopup3.hidden = YES;
-    _menuPopup4.hidden = YES;
+    [self hideMenuPopups];
 }
 
 #pragma mark IBAction - Import
 
 - (IBAction)importPressed:(UIButton*)sender {
-    [self closeMenuPressed:nil];
+    [self hideMenuPopups];
+
+    NSUInteger index = [@[_importButton1, _importButton2, _importButton3, _importButton4] indexOfObject:sender];
+    if (index == NSNotFound) {
+        return;
+    }
+    
+    ImportMidiDocumentPickerViewController* import_midi = [[ImportMidiDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.midi-audio"] inMode:UIDocumentPickerModeImport];
+    import_midi.track = (int)index;
+    import_midi.title = [NSString stringWithFormat:@"Import track %d", (int)index+1];
+    [import_midi setDelegate:self];
+    [self presentViewController:import_midi animated:NO completion:nil];
 }
 
 #pragma mark IBAction - Export
 
 - (IBAction)exportPressed:(UIButton*)sender {
-    [self closeMenuPressed:nil];
-    
+    [self hideMenuPopups];
+
     NSUInteger index = [@[_exportButton1, _exportButton2, _exportButton3, _exportButton4] indexOfObject:sender];
     if (index == NSNotFound) {
         return;
     }
 
     NSFileManager* fm = [NSFileManager defaultManager];
-    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"track%lu.midi", (unsigned long)index+1]];
-    NSData* recorded = [[_midiQueueProcessor recorder:(int)index] recordedAsMidiFile];
+    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"track%d.midi", (int)index+1]];
+    NSData* recorded = [_midiQueueProcessor recordedTrackAsMidiFile:(int)index];
     [recorded writeToURL:file_url atomically:YES];
     
-    UIDocumentPickerViewController* documents = [[UIDocumentPickerViewController alloc] initWithURL:file_url inMode:UIDocumentPickerModeExportToService];
-    [documents setDelegate:self];
-    [self presentViewController:documents animated:NO completion:nil];
+    UIDocumentPickerViewController* export_midi = [[UIDocumentPickerViewController alloc] initWithURL:file_url inMode:UIDocumentPickerModeExportToService];
+    export_midi.title = [NSString stringWithFormat:@"Export track %d", (int)index+1];
+    [export_midi setDelegate:self];
+    [self presentViewController:export_midi animated:NO completion:nil];
 }
 
 - (void)documentPicker:(UIDocumentPickerViewController*)controller didPickDocumentsAtURLs:(NSArray<NSURL*>*)urls {
+    if (controller.documentPickerMode == UIDocumentPickerModeImport) {
+        if (urls.count == 0) {
+            return;
+        }
+        
+        NSURL* url = urls[0];
+        NSData* contents = [NSData dataWithContentsOfURL:url];
+        [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+
+        int track = ((ImportMidiDocumentPickerViewController*)controller).track;
+        [_midiQueueProcessor midiFileToRecordedTrack:contents ordinal:track];
+        
+        [self renderPreviews];
+        MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            [midi_track[t] setNeedsDisplay];
+        }
+    }
 }
 
 - (void)documentPickerWasCancelled:(UIDocumentPickerViewController*)controller {
@@ -524,24 +568,16 @@
 - (IBAction)clearPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     if (!sender.selected) {
-        if (sender == _clearButton1) {
-            [[_midiQueueProcessor recorder:0] clear];
-            [_midiTrack1 setNeedsDisplay];
-        }
-        else if (sender == _clearButton2) {
-            [[_midiQueueProcessor recorder:1] clear];
-            [_midiTrack2 setNeedsDisplay];
-        }
-        else if (sender == _clearButton3) {
-            [[_midiQueueProcessor recorder:2] clear];
-            [_midiTrack3 setNeedsDisplay];
-        }
-        else if (sender == _clearButton4) {
-            [[_midiQueueProcessor recorder:3] clear];
-            [_midiTrack4 setNeedsDisplay];
+        [self hideMenuPopups];
+
+        NSUInteger index = [@[_clearButton1, _clearButton1, _clearButton1, _clearButton1] indexOfObject:sender];
+        if (index == NSNotFound) {
+            return;
         }
         
-        [self closeMenuPressed:nil];
+        MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+        [[_midiQueueProcessor recorder:(int)index] clear];
+        [midi_track[index] setNeedsDisplay];
     }
 }
 
@@ -835,10 +871,11 @@
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
     [_timeline setNeedsDisplay];
-    [_midiTrack1 setNeedsDisplay];
-    [_midiTrack2 setNeedsDisplay];
-    [_midiTrack3 setNeedsDisplay];
-    [_midiTrack4 setNeedsDisplay];
+    
+    MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [midi_track[t] setNeedsDisplay];
+    }
 }
 
 @end

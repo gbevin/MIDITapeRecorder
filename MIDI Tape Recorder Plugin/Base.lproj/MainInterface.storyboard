@@ -740,6 +740,7 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nvW-vo-H9a"/>
                                         </connections>
@@ -898,6 +899,7 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zHf-fb-SUS"/>
                                         </connections>
@@ -1056,6 +1058,7 @@ RECORDER</string>
                                         <state key="normal" image="square_and_arrow_down">
                                             <color key="titleColor" name="Blue"/>
                                         </state>
+                                        <state key="selected" image="questionmark"/>
                                         <connections>
                                             <action selector="importPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1vt-yG-0Qd"/>
                                         </connections>

@@ -8,33 +8,16 @@
 
 #pragma once
 
-#include <mach/mach_time.h>
+#include "stdint.h"
 
 class HostTime {
 public:
-
-    double hostTimeInSeconds(double time) {
-        return time * _hostTimeToSeconds;
-    }
-
-    double secondsInHostTime(double time) {
-        return time * _secondsToHostTime;
-    }
-
-    uint64_t currentMachTime() {
-        return mach_absolute_time();
-    }
-
-    double currentMachTimeInSeconds() {
-        return ((double)mach_absolute_time()) * _hostTimeToSeconds;
-    }
-
-    HostTime() {
-        mach_timebase_info_data_t info;
-        mach_timebase_info(&info);
-        _hostTimeToSeconds = ((double)info.numer) / ((double)info.denom) * 1.0e-9;
-        _secondsToHostTime = (1.0e9 * (double)info.denom) / ((double)info.numer);
-    }
+    double hostTimeInSeconds(double time);
+    double secondsInHostTime(double time);
+    uint64_t currentMachTime();
+    double currentMachTimeInSeconds();
+    
+    HostTime();
 
 private:
     double _hostTimeToSeconds;
