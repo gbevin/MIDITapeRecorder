@@ -322,11 +322,9 @@
 
     sender.selected = !sender.selected;
     if (!sender.selected) {
-        MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            [[_midiQueueProcessor recorder:t] clear];
-            [midi_track[t] setNeedsDisplay];
-        }
+        [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+            [view setNeedsDisplay];
+        }];
     }
 }
 
@@ -553,10 +551,10 @@
         [_midiQueueProcessor midiFileToRecordedTrack:contents ordinal:track];
         
         [self renderPreviews];
-        MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            [midi_track[t] setNeedsDisplay];
-        }
+        
+        [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+            [view setNeedsDisplay];
+        }];
     }
 }
 
@@ -762,18 +760,17 @@
 
 - (void)renderPreviews {
     // update the previews and the timeline
-    double max_duration = 0.0;
+    __block double max_duration = 0.0;
     
-    MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        midi_track[t].preview = [_midiQueueProcessor recorder:t].preview;
+    [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+        view.preview = [self->_midiQueueProcessor recorder:t].preview;
         
-        max_duration = MAX(max_duration, [_midiQueueProcessor recorder:t].durationBeats);
+        max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].durationBeats);
         
-        if (_recordButton.selected) {
-            [midi_track[t] setNeedsDisplay];
+        if (self->_recordButton.selected) {
+            [view setNeedsDisplay];
         }
-    }
+    }];
     _timelineWidth.constant = max_duration * PIXELS_PER_BEAT;
 }
 
@@ -872,9 +869,17 @@
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
     [_timeline setNeedsDisplay];
     
+    [self withMidiTrackViews:^(int ordinal, MidiTrackView* view) {
+        [view setNeedsDisplay];
+    }];
+}
+
+#pragma mark - Collection processors
+
+- (void)withMidiTrackViews:(void (^)(int t, MidiTrackView* view))block {
     MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [midi_track[t] setNeedsDisplay];
+        block(t, midi_track[t]);
     }
 }
 
