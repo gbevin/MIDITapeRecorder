@@ -569,7 +569,7 @@
     if (!sender.selected) {
         [self hideMenuPopups];
 
-        NSUInteger index = [@[_clearButton1, _clearButton1, _clearButton1, _clearButton1] indexOfObject:sender];
+        NSUInteger index = [@[_clearButton1, _clearButton2, _clearButton3, _clearButton4] indexOfObject:sender];
         if (index == NSNotFound) {
             return;
         }
