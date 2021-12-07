@@ -645,6 +645,7 @@
             self->_muteButton4.selected = [mute4 boolValue];
         }
 
+        [self updateRoutingState];
         [self updateMonitorState];
         [self updateRecordEnableState];
         [self updateMuteState];
