@@ -72,7 +72,7 @@
             // when recording is stopped, we move the recording data to the recorded data
             _recorded = _recording;
             _recordedPreview = _recordingPreview;
-            _recordedDurationBeats = _recordingDurationBeats;
+            _recordedDurationBeats = ceil(_recordingDurationBeats);
             _recordedCount = _recordingCount;
 
             // then re-initialize the recording for the next time
@@ -136,7 +136,7 @@
         
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
-            _recordedDurationBeats = [duration doubleValue];
+            _recordedDurationBeats = ceil([duration doubleValue]);
         }
         
         id count = [dict objectForKey:@"Count"];
@@ -320,7 +320,7 @@
     
     _recorded = recorded;
     _recordedPreview = recorded_preview;
-    _recordedDurationBeats = recorded_duration_beats;
+    _recordedDurationBeats = ceil(recorded_duration_beats);
     _recordedCount = recorded_count;
     
     if (_delegate) {
