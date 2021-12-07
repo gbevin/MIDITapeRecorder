@@ -278,7 +278,12 @@ void MidiRecorderDSPKernel::processOutput() {
         }
         
         if (reached_end) {
-            _state.scheduledReachEnd = true;
+            if (_state.repeat.load()) {
+                _state.scheduledRewind = true;
+            }
+            else {
+                _state.scheduledReachEnd = true;
+            }
         }
     }
 }

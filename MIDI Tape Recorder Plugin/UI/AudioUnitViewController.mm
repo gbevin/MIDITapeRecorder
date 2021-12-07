@@ -280,6 +280,8 @@
 
 - (IBAction)repeatPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
+    
+    [self updateRepeatState];
 }
 
 #pragma mark IBAction - Import All
@@ -641,6 +643,7 @@
         }
 
         [self updateRoutingState];
+        [self updateRepeatState];
         [self updateMonitorState];
         [self updateRecordEnableState];
         [self updateMuteState];
@@ -720,6 +723,10 @@
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         _state->track[t].muteEnabled = mute_button[t].selected;
     }
+}
+
+- (void)updateRepeatState {
+    _state->repeat = _repeatButton.selected;
 }
 
 #pragma mark - Rendering

@@ -20,7 +20,9 @@ struct MidiRecorderState {
     MidiRecorderState& operator= (const MidiRecorderState&) = delete;
     
     MidiTrackState track[MIDI_TRACKS];
-    
+
+    std::atomic<int32_t> repeat { false };
+
     std::atomic<double> tempo            { 120.0 };
     std::atomic<double> currentBeatPos   { 0.0 };
     std::atomic<double> secondsToBeats   { 2.0 };
