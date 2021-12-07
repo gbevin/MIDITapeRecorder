@@ -339,7 +339,7 @@
             else {
                 _recordingDurationBeats = (HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds) * _state->secondsToBeats;
                 
-                if (_recordingPreview) {
+                if (_recordingPreview && _recordingCount > 0) {
                     double offset_seconds = timeSampleSeconds - _recordingFirstMessageTime;
                     double offset_beats = offset_seconds * _state->secondsToBeats;
                     [self updatePreview:_recordingPreview withOffsetBeats:offset_beats];
