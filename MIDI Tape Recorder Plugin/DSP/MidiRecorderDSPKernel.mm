@@ -101,6 +101,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions() {
         {
             int32_t expected = true;
             if (_state.scheduledEndRecording[t].compare_exchange_strong(expected, false)) {
+                _state.track[t].playCounter = _state.track[t].recordedLength.load();
                 _state.track[t].recording = NO;
             }
         }
