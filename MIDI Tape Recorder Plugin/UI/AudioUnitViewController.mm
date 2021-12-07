@@ -11,7 +11,6 @@
 #import <StoreKit/StoreKit.h>
 
 #include "Constants.h"
-#include "HostTime.h"
 
 #import "ActivityIndicatorView.h"
 #import "PopupView.h"
@@ -209,8 +208,6 @@
 #pragma mark IBAction - Rewind
 
 - (IBAction)rewindPressed:(UIButton*)sender {
-    _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
-
     [self setRecord:NO];
     _state->scheduledRewind = true;
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
@@ -227,8 +224,6 @@
     _playButton.selected = state;
 
     if (_playButton.selected) {
-        _state->transportStartMachSeconds = HOST_TIME.currentMachTimeInSeconds();
-        
         if (_recordButton.selected) {
             [self startRecord];
         }
@@ -257,7 +252,7 @@
             [self startRecord];
         }
         else {
-            _state->transportStartMachSeconds = 0.0;
+            _state->transportStartSampleSeconds = 0.0;
         }
     }
     else {

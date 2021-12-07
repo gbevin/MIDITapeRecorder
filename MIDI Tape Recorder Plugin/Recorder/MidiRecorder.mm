@@ -11,7 +11,6 @@
 #import <CoreAudioKit/CoreAudioKit.h>
 
 #include "Constants.h"
-#include "HostTime.h"
 #include "MidiHelper.h"
 #include "MidiRecorderState.h"
 #include "RecordedMidiMessage.h"
@@ -24,7 +23,6 @@
     NSMutableData* _recording;
     NSMutableData* _recordingPreview;
     double _recordingDurationBeats;
-    double _recordingFirstMessageTime;
     uint32_t _recordingCount;
     
     NSData* _recorded;
@@ -42,8 +40,6 @@
         
         _state = nil;
         
-        _recordingFirstMessageTime = 0.0;
-
         _recording = [NSMutableData new];
         _recordingPreview = [NSMutableData new];
         _recordingDurationBeats = 0.0;
@@ -79,9 +75,6 @@
                 _recordedDurationBeats = ceil(((const RecordedMidiMessage*)_recording.bytes)[_recordingCount-1].offsetBeats);
             }
             _recordedCount = _recordingCount;
-
-            // then re-initialize the recording for the next time
-            _recordingFirstMessageTime = 0.0;
 
             _recording = [NSMutableData new];
             _recordingPreview = [NSMutableData new];
@@ -338,16 +331,14 @@
 - (void)ping:(double)timeSampleSeconds {
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record && _recording != nil) {
-            if (_state->transportStartMachSeconds == 0.0) {
+            if (_state->transportStartSampleSeconds == 0.0) {
                 _recordingDurationBeats = 0.0;
             }
             else {
-                _recordingDurationBeats = (HOST_TIME.currentMachTimeInSeconds() - _state->transportStartMachSeconds) * _state->secondsToBeats;
+                _recordingDurationBeats = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
                 
                 if (_recordingPreview && _recordingCount > 0) {
-                    double offset_seconds = timeSampleSeconds - _recordingFirstMessageTime;
-                    double offset_beats = offset_seconds * _state->secondsToBeats;
-                    [self updatePreview:_recordingPreview withOffsetBeats:offset_beats];
+                    [self updatePreview:_recordingPreview withOffsetBeats:_recordingDurationBeats];
                 }
             }
         }
@@ -355,8 +346,6 @@
 }
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
-    double now_mach = HOST_TIME.currentMachTimeInSeconds();
-    
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (!_record || _recording == nil) {
             return;
@@ -364,32 +353,24 @@
 
         // auto start the recording on the first received message
         // if the recording hasn't started yet
-        if (_recordingCount == 0 && _state->transportStartMachSeconds == 0.0) {
+        if (_recordingCount == 0 && _state->transportStartSampleSeconds == 0.0) {
             if (_delegate) {
-                _state->transportStartMachSeconds = now_mach;
+                _state->transportStartSampleSeconds = message.timeSampleSeconds;
                 _state->playDurationBeats = 0.0;
                 [_delegate startRecord];
             }
         }
 
-        // keep track of the time of the first message so that the offset of all messages
-        // can be calculated off of this
-        // if the recording of this track started later than the others, compensate that
-        // with an additional offset to the time of the first message
-        if (_recordingCount == 0) {
-            _recordingFirstMessageTime = message.timeSampleSeconds - (now_mach - _state->transportStartMachSeconds);
-        }
-        
         // add message to the recording
         RecordedMidiMessage recorded_message;
-        double offset_seconds = message.timeSampleSeconds - _recordingFirstMessageTime;
+        double offset_seconds = message.timeSampleSeconds - _state->transportStartSampleSeconds;
         recorded_message.offsetBeats = offset_seconds * _state->secondsToBeats;
         recorded_message.length = message.length;
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
         [_recording appendBytes:&recorded_message length:RECORDED_MSG_SIZE];
-        _recordingDurationBeats = (now_mach - _state->transportStartMachSeconds) * _state->secondsToBeats;
+        _recordingDurationBeats = offset_seconds * _state->secondsToBeats;
         _recordingCount += 1;
         
         // update the preview
@@ -451,8 +432,6 @@
 
 - (void)clear {
     _record = NO;
-
-    _recordingFirstMessageTime = 0.0;
 
     _recording = [NSMutableData new];
     _recordingPreview = [NSMutableData new];

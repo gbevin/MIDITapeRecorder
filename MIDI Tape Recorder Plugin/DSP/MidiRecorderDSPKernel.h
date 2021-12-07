@@ -31,9 +31,9 @@ public:
 
     void setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList);
     
-    void handleScheduledTransitions() override;
+    void handleBufferStart(double timeSampleSeconds) override;
+    void handleScheduledTransitions(double timeSampleSeconds) override;
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
-    void handleBufferStart(AudioTimeStamp const* timestamp) override;
     void handleParameterEvent(AUParameterEvent const& parameterEvent) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
     void processOutput() override;

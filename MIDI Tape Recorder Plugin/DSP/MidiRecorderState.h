@@ -50,6 +50,6 @@ struct MidiRecorderState {
 
     TPCircularBuffer midiBuffer;
     
-    double transportStartMachSeconds    { 0.0 };
+    double transportStartSampleSeconds  { 0.0 };
     double playDurationBeats            { 0.0 };
 };

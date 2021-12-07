@@ -165,9 +165,10 @@
         kernel->_ioState.frameCount = frameCount;
         kernel->_ioState.timestamp = timestamp;
         
+        double time_sample_seconds = double(timestamp->mSampleTime - frameCount) / kernel->_ioState.sampleRate;
         kernel->setBuffers(inAudioBufferList, outAudioBufferList);
-        kernel->handleBufferStart(timestamp);
-        kernel->handleScheduledTransitions();
+        kernel->handleBufferStart(time_sample_seconds);
+        kernel->handleScheduledTransitions(time_sample_seconds);
         kernel->processWithEvents(timestamp, frameCount, realtimeEventListHead);
         kernel->processOutput();
 

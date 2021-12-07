@@ -18,7 +18,6 @@
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
 		26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */; };
 		26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */; };
-		26B1D200275E405B003A8A48 /* HostTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FF275E401E003A8A48 /* HostTime.cpp */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
 		26BB3837275338B200342496 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3836275338B200342496 /* ViewController.m */; };
 		26BB383A275338B200342496 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3838275338B200342496 /* Main.storyboard */; };
@@ -92,7 +91,6 @@
 		26B1D1FA275E39B8003A8A48 /* MidiHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiHelper.h; sourceTree = "<group>"; };
 		26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiHelper.mm; sourceTree = "<group>"; };
 		26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicsHelper.mm; sourceTree = "<group>"; };
-		26B1D1FF275E401E003A8A48 /* HostTime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = HostTime.cpp; sourceTree = "<group>"; };
 		26BB382C275338B200342496 /* MIDI Tape Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Tape Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -126,7 +124,6 @@
 		26C540C127570B3F004E4813 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		26C540C22757C11B004E4813 /* MidiRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorder.h; sourceTree = "<group>"; };
 		26C540C32757C11B004E4813 /* MidiRecorder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorder.mm; sourceTree = "<group>"; };
-		26C540C62757C541004E4813 /* HostTime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostTime.h; sourceTree = "<group>"; };
 		26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderDelegate.h; sourceTree = "<group>"; };
 		26C540C82757E801004E4813 /* QueuedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueuedMidiMessage.h; sourceTree = "<group>"; };
 		26C540C92757EC28004E4813 /* MidiTrackState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackState.h; sourceTree = "<group>"; };
@@ -298,8 +295,6 @@
 				26C540C127570B3F004E4813 /* Constants.h */,
 				266465F1275980BA002D4459 /* GraphicsHelper.h */,
 				26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */,
-				26C540C62757C541004E4813 /* HostTime.h */,
-				26B1D1FF275E401E003A8A48 /* HostTime.cpp */,
 				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
 				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
 				26B140822754590300748F00 /* TPCircularBuffer */,
@@ -455,7 +450,6 @@
 				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
 				26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
-				26B1D200275E405B003A8A48 /* HostTime.cpp in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,

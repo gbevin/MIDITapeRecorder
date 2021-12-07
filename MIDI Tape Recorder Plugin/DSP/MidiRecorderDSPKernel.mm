@@ -58,7 +58,7 @@ void MidiRecorderDSPKernel::play() {
 }
 
 void MidiRecorderDSPKernel::stop() {
-    _state.transportStartMachSeconds = 0.0;
+    _state.transportStartSampleSeconds = 0.0;
     _isPlaying = NO;
 }
 
@@ -158,7 +158,14 @@ void MidiRecorderDSPKernel::setBuffers(AudioBufferList* inBufferList, AudioBuffe
     _outBufferList = outBufferList;
 }
 
-void MidiRecorderDSPKernel::handleScheduledTransitions() {
+void MidiRecorderDSPKernel::handleBufferStart(double timeSampleSeconds) {
+    QueuedMidiMessage message;
+    message.timeSampleSeconds = timeSampleSeconds;
+    
+    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+}
+
+void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // we rely on the single-threaded nature of the audio callback thread to coordinate
     // important state transitions at the beginning of the callback, before anything else
     // this prevents split-state conditions to change semantics in the middle of processing
@@ -193,6 +200,9 @@ void MidiRecorderDSPKernel::handleScheduledTransitions() {
     {
         int32_t expected = true;
         if (_state.scheduledRewind.compare_exchange_strong(expected, false)) {
+            if (_isPlaying) {
+                _state.transportStartSampleSeconds = timeSampleSeconds;
+            }
             rewind();
         }
     }
@@ -201,6 +211,9 @@ void MidiRecorderDSPKernel::handleScheduledTransitions() {
     {
         int32_t expected = true;
         if (_state.scheduledPlay.compare_exchange_strong(expected, false)) {
+            if (_state.transportStartSampleSeconds == 0.0) {
+                _state.transportStartSampleSeconds = timeSampleSeconds;
+            }
             play();
         }
     }
@@ -245,13 +258,6 @@ void MidiRecorderDSPKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCo
             *out = *in;
         }
     }
-}
-
-void MidiRecorderDSPKernel::handleBufferStart(AudioTimeStamp const* timestamp) {
-    QueuedMidiMessage message;
-    message.timeSampleSeconds = double(timestamp->mSampleTime - _ioState.frameCount) / _ioState.sampleRate;
-    
-    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }
 
 void MidiRecorderDSPKernel::handleParameterEvent(AUParameterEvent const& parameterEvent) {
