@@ -33,11 +33,6 @@
 @property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput3;
 @property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput4;
 
-@property (weak, nonatomic) IBOutlet UILabel* midiCount1;
-@property (weak, nonatomic) IBOutlet UILabel* midiCount2;
-@property (weak, nonatomic) IBOutlet UILabel* midiCount3;
-@property (weak, nonatomic) IBOutlet UILabel* midiCount4;
-
 @property (weak, nonatomic) IBOutlet UIButton* routingButton;
 
 @property (weak, nonatomic) IBOutlet UIButton* rewindButton;
@@ -803,20 +798,6 @@
     }
 }
 
-- (void)renderStatistics {
-    // statistics counts at the bottom
-    UILabel* midi_count[MIDI_TRACKS] = { _midiCount1, _midiCount2, _midiCount3, _midiCount4 };
-
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_playButton.selected) {
-            midi_count[t].text = [NSString stringWithFormat:@"%llu", _state->track[t].playCounter.load()];
-        }
-        else {
-            midi_count[t].text = [NSString stringWithFormat:@"%llu", _state->track[t].recordedLength.load()];
-        }
-    }
-}
-
 - (void)renderloop {
     if (_audioUnit) {
         [self checkActivityIndicators];
@@ -827,7 +808,6 @@
         
         [self renderPreviews];
         [self renderPlayhead];
-        [self renderStatistics];
     }
 }
 

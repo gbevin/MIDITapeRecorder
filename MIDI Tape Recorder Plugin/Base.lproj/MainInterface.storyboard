@@ -1087,40 +1087,6 @@ RECORDER</string>
                                 <rect key="frame" x="553" y="219.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="6lC-67-2Tl" userLabel="Statistics">
-                                <rect key="frame" x="77" y="244" width="416" height="30"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TAv-Nj-6FV" userLabel="Count 1">
-                                        <rect key="frame" x="0.0" y="8" width="104" height="14.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <color key="textColor" name="ActivityOff"/>
-                                        <nil key="highlightedColor"/>
-                                        <variation key="heightClass=compact-widthClass=compact" hidden="NO"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ygl-Nw-ND3" userLabel="Count 2">
-                                        <rect key="frame" x="104" y="8" width="104" height="14.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <color key="textColor" name="ActivityOff"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k8o-UT-ATZ" userLabel="Count 3">
-                                        <rect key="frame" x="208" y="8" width="104" height="14.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <color key="textColor" name="ActivityOff"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KfA-Q2-rq6" userLabel="Count 4">
-                                        <rect key="frame" x="312" y="8" width="104" height="14.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                        <color key="textColor" name="ActivityOff"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="pyv-nC-Yjf"/>
-                                </constraints>
-                                <variation key="heightClass=compact-widthClass=compact" hidden="YES"/>
-                            </stackView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ljU-tJ-P0N" userLabel="Settings" customClass="PopupView">
                                 <rect key="frame" x="133" y="68" width="304" height="170"/>
                                 <subviews>
@@ -1255,7 +1221,6 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="trailing" secondItem="bKj-4Y-TLw" secondAttribute="trailing" constant="-10" id="AKx-K0-lPD"/>
                             <constraint firstItem="KNS-Fz-TPp" firstAttribute="width" secondItem="DIz-1j-u10" secondAttribute="width" id="B9n-c6-yTI"/>
                             <constraint firstItem="kFp-mR-8eu" firstAttribute="width" secondItem="jiJ-Fl-4eE" secondAttribute="width" id="Bqe-cC-ILv"/>
-                            <constraint firstItem="6lC-67-2Tl" firstAttribute="leading" secondItem="tCM-sv-7no" secondAttribute="leading" id="DA6-qe-Br4"/>
                             <constraint firstItem="JdH-dA-fdD" firstAttribute="centerX" secondItem="w1R-ec-Xai" secondAttribute="centerX" id="E5E-9a-kpQ"/>
                             <constraint firstItem="JvP-xG-YoT" firstAttribute="width" secondItem="c0P-wN-aiS" secondAttribute="width" id="Fbq-dG-KbA"/>
                             <constraint firstItem="kFp-mR-8eu" firstAttribute="centerY" secondItem="ckn-XQ-W53" secondAttribute="centerY" id="H8w-aD-QKE"/>
@@ -1303,7 +1268,6 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="qqe-xS-Dtb" firstAttribute="centerY" secondItem="blx-LE-LOD" secondAttribute="centerY" id="e6o-T3-Xh1"/>
                             <constraint firstItem="5s5-fr-Amh" firstAttribute="leading" secondItem="jiJ-Fl-4eE" secondAttribute="leading" id="eGK-fe-Phj"/>
                             <constraint firstItem="cml-GG-nYY" firstAttribute="centerX" secondItem="qqe-xS-Dtb" secondAttribute="centerX" id="eMI-Tc-qYp"/>
-                            <constraint firstItem="6lC-67-2Tl" firstAttribute="top" secondItem="tCM-sv-7no" secondAttribute="bottom" id="edH-Pn-ugR"/>
                             <constraint firstItem="jiJ-Fl-4eE" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="f16-Uh-nfj"/>
                             <constraint firstItem="UOr-iO-bt0" firstAttribute="height" secondItem="JdH-dA-fdD" secondAttribute="height" constant="-10" id="f4C-1Y-tEH"/>
                             <constraint firstItem="xcR-Mq-hiL" firstAttribute="centerY" secondItem="8lV-Pg-F8C" secondAttribute="centerY" id="fqz-X5-XMf"/>
@@ -1334,7 +1298,6 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="Ia4-KR-jE3" firstAttribute="trailing" secondItem="blx-LE-LOD" secondAttribute="trailing" id="uMR-G6-1Yc"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="trailing" secondItem="w1R-ec-Xai" secondAttribute="trailing" id="uc2-2X-PUP"/>
                             <constraint firstItem="DIz-1j-u10" firstAttribute="width" secondItem="jiJ-Fl-4eE" secondAttribute="width" id="uj6-0j-OIY"/>
-                            <constraint firstItem="6lC-67-2Tl" firstAttribute="trailing" secondItem="tCM-sv-7no" secondAttribute="trailing" id="vBM-XW-nO2"/>
                             <constraint firstItem="al1-3s-PG4" firstAttribute="centerY" secondItem="w1R-ec-Xai" secondAttribute="centerY" id="wUU-8e-fTP"/>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="width" secondItem="dom-KY-gSl" secondAttribute="width" id="xmK-hQ-PaU"/>
                             <constraint firstItem="kFp-mR-8eu" firstAttribute="centerX" secondItem="jiJ-Fl-4eE" secondAttribute="centerX" id="xnX-GL-FPi"/>
@@ -1386,10 +1349,6 @@ under the CC BY 4.0 License.</string>
                         <outlet property="midiActivityOutput2" destination="uiz-2Z-3Gl" id="dc8-dr-CvS"/>
                         <outlet property="midiActivityOutput3" destination="YHo-mc-gVi" id="Pr6-fV-yku"/>
                         <outlet property="midiActivityOutput4" destination="JvP-xG-YoT" id="Aus-av-KyW"/>
-                        <outlet property="midiCount1" destination="TAv-Nj-6FV" id="jWL-UW-77E"/>
-                        <outlet property="midiCount2" destination="Ygl-Nw-ND3" id="XDP-Mj-JUc"/>
-                        <outlet property="midiCount3" destination="k8o-UT-ATZ" id="VPs-Tt-PJc"/>
-                        <outlet property="midiCount4" destination="KfA-Q2-rq6" id="2Pq-fQ-xnl"/>
                         <outlet property="midiTrack1" destination="GXf-2A-NeK" id="CeV-o2-yWU"/>
                         <outlet property="midiTrack2" destination="IWD-hQ-i8x" id="Uhu-HI-UxP"/>
                         <outlet property="midiTrack3" destination="8lV-Pg-F8C" id="xEv-kV-xeo"/>
