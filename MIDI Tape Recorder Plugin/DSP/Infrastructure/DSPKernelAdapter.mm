@@ -31,7 +31,6 @@
         // Create a DSP kernel to handle the signal processing.
         _kernel._ioState.channelCount = format.channelCount;
         _kernel._ioState.sampleRate = format.sampleRate;
-        _kernel.setParameter(paramOne, 0);
 
         // Create the input and output busses.
         _inputBus.init(format, 2);

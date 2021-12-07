@@ -10,6 +10,7 @@
 
 #include <iostream>
 
+#include "Constants.h"
 #include "QueuedMidiMessage.h"
 
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() : _state() {
@@ -63,18 +64,92 @@ void MidiRecorderDSPKernel::stop() {
 
 void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue value) {
     switch (address) {
-        case paramOne:
+        case ID_RECORD_1:
+            _state.track[0].recordEnabled = value;
+            _state.recordEnableChangedByHost = true;
+            break;
+        case ID_RECORD_2:
+            _state.track[1].recordEnabled = value;
+            _state.recordEnableChangedByHost = true;
+            break;
+        case ID_RECORD_3:
+            _state.track[2].recordEnabled = value;
+            _state.recordEnableChangedByHost = true;
+            break;
+        case ID_RECORD_4:
+            _state.track[3].recordEnabled = value;
+            _state.recordEnableChangedByHost = true;
+            break;
+        case ID_MONITOR_1:
+            _state.track[0].monitorEnabled = value;
+            _state.monitorEnableChangedByHost = true;
+            break;
+        case ID_MONITOR_2:
+            _state.track[1].monitorEnabled = value;
+            _state.monitorEnableChangedByHost = true;
+            break;
+        case ID_MONITOR_3:
+            _state.track[2].monitorEnabled = value;
+            _state.monitorEnableChangedByHost = true;
+            break;
+        case ID_MONITOR_4:
+            _state.track[3].monitorEnabled = value;
+            _state.monitorEnableChangedByHost = true;
+            break;
+        case ID_MUTE_1:
+            _state.track[0].muteEnabled = value;
+            _state.muteEnableChangedByHost = true;
+            break;
+        case ID_MUTE_2:
+            _state.track[1].muteEnabled = value;
+            _state.muteEnableChangedByHost = true;
+            break;
+        case ID_MUTE_3:
+            _state.track[2].muteEnabled = value;
+            _state.muteEnableChangedByHost = true;
+            break;
+        case ID_MUTE_4:
+            _state.track[3].muteEnabled = value;
+            _state.muteEnableChangedByHost = true;
+            break;
+        case ID_REPEAT:
+            _state.repeat = value;
+            _state.transportChangedByHost = true;
             break;
     }
 }
 
 AUValue MidiRecorderDSPKernel::getParameter(AUParameterAddress address) {
+    // Return the goal. It is not thread safe to return the ramping value.
     switch (address) {
-        case paramOne:
-            // Return the goal. It is not thread safe to return the ramping value.
+        case ID_RECORD_1:
+            return _state.track[0].recordEnabled;
+        case ID_RECORD_2:
+            return _state.track[1].recordEnabled;
+        case ID_RECORD_3:
+            return _state.track[2].recordEnabled;
+        case ID_RECORD_4:
+            return _state.track[3].recordEnabled;
+        case ID_MONITOR_1:
+            return _state.track[0].monitorEnabled;
+        case ID_MONITOR_2:
+            return _state.track[1].monitorEnabled;
+        case ID_MONITOR_3:
+            return _state.track[2].monitorEnabled;
+        case ID_MONITOR_4:
+            return _state.track[3].monitorEnabled;
+        case ID_MUTE_1:
+            return _state.track[0].muteEnabled;
+        case ID_MUTE_2:
+            return _state.track[1].muteEnabled;
+        case ID_MUTE_3:
+            return _state.track[2].muteEnabled;
+        case ID_MUTE_4:
+            return _state.track[3].muteEnabled;
+        case ID_REPEAT:
+            return _state.repeat;
+        default:
             return 0.f;
-
-        default: return 0.f;
     }
 }
 
@@ -177,6 +252,12 @@ void MidiRecorderDSPKernel::handleBufferStart(AudioTimeStamp const* timestamp) {
     message.timeSampleSeconds = double(timestamp->mSampleTime - _ioState.frameCount) / _ioState.sampleRate;
     
     TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+}
+
+void MidiRecorderDSPKernel::handleParameterEvent(AUParameterEvent const& parameterEvent) {
+    // we only have parameter state switches, so we don't need to ramp and it's all related to
+    // user interface funtionality, so being sample accurate is not critical either
+    setParameter(parameterEvent.parameterAddress, parameterEvent.value);
 }
 
 void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {

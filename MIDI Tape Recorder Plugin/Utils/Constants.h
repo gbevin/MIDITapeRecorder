@@ -17,3 +17,22 @@ static const int PIXELS_PER_BEAT = 32;
 static const int MAX_PREVIEW_EVENTS = 0xf;
 
 static const int32_t MIDI_BEAT_TICKS = 0x7fff;
+
+enum {
+    // We group all the per-track parameters sequentially so that we can just apply an offset
+    // to determine which track parameter needs to be addressed
+    ID_RECORD_1,
+    ID_RECORD_2,
+    ID_RECORD_3,
+    ID_RECORD_4,
+    ID_MONITOR_1,
+    ID_MONITOR_2,
+    ID_MONITOR_3,
+    ID_MONITOR_4,
+    ID_MUTE_1,
+    ID_MUTE_2,
+    ID_MUTE_3,
+    ID_MUTE_4,
+    // All non-track specific parameter follow below
+    ID_REPEAT
+};

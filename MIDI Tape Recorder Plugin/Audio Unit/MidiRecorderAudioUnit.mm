@@ -8,12 +8,13 @@
 
 #import "MidiRecorderAudioUnit.h"
 
+#include <mach/mach_time.h>
+
 #import <AVFoundation/AVFoundation.h>
 
-#import "AudioUnitViewController.h"
+#include "Constants.h"
 
-// Define parameter addresses.
-const AudioUnitParameterID myParam1 = 0;
+#import "AudioUnitViewController.h"
 
 @interface MidiRecorderAudioUnit ()
 
@@ -64,22 +65,180 @@ const AudioUnitParameterID myParam1 = 0;
 
 - (void)setupParameterTree {
     // Create parameter objects.
-    AUParameter* param1 = [AUParameterTree createParameterWithIdentifier:@"param1"
-                                                                    name:@"Parameter 1"
-                                                                 address:myParam1
-                                                                     min:0
-                                                                     max:100
-                                                                    unit:kAudioUnitParameterUnit_Percent
-                                                                unitName:nil
-                                                                   flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
-                                                            valueStrings:nil
-                                                     dependentParameters:nil];
+    AUParameter* record1Param = [AUParameterTree createParameterWithIdentifier:@"record1"
+                                                                          name:@"Rec 1"
+                                                                       address:ID_RECORD_1
+                                                                           min:0
+                                                                           max:1
+                                                                          unit:kAudioUnitParameterUnit_Boolean
+                                                                      unitName:nil
+                                                                         flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                  valueStrings:nil
+                                                           dependentParameters:nil];
     
+    AUParameter* record2Param = [AUParameterTree createParameterWithIdentifier:@"record2"
+                                                                          name:@"Rec 2"
+                                                                       address:ID_RECORD_2
+                                                                           min:0
+                                                                           max:1
+                                                                          unit:kAudioUnitParameterUnit_Boolean
+                                                                      unitName:nil
+                                                                         flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                  valueStrings:nil
+                                                           dependentParameters:nil];
+    
+    AUParameter* record3Param = [AUParameterTree createParameterWithIdentifier:@"record3"
+                                                                          name:@"Rec 3"
+                                                                       address:ID_RECORD_3
+                                                                           min:0
+                                                                           max:1
+                                                                          unit:kAudioUnitParameterUnit_Boolean
+                                                                      unitName:nil
+                                                                         flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                  valueStrings:nil
+                                                           dependentParameters:nil];
+    
+    AUParameter* record4Param = [AUParameterTree createParameterWithIdentifier:@"record4"
+                                                                          name:@"Rec 4"
+                                                                       address:ID_RECORD_4
+                                                                           min:0
+                                                                           max:1
+                                                                          unit:kAudioUnitParameterUnit_Boolean
+                                                                      unitName:nil
+                                                                         flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                  valueStrings:nil
+                                                           dependentParameters:nil];
+
+    AUParameter* monitor1Param = [AUParameterTree createParameterWithIdentifier:@"monitor1"
+                                                                           name:@"Mon 1"
+                                                                        address:ID_MONITOR_1
+                                                                            min:0
+                                                                            max:1
+                                                                           unit:kAudioUnitParameterUnit_Boolean
+                                                                       unitName:nil
+                                                                          flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                   valueStrings:nil
+                                                            dependentParameters:nil];
+
+    AUParameter* monitor2Param = [AUParameterTree createParameterWithIdentifier:@"monitor2"
+                                                                           name:@"Mon 2"
+                                                                        address:ID_MONITOR_2
+                                                                            min:0
+                                                                            max:1
+                                                                           unit:kAudioUnitParameterUnit_Boolean
+                                                                       unitName:nil
+                                                                          flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                   valueStrings:nil
+                                                            dependentParameters:nil];
+
+    AUParameter* monitor3Param = [AUParameterTree createParameterWithIdentifier:@"monitor3"
+                                                                           name:@"Mon 3"
+                                                                        address:ID_MONITOR_3
+                                                                            min:0
+                                                                            max:1
+                                                                           unit:kAudioUnitParameterUnit_Boolean
+                                                                       unitName:nil
+                                                                          flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                   valueStrings:nil
+                                                            dependentParameters:nil];
+
+    AUParameter* monitor4Param = [AUParameterTree createParameterWithIdentifier:@"monitor4"
+                                                                           name:@"Mon 4"
+                                                                        address:ID_MONITOR_4
+                                                                            min:0
+                                                                            max:1
+                                                                           unit:kAudioUnitParameterUnit_Boolean
+                                                                       unitName:nil
+                                                                          flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                   valueStrings:nil
+                                                            dependentParameters:nil];
+    
+    AUParameter* mute1Param = [AUParameterTree createParameterWithIdentifier:@"mute1"
+                                                                        name:@"Mute 1"
+                                                                     address:ID_MUTE_1
+                                                                         min:0
+                                                                         max:1
+                                                                        unit:kAudioUnitParameterUnit_Boolean
+                                                                    unitName:nil
+                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                valueStrings:nil
+                                                         dependentParameters:nil];
+    
+    AUParameter* mute2Param = [AUParameterTree createParameterWithIdentifier:@"mute2"
+                                                                        name:@"Mute 2"
+                                                                     address:ID_MUTE_2
+                                                                         min:0
+                                                                         max:1
+                                                                        unit:kAudioUnitParameterUnit_Boolean
+                                                                    unitName:nil
+                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                valueStrings:nil
+                                                         dependentParameters:nil];
+    
+    AUParameter* mute3Param = [AUParameterTree createParameterWithIdentifier:@"mute3"
+                                                                        name:@"Mute 3"
+                                                                     address:ID_MUTE_3
+                                                                         min:0
+                                                                         max:1
+                                                                        unit:kAudioUnitParameterUnit_Boolean
+                                                                    unitName:nil
+                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                valueStrings:nil
+                                                         dependentParameters:nil];
+    
+    AUParameter* mute4Param = [AUParameterTree createParameterWithIdentifier:@"mute4"
+                                                                        name:@"Mute 4"
+                                                                     address:ID_MUTE_4
+                                                                         min:0
+                                                                         max:1
+                                                                        unit:kAudioUnitParameterUnit_Boolean
+                                                                    unitName:nil
+                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                valueStrings:nil
+                                                         dependentParameters:nil];
+    
+    AUParameter* repeatParam = [AUParameterTree createParameterWithIdentifier:@"repeat"
+                                                                         name:@"Repeat"
+                                                                      address:ID_REPEAT
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+
     // Initialize the parameter values.
-    param1.value = 0.5;
-    
+    record1Param.value = 0.0;
+    record2Param.value = 0.0;
+    record3Param.value = 0.0;
+    record4Param.value = 0.0;
+    monitor1Param.value = 0.0;
+    monitor2Param.value = 0.0;
+    monitor3Param.value = 0.0;
+    monitor4Param.value = 0.0;
+    mute1Param.value = 0.0;
+    mute2Param.value = 0.0;
+    mute3Param.value = 0.0;
+    mute4Param.value = 0.0;
+    repeatParam.value = 0.0;
+
     // Create the parameter tree.
-    _parameterTree = [AUParameterTree createTreeWithChildren:@[ /* param1 */  ]];
+    _parameterTree = [AUParameterTree createTreeWithChildren:@[
+        record1Param,
+        record2Param,
+        record3Param,
+        record4Param,
+        monitor1Param,
+        monitor2Param,
+        monitor3Param,
+        monitor4Param,
+        mute1Param,
+        mute2Param,
+        mute3Param,
+        mute4Param,
+        repeatParam
+    ]];
 }
 
 - (void)setupParameterCallbacks {
@@ -101,6 +260,13 @@ const AudioUnitParameterID myParam1 = 0;
         AUValue value = valuePtr == nil ? param.value : *valuePtr;
         
         return [NSString stringWithFormat:@"%.f", value];
+    };
+    
+    _kernelAdapter.state->hostParamChange = ^(uint64_t address, float value) {
+        AUParameter* param = [self->_parameterTree parameterWithAddress:address];
+        if (param) {
+            [param setValue:value originator:nil atHostTime:mach_absolute_time() eventType:AUParameterAutomationEventTypeValue];
+        }
     };
 }
 
@@ -184,7 +350,13 @@ const AudioUnitParameterID myParam1 = 0;
 
 #pragma mark - AUAudioUnit fullState
 - (void)setFullState:(NSDictionary<NSString *,id>*)fullState {
-    [super setFullState:fullState];
+    @try {
+        [super setFullState:fullState];
+    }
+    @catch (id e) {
+        NSLog(@"Exception while applying full state: %@", e);
+        return;
+    }
     
     if (_vc == nil) {
         return;

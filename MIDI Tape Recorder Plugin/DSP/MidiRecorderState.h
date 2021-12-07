@@ -14,11 +14,20 @@
 #include "MidiTrackState.h"
 #include "TPCircularBuffer.h"
 
+typedef void (^HostParamChange)(uint64_t address, float value);
+
 struct MidiRecorderState {
     MidiRecorderState() {}
     MidiRecorderState(const MidiRecorderState&) = delete;
     MidiRecorderState& operator= (const MidiRecorderState&) = delete;
     
+    HostParamChange hostParamChange { nullptr };
+
+    std::atomic<int32_t> recordEnableChangedByHost  { false };
+    std::atomic<int32_t> monitorEnableChangedByHost { false };
+    std::atomic<int32_t> muteEnableChangedByHost    { false };
+    std::atomic<int32_t> transportChangedByHost     { false };
+
     MidiTrackState track[MIDI_TRACKS];
 
     std::atomic<int32_t> repeat { false };

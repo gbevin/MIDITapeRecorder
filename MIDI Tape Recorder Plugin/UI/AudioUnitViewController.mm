@@ -710,7 +710,20 @@
     UIButton* record_button[MIDI_TRACKS] = { _recordButton1, _recordButton2, _recordButton3, _recordButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state->track[t].recordEnabled = record_button[t].selected;
+        if (_state->track[t].recordEnabled != record_button[t].selected) {
+            _state->track[t].recordEnabled = record_button[t].selected;
+            
+            if (_state->hostParamChange) {
+                _state->hostParamChange(ID_RECORD_1 + t, _state->track[t].recordEnabled);
+            }
+        }
+    }
+    
+    [self applyRecordEnableState];
+}
+
+- (void)applyRecordEnableState {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
         [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].recordEnabled);
     }
 }
@@ -719,7 +732,13 @@
     UIButton* monitor_button[MIDI_TRACKS] = { _monitorButton1, _monitorButton2, _monitorButton3, _monitorButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state->track[t].monitorEnabled = monitor_button[t].selected;
+        if (_state->track[t].monitorEnabled != monitor_button[t].selected) {
+            _state->track[t].monitorEnabled = monitor_button[t].selected;
+            
+            if (_state->hostParamChange) {
+                _state->hostParamChange(ID_MONITOR_1 + t, _state->track[t].monitorEnabled);
+            }
+        }
     }
 }
 
@@ -727,16 +746,61 @@
     UIButton* mute_button[MIDI_TRACKS] = { _muteButton1, _muteButton2, _muteButton3, _muteButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state->track[t].muteEnabled = mute_button[t].selected;
+        if (_state->track[t].muteEnabled != mute_button[t].selected) {
+            _state->track[t].muteEnabled = mute_button[t].selected;
+            
+            if (_state->hostParamChange) {
+                _state->hostParamChange(ID_MUTE_1 + t, _state->track[t].muteEnabled);
+            }
+        }
     }
 }
 
 - (void)updateRepeatState {
-    _state->repeat = _repeatButton.selected;
+    if (_state->repeat != _repeatButton.selected) {
+        _state->repeat = _repeatButton.selected;
+        
+        if (_state->hostParamChange) {
+            _state->hostParamChange(ID_REPEAT, _state->repeat);
+        }
+    }
 }
 
 #pragma mark - Rendering
 
+- (void)checkHostParamChanges {
+    int32_t one = true;
+    if (_state->recordEnableChangedByHost.compare_exchange_strong(one, false)) {
+        UIButton* record_button[MIDI_TRACKS] = { _recordButton1, _recordButton2, _recordButton3, _recordButton4 };
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            record_button[t].selected = _state->track[t].recordEnabled;
+        }
+
+        [self applyRecordEnableState];
+    }
+
+    one = true;
+    if (_state->monitorEnableChangedByHost.compare_exchange_strong(one, false)) {
+        UIButton* monitor_button[MIDI_TRACKS] = { _monitorButton1, _monitorButton2, _monitorButton3, _monitorButton4 };
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            monitor_button[t].selected = _state->track[t].monitorEnabled;
+        }
+    }
+
+    one = true;
+    if (_state->muteEnableChangedByHost.compare_exchange_strong(one, false)) {
+        UIButton* mute_button[MIDI_TRACKS] = { _muteButton1, _muteButton2, _muteButton3, _muteButton4 };
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            mute_button[t].selected = _state->track[t].muteEnabled;
+        }
+    }
+
+    one = true;
+    if (_state->transportChangedByHost.compare_exchange_strong(one, false)) {
+        self.repeatButton.selected = _state->repeat;
+    }
+}
+    
 - (void)checkActivityIndicators {
     ActivityIndicatorView* inputs[MIDI_TRACKS] = { _midiActivityInput1, _midiActivityInput2, _midiActivityInput3, _midiActivityInput4 };
     ActivityIndicatorView* outputs[MIDI_TRACKS] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
@@ -813,8 +877,9 @@
 
 - (void)renderloop {
     if (_audioUnit) {
+        [self checkHostParamChanges];
         [self checkActivityIndicators];
-        
+
         [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
 
         [self handleScheduledActions];
