@@ -274,6 +274,12 @@
     _recordButton.selected = state;
     
     [self updateRecordEnableState];
+    
+    if (!state) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self renderPreviews];
+        });
+    }
 }
 
 #pragma mark IBAction - Repeat
@@ -840,10 +846,6 @@
     state.recordedMessages = data;
     state.recordedLength = count;
     state.recordedDurationBeats = duration;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self renderPreviews];
-    });
 }
 
 - (void)invalidateRecording:(int)ordinal {
@@ -853,10 +855,6 @@
     state.recordedMessages = nullptr;
     state.recordedLength = 0;
     state.recordedDurationBeats = 0.0;
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self renderPreviews];
-    });
 }
 
 #pragma mark - UIScrollViewDelegate methods
