@@ -327,7 +327,7 @@ void MidiRecorderDSPKernel::processOutput() {
                     const RecordedMidiMessage* message = &state.recordedMessages[play_counter];
                     
                     // check if the time offset of the message falls without the advancement of the playhead
-                    if (message->offsetBeats < _state.playDurationBeats + frames_beats) {
+                    if (message->offsetBeats < _state.playDurationBeats) {
                         
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
