@@ -72,7 +72,12 @@
             // when recording is stopped, we move the recording data to the recorded data
             _recorded = _recording;
             _recordedPreview = _recordingPreview;
-            _recordedDurationBeats = ceil(((const RecordedMidiMessage*)_recording.bytes)[_recordingCount-1].offsetBeats);
+            if (_recordingCount == 0) {
+                _recordedDurationBeats = 0.0;
+            }
+            else {
+                _recordedDurationBeats = ceil(((const RecordedMidiMessage*)_recording.bytes)[_recordingCount-1].offsetBeats);
+            }
             _recordedCount = _recordingCount;
 
             // then re-initialize the recording for the next time
