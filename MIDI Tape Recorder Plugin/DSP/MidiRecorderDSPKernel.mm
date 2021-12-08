@@ -42,9 +42,6 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 
 void MidiRecorderDSPKernel::rewind() {
     _state.playDurationBeats = 0.0;
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state.track[t].playCounter = 0;
-    }
     turnOffAllNotes();
 }
 
@@ -166,6 +163,17 @@ void MidiRecorderDSPKernel::handleBufferStart(double timeSampleSeconds) {
 }
 
 void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds) {
+    if (_ioState.transportChanged) {
+        if (_ioState.transportMoving) {
+            _state.scheduledPlay = true;
+            _state.scheduledUIPlay = true;
+        }
+        else {
+            _state.scheduledStop = true;
+            _state.scheduledUIStop = true;
+        }
+    }
+    
     // we rely on the single-threaded nature of the audio callback thread to coordinate
     // important state transitions at the beginning of the callback, before anything else
     // this prevents split-state conditions to change semantics in the middle of processing
@@ -183,7 +191,6 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
         {
             int32_t expected = true;
             if (_state.scheduledEndRecording[t].compare_exchange_strong(expected, false)) {
-                _state.track[t].playCounter = _state.track[t].recordedLength.load();
                 _state.track[t].recording = NO;
             }
         }
@@ -192,6 +199,17 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
             int32_t expected = true;
             if (_state.scheduledNotesOff[t].compare_exchange_strong(expected, false)) {
                 turnOffAllNotesForTrack(t);
+            }
+        }
+        // invalidate
+        {
+            int32_t expected = true;
+            if (_state.scheduledInvalidate[t].compare_exchange_strong(expected, false)) {
+                MidiTrackState& state = _state.track[t];
+                state.recordedMessages.reset();
+                state.recordedBeatToIndex.reset();
+                state.recordedLength = 0;
+                state.recordedDuration = 0.0;
             }
         }
     }
@@ -306,8 +324,25 @@ void MidiRecorderDSPKernel::processOutput() {
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
         const double frames_beats = frames_seconds * _state.secondsToBeats;
 
-        _state.playDurationBeats += frames_beats;
+        // calculate the range of beat positions between which the recorded messages
+        // should be played
+        double play_duration = _state.playDurationBeats;
+        // if the host transport is moving, make that take precedence
+        if (_ioState.transportMoving) {
+            play_duration = _state.currentBeatPos;
+        }
+        double beatrange_begin = play_duration;
+        double beatrange_end = beatrange_begin + frames_beats;
 
+        // if there's a significant discontinuity between the output processing calls,
+        // forcible ensure that all notes are turned off
+        if (ABS(play_duration - _state.playDurationBeats) >= frames_beats) {
+            turnOffAllNotes();
+        }
+        
+        // store the play duration for the next process call
+        _state.playDurationBeats = beatrange_end;
+        
         BOOL reached_end = YES;
         
         // process all the messages on all the tracks
@@ -319,20 +354,29 @@ void MidiRecorderDSPKernel::processOutput() {
                 reached_end = NO;
             }
             // play when there are recorded messages
-            else if (state.recordedMessages != nullptr && state.recordedLength > 0) {
-                
-                // try to play as many recorded messages as possible
-                uint64_t play_counter;
-                while ((play_counter = state.playCounter) < state.recordedLength) {
-                    const RecordedMidiMessage* message = &state.recordedMessages[play_counter];
+            else if (state.recordedMessages && state.recordedLength > 0) {
+                uint64_t play_counter = state.recordedLength;
+
+                int beat_begin = (int)beatrange_begin;
+                if (beat_begin < state.recordedBeatToIndex->size()) {
+                    play_counter = state.recordedBeatToIndex->at(beat_begin);
+                }
+
+                while (play_counter < state.recordedLength) {
+                    const RecordedMidiMessage* message = &state.recordedMessages->at(play_counter);
+                    play_counter += 1;
                     
-                    // check if the time offset of the message falls without the advancement of the playhead
-                    if (message->offsetBeats < _state.playDurationBeats) {
+                    // check if the message is outdated
+                    if (message->offsetBeats < beatrange_begin) {
+                        continue;
+                    }
+                    // check if the time offset of the message falls within the advancement of the playhead
+                    else if (message->offsetBeats < beatrange_end) {
                         
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
                         if (!state.muteEnabled && _ioState.midiOutputEventBlock) {
-                            const double offset_seconds = (message->offsetBeats - _state.playDurationBeats) * _state.beatsToSeconds;
+                            const double offset_seconds = (message->offsetBeats - beatrange_end) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
@@ -349,9 +393,6 @@ void MidiRecorderDSPKernel::processOutput() {
                         else {
                             turnOffAllNotesForTrack(t);
                         }
-
-                        // advance through the recorded messages
-                        state.playCounter += 1;
                     }
                     // stop playing recorded messages if the one we processed is scheduled for later
                     else {
@@ -359,7 +400,7 @@ void MidiRecorderDSPKernel::processOutput() {
                     }
                 }
                 
-                if (_state.playDurationBeats < state.recordedDurationBeats) {
+                if (beatrange_end < state.recordedDuration) {
                     reached_end = NO;
                 }
             }

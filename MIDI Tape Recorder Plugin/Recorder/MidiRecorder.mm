@@ -20,15 +20,15 @@
     
     MidiRecorderState* _state;
 
-    NSMutableData* _recording;
-    NSMutableData* _recordingPreview;
-    double _recordingDurationBeats;
-    uint32_t _recordingCount;
+    std::unique_ptr<std::vector<RecordedMidiMessage>> _recording;
+    std::unique_ptr<std::vector<int>> _recordingBeatToIndex;
     
-    NSData* _recorded;
+    NSMutableData* _recordingPreview;
+    double _recordingDuration;
+    
+    // we store the recorded preview here because it's not accessed by the audio callback thread
+    // and it's easier to keep it in Objective C with ARC
     NSData* _recordedPreview;
-    double _recordedDurationBeats;
-    uint32_t _recordedCount;
 }
 
 - (instancetype)initWithOrdinal:(int)ordinal {
@@ -40,15 +40,13 @@
         
         _state = nil;
         
-        _recording = [NSMutableData new];
-        _recordingPreview = [NSMutableData new];
-        _recordingDurationBeats = 0.0;
-        _recordingCount = 0;
+        _recording.reset(new std::vector<RecordedMidiMessage>());
+        _recordingBeatToIndex.reset(new std::vector<int>());
         
-        _recorded = nil;
+        _recordingPreview = [NSMutableData new];
+        _recordingDuration = 0.0;
+        
         _recordedPreview = nil;
-        _recordedDurationBeats = 0.0;
-        _recordedCount = 0;
     }
     
     return self;
@@ -66,23 +64,24 @@
         
         if (record == NO) {
             // when recording is stopped, we move the recording data to the recorded data
-            _recorded = _recording;
+            auto recorded = std::move(_recording);
+            auto recorded_beat_index = std::move(_recordingBeatToIndex);
+            double recorded_duration = 0.0;
+            if (recorded && !recorded->empty()) {
+                recorded_duration = ceil(recorded->back().offsetBeats);
+            }
             _recordedPreview = _recordingPreview;
-            if (_recordingCount == 0) {
-                _recordedDurationBeats = 0.0;
-            }
-            else {
-                _recordedDurationBeats = ceil(((const RecordedMidiMessage*)_recording.bytes)[_recordingCount-1].offsetBeats);
-            }
-            _recordedCount = _recordingCount;
 
-            _recording = [NSMutableData new];
+            _recording.reset(new std::vector<RecordedMidiMessage>());
+            _recordingBeatToIndex.reset(new std::vector<int>());
             _recordingPreview = [NSMutableData new];
-            _recordingDurationBeats = 0.0;
-            _recordingCount = 0;
-            
+            _recordingDuration = 0.0;
+
             if (_delegate) {
-                [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationBeats];
+                [_delegate finishRecording:_ordinal
+                                      data:std::move(recorded)
+                               beatToIndex:std::move(recorded_beat_index)
+                                  duration:recorded_duration];
             }
         }
         else {
@@ -99,15 +98,21 @@
     __block NSDictionary* result;
     
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_recording == nil) {
+        MidiTrackState& state = _state->track[_ordinal];
+        auto recorded = state.recordedMessages.get();
+        auto recorded_beatindex = state.recordedBeatToIndex.get();
+        if (recorded == nullptr) {
             result = @{};
         }
         else {
+            NSData* recorded_data = [NSData dataWithBytes:recorded->data()
+                                                   length:recorded->size() * sizeof(RecordedMidiMessage)];
+            NSData* recorded_beatindex_data = [NSData dataWithBytes:recorded_beatindex->data()
+                                                             length:recorded_beatindex->size() * sizeof(int)];
             result = @{
-                @"Recorded" : [NSData dataWithData:_recorded],
-                @"Preview" : [NSData dataWithData:_recordedPreview],
-                @"Duration" : @(_recordedDurationBeats),
-                @"Count" : @(_recordedCount)
+                @"Recorded" : recorded_data,
+                @"BeatToIndex" : recorded_beatindex_data,
+                @"Duration" : @(state.recordedDuration.load())
             };
         }
     });
@@ -117,33 +122,45 @@
 
 - (void)dictToRecorded:(NSDictionary*)dict {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        _recorded = nil;
+        std::unique_ptr<std::vector<RecordedMidiMessage>> recorded(new std::vector<RecordedMidiMessage>());
+        std::unique_ptr<std::vector<int>> recorded_beatindex(new std::vector<int>());
+        double recorded_duration = 0.0;
         _recordedPreview = nil;
-        _recordedDurationBeats = 0.0;
-        _recordedCount = 0;
-        
-        id recorded = [dict objectForKey:@"Recorded"];
-        if (recorded) {
-            _recorded = recorded;
+
+        NSData* recorded_data = [dict objectForKey:@"Recorded"];
+        if (recorded_data) {
+            RecordedMidiMessage* data = (RecordedMidiMessage*)recorded_data.bytes;
+            unsigned long count = recorded_data.length / sizeof(RecordedMidiMessage);
+            recorded->assign(data, data + count);
         }
         
-        id preview = [dict objectForKey:@"Preview"];
-        if (preview) {
-            _recordedPreview = preview;
+        NSData* recorded_beatindex_data = [dict objectForKey:@"BeatToIndex"];
+        if (recorded_beatindex_data) {
+            recorded_beatindex.reset(new std::vector<int>());
+            int* data = (int*)recorded_beatindex_data.bytes;
+            unsigned long count = recorded_beatindex_data.length / sizeof(int);
+            recorded_beatindex->assign(data, data + count);
         }
-        
+
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
-            _recordedDurationBeats = ceil([duration doubleValue]);
+            recorded_duration = ceil([duration doubleValue]);
         }
         
-        id count = [dict objectForKey:@"Count"];
-        if (count) {
-            _recordedCount = [count intValue];
+        id preview = [NSMutableData new];
+        if (recorded) {
+            for (int m = 0; m < recorded->size(); ++m) {
+                // update preview
+                [self updatePreview:preview withMessage:recorded->at(m)];
+            }
         }
-        
+        _recordedPreview = preview;
+
         if (_delegate) {
-            [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationBeats];
+            [_delegate finishRecording:_ordinal
+                                  data:std::move(recorded)
+                           beatToIndex:std::move(recorded_beatindex)
+                              duration:recorded_duration];
         }
     });
 }
@@ -151,7 +168,9 @@
 #pragma mark MIDI files
 
 - (NSData*)recordedAsMidiTrackChunk {
-    if (_recordedCount == 0) {
+    MidiTrackState& state = _state->track[_ordinal];
+    auto recorded = state.recordedMessages.get();
+    if (!recorded || recorded->empty()) {
         return nil;
     }
 
@@ -173,10 +192,9 @@
     [track appendBytes:&bm3 length:1];
 
     // add midi events to track
-    const RecordedMidiMessage* messages = (const RecordedMidiMessage*)_recorded.bytes;
     int64_t last_offset_ticks = 0;
-    for (uint32_t i = 0; i < _recordedCount; ++i) {
-        const RecordedMidiMessage& message = messages[i];
+    for (uint32_t i = 0; i < recorded->size(); ++i) {
+        const RecordedMidiMessage& message = recorded->at(i);
         int64_t offset_ticks = int64_t(message.offsetBeats * MIDI_BEAT_TICKS);
         uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
         writeMidiVarLen(track, delta_ticks);
@@ -188,7 +206,7 @@
     }
     
     // add end of track meta event
-    int64_t offset_ticks = int64_t(_recordedDurationBeats * MIDI_BEAT_TICKS);
+    int64_t offset_ticks = int64_t(state.recordedDuration * MIDI_BEAT_TICKS);
     uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
     writeMidiVarLen(track, delta_ticks);
     uint8_t meta_end_of_track[] = { 0xff, 0x2f, 0x00 };
@@ -217,10 +235,10 @@
 
     // prepare local data to accumulate into
     
-    NSMutableData* recorded = [NSMutableData new];
+    std::unique_ptr<std::vector<RecordedMidiMessage>> recorded(new std::vector<RecordedMidiMessage>());
+    std::unique_ptr<std::vector<int>> recorded_beatindex(new std::vector<int>());
     NSMutableData* recorded_preview = [NSMutableData new];
-    double recorded_duration_beats = 0.0;
-    uint32_t recorded_count = 0;
+    double recorded_duration = 0.0;
 
     // process the track events
 
@@ -237,6 +255,11 @@
         double duration_beats = double(offset_ticks) / division;
         last_offset_ticks = offset_ticks;
         
+        // update the beat to index mapping
+        while ((int)duration_beats >= recorded_beatindex->size()) {
+            recorded_beatindex->push_back((int)recorded->size());
+        }
+
         // handle event
         uint8_t event_identifier = track_bytes[i];
         i += 1;
@@ -300,9 +323,9 @@
                     msg.data[1] = d1;
                     msg.data[2] = d2;
                 }
-                
-                [recorded appendBytes:&msg length:sizeof(RecordedMidiMessage)];
-                recorded_count += 1;
+
+                // add the recorded message
+                recorded->push_back(msg);
                 
                 // update the preview
                 [self updatePreview:recorded_preview withMessage:msg];
@@ -312,17 +335,17 @@
         }
     }
     
-    recorded_duration_beats = double(last_offset_ticks) / division;
+    recorded_duration = double(last_offset_ticks) / division;
 
     // transfer all the accumulated data to the active recorded data
     
-    _recorded = recorded;
     _recordedPreview = recorded_preview;
-    _recordedDurationBeats = ceil(recorded_duration_beats);
-    _recordedCount = recorded_count;
     
     if (_delegate) {
-        [_delegate finishRecording:_ordinal data:(const RecordedMidiMessage*)_recorded.bytes count:_recordedCount duration:_recordedDurationBeats];
+        [_delegate finishRecording:_ordinal
+                              data:std::move(recorded)
+                       beatToIndex:std::move(recorded_beatindex)
+                          duration:ceil(recorded_duration)];
     }
 }
 
@@ -330,16 +353,29 @@
 
 - (void)ping:(double)timeSampleSeconds {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record && _recording != nil) {
+        if (_record && _recording) {
+            // update the recording duration even when there's no incoming messages
             if (_state->transportStartSampleSeconds == 0.0) {
-                _recordingDurationBeats = 0.0;
+                _recordingDuration = 0.0;
             }
             else {
-                _recordingDurationBeats = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
-                
-                if (_recordingPreview && _recordingCount > 0) {
-                    [self updatePreview:_recordingPreview withOffsetBeats:_recordingDurationBeats];
+                _recordingDuration = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
+            }
+            
+            // while recording, we keep track of the position in the recording that the beginning of a beat
+            // corresponds to, this allow for fast scanning later during playback
+            if (_recordingBeatToIndex.get()) {
+                int current_beat = (int)_recordingDuration;
+                // fill in any beats that might have been miseed (very unlikely, but best to be safe)
+                // and add the current beat in case this is the first time creating the link to the index
+                while (current_beat >= _recordingBeatToIndex->size()) {
+                    _recordingBeatToIndex->push_back((int)_recording->size());
                 }
+            }
+            
+            // update the preview in case of gaps
+            if (_recordingPreview && !_recording->empty()) {
+                [self updatePreview:_recordingPreview withOffsetBeats:_recordingDuration];
             }
         }
     });
@@ -347,13 +383,13 @@
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (!_record || _recording == nil) {
+        if (!_record || !_recording) {
             return;
         }
 
         // auto start the recording on the first received message
         // if the recording hasn't started yet
-        if (_recordingCount == 0 && _state->transportStartSampleSeconds == 0.0) {
+        if (_recording->empty() && _state->transportStartSampleSeconds == 0.0) {
             if (_delegate) {
                 _state->transportStartSampleSeconds = message.timeSampleSeconds;
                 _state->playDurationBeats = 0.0;
@@ -369,9 +405,8 @@
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
-        [_recording appendBytes:&recorded_message length:RECORDED_MSG_SIZE];
-        _recordingDurationBeats = offset_seconds * _state->secondsToBeats;
-        _recordingCount += 1;
+        _recording->push_back(recorded_message);
+        _recordingDuration = offset_seconds * _state->secondsToBeats;
         
         // update the preview
         [self updatePreview:_recordingPreview withMessage:recorded_message];
@@ -431,21 +466,20 @@
 }
 
 - (void)clear {
-    _record = NO;
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        _record = NO;
 
-    _recording = [NSMutableData new];
-    _recordingPreview = [NSMutableData new];
-    _recordingDurationBeats = 0.0;
-    _recordingCount = 0;
+        if (_delegate) {
+            [_delegate invalidateRecording:_ordinal];
+        }
 
-    _recorded = nil;
-    _recordedPreview = nil;
-    _recordedDurationBeats = 0.0;
-    _recordedCount = 0;
-    
-    if (_delegate) {
-        [_delegate invalidateRecording:_ordinal];
-    }
+        _recording.reset(new std::vector<RecordedMidiMessage>);
+        _recordingBeatToIndex.reset(new std::vector<int>());
+        _recordingPreview = [NSMutableData new];
+        _recordingDuration = 0.0;
+
+        _recordedPreview = nil;
+    });
 }
 
 #pragma mark Getters and Setter
@@ -454,15 +488,15 @@
     _state = state;
 }
 
-- (double)durationBeats {
+- (double)duration {
     __block double duration = 0.0;
     
     dispatch_sync(_dispatchQueue, ^{
         if (_record == YES) {
-            duration = _recordingDurationBeats;
+            duration = _recordingDuration;
         }
         else {
-            duration = _recordedDurationBeats;
+            duration = _state->track[_ordinal].recordedDuration;
         }
     });
     

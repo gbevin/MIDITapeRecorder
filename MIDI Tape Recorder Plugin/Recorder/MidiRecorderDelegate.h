@@ -6,6 +6,9 @@
 //  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
+#include <memory>
+#include <vector>
+
 class RecordedMidiMessage;
 
 @class MidiRecorder;
@@ -13,7 +16,10 @@ class RecordedMidiMessage;
 @protocol MidiRecorderDelegate <NSObject>
 
 - (void)startRecord;
-- (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count duration:(double)duration;
+- (void)finishRecording:(int)ordinal
+                   data:(std::unique_ptr<std::vector<RecordedMidiMessage>>)data
+            beatToIndex:(std::unique_ptr<std::vector<int>>)beatToIndex
+               duration:(double)duration;
 - (void)invalidateRecording:(int)ordinal;
 
 @end

@@ -34,7 +34,7 @@ class MidiRecorderState;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 - (void)clear;
 
-- (double)durationBeats;
+- (double)duration;
 - (NSData*)preview;
 
 @end

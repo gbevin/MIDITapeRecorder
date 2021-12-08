@@ -825,6 +825,16 @@
         [self setPlay:NO];
         _state->scheduledRewind = true;
     }
+
+    one = true;
+    if (_state->scheduledUIPlay.compare_exchange_strong(one, false)) {
+        [self setPlay:YES];
+    }
+
+    one = true;
+    if (_state->scheduledUIStop.compare_exchange_strong(one, false)) {
+        [self setPlay:NO];
+    }
 }
 
 - (void)renderPreviews {
@@ -834,7 +844,7 @@
     [self withMidiTrackViews:^(int t, MidiTrackView* view) {
         view.preview = [self->_midiQueueProcessor recorder:t].preview;
         
-        max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].durationBeats);
+        max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].duration);
         
         if (self->_recordButton.selected) {
             [view setNeedsDisplay];
@@ -846,7 +856,7 @@
 - (void)renderPlayhead {
     BOOL has_recorder_duration = NO;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if ([_midiQueueProcessor recorder:t].durationBeats != 0.0) {
+        if ([_midiQueueProcessor recorder:t].duration != 0.0) {
             has_recorder_duration = YES;
             break;
         }
@@ -899,22 +909,22 @@
     _state->scheduledPlay = true;
 }
 
-- (void)finishRecording:(int)ordinal data:(const RecordedMidiMessage*)data count:(uint32_t)count duration:(double)duration {
+- (void)finishRecording:(int)ordinal
+                   data:(std::unique_ptr<std::vector<RecordedMidiMessage>>)data
+            beatToIndex:(std::unique_ptr<std::vector<int>>)beatToIndex
+               duration:(double)duration {
     _state->scheduledEndRecording[ordinal] = true;
     
     MidiTrackState& state = _state->track[ordinal];
-    state.recordedMessages = data;
-    state.recordedLength = count;
-    state.recordedDurationBeats = duration;
+    state.recordedMessages = std::move(data);
+    state.recordedBeatToIndex = std::move(beatToIndex);
+    state.recordedLength = (state.recordedMessages ? state.recordedMessages->size() : 0);
+    state.recordedDuration = duration;
 }
 
 - (void)invalidateRecording:(int)ordinal {
     _state->scheduledNotesOff[ordinal] = true;
-
-    MidiTrackState& state = _state->track[ordinal];
-    state.recordedMessages = nullptr;
-    state.recordedLength = 0;
-    state.recordedDurationBeats = 0.0;
+    _state->scheduledInvalidate[ordinal] = true;
 }
 
 #pragma mark - UIScrollViewDelegate methods

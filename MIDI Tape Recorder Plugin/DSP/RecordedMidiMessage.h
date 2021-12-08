@@ -9,10 +9,6 @@
 #pragma once
 
 struct RecordedMidiMessage {
-    RecordedMidiMessage() {}
-    RecordedMidiMessage(const RecordedMidiMessage&) = delete;
-    RecordedMidiMessage& operator= (const RecordedMidiMessage&) = delete;
-    
     double offsetBeats  { 0.0 };
     uint16_t length     { 0 };
     uint8_t data[3]     { 0, 0, 0 };

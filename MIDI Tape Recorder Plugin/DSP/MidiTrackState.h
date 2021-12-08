@@ -9,6 +9,7 @@
 #pragma once
 
 #include <atomic>
+#include <vector>
 
 #include "RecordedMidiMessage.h"
 
@@ -17,18 +18,17 @@ struct MidiTrackState {
     MidiTrackState(const MidiTrackState&) = delete;
     MidiTrackState& operator= (const MidiTrackState&) = delete;
     
-    // using 32-bit variables ensures no partial reads or write,
-    // nor cache inconsistancies amongst threads or core
-    int32_t sourceCable     = 0;
-    float activityInput     = 0.f;
-    float activityOutput    = 0.f;
-    int32_t recordEnabled   = false;
-    int32_t monitorEnabled  = false;
-    int32_t muteEnabled     = false;
-    int32_t recording       = 0;
+    std::atomic<int32_t> sourceCable    { 0 };
+    std::atomic<float>   activityInput  { 0.f };
+    std::atomic<float>   activityOutput { 0.f };
+    std::atomic<int32_t> recordEnabled  { false };
+    std::atomic<int32_t> monitorEnabled { false };
+    std::atomic<int32_t> muteEnabled    { false };
+    std::atomic<int32_t> recording      { 0 };
     
-    std::atomic<const RecordedMidiMessage*> recordedMessages = nullptr;
-    std::atomic<uint64_t>                   recordedLength = 0;
-    std::atomic<double>                     recordedDurationBeats = 0.0;
-    std::atomic<uint64_t>                   playCounter = 0;
+    std::unique_ptr<std::vector<RecordedMidiMessage>>   recordedMessages    { nullptr };
+    std::unique_ptr<std::vector<int>>                   recordedBeatToIndex { nullptr };
+    
+    std::atomic<uint64_t>   recordedLength      { 0 };
+    std::atomic<double>     recordedDuration    { 0.0 };
 };
