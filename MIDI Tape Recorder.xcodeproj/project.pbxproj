@@ -13,6 +13,7 @@
 		261D69332753BCDA003527B2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261D69322753BCDA003527B2 /* AudioToolbox.framework */; };
 		266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EC27596B50002D4459 /* ToolBarButton.mm */; };
 		266465F027597988002D4459 /* PopupView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EF27597988002D4459 /* PopupView.mm */; };
+		268A93062761131400B2D74A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 268A93052761131400B2D74A /* logo.png */; };
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
@@ -41,7 +42,6 @@
 		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
 		26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2C275343DB00170CB2 /* UIKit.framework */; };
 		26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA30275343F800170CB2 /* CoreAudioKit.framework */; };
-		26E06B8C2759358C00D7257E /* uwyn.png in Resources */ = {isa = PBXBuildFile; fileRef = 26E06B8B2759358C00D7257E /* uwyn.png */; };
 		26E06B8F2759427300D7257E /* MenuButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26E06B8D2759427300D7257E /* MenuButton.mm */; };
 		26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */; };
 		26EF4D4C2759D26D00E4A19A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EF4D4B2759D26D00E4A19A /* StoreKit.framework */; };
@@ -82,6 +82,7 @@
 		266465EE27597987002D4459 /* PopupView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopupView.h; sourceTree = "<group>"; };
 		266465EF27597988002D4459 /* PopupView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PopupView.mm; sourceTree = "<group>"; };
 		266465F1275980BA002D4459 /* GraphicsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicsHelper.h; sourceTree = "<group>"; };
+		268A93052761131400B2D74A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -136,7 +137,6 @@
 		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA322753485300170CB2 /* MidiRecorderState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderDSPKernel.mm; sourceTree = "<group>"; };
-		26E06B8B2759358C00D7257E /* uwyn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = uwyn.png; sourceTree = "<group>"; };
 		26E06B8D2759427300D7257E /* MenuButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuButton.mm; sourceTree = "<group>"; };
 		26E06B8E2759427300D7257E /* MenuButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
 		26EF4D4B2759D26D00E4A19A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -213,7 +213,7 @@
 		26BB382E275338B200342496 /* MIDI Tape Recorder */ = {
 			isa = PBXGroup;
 			children = (
-				26E06B8B2759358C00D7257E /* uwyn.png */,
+				268A93052761131400B2D74A /* logo.png */,
 				26BB3848275338C700342496 /* MIDI Tape Recorder.entitlements */,
 				26BB382F275338B200342496 /* AppDelegate.h */,
 				26BB3830275338B200342496 /* AppDelegate.m */,
@@ -410,9 +410,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				268A93062761131400B2D74A /* logo.png in Resources */,
 				26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */,
 				26BB383C275338B200342496 /* Assets.xcassets in Resources */,
-				26E06B8C2759358C00D7257E /* uwyn.png in Resources */,
 				26BB383A275338B200342496 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
