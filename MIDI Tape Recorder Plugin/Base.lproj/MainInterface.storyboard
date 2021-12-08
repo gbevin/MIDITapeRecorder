@@ -375,12 +375,16 @@ RECORDER</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ckn-XQ-W53" userLabel="Recorded 4" customClass="MidiTrackView">
                                         <rect key="frame" x="10" y="168" width="50" height="28"/>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead">
-                                        <rect key="frame" x="10" y="0.0" width="1" height="204"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="204"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <gestureRecognizers/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="1" id="Xru-0r-srh"/>
+                                            <constraint firstAttribute="width" constant="31" id="Xru-0r-srh"/>
                                         </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
+                                        </connections>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" name="Gray6"/>
@@ -419,7 +423,7 @@ RECORDER</string>
                                         <variation key="heightClass=compact-widthClass=compact" constant="18"/>
                                     </constraint>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="cTC-go-lpj"/>
-                                    <constraint firstItem="L2y-q6-jop" firstAttribute="leading" secondItem="k5P-YR-lyM" secondAttribute="leading" id="cTi-we-c8t"/>
+                                    <constraint firstItem="L2y-q6-jop" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="cTi-we-c8t"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="width" secondItem="IWD-hQ-i8x" secondAttribute="width" id="cVV-dJ-oLw"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="dE6-vC-SDE"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="dkx-RY-Y8O"/>
@@ -1380,6 +1384,11 @@ under the CC BY 4.0 License.</string>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="Sbs-GL-zew" userLabel="Playhead Pan Gesture">
+                    <connections>
+                        <action selector="playheadPanGesture:" destination="BYZ-38-t0r" id="x4H-DL-Wol"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="131.77159590043922" y="115.42968749999999"/>
         </scene>

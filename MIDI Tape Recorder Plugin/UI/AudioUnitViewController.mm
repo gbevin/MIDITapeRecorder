@@ -132,6 +132,9 @@
     BOOL _autoPlayFromRecord;
     
     CGFloat _extendedMenuPopupWidth;
+    
+    CGFloat _playdurationAtPanStart;
+    BOOL _playheadPanActive;
 }
 
 #pragma mark - Init
@@ -150,6 +153,8 @@
         }
         
         _autoPlayFromRecord = NO;
+        _playdurationAtPanStart = 0;
+        _playheadPanActive = NO;
     }
     
     return self;
@@ -178,6 +183,8 @@
     [_timer addToRunLoop:[NSRunLoop mainRunLoop]
                  forMode:NSDefaultRunLoopMode];
 }
+
+#pragma mark - Create AudioUnit
 
 - (AUAudioUnit*)createAudioUnitWithComponentDescription:(AudioComponentDescription)desc error:(NSError **)error {
     _audioUnit = [[MidiRecorderAudioUnit alloc] initWithComponentDescription:desc error:error];
@@ -619,6 +626,20 @@
     }
 }
 
+- (IBAction)playheadPanGesture:(UIPanGestureRecognizer*)gesture {
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        _playdurationAtPanStart = _state->playDurationBeats;
+        _playheadPanActive = YES;
+    }
+    else if (gesture.state == UIGestureRecognizerStateChanged) {
+        _state->playDurationBeats = MIN(MAX(_playdurationAtPanStart + [gesture translationInView:_tracks].x / PIXELS_PER_BEAT, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT);
+    }
+    else {
+        _playheadPanActive = NO;
+        _playdurationAtPanStart = 0.0;
+    }
+}
+
 #pragma mark - State
 
 - (void)readSettingsFromDict:(NSDictionary*)dict {
@@ -875,7 +896,7 @@
     
     // scroll view location
     _playhead.hidden = !has_recorder_duration;
-    if (!_playhead.hidden && (_playButton.selected || _recordButton.selected)) {
+    if (!_playhead.hidden && (_playButton.selected || _recordButton.selected || _playheadPanActive)) {
         CGFloat content_offset;
         if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
             content_offset = 0.0;
