@@ -12,7 +12,19 @@
 
 #include "GraphicsHelper.h"
 
-@implementation PopupView
+@implementation PopupView {
+    CGColor* _gray5Color;
+}
+
+- (instancetype)initWithCoder:(NSCoder*)coder {
+    self = [super initWithCoder:coder];
+    
+    if (self) {
+        _gray5Color = [UIColor colorNamed:@"Gray5"].CGColor;
+    }
+
+    return self;
+}
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -40,7 +52,7 @@
     CGContextAddPath(context, createRoundedCornerPath(CGRectInset(self.bounds, outline_stroke_width, outline_stroke_width),
                                                       outline_corner_radius));
 
-    CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray5"].CGColor);
+    CGContextSetFillColorWithColor(context, _gray5Color);
     CGContextSetStrokeColorWithColor(context, UIColor.blackColor.CGColor);
     CGContextSetLineWidth(context, outline_stroke_width);
     CGContextDrawPath(context, kCGPathFillStroke);

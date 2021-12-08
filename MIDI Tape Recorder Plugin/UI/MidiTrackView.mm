@@ -12,7 +12,25 @@
 
 #include "Constants.h"
 
-@implementation MidiTrackView
+@implementation MidiTrackView {
+    CGColor* _gray2Color;
+    CGColor* _gray4Color;
+    CGColor* _notesColor;
+    CGColor* _eventsColor;
+}
+
+- (instancetype)initWithCoder:(NSCoder*)coder {
+    self = [super initWithCoder:coder];
+    
+    if (self) {
+        _gray2Color = [UIColor colorNamed:@"Gray2"].CGColor;
+        _gray4Color = [UIColor colorNamed:@"Gray4"].CGColor;
+        _notesColor = [UIColor colorNamed:@"PreviewNotes"].CGColor;
+        _eventsColor = [UIColor colorNamed:@"PreviewEvents"].CGColor;
+    }
+
+    return self;
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -25,12 +43,9 @@
     
     CGContextSaveGState(context);
 
-    CGColor* gray2_color = [UIColor colorNamed:@"Gray2"].CGColor;
-    CGColor* gray4_color = [UIColor colorNamed:@"Gray4"].CGColor;
-
     // fill the background
     
-    CGContextSetFillColorWithColor(context, gray4_color);
+    CGContextSetFillColorWithColor(context, _gray4Color);
     CGContextFillRect(context, self.bounds);
 
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
@@ -38,7 +53,7 @@
     // draw the vertical beat bars
     
     CGContextBeginPath(context);
-    CGContextSetStrokeColorWithColor(context, gray2_color);
+    CGContextSetStrokeColorWithColor(context, _gray2Color);
     
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
         if (x % PIXELS_PER_BEAT == 0) {
@@ -61,12 +76,10 @@
     CGContextBeginPath(context);
 
     if (drawNotes) {
-        CGColor* notes_color = [UIColor colorNamed:@"PreviewNotes"].CGColor;
-        CGContextSetStrokeColorWithColor(context, notes_color);
+        CGContextSetStrokeColorWithColor(context, _notesColor);
     }
     else {
-        CGColor* events_color = [UIColor colorNamed:@"PreviewEvents"].CGColor;
-        CGContextSetStrokeColorWithColor(context, events_color);
+        CGContextSetStrokeColorWithColor(context, _eventsColor);
     }
 
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
