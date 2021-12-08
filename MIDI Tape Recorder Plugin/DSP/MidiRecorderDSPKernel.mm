@@ -63,55 +63,42 @@ void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue val
     switch (address) {
         case ID_RECORD_1:
             _state.track[0].recordEnabled = value;
-            _state.recordEnableChangedByHost = true;
             break;
         case ID_RECORD_2:
             _state.track[1].recordEnabled = value;
-            _state.recordEnableChangedByHost = true;
             break;
         case ID_RECORD_3:
             _state.track[2].recordEnabled = value;
-            _state.recordEnableChangedByHost = true;
             break;
         case ID_RECORD_4:
             _state.track[3].recordEnabled = value;
-            _state.recordEnableChangedByHost = true;
             break;
         case ID_MONITOR_1:
             _state.track[0].monitorEnabled = value;
-            _state.monitorEnableChangedByHost = true;
             break;
         case ID_MONITOR_2:
             _state.track[1].monitorEnabled = value;
-            _state.monitorEnableChangedByHost = true;
             break;
         case ID_MONITOR_3:
             _state.track[2].monitorEnabled = value;
-            _state.monitorEnableChangedByHost = true;
             break;
         case ID_MONITOR_4:
             _state.track[3].monitorEnabled = value;
-            _state.monitorEnableChangedByHost = true;
             break;
         case ID_MUTE_1:
             _state.track[0].muteEnabled = value;
-            _state.muteEnableChangedByHost = true;
             break;
         case ID_MUTE_2:
             _state.track[1].muteEnabled = value;
-            _state.muteEnableChangedByHost = true;
             break;
         case ID_MUTE_3:
             _state.track[2].muteEnabled = value;
-            _state.muteEnableChangedByHost = true;
             break;
         case ID_MUTE_4:
             _state.track[3].muteEnabled = value;
-            _state.muteEnableChangedByHost = true;
             break;
         case ID_REPEAT:
             _state.repeat = value;
-            _state.transportChangedByHost = true;
             break;
     }
 }

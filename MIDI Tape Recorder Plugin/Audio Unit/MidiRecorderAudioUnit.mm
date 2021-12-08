@@ -243,7 +243,7 @@
 
 - (void)setupParameterCallbacks {
     // Make a local pointer to the kernel to avoid capturing self.
-    __block DSPKernelAdapter*  kernelAdapter = _kernelAdapter;
+    __block DSPKernelAdapter* kernelAdapter = _kernelAdapter;
     
     // implementorValueObserver is called when a parameter changes value.
     _parameterTree.implementorValueObserver = ^(AUParameter* param, AUValue value) {
@@ -258,14 +258,18 @@
     // A function to provide string representations of parameter values.
     _parameterTree.implementorStringFromValueCallback = ^(AUParameter* param, const AUValue* __nullable valuePtr) {
         AUValue value = valuePtr == nil ? param.value : *valuePtr;
-        
-        return [NSString stringWithFormat:@"%.f", value];
+        switch ((int)value) {
+            case 0: return @"OFF";
+            case 1: return @"ON";
+        }
+        return [NSString stringWithFormat:@"%d", (int)value];
     };
     
-    _kernelAdapter.state->hostParamChange = ^(uint64_t address, float value) {
-        AUParameter* param = [self->_parameterTree parameterWithAddress:address];
+    __block AUParameterTree* param_tree = _parameterTree;
+    kernelAdapter.state->hostParamChange = ^(uint64_t address, float value) {
+        AUParameter* param = [param_tree parameterWithAddress:address];
         if (param) {
-            [param setValue:value originator:nil atHostTime:mach_absolute_time() eventType:AUParameterAutomationEventTypeValue];
+            [param setValue:value originator:kernelAdapter.state atHostTime:mach_absolute_time() eventType:AUParameterAutomationEventTypeValue];
         }
     };
 }
