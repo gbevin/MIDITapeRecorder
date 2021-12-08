@@ -13,7 +13,6 @@
 		261D69332753BCDA003527B2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261D69322753BCDA003527B2 /* AudioToolbox.framework */; };
 		266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EC27596B50002D4459 /* ToolBarButton.mm */; };
 		266465F027597988002D4459 /* PopupView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EF27597988002D4459 /* PopupView.mm */; };
-		268A93062761131400B2D74A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 268A93052761131400B2D74A /* logo.png */; };
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
@@ -82,7 +81,6 @@
 		266465EE27597987002D4459 /* PopupView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopupView.h; sourceTree = "<group>"; };
 		266465EF27597988002D4459 /* PopupView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PopupView.mm; sourceTree = "<group>"; };
 		266465F1275980BA002D4459 /* GraphicsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicsHelper.h; sourceTree = "<group>"; };
-		268A93052761131400B2D74A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -213,7 +211,6 @@
 		26BB382E275338B200342496 /* MIDI Tape Recorder */ = {
 			isa = PBXGroup;
 			children = (
-				268A93052761131400B2D74A /* logo.png */,
 				26BB3848275338C700342496 /* MIDI Tape Recorder.entitlements */,
 				26BB382F275338B200342496 /* AppDelegate.h */,
 				26BB3830275338B200342496 /* AppDelegate.m */,
@@ -410,7 +407,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				268A93062761131400B2D74A /* logo.png in Resources */,
 				26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */,
 				26BB383C275338B200342496 /* Assets.xcassets in Resources */,
 				26BB383A275338B200342496 /* Main.storyboard in Resources */,
