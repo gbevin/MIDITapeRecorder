@@ -370,7 +370,7 @@
     if (!sender.selected) {
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
             [[self->_midiQueueProcessor recorder:t] clear];
-            [view setNeedsDisplay];
+            [view setNeedsLayout];
         }];
     }
 }
@@ -600,7 +600,7 @@
         [self renderPreviews];
         
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
-            [view setNeedsDisplay];
+            [view setNeedsLayout];
         }];
     }
 }
@@ -622,7 +622,7 @@
         
         MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
         [[_midiQueueProcessor recorder:(int)index] clear];
-        [midi_track[index] setNeedsDisplay];
+        [midi_track[index] setNeedsLayout];
     }
 }
 
@@ -876,7 +876,7 @@
         max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].duration);
         
         if (self->_recordButton.selected) {
-            [view setNeedsDisplay];
+            [view setNeedsLayout];
         }
     }];
     _timelineWidth.constant = max_duration * PIXELS_PER_BEAT;
