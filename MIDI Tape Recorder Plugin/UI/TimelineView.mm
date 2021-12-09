@@ -13,19 +13,7 @@
 
 #include "Constants.h"
 
-@implementation TimelineView {
-    CGColor* _gray0Color;
-}
-
-- (instancetype)initWithCoder:(NSCoder*)coder {
-    self = [super initWithCoder:coder];
-    
-    if (self) {
-        _gray0Color = [UIColor colorNamed:@"Gray0"].CGColor;
-    }
-
-    return self;
-}
+@implementation TimelineView
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -38,7 +26,8 @@
     
     CGContextSaveGState(context);
 
-    CGContextSetStrokeColorWithColor(context, _gray0Color);
+    CGColor* gray0_color = [UIColor colorNamed:@"Gray0"].CGColor;
+    CGContextSetStrokeColorWithColor(context, gray0_color);
     
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
     
@@ -61,8 +50,8 @@
         if (x % PIXELS_PER_BEAT == 0) {
             CGRect textRect = CGRectMake(x + 4, 1, PIXELS_PER_BEAT - 8, self.frame.size.height - 2);
             [[NSString stringWithFormat:@"%d", int(x / PIXELS_PER_BEAT) + 1] drawInRect:textRect
-                                                                         withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:9],
-                                                                                          NSForegroundColorAttributeName: [UIColor lightGrayColor]}];
+                                                                           withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:9],
+                                                                                            NSForegroundColorAttributeName: [UIColor lightGrayColor]}];
         }
     }
 

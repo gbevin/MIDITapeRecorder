@@ -10,21 +10,7 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 
-@implementation ActivityIndicatorView {
-    CGColor* _activityOnColor;
-    CGColor* _activityOffColor;
-}
-
-- (instancetype)initWithCoder:(NSCoder*)coder {
-    self = [super initWithCoder:coder];
-    
-    if (self) {
-        _activityOnColor = [UIColor colorNamed:@"ActivityOn"].CGColor;
-        _activityOffColor = [UIColor colorNamed:@"ActivityOff"].CGColor;
-    }
-
-    return self;
-}
+@implementation ActivityIndicatorView
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -46,10 +32,10 @@
     CGContextClearRect(context, self.bounds);
 
     if (self.showActivity) {
-        CGContextSetFillColorWithColor(context, _activityOnColor);
+        CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOn"].CGColor);
     }
     else {
-        CGContextSetFillColorWithColor(context, _activityOffColor);
+        CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOff"].CGColor);
     }
 
     CGContextFillEllipseInRect(context, self.bounds);

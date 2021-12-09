@@ -10,21 +10,7 @@
 
 #import <CoreGraphics/CoreGraphics.h>
 
-@implementation MenuButton {
-    CGColor* _gray0Color;
-    CGColor* _activityOffColor;
-}
-
-- (instancetype)initWithCoder:(NSCoder*)coder {
-    self = [super initWithCoder:coder];
-    
-    if (self) {
-        _gray0Color = [UIColor colorNamed:@"Gray0"].CGColor;
-        _activityOffColor = [UIColor colorNamed:@"ActivityOff"].CGColor;
-    }
-
-    return self;
-}
+@implementation MenuButton
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -40,10 +26,10 @@
     CGContextClearRect(context, self.bounds);
 
     if (self.highlighted) {
-        CGContextSetFillColorWithColor(context, _gray0Color);
+        CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray0"].CGColor);
     }
     else {
-        CGContextSetFillColorWithColor(context, _activityOffColor);
+        CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"ActivityOff"].CGColor);
     }
     CGFloat y_center = self.bounds.size.height / 2 - 1;
     CGContextFillRect(context, CGRectMake(5, y_center - 9, self.bounds.size.width - 10, 2));
