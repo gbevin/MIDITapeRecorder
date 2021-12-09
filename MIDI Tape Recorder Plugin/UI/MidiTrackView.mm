@@ -45,6 +45,14 @@
 - (void)setPreview:(NSData*)preview {
     if (_preview != preview) {
         _preview = preview;
+        
+        for (MidiTrackBeatEntry* entry in _beatLayers.allValues) {
+            [entry.beatLayer removeFromSuperlayer];
+            [entry.previewNotesLayer removeFromSuperlayer];
+            [entry.previewEventsLayer removeFromSuperlayer];
+        }
+        [_beatLayers removeAllObjects];
+
         _beatLayers = [NSMutableDictionary new];
     }
 }
