@@ -531,9 +531,11 @@
 
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        // track the MPE Configuration Message and RPN 0 PitchBend sensitivity at all times
+        // track the MPE Configuration Message and RPN 0 PitchBend sensitivity
+        // when recording is enabled for this track
         // we only look at CC messages for this
-        if (message.length == 3 &&
+        if (_state->track[_ordinal].recordEnabled &&
+            message.length == 3 &&
             (message.data[0] & 0xf0) == 0xb0) {
             uint8_t channel = (message.data[0] & 0x0f);
             uint8_t cc_num = message.data[1];

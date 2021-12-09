@@ -931,7 +931,23 @@
 - (void)renderMpeIndicators {
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        mpe_button[t].hidden = (_state->track[t].mpeState.enabled == false);
+        MPEState& state = _state->track[t].mpeState;
+        BOOL button_hidden = (state.enabled == false);
+        if (button_hidden != mpe_button[t].hidden) {
+            mpe_button[t].hidden = button_hidden;
+            NSString* mpe_label = @"";
+            if (state.enabled) {
+                mpe_label = @"MPE";
+                if (state.zone1Active) {
+                    mpe_label = [mpe_label stringByAppendingFormat:@" L:%d", state.zone1Members.load()];
+                }
+                if (state.zone2Active) {
+                    mpe_label = [mpe_label stringByAppendingFormat:@" U:%d", state.zone2Members.load()];
+                }
+            }
+            
+            [mpe_button[t] setTitle:mpe_label forState:UIControlStateNormal];
+        }
     }
 }
 

@@ -386,20 +386,21 @@ RECORDER</string>
                                             <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
                                         </connections>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMO-Kd-c0J" userLabel="MPE 1" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="22" width="32" height="20"/>
+                                    <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMO-Kd-c0J" userLabel="MPE 1" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="22" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="Izq-Hf-uZJ"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="7yP-dk-zKv"/>
                                             <constraint firstAttribute="height" constant="22" id="seT-59-wOO">
                                                 <variation key="heightClass=compact-widthClass=compact" constant="20"/>
                                             </constraint>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
                                         <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" title="MPE">
-                                            <color key="titleColor" name="Gray0"/>
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <state key="selected">
                                             <color key="titleColor" systemColor="systemYellowColor"/>
@@ -414,8 +415,8 @@ RECORDER</string>
                                             <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Nbt-k5-XEl"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z7h-Mc-fnQ" userLabel="MPE 2" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="68" width="32" height="20"/>
+                                    <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z7h-Mc-fnQ" userLabel="MPE 2" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="68" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="22" id="2f9-dQ-Dz6">
@@ -425,9 +426,10 @@ RECORDER</string>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
                                         <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" title="MPE">
-                                            <color key="titleColor" name="Gray0"/>
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <state key="selected">
                                             <color key="titleColor" systemColor="systemYellowColor"/>
@@ -442,8 +444,8 @@ RECORDER</string>
                                             <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7ZT-MY-0Fd"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1FX-bJ-B4M" userLabel="MPE 3" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="114" width="32" height="20"/>
+                                    <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1FX-bJ-B4M" userLabel="MPE 3" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="114" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="kpC-hE-jkF"/>
@@ -453,9 +455,10 @@ RECORDER</string>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
                                         <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" title="MPE">
-                                            <color key="titleColor" name="Gray0"/>
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <state key="selected">
                                             <color key="titleColor" systemColor="systemYellowColor"/>
@@ -470,8 +473,8 @@ RECORDER</string>
                                             <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Lcf-L9-6d9"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g1V-ZB-qzJ" userLabel="MPE 4" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="160" width="32" height="20"/>
+                                    <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g1V-ZB-qzJ" userLabel="MPE 4" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="160" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="Pen-Ah-e7B"/>
@@ -481,9 +484,10 @@ RECORDER</string>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
                                         <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="contentEdgeInsets" minX="5" minY="0.0" maxX="5" maxY="0.0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                         <state key="normal" title="MPE">
-                                            <color key="titleColor" name="Gray0"/>
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <state key="selected">
                                             <color key="titleColor" systemColor="systemYellowColor"/>
