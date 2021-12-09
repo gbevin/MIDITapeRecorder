@@ -12,66 +12,91 @@
 
 #include "Constants.h"
 
-@implementation MidiTrackView
+@implementation MidiTrackView {
+    CAShapeLayer* _beatsLayer;
+    CAShapeLayer* _previewNotesLayer;
+    CAShapeLayer* _previewEventsLayer;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _beatsLayer = nil;
+        _previewNotesLayer = nil;
+        _previewEventsLayer = nil;
+    }
+    return self;
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    [self setNeedsDisplay];
+    self.layer.backgroundColor = [UIColor colorNamed:@"Gray4"].CGColor;
+
+    [self updateBeatsLayer];
+    [self updateNotesLayer];
+    [self updateEventsLayer];
 }
 
-- (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSaveGState(context);
-
-    CGColor* gray2_color = [UIColor colorNamed:@"Gray2"].CGColor;
-    CGColor* gray4_color = [UIColor colorNamed:@"Gray4"].CGColor;
-
-    // fill the background
-    
-    CGContextSetFillColorWithColor(context, gray4_color);
-    CGContextFillRect(context, self.bounds);
+- (void)updateBeatsLayer {
+    if (_beatsLayer) {
+        [_beatsLayer removeFromSuperlayer];
+    }
+    _beatsLayer = [CAShapeLayer layer];
+    _beatsLayer.contentsScale = [UIScreen mainScreen].scale;
 
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
 
     // draw the vertical beat bars
-    
-    CGContextBeginPath(context);
-    CGContextSetStrokeColorWithColor(context, gray2_color);
-    
+    UIBezierPath* path = [UIBezierPath bezierPath];
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
         if (x % PIXELS_PER_BEAT == 0) {
-            CGContextMoveToPoint(context, x, 0.0);
-            CGContextAddLineToPoint(context, x, self.frame.size.height);
+            [path moveToPoint:CGPointMake(x, 0.0)];
+            [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
         }
     }
-    
-    CGContextStrokePath(context);
-    
-    // draw the data preview
-    
-    [self drawPreviewData:context drawNotes:YES];
-    [self drawPreviewData:context drawNotes:NO];
+    _beatsLayer.path = path.CGPath;
+    _beatsLayer.opacity = 1.0;
+    _beatsLayer.strokeColor = [UIColor colorNamed:@"Gray2"].CGColor;
+
+    [self.layer addSublayer:_beatsLayer];
 }
 
-- (void)drawPreviewData:(CGContextRef)context drawNotes:(BOOL)drawNotes {
+- (void)updateNotesLayer {
+    if (_previewNotesLayer) {
+        [_previewNotesLayer removeFromSuperlayer];
+    }
+    _previewNotesLayer = [CAShapeLayer layer];
+    _previewNotesLayer.contentsScale = [UIScreen mainScreen].scale;
+    
+    _previewNotesLayer.path = [self createPreviewPathDrawNotes:YES].CGPath;
+    _previewNotesLayer.opacity = 1.0;
+    _previewNotesLayer.strokeColor = [UIColor colorNamed:@"PreviewNotes"].CGColor;
+
+    [self.layer addSublayer:_previewNotesLayer];
+}
+
+- (void)updateEventsLayer {
+    if (_previewEventsLayer) {
+        [_previewEventsLayer removeFromSuperlayer];
+    }
+    _previewEventsLayer = [CAShapeLayer layer];
+    _previewEventsLayer.contentsScale = [UIScreen mainScreen].scale;
+    
+    _previewEventsLayer.path = [self createPreviewPathDrawNotes:NO].CGPath;
+    _previewEventsLayer.opacity = 1.0;
+    _previewEventsLayer.strokeColor = [UIColor colorNamed:@"PreviewEvents"].CGColor;
+
+    [self.layer addSublayer:_previewEventsLayer];
+}
+
+- (UIBezierPath*)createPreviewPathDrawNotes:(BOOL)drawNotes {
+    UIBezierPath* path = [UIBezierPath bezierPath];
+    NSData* preview = self.preview;
+    
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
 
-    CGContextBeginPath(context);
-
-    if (drawNotes) {
-        CGColor* notes_color = [UIColor colorNamed:@"PreviewNotes"].CGColor;
-        CGContextSetStrokeColorWithColor(context, notes_color);
-    }
-    else {
-        CGColor* events_color = [UIColor colorNamed:@"PreviewEvents"].CGColor;
-        CGContextSetStrokeColorWithColor(context, events_color);
-    }
-
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
-        NSData* preview = self.preview;
-        
         int pixel = x * 2;
         
         if (preview != nil && pixel + 1 < preview.length) {
@@ -87,18 +112,18 @@
 
                 CGFloat notes_height = self.frame.size.height - n_notes * self.frame.size.height / 2;
                 if (drawNotes) {
-                    CGContextMoveToPoint(context, x, self.frame.size.height);
-                    CGContextAddLineToPoint(context, x, notes_height);
+                    [path moveToPoint:CGPointMake(x, self.frame.size.height)];
+                    [path addLineToPoint:CGPointMake(x, notes_height)];
                 }
                 else {
-                    CGContextMoveToPoint(context, x, notes_height - 1);
-                    CGContextAddLineToPoint(context, x, notes_height - 1 - n_events * (self.frame.size.height / 2 - 1));
+                    [path moveToPoint:CGPointMake(x, notes_height - 1)];
+                    [path addLineToPoint:CGPointMake(x, notes_height - 1 - n_events * (self.frame.size.height / 2 - 1))];
                 }
             }
         }
     }
     
-    CGContextStrokePath(context);
+    return path;
 }
 
 @end

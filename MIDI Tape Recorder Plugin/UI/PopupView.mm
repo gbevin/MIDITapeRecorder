@@ -12,40 +12,43 @@
 
 #include "GraphicsHelper.h"
 
-@implementation PopupView
+@implementation PopupView {
+    CAShapeLayer* _popupLayer;
+}
 
-- (void)awakeFromNib {
-    [super awakeFromNib];
-    
-    self.layer.shadowColor = UIColor.blackColor.CGColor;
-    self.layer.shadowOffset = CGSizeMake(0.0, 0.0);
-    self.layer.shadowOpacity = 0.7;
-    self.layer.shadowRadius = 4.0;
-};
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _popupLayer = nil;
+    }
+    return self;
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    [self setNeedsDisplay];
-}
-
-- (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSaveGState(context);
+    if (_popupLayer) {
+        [_popupLayer removeFromSuperlayer];
+    }
+    _popupLayer = [CAShapeLayer layer];
+    _popupLayer.contentsScale = [UIScreen mainScreen].scale;
     
     const CGFloat outline_stroke_width = 1.0f;
     const CGFloat outline_corner_radius = 8.0f;
 
-    CGContextAddPath(context, createRoundedCornerPath(CGRectInset(self.bounds, outline_stroke_width, outline_stroke_width),
-                                                      outline_corner_radius));
+    _popupLayer.path = createRoundedCornerPath(CGRectInset(self.bounds, outline_stroke_width, outline_stroke_width),
+                                               outline_corner_radius);
+    _popupLayer.opacity = 1.0;
+    _popupLayer.lineWidth = outline_stroke_width;
+    _popupLayer.fillColor = [UIColor colorNamed:@"Gray5"].CGColor;
+    _popupLayer.strokeColor = UIColor.blackColor.CGColor;
 
-    CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray5"].CGColor);
-    CGContextSetStrokeColorWithColor(context, UIColor.blackColor.CGColor);
-    CGContextSetLineWidth(context, outline_stroke_width);
-    CGContextDrawPath(context, kCGPathFillStroke);
+    _popupLayer.shadowColor = UIColor.blackColor.CGColor;
+    _popupLayer.shadowOffset = CGSizeMake(0.0, 0.0);
+    _popupLayer.shadowOpacity = 0.7;
+    _popupLayer.shadowRadius = 4.0;
     
-    CGContextRestoreGState(context);
+    [self.layer insertSublayer:_popupLayer atIndex:0];
 }
 
 @end

@@ -13,49 +13,87 @@
 
 #include "Constants.h"
 
-@implementation TimelineView
+@implementation TimelineView {
+    CAShapeLayer* _beatsLayer;
+    CALayer* _textsLayer;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    self = [super initWithCoder:coder];
+    if (self) {
+        _beatsLayer = nil;
+        _textsLayer = nil;
+    }
+    return self;
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    [self setNeedsDisplay];
+    [self updateBeatsLayer];
+    [self updateTextsLayer];
+    self.layer.masksToBounds = YES;
 }
 
-- (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    CGContextSaveGState(context);
-
-    CGColor* gray0_color = [UIColor colorNamed:@"Gray0"].CGColor;
-    CGContextSetStrokeColorWithColor(context, gray0_color);
+- (void)updateBeatsLayer {
+    if (_beatsLayer) {
+        [_beatsLayer removeFromSuperlayer];
+    }
+    _beatsLayer = [CAShapeLayer layer];
+    _beatsLayer.contentsScale = [UIScreen mainScreen].scale;
     
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
     
     // draw vertical beat bars
-    
-    CGContextBeginPath(context);
 
+    UIBezierPath* path = [UIBezierPath bezierPath];
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
         if (x % PIXELS_PER_BEAT == 0) {
-            CGContextMoveToPoint(context, x, 0.0);
-            CGContextAddLineToPoint(context, x, self.frame.size.height);
+            [path moveToPoint:CGPointMake(x, 0.0)];
+            [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
         }
     }
     
-    CGContextStrokePath(context);
+    _beatsLayer.path = path.CGPath;
+    _beatsLayer.opacity = 1.0;
+    _beatsLayer.strokeColor = [UIColor colorNamed:@"Gray0"].CGColor;
+
+    [self.layer addSublayer:_beatsLayer];
+}
+
+- (void)updateTextsLayer {
+    if (_textsLayer) {
+        [_textsLayer removeFromSuperlayer];
+    }
+    _textsLayer = [CALayer layer];
+    _textsLayer.contentsScale = [UIScreen mainScreen].scale;
+    
+    UIFont* font = [UIFont systemFontOfSize:9];
+    CFStringRef fontName = (__bridge CFStringRef)font.fontName;
+    CGFontRef fontRef = CGFontCreateWithFontName(fontName);
+
+    CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
 
     // draw the beat numbers
-    
+
     for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
         if (x % PIXELS_PER_BEAT == 0) {
-            CGRect textRect = CGRectMake(x + 4, 1, PIXELS_PER_BEAT - 8, self.frame.size.height - 2);
-            [[NSString stringWithFormat:@"%d", int(x / PIXELS_PER_BEAT) + 1] drawInRect:textRect
-                                                                           withAttributes:@{NSFontAttributeName: [UIFont systemFontOfSize:9],
-                                                                                            NSForegroundColorAttributeName: [UIColor lightGrayColor]}];
+            CATextLayer* layer_text = [CATextLayer new];
+            layer_text.contentsScale = [UIScreen mainScreen].scale;
+            layer_text.bounds = CGRectMake(0.0, 0.0, PIXELS_PER_BEAT - 8, self.frame.size.height - 2);
+            layer_text.position = CGPointMake(x + 16, 10);
+            layer_text.string = [NSString stringWithFormat:@"%d", int(x / PIXELS_PER_BEAT) + 1];
+            layer_text.foregroundColor = [UIColor lightGrayColor].CGColor;
+            layer_text.font = fontRef;
+            layer_text.fontSize = font.pointSize;
+            
+            [_textsLayer addSublayer:layer_text];
         }
     }
+    
+    CGFontRelease(fontRef);
 
-    CGContextRestoreGState(context);
+    [self.layer addSublayer:_textsLayer];
 }
 
 @end

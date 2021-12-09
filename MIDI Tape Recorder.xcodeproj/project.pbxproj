@@ -14,6 +14,7 @@
 		266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EC27596B50002D4459 /* ToolBarButton.mm */; };
 		266465F027597988002D4459 /* PopupView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EF27597988002D4459 /* PopupView.mm */; };
 		268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A930B27616A2200B2D74A /* PlayheadView.mm */; };
+		268A930F276186EC00B2D74A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268A930E276186EC00B2D74A /* QuartzCore.framework */; };
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
@@ -84,6 +85,7 @@
 		266465F1275980BA002D4459 /* GraphicsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicsHelper.h; sourceTree = "<group>"; };
 		268A930B27616A2200B2D74A /* PlayheadView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayheadView.mm; sourceTree = "<group>"; };
 		268A930C27616A2300B2D74A /* PlayheadView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayheadView.h; sourceTree = "<group>"; };
+		268A930E276186EC00B2D74A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				268A930F276186EC00B2D74A /* QuartzCore.framework in Frameworks */,
 				2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */,
 				26EF4D4C2759D26D00E4A19A /* StoreKit.framework in Frameworks */,
 				26C7DA29275343C500170CB2 /* AudioToolbox.framework in Frameworks */,
@@ -307,6 +310,7 @@
 		26C7DA252753415D00170CB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				268A930E276186EC00B2D74A /* QuartzCore.framework */,
 				26EF4D4B2759D26D00E4A19A /* StoreKit.framework */,
 				2613427C2753DA69001FF0BB /* CoreGraphics.framework */,
 				261D69322753BCDA003527B2 /* AudioToolbox.framework */,

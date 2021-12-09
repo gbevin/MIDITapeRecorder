@@ -958,10 +958,10 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
-    [_timeline setNeedsDisplay];
+    [_timeline setNeedsLayout];
     
     [self withMidiTrackViews:^(int ordinal, MidiTrackView* view) {
-        [view setNeedsDisplay];
+        [view setNeedsLayout];
     }];
 }
 
