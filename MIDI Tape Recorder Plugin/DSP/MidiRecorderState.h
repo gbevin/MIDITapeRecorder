@@ -41,7 +41,8 @@ struct MidiRecorderState {
     std::atomic<int32_t> scheduledNotesOff[MIDI_TRACKS]         { false, false, false, false };
     std::atomic<int32_t> scheduledInvalidate[MIDI_TRACKS]       { false, false, false, false };
     std::atomic<int32_t> scheduledReachEnd                      { false };
-    
+    std::atomic<int32_t> scheduledSendMCM[MIDI_TRACKS]          { false, false, false, false };
+
     std::atomic<int32_t> scheduledUIPlay                        { false };
     std::atomic<int32_t> scheduledUIStop                        { false };
     std::atomic<int32_t> scheduledUIStopAndRewind               { false };

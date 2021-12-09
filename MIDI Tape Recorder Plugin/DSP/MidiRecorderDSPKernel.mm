@@ -45,10 +45,71 @@ void MidiRecorderDSPKernel::rewind() {
     turnOffAllNotes();
 }
 
+void MidiRecorderDSPKernel::sendRpnMessage(uint8_t cable, uint8_t channel, uint16_t number, uint16_t value) {
+    if (cable >= MIDI_TRACKS || channel > 0xf) {
+        return;
+    }
+    
+    if (_ioState.midiOutputEventBlock) {
+        unsigned number_msb = (number & 0x3fff) >> 7;
+        unsigned number_lsb = number & 0x7f;
+        unsigned value_msb = (value & 0x3fff) >> 7;
+        unsigned value_lsb = value & 0x7f;
+
+        uint8_t data[3] = { 0, 0, 0 };
+        data[0] = 0xb0 | channel;
+        
+        Float64 time = _ioState.timestamp->mSampleTime;
+        data[1] = 0x65; data[2] = number_msb;
+        _ioState.midiOutputEventBlock(time, cable, 3, &data[0]);
+        data[1] = 0x64; data[2] = number_lsb;
+        _ioState.midiOutputEventBlock(time, cable, 3, &data[0]);
+        data[1] = 0x06; data[2] = value_msb;
+        _ioState.midiOutputEventBlock(time, cable, 3, &data[0]);
+        data[1] = 0x26; data[2] = value_lsb;
+        _ioState.midiOutputEventBlock(time, cable, 3, &data[0]);
+        data[1] = 0x65; data[2] = 0x7f;
+        _ioState.midiOutputEventBlock(time, cable, 3, &data[0]);
+        data[1] = 0x64; data[2] = 0x7f;
+        _ioState.midiOutputEventBlock(time, cable, 3, &data[0]);
+    }
+}
+
+void MidiRecorderDSPKernel::sendMCM(int t) {
+    MPEState& mpe_state = _state.track[t].mpeState;
+    if (!mpe_state.enabled) {
+        return;
+    }
+    
+    _state.track[t].activityOutput = true;
+
+    if (mpe_state.zone1Active) {
+        sendRpnMessage(t, 0, 0x6, mpe_state.zone1Members.load() << 7);
+        sendRpnMessage(t, 0, 0x0, (int)mpe_state.zone1ManagerPitchSens.load() << 7);
+        for (int i = 0; i < mpe_state.zone1Members.load(); ++i) {
+            sendRpnMessage(t, 0x1 + i, 0x0, (int)mpe_state.zone1MemberPitchSens.load() << 7);
+        }
+    }
+    if (mpe_state.zone2Active) {
+        sendRpnMessage(t, 0xf, 0x6, mpe_state.zone2Members.load() << 7);
+        sendRpnMessage(t, 0xf, 0x0, (int)mpe_state.zone2ManagerPitchSens.load() << 7);
+        for (int i = 0; i < mpe_state.zone2Members.load(); ++i) {
+            sendRpnMessage(t, 0xe - i, 0x0, (int)mpe_state.zone2MemberPitchSens.load() << 7);
+        }
+    }
+}
+
 void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
         _state.scheduledStopAndRewind = false;
         _state.scheduledUIStopAndRewind = false;
+
+        // send out MPE configuration messages based on each track's MPE mode
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            if (!_state.track[t].recording) {
+                sendMCM(t);
+            }
+        }
 
         _isPlaying = YES;
     }
@@ -199,6 +260,13 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
                 state.recordedDuration = 0.0;
             }
         }
+        // send MCM
+        {
+            int32_t expected = true;
+            if (_state.scheduledSendMCM[t].compare_exchange_strong(expected, false)) {
+                sendMCM(t);
+            }
+        }
     }
     
     // rewind
@@ -287,7 +355,7 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
             MidiTrackState& state = _state.track[t];
             
             if (state.monitorEnabled && !state.muteEnabled && state.sourceCable == midiEvent.cable) {
-                _state.track[t].activityOutput = 1.f;
+                _state.track[t].activityOutput = true;
                 passThroughMIDIEvent(midiEvent, t);
             }
         }
@@ -367,7 +435,7 @@ void MidiRecorderDSPKernel::processOutput() {
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
-                            state.activityOutput = 1.f;
+                            state.activityOutput = true;
                             
                             // track note on/off states
                             trackNotesForTrack(t, message);

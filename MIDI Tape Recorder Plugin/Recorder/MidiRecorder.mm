@@ -19,6 +19,11 @@
     dispatch_queue_t _dispatchQueue;
     
     MidiRecorderState* _state;
+    
+    int16_t _lastRpnMsb[16];
+    int16_t _lastRpnLsb[16];
+    int16_t _lastDataMsb[16];
+    int16_t _lastDataLsb[16];
 
     std::unique_ptr<std::vector<RecordedMidiMessage>> _recording;
     std::unique_ptr<std::vector<int>> _recordingBeatToIndex;
@@ -39,6 +44,13 @@
         _dispatchQueue = dispatch_queue_create([NSString stringWithFormat:@"com.uwyn.midirecorder.Recording%d", ordinal].UTF8String, DISPATCH_QUEUE_CONCURRENT);
         
         _state = nil;
+        
+        for (int ch = 0; ch < 16; ++ch) {
+            _lastRpnMsb[ch] = 0x7f;
+            _lastRpnLsb[ch] = 0x7f;
+            _lastDataMsb[ch] = 0;
+            _lastDataLsb[ch] = 0;
+        }
         
         _recording.reset(new std::vector<RecordedMidiMessage>());
         _recordingBeatToIndex.reset(new std::vector<int>());
@@ -112,7 +124,15 @@
             result = @{
                 @"Recorded" : recorded_data,
                 @"BeatToIndex" : recorded_beatindex_data,
-                @"Duration" : @(state.recordedDuration.load())
+                @"Duration" : @(state.recordedDuration.load()),
+                @"MPE" : @{
+                    @"zone1Members" : @(state.mpeState.zone1Members.load()),
+                    @"zone1ManagerPitchSens" : @(state.mpeState.zone1ManagerPitchSens.load()),
+                    @"zone1MemberPitchSens" : @(state.mpeState.zone1MemberPitchSens.load()),
+                    @"zone2Members" : @(state.mpeState.zone2Members.load()),
+                    @"zone2ManagerPitchSens" : @(state.mpeState.zone2ManagerPitchSens.load()),
+                    @"zone2MemberPitchSens" : @(state.mpeState.zone2MemberPitchSens.load()),
+                }
             };
         }
     });
@@ -145,6 +165,45 @@
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
             recorded_duration = ceil([duration doubleValue]);
+        }
+        
+        NSDictionary* mpe = [dict objectForKey:@"MPE"];
+        if (mpe) {
+            MPEState& mpe_state = _state->track[_ordinal].mpeState;
+            
+            NSNumber* zone1_members = [mpe objectForKey:@"zone1Members"];
+            if (zone1_members) {
+                mpe_state.zone1Members = zone1_members.intValue;
+                mpe_state.zone1Active = (mpe_state.zone1Members != 0);
+            }
+
+            NSNumber* zone1_manager_pitch = [mpe objectForKey:@"zone1ManagerPitchSens"];
+            if (zone1_manager_pitch) {
+                mpe_state.zone1ManagerPitchSens = zone1_manager_pitch.floatValue;
+            }
+
+            NSNumber* zone1_member_pitch = [mpe objectForKey:@"zone1MemberPitchSens"];
+            if (zone1_member_pitch) {
+                mpe_state.zone1MemberPitchSens = zone1_member_pitch.floatValue;
+            }
+
+            NSNumber* zone2_members = [mpe objectForKey:@"zone2Members"];
+            if (zone2_members) {
+                mpe_state.zone2Members = zone2_members.intValue;
+                mpe_state.zone2Active = (mpe_state.zone2Members != 0);
+            }
+
+            NSNumber* zone2_manager_pitch = [mpe objectForKey:@"zone2ManagerPitchSens"];
+            if (zone2_manager_pitch) {
+                mpe_state.zone2ManagerPitchSens = zone2_manager_pitch.floatValue;
+            }
+
+            NSNumber* zone2_member_pitch = [mpe objectForKey:@"zone2MemberPitchSens"];
+            if (zone2_member_pitch) {
+                mpe_state.zone2MemberPitchSens = zone2_member_pitch.floatValue;
+            }
+
+            mpe_state.enabled = (mpe_state.zone1Active || mpe_state.zone2Active);
         }
         
         id preview = [NSMutableData new];
@@ -381,8 +440,133 @@
     });
 }
 
+- (void)handleMidiRPNValue:(int)channel {
+    int rpn_param = (_lastRpnMsb[channel] << 7) + _lastRpnLsb[channel];
+    
+    switch (rpn_param) {
+        // pitchbend sensitivity
+        case 0: {
+            float sensitivity = float(_lastDataMsb[channel]) + float(_lastDataLsb[channel]) / 100.f;
+            MPEState& mpe_state = _state->track[_ordinal].mpeState;
+            if (mpe_state.zone1Active) {
+                if (channel == 0) {
+                    mpe_state.zone1ManagerPitchSens = sensitivity;
+                }
+                else if (channel <= mpe_state.zone1Members) {
+                    mpe_state.zone1MemberPitchSens = sensitivity;
+                }
+            }
+            if (mpe_state.zone2Active) {
+                if (channel == 15) {
+                    mpe_state.zone2ManagerPitchSens = sensitivity;
+                }
+                else if (channel <= 15 - mpe_state.zone2Members) {
+                    mpe_state.zone2MemberPitchSens = sensitivity;
+                }
+            }
+            break;
+        }
+        // MPE configuration message
+        case 6: {
+            MPEState& mpe_state = _state->track[_ordinal].mpeState;
+
+            // only accept MCM on channels 1 and 16
+            if (channel == 0) {
+                mpe_state.zone1Members = _lastDataMsb[channel];
+                if (mpe_state.zone1Members == 0) {
+                    mpe_state.zone1Active = false;
+                    mpe_state.zone1ManagerPitchSens = 0.f;
+                    mpe_state.zone1MemberPitchSens = 0.f;
+                }
+                else {
+                    mpe_state.zone1Active = true;
+                    mpe_state.zone1ManagerPitchSens = 2.f;
+                    mpe_state.zone1MemberPitchSens = 48.f;
+                }
+                
+                // disable zone 2 when zone 1 uses all member channels
+                if (mpe_state.zone1Members >= 14) {
+                    mpe_state.zone2Members = 0;
+                    mpe_state.zone2Active = false;
+                    mpe_state.zone2ManagerPitchSens = 0.f;
+                    mpe_state.zone2MemberPitchSens = 0.f;
+                }
+                // reduce the zone 2 member channels if they overlap zone 1 member channels
+                else if (mpe_state.zone2Active) {
+                    mpe_state.zone2Members = MIN(14 - mpe_state.zone1Members.load(), mpe_state.zone2Members.load());
+                }
+            }
+            else if (channel == 15) {
+                mpe_state.zone2Members = _lastDataMsb[channel];
+                if (mpe_state.zone2Members == 0) {
+                    mpe_state.zone2Active = false;
+                    mpe_state.zone2ManagerPitchSens = 0.f;
+                    mpe_state.zone2MemberPitchSens = 0.f;
+                }
+                else {
+                    mpe_state.zone2Active = true;
+                    mpe_state.zone2ManagerPitchSens = 2.f;
+                    mpe_state.zone2MemberPitchSens = 48.f;
+                }
+                
+                // disable zone 1 when zone 2 uses all member channels
+                if (mpe_state.zone2Members >= 14) {
+                    mpe_state.zone1Members = 0;
+                    mpe_state.zone1Active = false;
+                    mpe_state.zone1ManagerPitchSens = 0.f;
+                    mpe_state.zone1MemberPitchSens = 0.f;
+                }
+                // reduce the zone 1 member channels if they overlap zone 2 member channels
+                else if (mpe_state.zone1Active) {
+                    mpe_state.zone1Members = MIN(14 - mpe_state.zone2Members.load(), mpe_state.zone1Members.load());
+                }
+            }
+            
+            mpe_state.enabled = (mpe_state.zone1Active || mpe_state.zone2Active);
+            
+            break;
+        }
+    }
+}
+
 - (void)recordMidiMessage:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
+        // track the MPE Configuration Message and RPN 0 PitchBend sensitivity at all times
+        // we only look at CC messages for this
+        if (message.length == 3 &&
+            (message.data[0] & 0xf0) == 0xb0) {
+            uint8_t channel = (message.data[0] & 0x0f);
+            uint8_t cc_num = message.data[1];
+            uint8_t cc_val = message.data[2];
+            
+            switch (cc_num) {
+                // RPN parameter number
+                case 100:
+                    _lastRpnLsb[channel] = cc_val;
+                    break;
+                case 101:
+                    _lastRpnMsb[channel] = cc_val;
+                    break;
+                // RPN parameter value
+                case 6:
+                    if (_lastRpnMsb[channel] != 0x7f || _lastRpnLsb[channel] != 0x7f) {
+                        _lastDataMsb[channel] = cc_val;
+                        _lastDataLsb[channel] = 0;
+                        
+                        [self handleMidiRPNValue:channel];
+                    }
+                    break;
+                case 38:
+                    if (_lastRpnMsb[channel] != 0x7f || _lastRpnLsb[channel] != 0x7f) {
+                        _lastDataLsb[channel] = cc_val;
+                        
+                        [self handleMidiRPNValue:channel];
+                    }
+                    break;
+            }
+        }
+        
+        // don't record if record enable isn't active
         if (!_record || !_recording) {
             return;
         }

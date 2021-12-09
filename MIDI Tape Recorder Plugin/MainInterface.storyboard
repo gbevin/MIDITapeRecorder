@@ -386,6 +386,118 @@ RECORDER</string>
                                             <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
                                         </connections>
                                     </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMO-Kd-c0J" userLabel="MPE 1" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="22" width="32" height="20"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="Izq-Hf-uZJ"/>
+                                            <constraint firstAttribute="height" constant="22" id="seT-59-wOO">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="20"/>
+                                            </constraint>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
+                                        <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="MPE">
+                                            <color key="titleColor" name="Gray0"/>
+                                        </state>
+                                        <state key="selected">
+                                            <color key="titleColor" systemColor="systemYellowColor"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <variation key="heightClass=compact-widthClass=compact">
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="10"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Nbt-k5-XEl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z7h-Mc-fnQ" userLabel="MPE 2" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="68" width="32" height="20"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="2f9-dQ-Dz6">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="20"/>
+                                            </constraint>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="tnD-v2-kIB"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
+                                        <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="MPE">
+                                            <color key="titleColor" name="Gray0"/>
+                                        </state>
+                                        <state key="selected">
+                                            <color key="titleColor" systemColor="systemYellowColor"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <variation key="heightClass=compact-widthClass=compact">
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="10"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7ZT-MY-0Fd"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1FX-bJ-B4M" userLabel="MPE 3" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="114" width="32" height="20"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="kpC-hE-jkF"/>
+                                            <constraint firstAttribute="height" constant="22" id="zmw-Kf-szT">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="20"/>
+                                            </constraint>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
+                                        <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="MPE">
+                                            <color key="titleColor" name="Gray0"/>
+                                        </state>
+                                        <state key="selected">
+                                            <color key="titleColor" systemColor="systemYellowColor"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <variation key="heightClass=compact-widthClass=compact">
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="10"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Lcf-L9-6d9"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g1V-ZB-qzJ" userLabel="MPE 4" customClass="MPEButton">
+                                        <rect key="frame" x="0.0" y="160" width="32" height="20"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="Pen-Ah-e7B"/>
+                                            <constraint firstAttribute="height" constant="22" id="ubm-0H-072">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="20"/>
+                                            </constraint>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="11"/>
+                                        <color key="tintColor" name="ActivityOff"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="MPE">
+                                            <color key="titleColor" name="Gray0"/>
+                                        </state>
+                                        <state key="selected">
+                                            <color key="titleColor" systemColor="systemYellowColor"/>
+                                        </state>
+                                        <state key="highlighted">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <variation key="heightClass=compact-widthClass=compact">
+                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="10"/>
+                                        </variation>
+                                        <connections>
+                                            <action selector="mpePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uYQ-iK-RBP"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" name="Gray6"/>
                                 <constraints>
@@ -397,6 +509,7 @@ RECORDER</string>
                                         <variation key="heightClass=compact-widthClass=compact" constant="10"/>
                                     </constraint>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="height" secondItem="GXf-2A-NeK" secondAttribute="height" id="6do-ga-VzD"/>
+                                    <constraint firstItem="1FX-bJ-B4M" firstAttribute="top" secondItem="gzW-Zc-U4q" secondAttribute="bottom" id="Brp-AU-J1T"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="Cjs-gZ-oPl"/>
                                     <constraint firstItem="L2y-q6-jop" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Cyh-7a-5kD"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="width" secondItem="k5P-YR-lyM" secondAttribute="width" id="DDy-C2-XlZ"/>
@@ -409,13 +522,16 @@ RECORDER</string>
                                         <variation key="heightClass=compact-widthClass=compact" constant="18"/>
                                     </constraint>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="bottom" secondItem="3fa-4R-nyW" secondAttribute="bottom" constant="-10" id="P0K-JF-vdw"/>
+                                    <constraint firstItem="z7h-Mc-fnQ" firstAttribute="top" secondItem="q3i-Q2-tin" secondAttribute="bottom" id="P1i-gz-hgM"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="top" secondItem="GXf-2A-NeK" secondAttribute="bottom" constant="22" id="T5J-pp-56N">
                                         <variation key="heightClass=compact-widthClass=compact" constant="18"/>
                                     </constraint>
+                                    <constraint firstItem="1FX-bJ-B4M" firstAttribute="leading" secondItem="gzW-Zc-U4q" secondAttribute="leading" id="Tv4-7t-1mT"/>
                                     <constraint firstItem="q3i-Q2-tin" firstAttribute="top" secondItem="GXf-2A-NeK" secondAttribute="bottom" constant="10" id="Uav-xG-pIb">
                                         <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                                     </constraint>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="VaF-ZP-RZQ"/>
+                                    <constraint firstItem="z7h-Mc-fnQ" firstAttribute="leading" secondItem="q3i-Q2-tin" secondAttribute="leading" id="WU5-yR-g6f"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="ZEK-bw-aEL"/>
                                     <constraint firstItem="4hw-x8-hn8" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="ZyD-0e-WWp"/>
                                     <constraint firstItem="q3i-Q2-tin" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="a6t-YO-NyU"/>
@@ -427,9 +543,11 @@ RECORDER</string>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="width" secondItem="IWD-hQ-i8x" secondAttribute="width" id="cVV-dJ-oLw"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="dE6-vC-SDE"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="dkx-RY-Y8O"/>
+                                    <constraint firstItem="g1V-ZB-qzJ" firstAttribute="leading" secondItem="4hw-x8-hn8" secondAttribute="leading" id="faK-oY-jy3"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="gwU-og-p0T"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="hPE-Gu-xQW"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="bottom" secondItem="k5P-YR-lyM" secondAttribute="bottom" constant="2" id="k35-AA-hwr"/>
+                                    <constraint firstItem="RMO-Kd-c0J" firstAttribute="top" secondItem="cNu-Gm-9pP" secondAttribute="bottom" id="lIZ-hk-Yne"/>
                                     <constraint firstItem="q3i-Q2-tin" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="ly0-RB-t3l"/>
                                     <constraint firstAttribute="height" constant="236" id="mt9-bi-SmS">
                                         <variation key="heightClass=compact-widthClass=compact" constant="204"/>
@@ -438,8 +556,10 @@ RECORDER</string>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="n4A-Rm-Q6y"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="nAB-sM-EPV"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="width" secondItem="8lV-Pg-F8C" secondAttribute="width" id="pYn-P7-tvT"/>
+                                    <constraint firstItem="RMO-Kd-c0J" firstAttribute="leading" secondItem="cNu-Gm-9pP" secondAttribute="leading" id="uln-WH-xag"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="height" secondItem="GXf-2A-NeK" secondAttribute="height" id="uvZ-Gd-CAe"/>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="top" secondItem="3fa-4R-nyW" secondAttribute="top" id="vDk-R7-GDs"/>
+                                    <constraint firstItem="g1V-ZB-qzJ" firstAttribute="top" secondItem="4hw-x8-hn8" secondAttribute="bottom" id="vTe-YC-k49"/>
                                     <constraint firstItem="gzW-Zc-U4q" firstAttribute="top" secondItem="IWD-hQ-i8x" secondAttribute="bottom" constant="10" id="vm8-6n-IBc">
                                         <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                                     </constraint>
@@ -1361,6 +1481,10 @@ under the CC BY 4.0 License.</string>
                         <outlet property="monitorButton2" destination="hXW-n3-IFc" id="ugg-uw-IZM"/>
                         <outlet property="monitorButton3" destination="xcR-Mq-hiL" id="aPs-U3-30B"/>
                         <outlet property="monitorButton4" destination="VuI-3k-Ts7" id="K0W-PY-XaE"/>
+                        <outlet property="mpeButton1" destination="RMO-Kd-c0J" id="O1e-YZ-BlP"/>
+                        <outlet property="mpeButton2" destination="z7h-Mc-fnQ" id="TRz-AF-uyG"/>
+                        <outlet property="mpeButton3" destination="1FX-bJ-B4M" id="tY3-fN-zNo"/>
+                        <outlet property="mpeButton4" destination="g1V-ZB-qzJ" id="Nqu-GC-7xH"/>
                         <outlet property="muteButton1" destination="qqe-xS-Dtb" id="l3n-TF-OHN"/>
                         <outlet property="muteButton2" destination="p1L-p9-aSY" id="XdA-Hb-GlT"/>
                         <outlet property="muteButton3" destination="cml-GG-nYY" id="S2y-lk-YYo"/>

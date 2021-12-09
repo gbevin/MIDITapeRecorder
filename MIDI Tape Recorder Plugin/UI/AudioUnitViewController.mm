@@ -18,6 +18,7 @@
 #import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiTrackView.h"
+#import "MPEButton.h"
 #import "TimelineView.h"
 
 @interface AudioUnitViewController ()
@@ -52,6 +53,11 @@
 @property (weak, nonatomic) IBOutlet UIButton* monitorButton2;
 @property (weak, nonatomic) IBOutlet UIButton* monitorButton3;
 @property (weak, nonatomic) IBOutlet UIButton* monitorButton4;
+
+@property (weak, nonatomic) IBOutlet MPEButton* mpeButton1;
+@property (weak, nonatomic) IBOutlet MPEButton* mpeButton2;
+@property (weak, nonatomic) IBOutlet MPEButton* mpeButton3;
+@property (weak, nonatomic) IBOutlet MPEButton* mpeButton4;
 
 @property (weak, nonatomic) IBOutlet UIButton* muteButton1;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton2;
@@ -168,10 +174,12 @@
     _timeline.tracks = _tracks;
     
     MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+    MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     UIView* menu_popup[MIDI_TRACKS] = { _menuPopup1, _menuPopup2, _menuPopup3, _menuPopup4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         midi_track[t].tracks = _tracks;
         menu_popup[t].hidden = YES;
+        mpe_button[t].hidden = YES;
     }
     
     _extendedMenuPopupWidth = _menuPopupWidth1.constant;
@@ -470,6 +478,17 @@
     sender.selected = !sender.selected;
     
     [self updateRecordEnableState];
+}
+
+#pragma mark IBAction - MPE
+
+- (IBAction)mpePressed:(UIButton*)sender {
+    NSUInteger index = [@[_mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4] indexOfObject:sender];
+    if (index == NSNotFound) {
+        return;
+    }
+
+    _state->scheduledSendMCM[index] = true;
 }
 
 #pragma mark IBAction - Mute
@@ -830,16 +849,16 @@
     ActivityIndicatorView* outputs[MIDI_TRACKS] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_state->track[t].activityInput == 1.f) {
-            _state->track[t].activityInput = 0.f;
+        if (_state->track[t].activityInput) {
+            _state->track[t].activityInput = false;
             inputs[t].showActivity = YES;
         }
         else {
             inputs[t].showActivity = NO;
         }
         
-        if (_state->track[t].activityOutput == 1.f) {
-            _state->track[t].activityOutput = 0.f;
+        if (_state->track[t].activityOutput) {
+            _state->track[t].activityOutput = false;
             outputs[t].showActivity = YES;
         }
         else {
@@ -909,6 +928,13 @@
     }
 }
 
+- (void)renderMpeIndicators {
+    MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        mpe_button[t].hidden = (_state->track[t].mpeState.enabled == false);
+    }
+}
+
 - (void)renderloop {
     if (_audioUnit) {
         [self checkActivityIndicators];
@@ -919,6 +945,7 @@
         
         [self renderPreviews];
         [self renderPlayhead];
+        [self renderMpeIndicators];
     }
 }
 

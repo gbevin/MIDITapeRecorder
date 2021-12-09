@@ -11,6 +11,7 @@
 #include <atomic>
 #include <vector>
 
+#include "MPEState.h"
 #include "RecordedMidiMessage.h"
 
 struct MidiTrackState {
@@ -19,12 +20,14 @@ struct MidiTrackState {
     MidiTrackState& operator= (const MidiTrackState&) = delete;
     
     std::atomic<int32_t> sourceCable    { 0 };
-    std::atomic<float>   activityInput  { 0.f };
-    std::atomic<float>   activityOutput { 0.f };
-    std::atomic<int32_t> recordEnabled  { false };
-    std::atomic<int32_t> monitorEnabled { false };
-    std::atomic<int32_t> muteEnabled    { false };
+    std::atomic<bool> activityInput     { false };
+    std::atomic<bool> activityOutput    { false };
+    std::atomic<bool> recordEnabled     { false };
+    std::atomic<bool> monitorEnabled    { false };
+    std::atomic<bool> muteEnabled       { false };
     std::atomic<int32_t> recording      { 0 };
+
+    MPEState mpeState;
     
     std::unique_ptr<std::vector<RecordedMidiMessage>>   recordedMessages    { nullptr };
     std::unique_ptr<std::vector<int>>                   recordedBeatToIndex { nullptr };

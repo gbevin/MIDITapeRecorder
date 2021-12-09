@@ -15,6 +15,8 @@
 		266465F027597988002D4459 /* PopupView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EF27597988002D4459 /* PopupView.mm */; };
 		268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A930B27616A2200B2D74A /* PlayheadView.mm */; };
 		268A930F276186EC00B2D74A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268A930E276186EC00B2D74A /* QuartzCore.framework */; };
+		268A93142762793000B2D74A /* MPEButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A93132762793000B2D74A /* MPEButton.mm */; };
+		268A93162762817800B2D74A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268A93152762817800B2D74A /* MainInterface.storyboard */; };
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
@@ -33,7 +35,6 @@
 		26BB385D275338EE00342496 /* MidiRecorderDSPKernel.h in Resources */ = {isa = PBXBuildFile; fileRef = 26BB385C275338EE00342496 /* MidiRecorderDSPKernel.h */; };
 		26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB385E275338EE00342496 /* DSPKernelAdapter.mm */; };
 		26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3862275338EE00342496 /* AudioUnitViewController.mm */; };
-		26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3864275338EE00342496 /* MainInterface.storyboard */; };
 		26BB386A275338EE00342496 /* MIDI Tape Recorder Plugin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrackView.mm */; };
 		26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* TimelineView.mm */; };
@@ -86,6 +87,10 @@
 		268A930B27616A2200B2D74A /* PlayheadView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayheadView.mm; sourceTree = "<group>"; };
 		268A930C27616A2300B2D74A /* PlayheadView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayheadView.h; sourceTree = "<group>"; };
 		268A930E276186EC00B2D74A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
+		268A93122762793000B2D74A /* MPEButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPEButton.h; sourceTree = "<group>"; };
+		268A93132762793000B2D74A /* MPEButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MPEButton.mm; sourceTree = "<group>"; };
+		268A93152762817800B2D74A /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		268A93182762997400B2D74A /* MPEState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPEState.h; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -117,7 +122,6 @@
 		26BB385E275338EE00342496 /* DSPKernelAdapter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPKernelAdapter.mm; sourceTree = "<group>"; };
 		26BB3861275338EE00342496 /* AudioUnitViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioUnitViewController.h; sourceTree = "<group>"; };
 		26BB3862275338EE00342496 /* AudioUnitViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioUnitViewController.mm; sourceTree = "<group>"; };
-		26BB3865275338EE00342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		26BB3867275338EE00342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26BB386F275338F400342496 /* MIDI Tape Recorder Plugin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Tape Recorder Plugin.entitlements"; sourceTree = "<group>"; };
 		26BB387027533A3400342496 /* AudioUnitIOState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUnitIOState.h; sourceTree = "<group>"; };
@@ -235,7 +239,7 @@
 			isa = PBXGroup;
 			children = (
 				26BB386F275338F400342496 /* MIDI Tape Recorder Plugin.entitlements */,
-				26BB3864275338EE00342496 /* MainInterface.storyboard */,
+				268A93152762817800B2D74A /* MainInterface.storyboard */,
 				26BB3867275338EE00342496 /* Info.plist */,
 				2613427A2753D995001FF0BB /* Assets.xcassets */,
 				26BB384F275338EE00342496 /* Audio Unit */,
@@ -265,6 +269,7 @@
 				26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */,
 				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
 				26C540C92757EC28004E4813 /* MidiTrackState.h */,
+				268A93182762997400B2D74A /* MPEState.h */,
 				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
 				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
 			);
@@ -280,6 +285,8 @@
 				261342782753D869001FF0BB /* ActivityIndicatorView.mm */,
 				26E06B8E2759427300D7257E /* MenuButton.h */,
 				26E06B8D2759427300D7257E /* MenuButton.mm */,
+				268A93122762793000B2D74A /* MPEButton.h */,
+				268A93132762793000B2D74A /* MPEButton.mm */,
 				268A930C27616A2300B2D74A /* PlayheadView.h */,
 				268A930B27616A2200B2D74A /* PlayheadView.mm */,
 				266465EE27597987002D4459 /* PopupView.h */,
@@ -427,7 +434,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26BB385D275338EE00342496 /* MidiRecorderDSPKernel.h in Resources */,
-				26BB3866275338EE00342496 /* MainInterface.storyboard in Resources */,
+				268A93162762817800B2D74A /* MainInterface.storyboard in Resources */,
 				26BB3856275338EE00342496 /* DSPKernel.h in Resources */,
 				26BB385A275338EE00342496 /* BufferedAudioBus.hpp in Resources */,
 				2613427B2753D995001FF0BB /* Assets.xcassets in Resources */,
@@ -454,6 +461,7 @@
 				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
 				26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */,
+				268A93142762793000B2D74A /* MPEButton.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
@@ -497,14 +505,6 @@
 				26BB383E275338B200342496 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		26BB3864275338EE00342496 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				26BB3865275338EE00342496 /* Base */,
-			);
-			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
