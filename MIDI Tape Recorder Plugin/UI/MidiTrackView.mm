@@ -12,18 +12,24 @@
 
 #include "Constants.h"
 
+@interface MidiTrackBeatEntry : NSObject;
+@property BOOL complete;
+@property CAShapeLayer* beatLayer;
+@property CAShapeLayer* previewNotesLayer;
+@property CAShapeLayer* previewEventsLayer;
+@end
+
+@implementation MidiTrackBeatEntry;
+@end
+
 @implementation MidiTrackView {
-    CAShapeLayer* _beatsLayer;
-    CAShapeLayer* _previewNotesLayer;
-    CAShapeLayer* _previewEventsLayer;
+    NSMutableDictionary<NSNumber*, MidiTrackBeatEntry*>* _beatLayers;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
-        _beatsLayer = nil;
-        _previewNotesLayer = nil;
-        _previewEventsLayer = nil;
+        _beatLayers = [NSMutableDictionary new];
     }
     return self;
 }
@@ -33,72 +39,122 @@
     
     self.layer.backgroundColor = [UIColor colorNamed:@"Gray4"].CGColor;
 
-    [self updateBeatsLayer];
-    [self updateNotesLayer];
-    [self updateEventsLayer];
+    [self updateBeatLayers];
 }
 
-- (void)updateBeatsLayer {
-    if (_beatsLayer) {
-        [_beatsLayer removeFromSuperlayer];
+- (void)setPreview:(NSData*)preview {
+    if (_preview != preview) {
+        _preview = preview;
+        _beatLayers = [NSMutableDictionary new];
     }
-    _beatsLayer = [CAShapeLayer layer];
-    _beatsLayer.contentsScale = [UIScreen mainScreen].scale;
+}
 
+- (void)updateBeatLayers {
     CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
+    CGFloat x_end = MIN(self.frame.size.width, x_offset + _tracks.frame.size.width) - 1.0;
+    
+    // remove all the existing layers that shouldn't be displayed anynore
+    
+    int begin_beat = floor(x_offset / PIXELS_PER_BEAT);
+    int end_beat = floor(x_end / PIXELS_PER_BEAT);
+    for (NSNumber* beat in _beatLayers.allKeys) {
+        if (beat.intValue < begin_beat || beat.intValue > end_beat) {
+            MidiTrackBeatEntry* entry = [_beatLayers objectForKey:beat];
+            [entry.beatLayer removeFromSuperlayer];
+            [entry.previewNotesLayer removeFromSuperlayer];
+            [entry.previewEventsLayer removeFromSuperlayer];
 
-    // draw the vertical beat bars
-    UIBezierPath* path = [UIBezierPath bezierPath];
-    for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
-        if (x % PIXELS_PER_BEAT == 0) {
-            [path moveToPoint:CGPointMake(x, 0.0)];
-            [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
+            [_beatLayers removeObjectForKey:beat];
         }
     }
-    _beatsLayer.path = path.CGPath;
-    _beatsLayer.opacity = 1.0;
-    _beatsLayer.strokeColor = [UIColor colorNamed:@"Gray2"].CGColor;
-
-    [self.layer addSublayer:_beatsLayer];
-}
-
-- (void)updateNotesLayer {
-    if (_previewNotesLayer) {
-        [_previewNotesLayer removeFromSuperlayer];
-    }
-    _previewNotesLayer = [CAShapeLayer layer];
-    _previewNotesLayer.contentsScale = [UIScreen mainScreen].scale;
     
-    _previewNotesLayer.path = [self createPreviewPathDrawNotes:YES].CGPath;
-    _previewNotesLayer.opacity = 1.0;
-    _previewNotesLayer.strokeColor = [UIColor colorNamed:@"PreviewNotes"].CGColor;
-
-    [self.layer addSublayer:_previewNotesLayer];
-}
-
-- (void)updateEventsLayer {
-    if (_previewEventsLayer) {
-        [_previewEventsLayer removeFromSuperlayer];
-    }
-    _previewEventsLayer = [CAShapeLayer layer];
-    _previewEventsLayer.contentsScale = [UIScreen mainScreen].scale;
+    // add new layers that don't exist yet and cache them
     
-    _previewEventsLayer.path = [self createPreviewPathDrawNotes:NO].CGPath;
-    _previewEventsLayer.opacity = 1.0;
-    _previewEventsLayer.strokeColor = [UIColor colorNamed:@"PreviewEvents"].CGColor;
+    for (int beat = begin_beat; beat <= end_beat; ++beat) {
+        MidiTrackBeatEntry* entry = [_beatLayers objectForKey:@(beat)];
+        if (entry && !entry.complete) {
+            [entry.previewNotesLayer removeFromSuperlayer];
+            [entry.previewEventsLayer removeFromSuperlayer];
+            
+            entry.previewNotesLayer = nil;
+            entry.previewEventsLayer = nil;
+        }
+        
+        if (entry == nil || !entry.complete) {
+            int x = beat * PIXELS_PER_BEAT;
+            
+            if (entry == nil) {
+                entry = [MidiTrackBeatEntry new];
+            }
 
-    [self.layer addSublayer:_previewEventsLayer];
+            // draw vertical beat bars
+            if (entry.beatLayer == nil) {
+                UIBezierPath* beat_path = [UIBezierPath bezierPath];
+                [beat_path moveToPoint:CGPointMake(x, 0.0)];
+                [beat_path addLineToPoint:CGPointMake(x, self.frame.size.height)];
+                
+                CAShapeLayer* beat_layer = [CAShapeLayer layer];
+                beat_layer.contentsScale = [UIScreen mainScreen].scale;
+                beat_layer.path = beat_path.CGPath;
+                beat_layer.opacity = 1.0;
+                beat_layer.strokeColor = [UIColor colorNamed:@"Gray2"].CGColor;
+
+                [self.layer addSublayer:beat_layer];
+                
+                entry.beatLayer = beat_layer;
+            }
+            
+            BOOL complete = YES;
+            
+            // draw the notes
+            if (entry.previewNotesLayer == nil) {
+                UIBezierPath* preview_notes_path = [UIBezierPath bezierPath];
+                complete &= [self createPreviewPath:preview_notes_path beat:beat drawNotes:YES];
+                
+                CAShapeLayer* preview_notes_layer = [CAShapeLayer layer];
+                preview_notes_layer.contentsScale = [UIScreen mainScreen].scale;
+                preview_notes_layer.path = preview_notes_path.CGPath;
+                preview_notes_layer.opacity = 1.0;
+                preview_notes_layer.strokeColor = [UIColor colorNamed:@"PreviewNotes"].CGColor;
+
+                [self.layer addSublayer:preview_notes_layer];
+
+                entry.previewNotesLayer = preview_notes_layer;
+            }
+
+            // draw the event
+            if (entry.previewEventsLayer == nil) {
+                UIBezierPath* preview_events_path = [UIBezierPath bezierPath];
+                complete &= [self createPreviewPath:preview_events_path beat:beat drawNotes:NO];
+                
+                CAShapeLayer* preview_events_layer = [CAShapeLayer layer];
+                preview_events_layer.contentsScale = [UIScreen mainScreen].scale;
+                preview_events_layer.path = preview_events_path.CGPath;
+                preview_events_layer.opacity = 1.0;
+                preview_events_layer.strokeColor = [UIColor colorNamed:@"PreviewEvents"].CGColor;
+
+                [self.layer addSublayer:preview_events_layer];
+                
+                entry.previewEventsLayer = preview_events_layer;
+            }
+
+            // remember the layers
+            entry.complete = complete;
+            [_beatLayers setObject:entry forKey:@(beat)];
+        }
+    }
 }
 
-- (UIBezierPath*)createPreviewPathDrawNotes:(BOOL)drawNotes {
-    UIBezierPath* path = [UIBezierPath bezierPath];
+- (BOOL)createPreviewPath:(UIBezierPath*)path beat:(int)beat drawNotes:(BOOL)drawNotes {
+    BOOL complete = YES;
+    
     NSData* preview = self.preview;
     
-    CGFloat x_offset =  MAX(0.0, _tracks.contentOffset.x - 10.0);
-
-    for (int x = x_offset; x < self.frame.size.width && x < x_offset + _tracks.frame.size.width; ++x) {
+    int x_begin = beat * PIXELS_PER_BEAT;
+    int x_end = x_begin + PIXELS_PER_BEAT;
+    for (int x = x_begin; x < x_end; ++x) {
         int pixel = x * 2;
-        
+
         if (preview != nil && pixel + 1 < preview.length) {
             uint8_t events = ((uint8_t*)preview.bytes)[pixel];
             uint8_t notes = ((uint8_t*)preview.bytes)[pixel+1];
@@ -121,9 +177,12 @@
                 }
             }
         }
+        else {
+            complete = NO;
+        }
     }
     
-    return path;
+    return complete;
 }
 
 @end
