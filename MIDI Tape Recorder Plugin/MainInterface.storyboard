@@ -323,7 +323,7 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tCM-sv-7no" userLabel="Tracks">
-                                <rect key="frame" x="77" y="40" width="416" height="204"/>
+                                <rect key="frame" x="77" y="40" width="416" height="190"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cNu-Gm-9pP" userLabel="Timeline Background">
                                         <rect key="frame" x="0.0" y="0.0" width="416" height="22"/>
@@ -342,45 +342,45 @@ RECORDER</string>
                                         </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GXf-2A-NeK" userLabel="Recorded 1" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="30" width="50" height="28"/>
+                                        <rect key="frame" x="10" y="30" width="50" height="24"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="9hu-Z2-Okl">
-                                                <variation key="heightClass=compact-widthClass=compact" constant="28"/>
+                                                <variation key="heightClass=compact-widthClass=compact" constant="24"/>
                                             </constraint>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q3i-Q2-tin" userLabel="Seperator 1">
-                                        <rect key="frame" x="0.0" y="66" width="416" height="2"/>
+                                        <rect key="frame" x="0.0" y="62" width="416" height="2"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="jEp-HD-y9A"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IWD-hQ-i8x" userLabel="Recorded 2" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="76" width="50" height="28"/>
+                                        <rect key="frame" x="10" y="72" width="50" height="24"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gzW-Zc-U4q" userLabel="Seperator 2">
-                                        <rect key="frame" x="0.0" y="112" width="416" height="2"/>
+                                        <rect key="frame" x="0.0" y="104" width="416" height="2"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="zpu-AV-ayO"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8lV-Pg-F8C" userLabel="Recorded 3" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="122" width="50" height="28"/>
+                                        <rect key="frame" x="10" y="114" width="50" height="24"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4hw-x8-hn8" userLabel="Seperator 3">
-                                        <rect key="frame" x="0.0" y="158" width="416" height="2"/>
+                                        <rect key="frame" x="0.0" y="146" width="416" height="2"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="2" id="6bn-ZP-b6N"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ckn-XQ-W53" userLabel="Recorded 4" customClass="MidiTrackView">
-                                        <rect key="frame" x="10" y="168" width="50" height="28"/>
+                                        <rect key="frame" x="10" y="156" width="50" height="24"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
-                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="204"/>
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <gestureRecognizers/>
                                         <constraints>
@@ -420,7 +420,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z7h-Mc-fnQ" userLabel="MPE 2" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="68" width="33" height="20"/>
+                                        <rect key="frame" x="0.0" y="64" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="22" id="2f9-dQ-Dz6">
@@ -449,7 +449,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1FX-bJ-B4M" userLabel="MPE 3" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="114" width="33" height="20"/>
+                                        <rect key="frame" x="0.0" y="106" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="kpC-hE-jkF"/>
@@ -478,7 +478,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g1V-ZB-qzJ" userLabel="MPE 4" customClass="MPEButton">
-                                        <rect key="frame" x="0.0" y="160" width="33" height="20"/>
+                                        <rect key="frame" x="0.0" y="148" width="33" height="20"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="32" id="Pen-Ah-e7B"/>
@@ -558,7 +558,7 @@ RECORDER</string>
                                     <constraint firstItem="RMO-Kd-c0J" firstAttribute="top" secondItem="cNu-Gm-9pP" secondAttribute="bottom" id="lIZ-hk-Yne"/>
                                     <constraint firstItem="q3i-Q2-tin" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="ly0-RB-t3l"/>
                                     <constraint firstAttribute="height" constant="236" id="mt9-bi-SmS">
-                                        <variation key="heightClass=compact-widthClass=compact" constant="204"/>
+                                        <variation key="heightClass=compact-widthClass=compact" constant="190"/>
                                     </constraint>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="width" secondItem="GXf-2A-NeK" secondAttribute="width" id="mzW-CG-Qqi"/>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="n4A-Rm-Q6y"/>
@@ -578,7 +578,7 @@ RECORDER</string>
                                 <viewLayoutGuide key="frameLayoutGuide" id="FZ7-pN-WjG"/>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dom-KY-gSl" userLabel="Activity Input 1" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="81.5" width="5" height="5"/>
+                                <rect key="frame" x="10" y="79.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="9" id="ae9-Yl-n0y">
@@ -588,7 +588,7 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jiJ-Fl-4eE" userLabel="Record Enable 1">
-                                <rect key="frame" x="20" y="61" width="26" height="46"/>
+                                <rect key="frame" x="20" y="59" width="26" height="46"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="Boh-rt-v4L">
@@ -612,7 +612,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="if6-Qg-HAU" userLabel="Monitor Enable 1">
-                                <rect key="frame" x="46" y="61" width="26" height="46"/>
+                                <rect key="frame" x="46" y="59" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -630,7 +630,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qqe-xS-Dtb" userLabel="Mute Enable 1">
-                                <rect key="frame" x="498" y="61" width="26" height="46"/>
+                                <rect key="frame" x="498" y="59" width="26" height="46"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -648,7 +648,7 @@ RECORDER</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w1R-ec-Xai" userLabel="Menu 1" customClass="MenuButton">
-                                <rect key="frame" x="524" y="57.5" width="26" height="53"/>
+                                <rect key="frame" x="524" y="55.5" width="26" height="53"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <color key="tintColor" name="ActivityOff"/>
@@ -663,8 +663,255 @@ RECORDER</string>
                                     <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Ovp-GH-bJD"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blx-LE-LOD" userLabel="Activity Output 1" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="553" y="79.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ea-4c-QY8" userLabel="Activity Input 2" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="10" y="121.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="0ea-4c-QY8" secondAttribute="height" multiplier="1:1" id="M2G-BY-MYe"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIz-1j-u10" userLabel="Record Enable 2">
+                                <rect key="frame" x="20" y="101" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🆁">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemRedColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="recordEnablePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xdd-1B-ieH"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hXW-n3-IFc" userLabel="Monitor Enable 2">
+                                <rect key="frame" x="46" y="101" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🅸">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemGreenColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="monitorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ebV-DI-WDU"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p1L-p9-aSY" userLabel="Mute Enable 2">
+                                <rect key="frame" x="498" y="101" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🅼">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="mutePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kYX-ha-ga5"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JdH-dA-fdD" userLabel="Menu 2" customClass="MenuButton">
+                                <rect key="frame" x="524" y="97.5" width="26" height="53"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pAH-6j-kwp"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uiz-2Z-3Gl" userLabel="Activity Output 2" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="553" y="121.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DG3-EF-njW" userLabel="Activity Input 3" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="10" y="163.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="DG3-EF-njW" secondAttribute="height" multiplier="1:1" id="a4H-ve-A0d"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3pU-49-ygj" userLabel="Record Enable 3">
+                                <rect key="frame" x="20" y="143" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🆁">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemRedColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="recordEnablePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8cg-Et-q6u"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcR-Mq-hiL" userLabel="Monitor Enable 3">
+                                <rect key="frame" x="46" y="143" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🅸">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemGreenColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="monitorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pda-eh-X3f"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cml-GG-nYY" userLabel="Mute Enable 3">
+                                <rect key="frame" x="498" y="143" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🅼">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="mutePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uaM-ar-AXr"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vnj-Hq-OLf" userLabel="Menu 3" customClass="MenuButton">
+                                <rect key="frame" x="524" y="139.5" width="26" height="53"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mAh-Wq-Kbe"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHo-mc-gVi" userLabel="Activity Output 3" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="553" y="163.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0P-wN-aiS" userLabel="Activity Input 4" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="10" y="205.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="c0P-wN-aiS" secondAttribute="height" multiplier="1:1" id="hrh-r6-VBg"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kFp-mR-8eu" userLabel="Record Enable 4">
+                                <rect key="frame" x="20" y="185" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🆁">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemRedColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="recordEnablePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ohe-aT-DNg"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VuI-3k-Ts7" userLabel="Monitor Enable 4">
+                                <rect key="frame" x="46" y="185" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🅸">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemGreenColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="monitorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dDg-Af-Mjh"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mth-yQ-zQm" userLabel="Mute Enable 4">
+                                <rect key="frame" x="498" y="185" width="26" height="46"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="🅼">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
+                                </variation>
+                                <connections>
+                                    <action selector="mutePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="igb-ze-MbL"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y7b-zS-fgR" userLabel="Menu 4" customClass="MenuButton">
+                                <rect key="frame" x="524" y="181.5" width="26" height="53"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal">
+                                    <color key="titleColor" name="ActivityOff"/>
+                                </state>
+                                <state key="selected">
+                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                </state>
+                                <connections>
+                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2ZB-wz-a4c"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JvP-xG-YoT" userLabel="Activity Output 4" customClass="ActivityIndicatorView">
+                                <rect key="frame" x="553" y="205.5" width="5" height="5"/>
+                                <color key="backgroundColor" name="ActivityOff"/>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
-                                <rect key="frame" x="416" y="62.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="60.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
                                         <rect key="frame" x="103" y="8.5" width="26" height="26"/>
@@ -740,89 +987,8 @@ RECORDER</string>
                                     </constraint>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="blx-LE-LOD" userLabel="Activity Output 1" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="553" y="81.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0ea-4c-QY8" userLabel="Activity Input 2" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="127.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="0ea-4c-QY8" secondAttribute="height" multiplier="1:1" id="M2G-BY-MYe"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DIz-1j-u10" userLabel="Record Enable 2">
-                                <rect key="frame" x="20" y="107" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🆁">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemRedColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="recordEnablePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xdd-1B-ieH"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hXW-n3-IFc" userLabel="Monitor Enable 2">
-                                <rect key="frame" x="46" y="107" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅸">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemGreenColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="monitorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ebV-DI-WDU"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p1L-p9-aSY" userLabel="Mute Enable 2">
-                                <rect key="frame" x="498" y="107" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅼">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemYellowColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="mutePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kYX-ha-ga5"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JdH-dA-fdD" userLabel="Menu 2" customClass="MenuButton">
-                                <rect key="frame" x="524" y="103.5" width="26" height="53"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemYellowColor"/>
-                                </state>
-                                <connections>
-                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pAH-6j-kwp"/>
-                                </connections>
-                            </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="PopupView">
-                                <rect key="frame" x="416" y="108.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="102.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
                                         <rect key="frame" x="103" y="8.5" width="26" height="26"/>
@@ -899,89 +1065,8 @@ RECORDER</string>
                                     <constraint firstItem="AsM-3p-e3J" firstAttribute="centerY" secondItem="UOr-iO-bt0" secondAttribute="centerY" id="oXT-jY-cGx"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uiz-2Z-3Gl" userLabel="Activity Output 2" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="553" y="127.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DG3-EF-njW" userLabel="Activity Input 3" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="173.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="DG3-EF-njW" secondAttribute="height" multiplier="1:1" id="a4H-ve-A0d"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3pU-49-ygj" userLabel="Record Enable 3">
-                                <rect key="frame" x="20" y="153" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🆁">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemRedColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="recordEnablePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8cg-Et-q6u"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xcR-Mq-hiL" userLabel="Monitor Enable 3">
-                                <rect key="frame" x="46" y="153" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅸">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemGreenColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="monitorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pda-eh-X3f"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cml-GG-nYY" userLabel="Mute Enable 3">
-                                <rect key="frame" x="498" y="153" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅼">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemYellowColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="mutePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uaM-ar-AXr"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vnj-Hq-OLf" userLabel="Menu 3" customClass="MenuButton">
-                                <rect key="frame" x="524" y="149.5" width="26" height="53"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemYellowColor"/>
-                                </state>
-                                <connections>
-                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mAh-Wq-Kbe"/>
-                                </connections>
-                            </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="PopupView">
-                                <rect key="frame" x="416" y="154.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="144.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
                                         <rect key="frame" x="103" y="8.5" width="26" height="26"/>
@@ -1056,89 +1141,8 @@ RECORDER</string>
                                     <constraint firstItem="fTN-8v-HzS" firstAttribute="width" secondItem="mCd-Bd-dSz" secondAttribute="width" id="pLk-Y6-tA1"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YHo-mc-gVi" userLabel="Activity Output 3" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="553" y="173.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                            </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c0P-wN-aiS" userLabel="Activity Input 4" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="10" y="219.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="c0P-wN-aiS" secondAttribute="height" multiplier="1:1" id="hrh-r6-VBg"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kFp-mR-8eu" userLabel="Record Enable 4">
-                                <rect key="frame" x="20" y="199" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🆁">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemRedColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="recordEnablePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ohe-aT-DNg"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VuI-3k-Ts7" userLabel="Monitor Enable 4">
-                                <rect key="frame" x="46" y="199" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅸">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemGreenColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="monitorPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dDg-Af-Mjh"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mth-yQ-zQm" userLabel="Mute Enable 4">
-                                <rect key="frame" x="498" y="199" width="26" height="46"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅼">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemYellowColor"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="28"/>
-                                </variation>
-                                <connections>
-                                    <action selector="mutePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="igb-ze-MbL"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="y7b-zS-fgR" userLabel="Menu 4" customClass="MenuButton">
-                                <rect key="frame" x="524" y="195.5" width="26" height="53"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal">
-                                    <color key="titleColor" name="ActivityOff"/>
-                                </state>
-                                <state key="selected">
-                                    <color key="titleColor" systemColor="systemYellowColor"/>
-                                </state>
-                                <connections>
-                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2ZB-wz-a4c"/>
-                                </connections>
-                            </button>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="PopupView">
-                                <rect key="frame" x="416" y="200.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="186.5" width="134" height="43"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
                                         <rect key="frame" x="103" y="8.5" width="26" height="26"/>
@@ -1215,12 +1219,8 @@ RECORDER</string>
                                     <constraint firstItem="wBn-hq-Mac" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="yhT-WT-Ucc"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JvP-xG-YoT" userLabel="Activity Output 4" customClass="ActivityIndicatorView">
-                                <rect key="frame" x="553" y="219.5" width="5" height="5"/>
-                                <color key="backgroundColor" name="ActivityOff"/>
-                            </view>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oVL-Ty-mxd" userLabel="About">
-                                <rect key="frame" x="125" y="68" width="320" height="170"/>
+                                <rect key="frame" x="125" y="60" width="320" height="170"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="320" id="L4i-3X-HIX"/>
                                     <constraint firstAttribute="height" constant="170" id="sSf-UT-jWn"/>
@@ -1230,7 +1230,7 @@ RECORDER</string>
                                 </connections>
                             </containerView>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kxe-e6-6XJ" userLabel="Settings">
-                                <rect key="frame" x="165" y="88" width="240" height="130"/>
+                                <rect key="frame" x="165" y="80" width="240" height="130"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="130" id="MdR-QT-emE"/>
                                     <constraint firstAttribute="width" constant="240" id="rO7-ma-pqN"/>

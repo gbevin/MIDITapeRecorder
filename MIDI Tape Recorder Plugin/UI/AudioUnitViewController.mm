@@ -1100,6 +1100,7 @@
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
+    scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
     [_timeline setNeedsLayout];
     
     [self withMidiTrackViews:^(int ordinal, MidiTrackView* view) {
