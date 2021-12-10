@@ -107,6 +107,7 @@
 
 @property (weak, nonatomic) IBOutlet UIView* playhead;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* playheadLeading;
+@property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* playheadPanGesture;
 
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack1;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack2;
@@ -144,8 +145,8 @@
     
     CGFloat _extendedMenuPopupWidth;
     
-    CGFloat _playdurationAtPanStart;
     BOOL _playheadPanActive;
+    CGPoint _autoPan;
 }
 
 #pragma mark - Init
@@ -164,8 +165,8 @@
         }
         
         _autoPlayFromRecord = NO;
-        _playdurationAtPanStart = 0;
         _playheadPanActive = NO;
+        _autoPan = CGPointZero;
     }
     
     return self;
@@ -646,17 +647,46 @@
     }
 }
 
-- (IBAction)playheadPanGesture:(UIPanGestureRecognizer*)gesture {
-    if (gesture.state == UIGestureRecognizerStateBegan) {
-        _playdurationAtPanStart = _state->playDurationBeats;
-        _playheadPanActive = YES;
+- (void)setPlayDurationForGesture:(UIPanGestureRecognizer*)gesture {
+    if ((gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) &&
+        gesture.numberOfTouches == 1) {
+        _state->playDurationBeats = MIN(MAX([gesture locationInView:_tracks].x / PIXELS_PER_BEAT, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT);
     }
-    else if (gesture.state == UIGestureRecognizerStateChanged) {
-        _state->playDurationBeats = MIN(MAX(_playdurationAtPanStart + [gesture translationInView:_tracks].x / PIXELS_PER_BEAT, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT);
+}
+
+- (IBAction)playheadPanGesture:(UIPanGestureRecognizer*)gesture {
+    if (gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
+        if (gesture.state == UIGestureRecognizerStateBegan) {
+            [self resetAutomaticPanning];
+            _playheadPanActive = YES;
+        }
+
+        [self setPlayDurationForGesture:gesture];
+
+        const CGPoint pos = [gesture locationInView:_tracks.superview];
+        const CGRect frame = _tracks.frame;
+        const CGFloat pan_margin = 5.0;
+        const CGFloat pan_scale = 3.5;
+        
+        CGFloat left_boundary = frame.origin.x - 10.0 + pan_margin;
+        CGFloat right_boundary = frame.origin.x + frame.size.width - 10.0 - pan_margin;
+        CGFloat pan_x = 0.0;
+        if (pos.x < left_boundary) {
+            pan_x = (pos.x - left_boundary) / pan_scale;
+        }
+        else if (pos.x > right_boundary) {
+            pan_x = (pos.x - right_boundary) / pan_scale;
+        }
+        if (ABS(pan_x) < 1.0) {
+            CGFloat sign = (pan_x < 0.0) ? -1.0 : 1.0;
+            pan_x = sign * pow(ABS(pan_x), 1.0/3.0);
+        }
+        
+        _autoPan = CGPointMake(pan_x, 0);
     }
     else {
+        [self resetAutomaticPanning];
         _playheadPanActive = NO;
-        _playdurationAtPanStart = 0.0;
     }
 }
 
@@ -933,7 +963,7 @@
     
     // scroll view location
     _playhead.hidden = !has_recorder_duration;
-    if (!_playhead.hidden && (_playButton.selected || _recordButton.selected || _playheadPanActive)) {
+    if (!_playhead.hidden && (_playButton.selected || _recordButton.selected)) {
         CGFloat content_offset;
         if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
             content_offset = 0.0;
@@ -969,6 +999,19 @@
     }
 }
 
+- (void)applyAutoPan {
+    if (_autoPan.x != 0.0f) {
+        CGFloat offset_x = _tracks.contentOffset.x + _autoPan.x;
+        offset_x = MAX(MIN(offset_x, _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left), 0.0);
+        [_tracks setContentOffset:CGPointMake(offset_x, 0) animated:NO];
+        [self setPlayDurationForGesture:_playheadPanGesture];
+    }
+}
+
+- (void)resetAutomaticPanning {
+    _autoPan = CGPointZero;
+}
+
 - (void)renderloop {
     if (_audioUnit) {
         [self checkActivityIndicators];
@@ -980,6 +1023,7 @@
         [self renderPreviews];
         [self renderPlayhead];
         [self renderMpeIndicators];
+        [self applyAutoPan];
     }
 }
 
