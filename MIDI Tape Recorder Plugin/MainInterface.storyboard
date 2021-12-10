@@ -332,10 +332,14 @@ RECORDER</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="k5P-YR-lyM" userLabel="Timeline" customClass="TimelineView">
                                         <rect key="frame" x="10" y="0.0" width="50" height="20"/>
                                         <color key="backgroundColor" name="Gray2"/>
+                                        <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="50" id="HUg-bg-jWJ"/>
                                             <constraint firstAttribute="height" constant="20" id="xMq-RR-lYI"/>
                                         </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="5hC-iX-y1X" appends="YES" id="TKI-8f-ZnJ"/>
+                                        </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GXf-2A-NeK" userLabel="Recorded 1" customClass="MidiTrackView">
                                         <rect key="frame" x="10" y="30" width="50" height="28"/>
@@ -1433,6 +1437,11 @@ RECORDER</string>
                         <action selector="playheadPanGesture:" destination="BYZ-38-t0r" id="x4H-DL-Wol"/>
                     </connections>
                 </panGestureRecognizer>
+                <tapGestureRecognizer id="5hC-iX-y1X" userLabel="Timeline Tap Gesture">
+                    <connections>
+                        <action selector="timelineTapGesture:" destination="BYZ-38-t0r" id="fPu-GD-yBq"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="131.77159590043922" y="115.42968749999999"/>
         </scene>

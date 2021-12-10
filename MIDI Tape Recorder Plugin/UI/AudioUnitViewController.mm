@@ -647,9 +647,14 @@
     }
 }
 
-- (void)setPlayDurationForGesture:(UIPanGestureRecognizer*)gesture {
-    if ((gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) &&
-        gesture.numberOfTouches == 1) {
+#pragma mark IBAction - Gestures
+
+- (IBAction)timelineTapGesture:(UITapGestureRecognizer*)gesture {
+    [self setPlayDurationForGesture:gesture];
+}
+
+- (void)setPlayDurationForGesture:(UIGestureRecognizer*)gesture {
+    if (gesture.numberOfTouches == 1) {
         _state->playDurationBeats = MIN(MAX([gesture locationInView:_tracks].x / PIXELS_PER_BEAT, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT);
     }
 }
