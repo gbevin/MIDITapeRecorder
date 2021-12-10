@@ -627,10 +627,9 @@
     
     [self updatePreview:preview withOffsetBeats:message.offsetBeats];
     
-    uint8_t* preview_bytes = (uint8_t*)preview.mutableBytes;
-    int8_t active_notes = preview_bytes[pixel + 1];
+    int8_t active_notes = ((int8_t*)preview.mutableBytes)[pixel + 1];
 
-    // track the note and the events indepdently
+    // track the note and the events independently
     if (message.length == 3 &&
         ((message.data[0] & 0xf0) == 0x90 ||
          (message.data[0] & 0xf0) == 0x80)) {
@@ -649,11 +648,11 @@
             active_notes -= 1;
         }
     }
-    else if (preview_bytes[pixel] < 0xff) {
-        preview_bytes[pixel] += 1;
+    else if (((uint8_t*)preview.mutableBytes)[pixel] < 0xff) {
+        ((uint8_t*)preview.mutableBytes)[pixel] += 1;
     }
     
-    preview_bytes[pixel + 1] = active_notes;
+    ((int8_t*)preview.mutableBytes)[pixel + 1] = active_notes;
 }
 
 - (void)clear {

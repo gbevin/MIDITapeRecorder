@@ -165,7 +165,7 @@
 
         if (preview != nil && pixel + 1 < preview.length) {
             uint8_t events = ((uint8_t*)preview.bytes)[pixel];
-            uint8_t notes = ((uint8_t*)preview.bytes)[pixel+1];
+            int8_t notes = MAX(0, ((int8_t*)preview.bytes)[pixel+1]);
             if (events != 0 || notes != 0) {
                 // normalize the preview events count
                 float n_events = MIN(((float)events / MAX_PREVIEW_EVENTS), 1.f);
