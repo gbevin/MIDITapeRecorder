@@ -891,7 +891,15 @@
 }
 
 #pragma mark - Rendering
-    
+
+- (void)viewDidLayoutSubviews {
+    [_timeline setNeedsLayout];
+
+    [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+        [view setNeedsLayout];
+    }];
+}
+
 - (void)checkActivityIndicators {
     ActivityIndicatorView* inputs[MIDI_TRACKS] = { _midiActivityInput1, _midiActivityInput2, _midiActivityInput3, _midiActivityInput4 };
     ActivityIndicatorView* outputs[MIDI_TRACKS] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
