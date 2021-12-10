@@ -287,7 +287,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
         int32_t expected = true;
         if (_state.scheduledPlay.compare_exchange_strong(expected, false)) {
             if (_state.transportStartSampleSeconds == 0.0) {
-                _state.transportStartSampleSeconds = timeSampleSeconds;
+                _state.transportStartSampleSeconds = timeSampleSeconds - _state.playDurationBeats * _state.beatsToSeconds;
             }
             play();
         }
