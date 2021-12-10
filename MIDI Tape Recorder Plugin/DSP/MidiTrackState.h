@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "MPEState.h"
-#include "RecordedMidiMessage.h"
+#include "Types.h"
 
 struct MidiTrackState {
     MidiTrackState() {};
@@ -29,8 +29,9 @@ struct MidiTrackState {
 
     MPEState mpeState;
     
-    std::unique_ptr<std::vector<RecordedMidiMessage>>   recordedMessages    { nullptr };
-    std::unique_ptr<std::vector<int>>                   recordedBeatToIndex { nullptr };
+    RecordedData        recordedMessages    { nullptr };
+    RecordedBookmarks   recordedBeatToIndex { nullptr };
+    RecordedPreview     recordedPreview     { nullptr };
     
     std::atomic<uint64_t>   recordedLength      { 0 };
     std::atomic<double>     recordedDuration    { 0.0 };

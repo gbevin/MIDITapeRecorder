@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #include "QueuedMidiMessage.h"
+#include "Types.h"
 
 #import "MidiRecorderDelegate.h"
 
@@ -35,6 +36,6 @@ class MidiRecorderState;
 - (void)clear;
 
 - (double)duration;
-- (NSData*)preview;
+- (RecordedPreview)preview;
 
 @end

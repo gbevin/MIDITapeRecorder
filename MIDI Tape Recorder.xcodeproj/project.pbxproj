@@ -76,6 +76,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2603D5A1276389C700247A18 /* PreviewPixelData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreviewPixelData.h; sourceTree = "<group>"; };
+		2603D5A32763A8CC00247A18 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		261342772753D855001FF0BB /* ActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorView.h; sourceTree = "<group>"; };
 		261342782753D869001FF0BB /* ActivityIndicatorView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityIndicatorView.mm; sourceTree = "<group>"; };
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				26C540C92757EC28004E4813 /* MidiTrackState.h */,
 				268A93182762997400B2D74A /* MPEState.h */,
 				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
+				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
 				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
 			);
 			path = DSP;
@@ -319,6 +322,7 @@
 				26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */,
 				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
 				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
+				2603D5A32763A8CC00247A18 /* Types.h */,
 				26B140822754590300748F00 /* TPCircularBuffer */,
 			);
 			path = Utils;

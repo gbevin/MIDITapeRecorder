@@ -13,7 +13,6 @@
 #include "Constants.h"
 #include "MidiHelper.h"
 #include "MidiRecorderState.h"
-#include "RecordedMidiMessage.h"
 
 @implementation MidiRecorder {
     dispatch_queue_t _dispatchQueue;
@@ -25,15 +24,10 @@
     int16_t _lastDataMsb[16];
     int16_t _lastDataLsb[16];
 
-    std::unique_ptr<std::vector<RecordedMidiMessage>> _recording;
-    std::unique_ptr<std::vector<int>> _recordingBeatToIndex;
-    
-    NSMutableData* _recordingPreview;
+    RecordedData _recording;
+    RecordedBookmarks _recordingBeatToIndex;
+    RecordedPreview _recordingPreview;
     double _recordingDuration;
-    
-    // we store the recorded preview here because it's not accessed by the audio callback thread
-    // and it's easier to keep it in Objective C with ARC
-    NSData* _recordedPreview;
 }
 
 - (instancetype)initWithOrdinal:(int)ordinal {
@@ -54,11 +48,8 @@
         
         _recording.reset(new std::vector<RecordedMidiMessage>());
         _recordingBeatToIndex.reset(new std::vector<int>());
-        
-        _recordingPreview = [NSMutableData new];
+        _recordingPreview.reset(new std::vector<PreviewPixelData>());
         _recordingDuration = 0.0;
-        
-        _recordedPreview = nil;
     }
     
     return self;
@@ -82,17 +73,18 @@
             if (_state->autoTrimRecordings && recorded && !recorded->empty()) {
                 recorded_duration = ceil(recorded->back().offsetBeats);
             }
-            _recordedPreview = _recordingPreview;
+            auto recorded_preview = _recordingPreview;
 
             _recording.reset(new std::vector<RecordedMidiMessage>());
             _recordingBeatToIndex.reset(new std::vector<int>());
-            _recordingPreview = [NSMutableData new];
+            _recordingPreview.reset(new std::vector<PreviewPixelData>());
             _recordingDuration = 0.0;
 
             if (_delegate) {
                 [_delegate finishRecording:_ordinal
                                       data:std::move(recorded)
                                beatToIndex:std::move(recorded_beat_index)
+                                   preview:recorded_preview
                                   duration:recorded_duration];
             }
         }
@@ -142,10 +134,9 @@
 
 - (void)dictToRecorded:(NSDictionary*)dict {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        std::unique_ptr<std::vector<RecordedMidiMessage>> recorded(new std::vector<RecordedMidiMessage>());
-        std::unique_ptr<std::vector<int>> recorded_beatindex(new std::vector<int>());
+        RecordedData recorded(new std::vector<RecordedMidiMessage>());
+        RecordedBookmarks recorded_beatindex(new std::vector<int>());
         double recorded_duration = 0.0;
-        _recordedPreview = nil;
 
         NSData* recorded_data = [dict objectForKey:@"Recorded"];
         if (recorded_data) {
@@ -209,19 +200,19 @@
             mpe_state.enabled = (mpe_state.zone1Active || mpe_state.zone2Active);
         }
         
-        id preview = [NSMutableData new];
+        RecordedPreview recorded_preview(new std::vector<PreviewPixelData>());
         if (recorded) {
             for (int m = 0; m < recorded->size(); ++m) {
                 // update preview
-                [self updatePreview:preview withMessage:recorded->at(m)];
+                [self updatePreview:recorded_preview withMessage:(*recorded)[m]];
             }
         }
-        _recordedPreview = preview;
 
         if (_delegate) {
             [_delegate finishRecording:_ordinal
                                   data:std::move(recorded)
                            beatToIndex:std::move(recorded_beatindex)
+                               preview:recorded_preview
                               duration:recorded_duration];
         }
     });
@@ -256,7 +247,7 @@
     // add midi events to track
     int64_t last_offset_ticks = 0;
     for (uint32_t i = 0; i < recorded->size(); ++i) {
-        const RecordedMidiMessage& message = recorded->at(i);
+        const RecordedMidiMessage& message = (*recorded)[i];
         int64_t offset_ticks = int64_t(message.offsetBeats * MIDI_BEAT_TICKS);
         uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
         writeMidiVarLen(track, delta_ticks);
@@ -297,9 +288,9 @@
 
     // prepare local data to accumulate into
     
-    std::unique_ptr<std::vector<RecordedMidiMessage>> recorded(new std::vector<RecordedMidiMessage>());
-    std::unique_ptr<std::vector<int>> recorded_beatindex(new std::vector<int>());
-    NSMutableData* recorded_preview = [NSMutableData new];
+    RecordedData recorded(new std::vector<RecordedMidiMessage>());
+    RecordedBookmarks recorded_beatindex(new std::vector<int>());
+    RecordedPreview recorded_preview(new std::vector<PreviewPixelData>());
     double recorded_duration = 0.0;
 
     // process the track events
@@ -403,12 +394,11 @@
     }
     // transfer all the accumulated data to the active recorded data
     
-    _recordedPreview = recorded_preview;
-    
     if (_delegate) {
         [_delegate finishRecording:_ordinal
                               data:std::move(recorded)
                        beatToIndex:std::move(recorded_beatindex)
+                           preview:recorded_preview
                           duration:recorded_duration];
     }
 }
@@ -604,30 +594,26 @@
     });
 }
 
-- (void)updatePreview:(NSMutableData*)preview withOffsetBeats:(double)offsetBeats {
+- (void)updatePreview:(RecordedPreview)preview withOffsetBeats:(double)offsetBeats {
     int32_t pixel = int32_t(offsetBeats * PIXELS_PER_BEAT + 0.5);
-    pixel *= 2;
     
-    int8_t active_notes = 0;
-    if (pixel > 0) {
-        active_notes = ((int8_t*)preview.bytes)[preview.length-1];
+    PreviewPixelData last_pixel_data;
+    if (pixel > 0 && !preview->empty()) {
+        last_pixel_data = preview->back();
     }
-    if (pixel + 1 >= preview.length) {
-        uint8_t zero = 0;
-        while (preview.length < pixel + 2) {
-            [preview appendBytes:&zero length:1];
-            [preview appendBytes:&active_notes length:1];
+    if (pixel >= preview->size()) {
+        last_pixel_data.events = 0;
+        while (preview->size() <= pixel) {
+            preview->push_back(last_pixel_data);
         }
     }
 }
 
-- (void)updatePreview:(NSMutableData*)preview withMessage:(RecordedMidiMessage&)message {
-    int32_t pixel = int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5);
-    pixel *= 2;
-    
+- (void)updatePreview:(RecordedPreview)preview withMessage:(RecordedMidiMessage&)message {
     [self updatePreview:preview withOffsetBeats:message.offsetBeats];
     
-    int8_t active_notes = ((int8_t*)preview.mutableBytes)[pixel + 1];
+    int32_t pixel = int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5);
+    PreviewPixelData& pixel_data = (*preview.get())[pixel];
 
     // track the note and the events independently
     if (message.length == 3 &&
@@ -637,22 +623,20 @@
         if ((message.data[0] & 0xf0) == 0x90) {
             // note on with zero velocity == note off
             if (message.data[2] == 0) {
-                active_notes -= 1;
+                pixel_data.notes -= 1;
             }
             else {
-                active_notes += 1;
+                pixel_data.notes += 1;
             }
         }
         // note off
         else if ((message.data[0] & 0xf0) == 0x80) {
-            active_notes -= 1;
+            pixel_data.notes -= 1;
         }
     }
-    else if (((uint8_t*)preview.mutableBytes)[pixel] < 0xff) {
-        ((uint8_t*)preview.mutableBytes)[pixel] += 1;
+    else if (pixel_data.events < 0xff) {
+        pixel_data.events += 1;
     }
-    
-    ((int8_t*)preview.mutableBytes)[pixel + 1] = active_notes;
 }
 
 - (void)clear {
@@ -665,10 +649,8 @@
 
         _recording.reset(new std::vector<RecordedMidiMessage>);
         _recordingBeatToIndex.reset(new std::vector<int>());
-        _recordingPreview = [NSMutableData new];
+        _recordingPreview.reset(new std::vector<PreviewPixelData>());
         _recordingDuration = 0.0;
-
-        _recordedPreview = nil;
     });
 }
 
@@ -693,15 +675,15 @@
     return duration;
 }
 
-- (NSData*)preview {
-    __block NSData* preview = nil;
+- (RecordedPreview)preview {
+    __block RecordedPreview preview = nullptr;
     
     dispatch_sync(_dispatchQueue, ^{
         if (_record == YES) {
             preview = _recordingPreview;
         }
         else {
-            preview = _recordedPreview;
+            preview = _state->track[_ordinal].recordedPreview;
         }
     });
     

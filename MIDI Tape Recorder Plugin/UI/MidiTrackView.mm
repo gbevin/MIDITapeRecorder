@@ -24,6 +24,7 @@
 
 @implementation MidiTrackView {
     NSMutableDictionary<NSNumber*, MidiTrackBeatEntry*>* _beatLayers;
+    RecordedPreview _preview;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -42,8 +43,8 @@
     [self updateBeatLayers];
 }
 
-- (void)setPreview:(NSData*)preview {
-    if (_preview != preview) {
+- (void)setPreview:(RecordedPreview)preview {
+    if (_preview.get() != preview.get()) {
         _preview = preview;
         
         for (MidiTrackBeatEntry* entry in _beatLayers.allValues) {
@@ -156,23 +157,18 @@
 - (BOOL)createPreviewPath:(UIBezierPath*)path beat:(int)beat drawNotes:(BOOL)drawNotes {
     BOOL complete = YES;
     
-    NSData* preview = self.preview;
-    
     int x_begin = beat * PIXELS_PER_BEAT;
     int x_end = x_begin + PIXELS_PER_BEAT;
     for (int x = x_begin; x < x_end; ++x) {
-        int pixel = x * 2;
-
-        if (preview != nil && pixel + 1 < preview.length) {
-            uint8_t events = ((uint8_t*)preview.bytes)[pixel];
-            int8_t notes = MAX(0, ((int8_t*)preview.bytes)[pixel+1]);
-            if (events != 0 || notes != 0) {
+        if (_preview && x < _preview->size()) {
+            PreviewPixelData& pixel_data = (*_preview)[x];
+            if (pixel_data.notes != 0 || pixel_data.events != 0) {
                 // normalize the preview events count
-                float n_events = MIN(((float)events / MAX_PREVIEW_EVENTS), 1.f);
-                float n_notes = MIN(((float)notes / MAX_PREVIEW_EVENTS), 1.f);
+                float n_notes = MIN(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 1.f);
+                float n_events = MIN(((float)pixel_data.events / MAX_PREVIEW_EVENTS), 1.f);
                 // increase the weight of the lower events counts so that they show up more easily
-                n_events = pow(n_events, 1.0/1.5);
                 n_notes = pow(n_notes, 1.0/1.5);
+                n_events = pow(n_events, 1.0/1.5);
 
                 CGFloat notes_height = self.frame.size.height - n_notes * self.frame.size.height / 2;
                 if (drawNotes) {

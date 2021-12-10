@@ -51,7 +51,7 @@ private:
 
     void passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable);
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
-    void trackNotesForTrack(int track, const RecordedMidiMessage* message);
+    void trackNotesForTrack(int track, const RecordedMidiMessage& message);
     void turnOffAllNotes();
     void turnOffAllNotesForTrack(int track);
     

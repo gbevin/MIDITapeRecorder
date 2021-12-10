@@ -1056,14 +1056,16 @@
 }
 
 - (void)finishRecording:(int)ordinal
-                   data:(std::unique_ptr<std::vector<RecordedMidiMessage>>)data
-            beatToIndex:(std::unique_ptr<std::vector<int>>)beatToIndex
+                   data:(RecordedData)data
+            beatToIndex:(RecordedBookmarks)beatToIndex
+                preview:(RecordedPreview)preview
                duration:(double)duration {
     _state->scheduledEndRecording[ordinal] = true;
     
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = std::move(data);
     state.recordedBeatToIndex = std::move(beatToIndex);
+    state.recordedPreview = preview;
     state.recordedLength = (state.recordedMessages ? state.recordedMessages->size() : 0);
     state.recordedDuration = duration;
 }

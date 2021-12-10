@@ -416,24 +416,24 @@ void MidiRecorderDSPKernel::processOutput() {
 
                 int beat_begin = (int)beatrange_begin;
                 if (beat_begin < state.recordedBeatToIndex->size()) {
-                    play_counter = state.recordedBeatToIndex->at(beat_begin);
+                    play_counter = (*state.recordedBeatToIndex)[beat_begin];
                 }
 
                 while (play_counter < state.recordedLength) {
-                    const RecordedMidiMessage* message = &state.recordedMessages->at(play_counter);
+                    const RecordedMidiMessage& message = (*state.recordedMessages)[play_counter];
                     play_counter += 1;
                     
                     // check if the message is outdated
-                    if (message->offsetBeats < beatrange_begin) {
+                    if (message.offsetBeats < beatrange_begin) {
                         continue;
                     }
                     // check if the time offset of the message falls within the advancement of the playhead
-                    else if (message->offsetBeats < beatrange_end) {
+                    else if (message.offsetBeats < beatrange_end) {
                         
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
                         if (!state.muteEnabled && _ioState.midiOutputEventBlock) {
-                            const double offset_seconds = (message->offsetBeats - beatrange_end) * _state.beatsToSeconds;
+                            const double offset_seconds = (message.offsetBeats - beatrange_end) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
@@ -444,7 +444,7 @@ void MidiRecorderDSPKernel::processOutput() {
 
                             // send the MIDI output message
                             _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
-                                                          t, message->length, &message->data[0]);
+                                                          t, message.length, &message.data[0]);
                         }
                         // if the track is muted, ensure we have no lingering note on messages
                         else {
@@ -474,24 +474,24 @@ void MidiRecorderDSPKernel::processOutput() {
     }
 }
 
-void MidiRecorderDSPKernel::trackNotesForTrack(int track, const RecordedMidiMessage* message) {
-    int status = message->data[0];
+void MidiRecorderDSPKernel::trackNotesForTrack(int track, const RecordedMidiMessage& message) {
+    int status = message.data[0];
     int type = status & 0xf0;
     int chan = (status & 0x0f);
-    int val = message->data[2];
+    int val = message.data[2];
     if (type == MIDI_NOTE_OFF ||
         (type == MIDI_NOTE_ON && val == 0)) {
-        if (_noteStates[track][chan][message->data[1]] == true &&
+        if (_noteStates[track][chan][message.data[1]] == true &&
             _noteCounts[track] > 0) {
             _noteCounts[track] -= 1;
         }
-        _noteStates[track][chan][message->data[1]] = false;
+        _noteStates[track][chan][message.data[1]] = false;
     }
     else if (type == MIDI_NOTE_ON) {
-        if (_noteStates[track][chan][message->data[1]] == false) {
+        if (_noteStates[track][chan][message.data[1]] == false) {
             _noteCounts[track] += 1;
         }
-        _noteStates[track][chan][message->data[1]] = true;
+        _noteStates[track][chan][message.data[1]] = true;
     }
 }
 

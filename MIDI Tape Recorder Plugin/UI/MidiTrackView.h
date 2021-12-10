@@ -8,9 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+#include "types.h"
+
 @interface MidiTrackView : UIView
 
 @property(weak, nonatomic) UIScrollView* tracks;
-@property(weak, nonatomic) NSData* preview;
+
+- (void)setPreview:(RecordedPreview)preview;
 
 @end
