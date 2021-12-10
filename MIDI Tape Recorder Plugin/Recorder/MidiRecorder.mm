@@ -572,8 +572,7 @@
         // if the recording hasn't started yet
         if (_recording->empty() && _state->transportStartSampleSeconds == 0.0) {
             if (_delegate) {
-                _state->transportStartSampleSeconds = message.timeSampleSeconds;
-                _state->playDurationBeats = 0.0;
+                _state->transportStartSampleSeconds = message.timeSampleSeconds - _state->playDurationBeats * _state->beatsToSeconds;
                 [_delegate startRecord];
             }
         }
