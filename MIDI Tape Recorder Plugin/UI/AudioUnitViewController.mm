@@ -116,6 +116,9 @@
 @property (weak, nonatomic) IBOutlet UIView* settingsView;
 @property (weak, nonatomic) IBOutlet UIView* aboutView;
 
+@property (weak, nonatomic) IBOutlet SettingsViewController* settingsViewController;
+@property (weak, nonatomic) IBOutlet AboutViewController* aboutViewController;
+
 @end
 
 @interface ImportMidiDocumentPickerViewController : UIDocumentPickerViewController
@@ -653,6 +656,8 @@
 #pragma mark - State
 
 - (void)readSettingsFromDict:(NSDictionary*)dict {
+    id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
+    id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
     id routing = [dict objectForKey:@"Routing"];
     id repeat = [dict objectForKey:@"Repeat"];
     id record1 = [dict objectForKey:@"Record1"];
@@ -714,12 +719,21 @@
         if (mute4) {
             self->_muteButton4.selected = [mute4 boolValue];
         }
+        
+        if (send_mpe) {
+            self->_state->sendMpeConfigOnPlay = [send_mpe boolValue];
+        }
+        if (auto_trim) {
+            self->_state->autoTrimRecordings = [auto_trim boolValue];
+        }
 
         [self updateRoutingState];
         [self updateRepeatState];
         [self updateMonitorState];
         [self updateRecordEnableState];
         [self updateMuteState];
+        
+        [self->_settingsViewController sync];
     });
 }
 
@@ -735,6 +749,8 @@
 
 - (NSDictionary*)currentSettingsToDict {
     return @{
+        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.load()),
+        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.load()),
         @"Routing" : @(_routingButton.selected),
         @"Repeat" : @(_repeatButton.selected),
         @"Record1" : @(_recordButton1.selected),
@@ -758,6 +774,10 @@
         [result setObject:[[_midiQueueProcessor recorder:t] recordedAsDict] forKey:[NSString stringWithFormat:@"Recorder%d", t]];
     }
     return result;
+}
+
+- (MidiRecorderState*)state {
+    return _state;
 }
 
 #pragma mark Update State
@@ -1011,11 +1031,13 @@
 #pragma mark Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"EmbedAbout"]) {
-        ((AboutViewController*)segue.destinationViewController).mainViewController = self;
+    if ([segue.destinationViewController isKindOfClass:AboutViewController.class]) {
+        _aboutViewController = segue.destinationViewController;
+        _aboutViewController.mainViewController = self;
     }
-    if ([[segue identifier] isEqualToString:@"EmbedSettings"]) {
-        ((SettingsViewController*)segue.destinationViewController).mainViewController = self;
+    else if ([segue.destinationViewController isKindOfClass:SettingsViewController.class]) {
+        _settingsViewController = segue.destinationViewController;
+        _settingsViewController.mainViewController = self;
     }
 }
 

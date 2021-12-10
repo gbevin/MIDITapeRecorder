@@ -1215,16 +1215,6 @@ RECORDER</string>
                                 <rect key="frame" x="553" y="219.5" width="5" height="5"/>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
-                            <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kxe-e6-6XJ" userLabel="Settings">
-                                <rect key="frame" x="125" y="68" width="320" height="170"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="170" id="MdR-QT-emE"/>
-                                    <constraint firstAttribute="width" constant="320" id="rO7-ma-pqN"/>
-                                </constraints>
-                                <connections>
-                                    <segue destination="bAn-F3-ZuP" kind="embed" identifier="EmbedSettings" id="2HD-ck-1Pu"/>
-                                </connections>
-                            </containerView>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oVL-Ty-mxd" userLabel="About">
                                 <rect key="frame" x="125" y="68" width="320" height="170"/>
                                 <constraints>
@@ -1233,6 +1223,16 @@ RECORDER</string>
                                 </constraints>
                                 <connections>
                                     <segue destination="ma5-k3-7jO" kind="embed" identifier="EmbedAbout" id="RDN-kP-ewd"/>
+                                </connections>
+                            </containerView>
+                            <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kxe-e6-6XJ" userLabel="Settings">
+                                <rect key="frame" x="165" y="103" width="240" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="MdR-QT-emE"/>
+                                    <constraint firstAttribute="width" constant="240" id="rO7-ma-pqN"/>
+                                </constraints>
+                                <connections>
+                                    <segue destination="bAn-F3-ZuP" kind="embed" identifier="EmbedSettings" id="2HD-ck-1Pu"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -1498,7 +1498,7 @@ under the CC BY 4.0 License.</string>
                                 </connections>
                             </button>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="SR4-zU-pkr"/>
+                        <viewLayoutGuide key="safeArea" id="YA7-WJ-vmT"/>
                         <constraints>
                             <constraint firstItem="4x1-6I-ezK" firstAttribute="top" secondItem="mKK-gH-GS8" secondAttribute="bottom" constant="10" id="81X-ic-y5S"/>
                             <constraint firstItem="4x1-6I-ezK" firstAttribute="centerX" secondItem="mKK-gH-GS8" secondAttribute="centerX" id="ALv-gM-7cR"/>
@@ -1520,17 +1520,17 @@ under the CC BY 4.0 License.</string>
             <objects>
                 <viewController id="bAn-F3-ZuP" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aNF-LS-zQT" customClass="PopupView">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="170"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gpR-DS-ezG">
-                                <rect key="frame" x="136" y="5" width="48" height="15.5"/>
+                                <rect key="frame" x="96" y="7.5" width="48" height="15"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u3L-HS-sVk" userLabel="Close Settings">
-                                <rect key="frame" x="295" y="5" width="20" height="20"/>
+                                <rect key="frame" x="215" y="5" width="20" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="20" id="Grg-hN-JHf"/>
                                     <constraint firstAttribute="height" constant="20" id="seh-zb-P7b"/>
@@ -1542,19 +1542,99 @@ under the CC BY 4.0 License.</string>
                                     <action selector="closeSettingsView:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="FmC-G5-V0k"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mPE-iT-uDI" userLabel="Send MPE Config On Play Button">
+                                <rect key="frame" x="10" y="32.5" width="26" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="cDF-rM-B4q"/>
+                                    <constraint firstAttribute="width" constant="30" id="i9q-aS-O2a">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="sendMpeConfigOnPlayPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="Idl-Ly-ars"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send MPE config on play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mow-FE-isl" userLabel="Send MPE Config On Play Label">
+                                <rect key="frame" x="36" y="40.5" width="136" height="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PqM-3K-ReO" userLabel="Auto Trim Recordings Button">
+                                <rect key="frame" x="10" y="62.5" width="26" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="Iaf-4W-T65">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                    <constraint firstAttribute="height" constant="30" id="XOV-9k-DqV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="autoTrimRecordingsPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="hJa-QB-ED3"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto trim and align recordings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lC9-9N-7G1" userLabel="Auto Trim Recordings Label">
+                                <rect key="frame" x="36" y="70.5" width="161.5" height="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="oVn-gH-DBA"/>
+                        <viewLayoutGuide key="safeArea" id="fPN-a7-mCW"/>
                         <constraints>
+                            <constraint firstItem="PqM-3K-ReO" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="2lK-um-lXY"/>
+                            <constraint firstItem="PqM-3K-ReO" firstAttribute="width" secondItem="mPE-iT-uDI" secondAttribute="width" id="5ev-Qt-dbs"/>
                             <constraint firstItem="gpR-DS-ezG" firstAttribute="centerX" secondItem="aNF-LS-zQT" secondAttribute="centerX" id="A1M-i4-ItL"/>
                             <constraint firstItem="u3L-HS-sVk" firstAttribute="trailing" secondItem="aNF-LS-zQT" secondAttribute="trailing" constant="-5" id="Ahu-Vi-5Vf"/>
-                            <constraint firstItem="gpR-DS-ezG" firstAttribute="top" secondItem="aNF-LS-zQT" secondAttribute="top" constant="5" id="KeH-B7-Oce"/>
+                            <constraint firstItem="PqM-3K-ReO" firstAttribute="top" secondItem="mPE-iT-uDI" secondAttribute="bottom" id="Dhd-PW-7TL"/>
+                            <constraint firstItem="PqM-3K-ReO" firstAttribute="height" secondItem="mPE-iT-uDI" secondAttribute="height" id="Fp7-0h-5Lc"/>
+                            <constraint firstItem="lC9-9N-7G1" firstAttribute="leading" secondItem="PqM-3K-ReO" secondAttribute="trailing" id="GkT-Yx-Ovm"/>
+                            <constraint firstItem="lC9-9N-7G1" firstAttribute="centerY" secondItem="PqM-3K-ReO" secondAttribute="centerY" id="HJB-vJ-bEs"/>
+                            <constraint firstItem="Mow-FE-isl" firstAttribute="centerY" secondItem="mPE-iT-uDI" secondAttribute="centerY" id="JF3-a2-YBD"/>
                             <constraint firstItem="u3L-HS-sVk" firstAttribute="top" secondItem="aNF-LS-zQT" secondAttribute="top" constant="5" id="TPR-65-bh7"/>
+                            <constraint firstItem="mPE-iT-uDI" firstAttribute="top" secondItem="gpR-DS-ezG" secondAttribute="bottom" constant="10" id="bzS-CY-BDf"/>
+                            <constraint firstItem="mPE-iT-uDI" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="leading" constant="10" id="f0A-YB-SZH"/>
+                            <constraint firstItem="Mow-FE-isl" firstAttribute="leading" secondItem="mPE-iT-uDI" secondAttribute="trailing" id="qDc-CN-0Df"/>
+                            <constraint firstItem="gpR-DS-ezG" firstAttribute="centerY" secondItem="u3L-HS-sVk" secondAttribute="centerY" id="uF9-7C-Fu9"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="autoTrimRecordingsButton" destination="PqM-3K-ReO" id="Fkj-pc-y90"/>
+                        <outlet property="sendMpeConfigOnPlayButton" destination="mPE-iT-uDI" id="7U7-tU-HaX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sH0-q9-KFO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="735" y="411"/>
+            <point key="canvasLocation" x="692" y="351"/>
         </scene>
     </scenes>
     <resources>

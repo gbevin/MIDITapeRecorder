@@ -8,6 +8,7 @@
 
 #import <CoreAudioKit/CoreAudioKit.h>
 
+#include "MidiRecorderState.h"
 #import "MidiRecorderDelegate.h"
 
 @interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate, UIDocumentPickerDelegate, UIScrollViewDelegate>
@@ -16,6 +17,8 @@
 - (void)readRecordingsFromDict:(NSDictionary*)data;
 - (NSDictionary*)currentSettingsToDict;
 - (NSDictionary*)currentRecordingsToDict;
+
+- (MidiRecorderState*)state;
 
 - (void)closeAboutView;
 - (void)closeSettingsView;

@@ -105,9 +105,11 @@ void MidiRecorderDSPKernel::play() {
         _state.scheduledUIStopAndRewind = false;
 
         // send out MPE configuration messages based on each track's MPE mode
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            if (!_state.track[t].recording) {
-                sendMCM(t);
+        if (_state.sendMpeConfigOnPlay) {
+            for (int t = 0; t < MIDI_TRACKS; ++t) {
+                if (!_state.track[t].recording) {
+                    sendMCM(t);
+                }
             }
         }
 

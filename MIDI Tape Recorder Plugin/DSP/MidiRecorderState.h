@@ -25,7 +25,9 @@ struct MidiRecorderState {
 
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic<int32_t> repeat { false };
+    std::atomic<bool> repeat                { false };
+    std::atomic<bool> sendMpeConfigOnPlay   { true };
+    std::atomic<bool> autoTrimRecordings    { true };
 
     std::atomic<double> tempo            { 120.0 };
     std::atomic<double> currentBeatPos   { 0.0 };

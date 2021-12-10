@@ -78,8 +78,8 @@
             // when recording is stopped, we move the recording data to the recorded data
             auto recorded = std::move(_recording);
             auto recorded_beat_index = std::move(_recordingBeatToIndex);
-            double recorded_duration = 0.0;
-            if (recorded && !recorded->empty()) {
+            double recorded_duration = _recordingDuration;
+            if (_state->autoTrimRecordings && recorded && !recorded->empty()) {
                 recorded_duration = ceil(recorded->back().offsetBeats);
             }
             _recordedPreview = _recordingPreview;
@@ -164,7 +164,10 @@
 
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
-            recorded_duration = ceil([duration doubleValue]);
+            recorded_duration = [duration doubleValue];
+            if (_state->autoTrimRecordings) {
+                recorded_duration = ceil(recorded_duration);
+            }
         }
         
         NSDictionary* mpe = [dict objectForKey:@"MPE"];
@@ -395,7 +398,9 @@
     }
     
     recorded_duration = double(last_offset_ticks) / division;
-
+    if (_state->autoTrimRecordings) {
+        recorded_duration = ceil(recorded_duration);
+    }
     // transfer all the accumulated data to the active recorded data
     
     _recordedPreview = recorded_preview;
@@ -404,7 +409,7 @@
         [_delegate finishRecording:_ordinal
                               data:std::move(recorded)
                        beatToIndex:std::move(recorded_beatindex)
-                          duration:ceil(recorded_duration)];
+                          duration:recorded_duration];
     }
 }
 

@@ -14,4 +14,6 @@
 
 @property(weak, nonatomic) AudioUnitViewController* mainViewController;
 
+- (void)sync;
+
 @end
