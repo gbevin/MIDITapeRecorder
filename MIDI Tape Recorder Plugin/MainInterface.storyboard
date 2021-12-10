@@ -16,7 +16,7 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="AudioUnitViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="568" height="320"/>
+                        <rect key="frame" x="0.0" y="0.0" width="568" height="265"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bKj-4Y-TLw" userLabel="Toolbar">
@@ -1357,6 +1357,7 @@ RECORDER</string>
                     </view>
                     <toolbarItems/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <size key="freeformSize" width="568" height="265"/>
                     <connections>
                         <outlet property="aboutButton" destination="Nja-eO-rX7" id="3EP-vJ-nYU"/>
                         <outlet property="aboutView" destination="oVL-Ty-mxd" id="Ptu-hk-wqp"/>
