@@ -28,6 +28,7 @@
 - (IBAction)displayMpeConfigDetailsPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     _mainViewController.state->displayMpeConfigDetails = sender.selected;
+    _mainViewController.state->scheduledUIMpeConfigChange = true;
 }
 
 - (IBAction)autoTrimRecordingsPressed:(UIButton*)sender {

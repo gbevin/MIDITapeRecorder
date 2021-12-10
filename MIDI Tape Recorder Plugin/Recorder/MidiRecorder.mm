@@ -519,6 +519,8 @@
             
             mpe_state.enabled = (mpe_state.zone1Active || mpe_state.zone2Active);
             
+            _state->scheduledUIMpeConfigChange = true;
+            
             break;
         }
     }

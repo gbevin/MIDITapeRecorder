@@ -995,18 +995,18 @@
 }
 
 - (void)renderMpeIndicators {
-    const NSString* mpe_label_short = @"MPE";
+    int32_t one = true;
+    bool refresh_mpe_buttons = _state->scheduledUIMpeConfigChange.compare_exchange_strong(one, false);
+
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MPEState& state = _state->track[t].mpeState;
         BOOL button_hidden = (state.enabled == false);
-        if (button_hidden != mpe_button[t].hidden ||
-            (_state->displayMpeConfigDetails && mpe_button[t].currentTitle.length == mpe_label_short.length) ||
-            (!_state->displayMpeConfigDetails && mpe_button[t].currentTitle.length != mpe_label_short.length)) {
+        if (button_hidden != mpe_button[t].hidden || refresh_mpe_buttons) {
             mpe_button[t].hidden = button_hidden;
             NSString* mpe_label = @"";
             if (state.enabled) {
-                mpe_label = [NSString stringWithFormat:@"%@", mpe_label_short];
+                mpe_label = @"MPE";
                 if (_state->displayMpeConfigDetails) {
                     if (state.zone1Active) {
                         mpe_label = [mpe_label stringByAppendingFormat:@" L:%d", state.zone1Members.load()];

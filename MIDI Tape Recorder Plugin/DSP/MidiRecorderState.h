@@ -49,6 +49,7 @@ struct MidiRecorderState {
     std::atomic<int32_t> scheduledUIPlay                        { false };
     std::atomic<int32_t> scheduledUIStop                        { false };
     std::atomic<int32_t> scheduledUIStopAndRewind               { false };
+    std::atomic<int32_t> scheduledUIMpeConfigChange             { false };
 
     TPCircularBuffer midiBuffer;
     
