@@ -393,6 +393,9 @@
             [[self->_midiQueueProcessor recorder:t] clear];
             [view setNeedsLayout];
         }];
+
+        // since the recorder is fully empty, reset transport
+        _state->playDurationBeats = 0.0;
     }
 }
 
@@ -644,6 +647,11 @@
         MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
         [[_midiQueueProcessor recorder:(int)index] clear];
         [midi_track[index] setNeedsLayout];
+        
+        // if the recorder is fully empty, reset transport
+        if (![self hasRecordedDuration]) {
+            _state->playDurationBeats = 0.0;
+        }
     }
 }
 
@@ -967,7 +975,7 @@
     _timelineWidth.constant = max_duration * PIXELS_PER_BEAT;
 }
 
-- (void)renderPlayhead {
+- (BOOL)hasRecordedDuration {
     BOOL has_recorder_duration = NO;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if ([_midiQueueProcessor recorder:t].duration != 0.0) {
@@ -975,12 +983,16 @@
             break;
         }
     }
+    
+    return has_recorder_duration;
+}
 
+- (void)renderPlayhead {
     // playhead positioning
     _playheadLeading.constant = _state->playDurationBeats * PIXELS_PER_BEAT;
     
     // scroll view location
-    _playhead.hidden = !has_recorder_duration;
+    _playhead.hidden = ![self hasRecordedDuration];
     if (!_playhead.hidden && (_playButton.selected || _recordButton.selected)) {
         CGFloat content_offset;
         if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
