@@ -699,6 +699,7 @@
 
 - (void)readSettingsFromDict:(NSDictionary*)dict {
     id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
+    id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
     id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
     id routing = [dict objectForKey:@"Routing"];
     id repeat = [dict objectForKey:@"Repeat"];
@@ -765,6 +766,9 @@
         if (send_mpe) {
             self->_state->sendMpeConfigOnPlay = [send_mpe boolValue];
         }
+        if (mpe_details) {
+            self->_state->displayMpeConfigDetails = [mpe_details boolValue];
+        }
         if (auto_trim) {
             self->_state->autoTrimRecordings = [auto_trim boolValue];
         }
@@ -792,6 +796,7 @@
 - (NSDictionary*)currentSettingsToDict {
     return @{
         @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.load()),
+        @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.load()),
         @"AutoTrimRecordings" : @(_state->autoTrimRecordings.load()),
         @"Routing" : @(_routingButton.selected),
         @"Repeat" : @(_repeatButton.selected),
@@ -990,20 +995,25 @@
 }
 
 - (void)renderMpeIndicators {
+    const NSString* mpe_label_short = @"MPE";
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MPEState& state = _state->track[t].mpeState;
         BOOL button_hidden = (state.enabled == false);
-        if (button_hidden != mpe_button[t].hidden) {
+        if (button_hidden != mpe_button[t].hidden ||
+            (_state->displayMpeConfigDetails && mpe_button[t].currentTitle.length == mpe_label_short.length) ||
+            (!_state->displayMpeConfigDetails && mpe_button[t].currentTitle.length != mpe_label_short.length)) {
             mpe_button[t].hidden = button_hidden;
             NSString* mpe_label = @"";
             if (state.enabled) {
-                mpe_label = @"MPE";
-                if (state.zone1Active) {
-                    mpe_label = [mpe_label stringByAppendingFormat:@" L:%d", state.zone1Members.load()];
-                }
-                if (state.zone2Active) {
-                    mpe_label = [mpe_label stringByAppendingFormat:@" U:%d", state.zone2Members.load()];
+                mpe_label = [NSString stringWithFormat:@"%@", mpe_label_short];
+                if (_state->displayMpeConfigDetails) {
+                    if (state.zone1Active) {
+                        mpe_label = [mpe_label stringByAppendingFormat:@" L:%d", state.zone1Members.load()];
+                    }
+                    if (state.zone2Active) {
+                        mpe_label = [mpe_label stringByAppendingFormat:@" U:%d", state.zone2Members.load()];
+                    }
                 }
             }
             

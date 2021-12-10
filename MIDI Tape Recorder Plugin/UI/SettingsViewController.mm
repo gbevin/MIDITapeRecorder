@@ -11,6 +11,7 @@
 @interface SettingsViewController ()
 
 @property (weak, nonatomic) IBOutlet UIButton* sendMpeConfigOnPlayButton;
+@property (weak, nonatomic) IBOutlet UIButton* displayMpeConfigDetailsButton;
 @property (weak, nonatomic) IBOutlet UIButton* autoTrimRecordingsButton;
 
 @end
@@ -22,6 +23,11 @@
 - (IBAction)sendMpeConfigOnPlayPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     _mainViewController.state->sendMpeConfigOnPlay = sender.selected;
+}
+
+- (IBAction)displayMpeConfigDetailsPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    _mainViewController.state->displayMpeConfigDetails = sender.selected;
 }
 
 - (IBAction)autoTrimRecordingsPressed:(UIButton*)sender {
@@ -37,6 +43,7 @@
 
 - (void)sync {
     _sendMpeConfigOnPlayButton.selected = _mainViewController.state->sendMpeConfigOnPlay;
+    _displayMpeConfigDetailsButton.selected = _mainViewController.state->displayMpeConfigDetails;
     _autoTrimRecordingsButton.selected = _mainViewController.state->autoTrimRecordings;
 }
 
