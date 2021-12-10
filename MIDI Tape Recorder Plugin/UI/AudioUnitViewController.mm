@@ -1,5 +1,5 @@
 //
-//  AudioUnitViewController.m
+//  AudioUnitViewController.mm
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -13,12 +13,14 @@
 #include "Constants.h"
 
 #import "ActivityIndicatorView.h"
+#import "AboutViewController.h"
 #import "PopupView.h"
 #import "MidiQueueProcessor.h"
 #import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiTrackView.h"
 #import "MPEButton.h"
+#import "SettingsViewController.h"
 #import "TimelineView.h"
 
 @interface AudioUnitViewController ()
@@ -111,8 +113,8 @@
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack3;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack4;
 
-@property (weak, nonatomic) IBOutlet PopupView* settingsView;
-@property (weak, nonatomic) IBOutlet PopupView* aboutView;
+@property (weak, nonatomic) IBOutlet UIView* settingsView;
+@property (weak, nonatomic) IBOutlet UIView* aboutView;
 
 @end
 
@@ -408,6 +410,10 @@
     }
 }
 
+- (void)closeSettingsView {
+    [self closeSettingsView:nil];
+}
+
 - (IBAction)closeSettingsView:(id)sender {
     _settingsButton.selected = NO;
     _settingsView.hidden = YES;
@@ -440,23 +446,8 @@
     }
 }
 
-- (void)openURL:(NSURL*)url {
-    Class UIApplicationClass = NSClassFromString(@"UIApplication");
-    if (UIApplicationClass && [UIApplicationClass respondsToSelector:@selector(sharedApplication)]) {
-        UIApplication* application = [UIApplication performSelector:@selector(sharedApplication)];
-        if (application && [application respondsToSelector:@selector(openURL:)]) {
-            [application performSelector:@selector(openURL:) withObject:url];
-        }
-    }
-}
-
-- (IBAction)openWebSite:(id)sender {
-    [self openURL:[NSURL URLWithString:@"https://github.com/gbevin/MIDITapeRecorder"]];
-}
-
-- (IBAction)leaveRating:(id)sender {
-    NSURL* url = [NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1598618004&pageNumber=0&sortOrdering=3&mt=8"];
-    [self openURL:url];
+- (void)closeAboutView {
+    [self closeAboutView:nil];
 }
 
 - (IBAction)closeAboutView:(id)sender {
@@ -1014,6 +1005,17 @@
     MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         block(t, midi_track[t]);
+    }
+}
+
+#pragma mark Segues
+
+- (void)prepareForSegue:(UIStoryboardSegue*)segue sender:(id)sender {
+    if ([[segue identifier] isEqualToString:@"EmbedAbout"]) {
+        ((AboutViewController*)segue.destinationViewController).mainViewController = self;
+    }
+    if ([[segue identifier] isEqualToString:@"EmbedSettings"]) {
+        ((SettingsViewController*)segue.destinationViewController).mainViewController = self;
     }
 }
 

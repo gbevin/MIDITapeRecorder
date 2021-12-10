@@ -17,6 +17,8 @@
 		268A930F276186EC00B2D74A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268A930E276186EC00B2D74A /* QuartzCore.framework */; };
 		268A93142762793000B2D74A /* MPEButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A93132762793000B2D74A /* MPEButton.mm */; };
 		268A93162762817800B2D74A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268A93152762817800B2D74A /* MainInterface.storyboard */; };
+		268A931C2762CEAA00B2D74A /* AboutViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A931B2762CEAA00B2D74A /* AboutViewController.mm */; };
+		268A931F2762D21200B2D74A /* SettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A931D2762D21200B2D74A /* SettingsViewController.mm */; };
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
@@ -91,6 +93,10 @@
 		268A93132762793000B2D74A /* MPEButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MPEButton.mm; sourceTree = "<group>"; };
 		268A93152762817800B2D74A /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		268A93182762997400B2D74A /* MPEState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPEState.h; sourceTree = "<group>"; };
+		268A931A2762CEAA00B2D74A /* AboutViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AboutViewController.h; sourceTree = "<group>"; };
+		268A931B2762CEAA00B2D74A /* AboutViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AboutViewController.mm; sourceTree = "<group>"; };
+		268A931D2762D21200B2D74A /* SettingsViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsViewController.mm; sourceTree = "<group>"; };
+		268A931E2762D21200B2D74A /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		26B140832754590300748F00 /* TPCircularBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TPCircularBuffer.h; sourceTree = "<group>"; };
 		26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "TPCircularBuffer+AudioBufferList.c"; sourceTree = "<group>"; };
 		26B140872754590300748F00 /* TPCircularBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TPCircularBuffer.c; sourceTree = "<group>"; };
@@ -281,6 +287,8 @@
 			children = (
 				26BB3861275338EE00342496 /* AudioUnitViewController.h */,
 				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
+				268A931A2762CEAA00B2D74A /* AboutViewController.h */,
+				268A931B2762CEAA00B2D74A /* AboutViewController.mm */,
 				261342772753D855001FF0BB /* ActivityIndicatorView.h */,
 				261342782753D869001FF0BB /* ActivityIndicatorView.mm */,
 				26E06B8E2759427300D7257E /* MenuButton.h */,
@@ -291,6 +299,8 @@
 				268A930B27616A2200B2D74A /* PlayheadView.mm */,
 				266465EE27597987002D4459 /* PopupView.h */,
 				266465EF27597988002D4459 /* PopupView.mm */,
+				268A931E2762D21200B2D74A /* SettingsViewController.h */,
+				268A931D2762D21200B2D74A /* SettingsViewController.mm */,
 				266465EB27596B50002D4459 /* ToolBarButton.h */,
 				266465EC27596B50002D4459 /* ToolBarButton.mm */,
 				26C49D162756D04400A6FAB4 /* MidiTrackView.h */,
@@ -465,6 +475,7 @@
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
+				268A931C2762CEAA00B2D74A /* AboutViewController.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */,
 				26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */,
@@ -476,6 +487,7 @@
 				26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */,
 				26E06B8F2759427300D7257E /* MenuButton.mm in Sources */,
 				266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */,
+				268A931F2762D21200B2D74A /* SettingsViewController.mm in Sources */,
 				26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -17,4 +17,7 @@
 - (NSDictionary*)currentSettingsToDict;
 - (NSDictionary*)currentRecordingsToDict;
 
+- (void)closeAboutView;
+- (void)closeSettingsView;
+
 @end
