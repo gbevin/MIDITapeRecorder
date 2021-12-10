@@ -206,8 +206,15 @@
     _state = _audioUnit.kernelAdapter.state;
     [_midiQueueProcessor setState:_state];
     
-    // get the parameter tree and add observers for any parameters that the UI needs to keep in sync with the AudioUnit
     AudioUnitViewController* __weak weak_self = self;
+    // sync the settings UI with the default settings
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AudioUnitViewController* s = weak_self;
+        if (!s) return;
+        [s->_settingsViewController sync];
+    });
+
+    // get the parameter tree and add observers for any parameters that the UI needs to keep in sync with the AudioUnit
     [_audioUnit.parameterTree tokenByAddingParameterObserver:^(AUParameterAddress address, AUValue value) {
         dispatch_async(dispatch_get_main_queue(), ^{
             AudioUnitViewController* s = weak_self;
