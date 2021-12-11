@@ -270,6 +270,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
             MidiTrackState& track_state = _state.track[t];
             track_state.recordedMessages.reset();
             track_state.recordedBeatToIndex.reset();
+            track_state.recordedPreview.reset();
             track_state.recordedLength = 0;
             track_state.recordedDuration = 0.0;
         }
