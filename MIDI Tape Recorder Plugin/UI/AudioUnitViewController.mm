@@ -1074,6 +1074,7 @@
 
 - (void)renderPlayhead {
     // playhead position
+    _state->playPositionBeats = MIN(_state->playPositionBeats.load(), _state->maxDuration.load());
     _playheadLeading.constant = _state->playPositionBeats * PIXELS_PER_BEAT;
     _playhead.hidden = ![self hasRecordedDuration];
 
@@ -1091,6 +1092,7 @@
     }
     
     // start position crop marker
+    _state->startPositionBeats = MIN(_state->startPositionBeats.load(), _state->maxDuration.load());
     _overlayLeft.hidden = _playhead.hidden;
     _cropLeft.hidden = _playhead.hidden;
     if (!_cropLeft.hidden) {
@@ -1101,6 +1103,7 @@
     }
 
     // stop position crop marker
+    _state->stopPositionBeats = MIN(_state->stopPositionBeats.load(), _state->maxDuration.load());
     _overlayRight.hidden = _playhead.hidden;
     _cropRight.hidden = _playhead.hidden;
     if (!_cropRight.hidden) {
