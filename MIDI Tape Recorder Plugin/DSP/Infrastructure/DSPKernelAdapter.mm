@@ -143,7 +143,9 @@
 
         if (kernel->_ioState.transportStateBlock) {
             AUHostTransportStateFlags transport_state_flags;
-            kernel->_ioState.transportStateBlock(&transport_state_flags, &kernel->_ioState.transportSamplePosition, nil, nil);
+            double sample_position;
+            kernel->_ioState.transportStateBlock(&transport_state_flags, &sample_position, nil, nil);
+            kernel->_ioState.transportSamplePosition = sample_position;
             kernel->_ioState.transportChanged = transport_state_flags & AUHostTransportStateChanged;
             BOOL moving = transport_state_flags & AUHostTransportStateMoving;
             if (moving != kernel->_ioState.transportMoving) {
@@ -154,10 +156,10 @@
         
         if (kernel->_ioState.musicalContext) {
             double tempo = 120.0;
-            double beat_pos = 0.0;
-            kernel->_ioState.musicalContext(&tempo, nil, nil, &beat_pos, nil, nil);
+            double beat_position = 0.0;
+            kernel->_ioState.musicalContext(&tempo, nil, nil, &beat_position, nil, nil);
+            kernel->_ioState.currentBeatPosition = beat_position;
             kernel->_state.tempo = tempo;
-            kernel->_state.currentBeatPos = beat_pos;
             kernel->_state.secondsToBeats = tempo / 60.0;
             kernel->_state.beatsToSeconds = 60.0 / tempo;
         }

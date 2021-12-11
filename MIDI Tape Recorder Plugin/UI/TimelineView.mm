@@ -71,10 +71,11 @@
             
             // draw vertical beat bars
             UIBezierPath* beat_path = [UIBezierPath bezierPath];
-            [beat_path moveToPoint:CGPointMake(x, 0.0)];
-            [beat_path addLineToPoint:CGPointMake(x, self.frame.size.height)];
+            [beat_path moveToPoint:CGPointMake(0.0, 0.0)];
+            [beat_path addLineToPoint:CGPointMake(0.0, self.frame.size.height)];
             
             CAShapeLayer* beat_layer = [CAShapeLayer layer];
+            beat_layer.frame = CGRectMake(x, 0, PIXELS_PER_BEAT, self.frame.size.height);
             beat_layer.contentsScale = [UIScreen mainScreen].scale;
             beat_layer.path = beat_path.CGPath;
             beat_layer.opacity = 1.0;
@@ -85,8 +86,7 @@
             // draw the beat numbers
             CATextLayer* text_layer = [CATextLayer new];
             text_layer.contentsScale = [UIScreen mainScreen].scale;
-            text_layer.bounds = CGRectMake(0.0, 0.0, PIXELS_PER_BEAT - 8, self.frame.size.height - 2);
-            text_layer.position = CGPointMake(x + 16, 10);
+            text_layer.frame = CGRectMake(x + 4.0, 7.0, PIXELS_PER_BEAT - 8, self.frame.size.height - 2);
             text_layer.string = [NSString stringWithFormat:@"%d", int(x / PIXELS_PER_BEAT) + 1];
             text_layer.foregroundColor = [UIColor lightGrayColor].CGColor;
             text_layer.font = font_ref;

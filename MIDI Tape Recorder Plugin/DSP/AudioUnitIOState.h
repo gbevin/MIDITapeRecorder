@@ -8,18 +8,21 @@
 
 #pragma once
 
+#include <atomic>
+
 #import <AudioToolbox/AUAudioUnit.h>
 #import <CoreAudio/CoreAudioTypes.h>
 
 struct AudioUnitIOState {
-    int32_t channelCount    { 0 };
-    float sampleRate        { 44100.f };
-    uint32_t frameCount     { 0 };
+    std::atomic<int32_t> channelCount   { 0 };
+    std::atomic<float> sampleRate       { 44100.f };
+    std::atomic<uint32_t> frameCount    { 0 };
     
-    bool transportChanged          { false };
-    bool transportMoving           { false };
-    double transportSamplePosition { 0.0 };
-    
+    std::atomic<bool> transportChanged          { false };
+    std::atomic<bool> transportMoving           { false };
+    std::atomic<double> transportSamplePosition { 0.0 };
+    std::atomic<double> currentBeatPosition     { 0.0 };
+
     const AudioTimeStamp* timestamp    { nullptr };
 
     AUMIDIOutputEventBlock midiOutputEventBlock     { nullptr };

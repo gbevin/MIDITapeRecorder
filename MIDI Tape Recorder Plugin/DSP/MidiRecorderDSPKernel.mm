@@ -41,7 +41,13 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 }
 
 void MidiRecorderDSPKernel::rewind() {
-    _state.playDurationBeats = 0.0;
+    double start_position = _state.startPositionBeats.load();
+    if (_state.playPositionBeats > start_position) {
+        _state.playPositionBeats = start_position;
+    }
+    else {
+        _state.playPositionBeats = 0.0;
+    }
     turnOffAllNotes();
 }
 
@@ -231,41 +237,41 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         // begin recording
         {
-            int32_t expected = true;
-            if (_state.scheduledBeginRecording[t].compare_exchange_strong(expected, false)) {
+            bool active = true;
+            if (_state.scheduledBeginRecording[t].compare_exchange_strong(active, false)) {
                 turnOffAllNotesForTrack(t);
                 _state.track[t].recording = YES;
             }
         }
         // end recording
         {
-            int32_t expected = true;
-            if (_state.scheduledEndRecording[t].compare_exchange_strong(expected, false)) {
+            bool active = true;
+            if (_state.scheduledEndRecording[t].compare_exchange_strong(active, false)) {
                 _state.track[t].recording = NO;
             }
         }
         // ensure notes off
         {
-            int32_t expected = true;
-            if (_state.scheduledNotesOff[t].compare_exchange_strong(expected, false)) {
+            bool active = true;
+            if (_state.scheduledNotesOff[t].compare_exchange_strong(active, false)) {
                 turnOffAllNotesForTrack(t);
             }
         }
         // invalidate
         {
-            int32_t expected = true;
-            if (_state.scheduledInvalidate[t].compare_exchange_strong(expected, false)) {
-                MidiTrackState& state = _state.track[t];
-                state.recordedMessages.reset();
-                state.recordedBeatToIndex.reset();
-                state.recordedLength = 0;
-                state.recordedDuration = 0.0;
+            bool active = true;
+            if (_state.scheduledInvalidate[t].compare_exchange_strong(active, false)) {
+                MidiTrackState& track_state = _state.track[t];
+                track_state.recordedMessages.reset();
+                track_state.recordedBeatToIndex.reset();
+                track_state.recordedLength = 0;
+                track_state.recordedDuration = 0.0;
             }
         }
         // send MCM
         {
-            int32_t expected = true;
-            if (_state.scheduledSendMCM[t].compare_exchange_strong(expected, false)) {
+            bool active = true;
+            if (_state.scheduledSendMCM[t].compare_exchange_strong(active, false)) {
                 sendMCM(t);
             }
         }
@@ -273,8 +279,8 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
     
     // rewind
     {
-        int32_t expected = true;
-        if (_state.scheduledRewind.compare_exchange_strong(expected, false)) {
+        bool active = true;
+        if (_state.scheduledRewind.compare_exchange_strong(active, false)) {
             if (_isPlaying) {
                 _state.transportStartSampleSeconds = timeSampleSeconds;
             }
@@ -284,10 +290,10 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
 
     // play
     {
-        int32_t expected = true;
-        if (_state.scheduledPlay.compare_exchange_strong(expected, false)) {
+        bool active = true;
+        if (_state.scheduledPlay.compare_exchange_strong(active, false)) {
             if (_state.transportStartSampleSeconds == 0.0) {
-                _state.transportStartSampleSeconds = timeSampleSeconds - _state.playDurationBeats * _state.beatsToSeconds;
+                _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
             }
             play();
         }
@@ -295,16 +301,16 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
 
     // stop
     {
-        int32_t expected = true;
-        if (_state.scheduledStop.compare_exchange_strong(expected, false)) {
+        bool active = true;
+        if (_state.scheduledStop.compare_exchange_strong(active, false)) {
             stop();
         }
     }
 
     // stop and rewind
     {
-        int32_t expected = true;
-        if (_state.scheduledStopAndRewind.compare_exchange_strong(expected, false)) {
+        bool active = true;
+        if (_state.scheduledStopAndRewind.compare_exchange_strong(active, false)) {
             stop();
             rewind();
         }
@@ -312,8 +318,8 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
 
     // reach end
     {
-        int32_t expected = true;
-        if (_state.scheduledReachEnd.compare_exchange_strong(expected, false)) {
+        bool active = true;
+        if (_state.scheduledReachEnd.compare_exchange_strong(active, false)) {
             _isPlaying = NO;
             _state.scheduledUIStopAndRewind = true;
         }
@@ -354,9 +360,9 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     }
     else {
         for (int t = 0; t < MIDI_TRACKS; ++t) {
-            MidiTrackState& state = _state.track[t];
+            MidiTrackState& track_state = _state.track[t];
             
-            if (state.monitorEnabled && !state.muteEnabled && state.sourceCable == midiEvent.cable) {
+            if (track_state.monitorEnabled && !track_state.muteEnabled && track_state.sourceCable == midiEvent.cable) {
                 _state.track[t].activityOutput = true;
                 passThroughMIDIEvent(midiEvent, t);
             }
@@ -383,44 +389,44 @@ void MidiRecorderDSPKernel::processOutput() {
 
         // calculate the range of beat positions between which the recorded messages
         // should be played
-        double play_duration = _state.playDurationBeats;
+        double play_position = _state.playPositionBeats;
         // if the host transport is moving, make that take precedence
         if (_ioState.transportMoving) {
-            play_duration = _state.currentBeatPos;
+            play_position = _ioState.currentBeatPosition;
         }
-        double beatrange_begin = play_duration;
+        double beatrange_begin = play_position;
         double beatrange_end = beatrange_begin + frames_beats;
 
         // if there's a significant discontinuity between the output processing calls,
         // forcible ensure that all notes are turned off
-        if (ABS(play_duration - _state.playDurationBeats) >= frames_beats) {
+        if (ABS(play_position - _state.playPositionBeats) >= frames_beats) {
             turnOffAllNotes();
         }
         
         // store the play duration for the next process call
-        _state.playDurationBeats = beatrange_end;
+        _state.playPositionBeats = beatrange_end;
         
         BOOL reached_end = YES;
         
         // process all the messages on all the tracks
         for (int t = 0; t < MIDI_TRACKS; ++t) {
-            MidiTrackState& state = _state.track[t];
+            MidiTrackState& track_state = _state.track[t];
             
             // don't play if the track is recording
-            if (state.recording) {
+            if (track_state.recording) {
                 reached_end = NO;
             }
             // play when there are recorded messages
-            else if (state.recordedMessages && state.recordedLength > 0) {
-                uint64_t play_counter = state.recordedLength;
+            else if (track_state.recordedMessages && track_state.recordedLength > 0) {
+                uint64_t play_counter = track_state.recordedLength;
 
                 int beat_begin = (int)beatrange_begin;
-                if (beat_begin < state.recordedBeatToIndex->size()) {
-                    play_counter = (*state.recordedBeatToIndex)[beat_begin];
+                if (beat_begin < track_state.recordedBeatToIndex->size()) {
+                    play_counter = (*track_state.recordedBeatToIndex)[beat_begin];
                 }
 
-                while (play_counter < state.recordedLength) {
-                    const RecordedMidiMessage& message = (*state.recordedMessages)[play_counter];
+                while (play_counter < track_state.recordedLength) {
+                    const RecordedMidiMessage& message = (*track_state.recordedMessages)[play_counter];
                     play_counter += 1;
                     
                     // check if the message is outdated
@@ -432,12 +438,12 @@ void MidiRecorderDSPKernel::processOutput() {
                         
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
-                        if (!state.muteEnabled && _ioState.midiOutputEventBlock) {
+                        if (!track_state.muteEnabled && _ioState.midiOutputEventBlock) {
                             const double offset_seconds = (message.offsetBeats - beatrange_end) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
-                            state.activityOutput = true;
+                            track_state.activityOutput = true;
                             
                             // track note on/off states
                             trackNotesForTrack(t, message);
@@ -457,7 +463,8 @@ void MidiRecorderDSPKernel::processOutput() {
                     }
                 }
                 
-                if (beatrange_end < state.recordedDuration) {
+                if (beatrange_end < track_state.recordedDuration &&
+                    (!_state.stopPositionSet || beatrange_end < _state.stopPositionBeats)) {
                     reached_end = NO;
                 }
             }

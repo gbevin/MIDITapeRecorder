@@ -14,12 +14,14 @@
 
 #import "ActivityIndicatorView.h"
 #import "AboutViewController.h"
-#import "PopupView.h"
+#import "CropLeftView.h"
+#import "CropRightView.h"
 #import "MidiQueueProcessor.h"
 #import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiTrackView.h"
 #import "MPEButton.h"
+#import "PopupView.h"
 #import "SettingsViewController.h"
 #import "TimelineView.h"
 
@@ -109,6 +111,16 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* playheadLeading;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* playheadPanGesture;
 
+@property (weak, nonatomic) IBOutlet UIView* overlayLeft;
+@property (weak, nonatomic) IBOutlet CropLeftView* cropLeft;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* cropLeftLeading;
+@property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* cropLeftPanGesture;
+
+@property (weak, nonatomic) IBOutlet UIView* overlayRight;
+@property (weak, nonatomic) IBOutlet CropRightView* cropRight;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* cropRightLeading;
+@property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* cropRightPanGesture;
+
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack1;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack2;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack3;
@@ -145,7 +157,7 @@
     
     CGFloat _extendedMenuPopupWidth;
     
-    BOOL _playheadPanActive;
+    UIView* _activePannedMarker;
     CGPoint _autoPan;
 }
 
@@ -165,7 +177,7 @@
         }
         
         _autoPlayFromRecord = NO;
-        _playheadPanActive = NO;
+        _activePannedMarker = nil;
         _autoPan = CGPointZero;
     }
     
@@ -384,6 +396,14 @@
 
 #pragma mark IBAction - Clear All
 
+- (void)clearAllMarkerPositions {
+    _state->playPositionBeats = 0.0;
+    _state->startPositionBeats = 0.0;
+    _state->startPositionSet = false;
+    _state->stopPositionSet = false;
+    _state->stopPositionBeats = 0.0;
+}
+
 - (IBAction)clearAllPressed:(UIButton*)sender {
     [self hideMenuPopups];
 
@@ -394,8 +414,8 @@
             [view setNeedsLayout];
         }];
 
-        // since the recorder is fully empty, reset transport
-        _state->playDurationBeats = 0.0;
+        // since the recorder is fully empty, reset all markers
+        [self clearAllMarkerPositions];
     }
 }
 
@@ -650,7 +670,7 @@
         
         // if the recorder is fully empty, reset transport
         if (![self hasRecordedDuration]) {
-            _state->playDurationBeats = 0.0;
+            [self clearAllMarkerPositions];
         }
     }
 }
@@ -661,25 +681,61 @@
     [self setPlayDurationForGesture:gesture];
 }
 
+- (IBAction)cropLeftDoubleTapGesture:(UITapGestureRecognizer*)sender {
+    _state->startPositionSet = false;
+    _state->startPositionBeats = 0.0;
+}
+
+- (IBAction)cropRightDoubleTapGesture:(UITapGestureRecognizer*)sender {
+    _state->stopPositionSet = false;
+    _state->stopPositionBeats = _state->maxDuration.load();
+}
+
+- (double)calculateBeatPositionForGesture:(UIGestureRecognizer*)gesture {
+    return MIN(MAX([gesture locationInView:_tracks].x / PIXELS_PER_BEAT, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT);
+}
+
 - (void)setPlayDurationForGesture:(UIGestureRecognizer*)gesture {
     if (gesture.numberOfTouches == 1) {
-        _state->playDurationBeats = MIN(MAX([gesture locationInView:_tracks].x / PIXELS_PER_BEAT, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT);
+        _state->playPositionBeats = [self calculateBeatPositionForGesture:gesture];
     }
 }
 
-- (IBAction)playheadPanGesture:(UIPanGestureRecognizer*)gesture {
+- (void)setCropLeftForGesture:(UIGestureRecognizer*)gesture {
+    if (gesture.numberOfTouches == 1) {
+        _state->startPositionSet = true;
+        _state->startPositionBeats = MIN([self calculateBeatPositionForGesture:gesture], _state->stopPositionBeats.load());
+    }
+}
+
+- (void)setCropRightForGesture:(UIGestureRecognizer*)gesture {
+    if (gesture.numberOfTouches == 1) {
+        _state->stopPositionSet = true;
+        _state->stopPositionBeats = MAX([self calculateBeatPositionForGesture:gesture], _state->startPositionBeats.load());
+    }
+}
+
+- (IBAction)markerPanGesture:(UIPanGestureRecognizer*)gesture {
     if (gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
         if (gesture.state == UIGestureRecognizerStateBegan) {
             [self resetAutomaticPanning];
-            _playheadPanActive = YES;
         }
-
-        [self setPlayDurationForGesture:gesture];
+        
+        _activePannedMarker = gesture.view;
+        if (_activePannedMarker == _playhead) {
+            [self setPlayDurationForGesture:gesture];
+        }
+        else if (_activePannedMarker == _cropLeft) {
+            [self setCropLeftForGesture:gesture];
+        }
+        else if (_activePannedMarker == _cropRight) {
+            [self setCropRightForGesture:gesture];
+        }
 
         const CGPoint pos = [gesture locationInView:_tracks.superview];
         const CGRect frame = _tracks.frame;
         const CGFloat pan_margin = 5.0;
-        const CGFloat pan_scale = 3.5;
+        const CGFloat pan_scale = 2.0;
         
         CGFloat left_boundary = frame.origin.x - 10.0 + pan_margin;
         CGFloat right_boundary = frame.origin.x + frame.size.width - 10.0 - pan_margin;
@@ -692,25 +748,30 @@
         }
         if (ABS(pan_x) < 1.0) {
             CGFloat sign = (pan_x < 0.0) ? -1.0 : 1.0;
-            pan_x = sign * pow(ABS(pan_x), 1.0/3.0);
+            pan_x = sign * pow(ABS(pan_x), 1.0/4.0);
         }
         
         _autoPan = CGPointMake(pan_x, 0);
     }
     else {
         [self resetAutomaticPanning];
-        _playheadPanActive = NO;
+        _activePannedMarker = nil;
     }
 }
 
 #pragma mark - State
 
 - (void)readSettingsFromDict:(NSDictionary*)dict {
-    id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
-    id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
-    id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
+    id start_position_set = [dict objectForKey:@"startPositionSet"];
+    id start_position_beats = [dict objectForKey:@"startPositionBeats"];
+    id stop_position_set = [dict objectForKey:@"stopPositionSet"];
+    id stop_position_beats = [dict objectForKey:@"stopPositionBeats"];
+    id play_position_beats = [dict objectForKey:@"playPositionBeats"];
+
     id routing = [dict objectForKey:@"Routing"];
+    
     id repeat = [dict objectForKey:@"Repeat"];
+    
     id record1 = [dict objectForKey:@"Record1"];
     id record2 = [dict objectForKey:@"Record2"];
     id record3 = [dict objectForKey:@"Record3"];
@@ -723,15 +784,36 @@
     id mute2 = [dict objectForKey:@"Mute2"];
     id mute3 = [dict objectForKey:@"Mute3"];
     id mute4 = [dict objectForKey:@"Mute4"];
+    
+    id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
+    id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
+    id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (start_position_set) {
+            self->_state->startPositionSet = [start_position_set boolValue];
+        }
+        if (start_position_beats) {
+            self->_state->startPositionBeats = [start_position_beats doubleValue];
+        }
+        if (stop_position_set) {
+            self->_state->stopPositionSet = [stop_position_set boolValue];
+        }
+        if (stop_position_beats) {
+            self->_state->stopPositionBeats = [stop_position_beats doubleValue];
+        }
+        if (play_position_beats) {
+            self->_state->playPositionBeats = [play_position_beats doubleValue];
+        }
+
+        if (routing) {
+            self->_routingButton.selected = [routing boolValue];
+        }
+
         if (repeat) {
             self->_repeatButton.selected = [repeat boolValue];
         }
         
-        if (routing) {
-            self->_routingButton.selected = [routing boolValue];
-        }
         if (record1) {
             self->_recordButton1.selected = [record1 boolValue];
         }
@@ -803,9 +885,11 @@
 
 - (NSDictionary*)currentSettingsToDict {
     return @{
-        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.load()),
-        @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.load()),
-        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.load()),
+        @"startPositionSet" : @(_state->startPositionSet.load()),
+        @"startPositionBeats" : @(_state->startPositionBeats.load()),
+        @"stopPositionSet" : @(_state->stopPositionSet.load()),
+        @"stopPositionBeats" : @(_state->stopPositionBeats.load()),
+        @"playPositionBeats" : @(_state->playPositionBeats.load()),
         @"Routing" : @(_routingButton.selected),
         @"Repeat" : @(_repeatButton.selected),
         @"Record1" : @(_recordButton1.selected),
@@ -819,7 +903,10 @@
         @"Mute1" : @(_muteButton1.selected),
         @"Mute2" : @(_muteButton2.selected),
         @"Mute3" : @(_muteButton3.selected),
-        @"Mute4" : @(_muteButton4.selected)
+        @"Mute4" : @(_muteButton4.selected),
+        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.load()),
+        @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.load()),
+        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.load())
     };
 }
 
@@ -942,20 +1029,29 @@
 }
 
 - (void)handleScheduledActions {
-    int32_t one = true;
-    if (_state->scheduledUIStopAndRewind.compare_exchange_strong(one, false)) {
-        [self setPlay:NO];
-        _state->scheduledRewind = true;
+    // rewind UI
+    {
+        bool active = true;
+        if (_state->scheduledUIStopAndRewind.compare_exchange_strong(active, false)) {
+            [self setPlay:NO];
+            _state->scheduledRewind = true;
+        }
     }
 
-    one = true;
-    if (_state->scheduledUIPlay.compare_exchange_strong(one, false)) {
-        [self setPlay:YES];
+    // play UI
+    {
+        bool active = true;
+        if (_state->scheduledUIPlay.compare_exchange_strong(active, false)) {
+            [self setPlay:YES];
+        }
     }
 
-    one = true;
-    if (_state->scheduledUIStop.compare_exchange_strong(one, false)) {
-        [self setPlay:NO];
+    // stop UI
+    {
+        bool active = true;
+        if (_state->scheduledUIStop.compare_exchange_strong(active, false)) {
+            [self setPlay:NO];
+        }
     }
 }
 
@@ -972,6 +1068,8 @@
             [view setNeedsLayout];
         }
     }];
+    
+    _state->maxDuration = max_duration;
     _timelineWidth.constant = max_duration * PIXELS_PER_BEAT;
 }
 
@@ -988,12 +1086,12 @@
 }
 
 - (void)renderPlayhead {
-    // playhead positioning
-    _playheadLeading.constant = _state->playDurationBeats * PIXELS_PER_BEAT;
-    
-    // scroll view location
+    // playhead position
+    _playheadLeading.constant = _state->playPositionBeats * PIXELS_PER_BEAT;
     _playhead.hidden = ![self hasRecordedDuration];
-    if (!_playhead.hidden && (_playButton.selected || _recordButton.selected)) {
+
+    // scroll view location
+    if (!_playhead.hidden && !_activePannedMarker && (_playButton.selected || _recordButton.selected)) {
         CGFloat content_offset;
         if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
             content_offset = 0.0;
@@ -1004,11 +1102,31 @@
         }
         [_tracks setContentOffset:CGPointMake(content_offset, 0) animated:NO];
     }
+    
+    // start position crop marker
+    _overlayLeft.hidden = _playhead.hidden;
+    _cropLeft.hidden = _playhead.hidden;
+    if (!_cropLeft.hidden) {
+        if (!_state->startPositionSet && !_activePannedMarker) {
+            _state->startPositionBeats = 0.0;
+        }
+        _cropLeftLeading.constant = _state->startPositionBeats * PIXELS_PER_BEAT;
+    }
+
+    // stop position crop marker
+    _overlayRight.hidden = _playhead.hidden;
+    _cropRight.hidden = _playhead.hidden;
+    if (!_cropRight.hidden) {
+        if (!_state->stopPositionSet && !_activePannedMarker) {
+            _state->stopPositionBeats = _state->maxDuration.load();
+        }
+        _cropRightLeading.constant = _state->stopPositionBeats * PIXELS_PER_BEAT;
+    }
 }
 
 - (void)renderMpeIndicators {
-    int32_t one = true;
-    bool refresh_mpe_buttons = _state->scheduledUIMpeConfigChange.compare_exchange_strong(one, false);
+    bool active = true;
+    bool refresh_mpe_buttons = _state->scheduledUIMpeConfigChange.compare_exchange_strong(active, false);
 
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -1039,7 +1157,16 @@
         CGFloat offset_x = _tracks.contentOffset.x + _autoPan.x;
         offset_x = MAX(MIN(offset_x, _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left), 0.0);
         [_tracks setContentOffset:CGPointMake(offset_x, 0) animated:NO];
-        [self setPlayDurationForGesture:_playheadPanGesture];
+
+        if (_activePannedMarker == _playhead) {
+            [self setPlayDurationForGesture:_playheadPanGesture];
+        }
+        else if (_activePannedMarker == _cropLeft) {
+            [self setCropLeftForGesture:_cropLeftPanGesture];
+        }
+        else if (_activePannedMarker == _cropRight) {
+            [self setCropRightForGesture:_cropRightPanGesture];
+        }
     }
 }
 

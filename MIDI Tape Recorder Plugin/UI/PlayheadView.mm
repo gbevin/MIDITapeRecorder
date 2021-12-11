@@ -25,6 +25,8 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    self.layer.backgroundColor = UIColor.clearColor.CGColor;
+
     if (_playheadLayer) {
         [_playheadLayer removeFromSuperlayer];
     }
@@ -32,8 +34,9 @@
     _playheadLayer.contentsScale = [UIScreen mainScreen].scale;
     
     UIBezierPath* path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(self.frame.size.width / 2.0, 0.0)];
-    [path addLineToPoint:CGPointMake(self.frame.size.width / 2.0, self.frame.size.height)];
+    CGFloat x = self.frame.size.width / 2.0;
+    [path moveToPoint:CGPointMake(x, 0.0)];
+    [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
 
     _playheadLayer.path = path.CGPath;
     _playheadLayer.opacity = 1.0;

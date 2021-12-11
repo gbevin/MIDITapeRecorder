@@ -41,6 +41,8 @@
 		26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrackView.mm */; };
 		26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* TimelineView.mm */; };
 		26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiRecorder.mm */; };
+		26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7C07927641D78008C52C0 /* CropLeftView.mm */; };
+		26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7C07D27641FF8008C52C0 /* CropRightView.mm */; };
 		26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA262753415D00170CB2 /* AVFAudio.framework */; };
 		26C7DA29275343C500170CB2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA28275343C500170CB2 /* AudioToolbox.framework */; };
 		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
@@ -144,6 +146,10 @@
 		26C540C82757E801004E4813 /* QueuedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueuedMidiMessage.h; sourceTree = "<group>"; };
 		26C540C92757EC28004E4813 /* MidiTrackState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackState.h; sourceTree = "<group>"; };
 		26C540CB275823F0004E4813 /* RecordedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordedMidiMessage.h; sourceTree = "<group>"; };
+		26C7C07927641D78008C52C0 /* CropLeftView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CropLeftView.mm; sourceTree = "<group>"; };
+		26C7C07A27641D78008C52C0 /* CropLeftView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CropLeftView.h; sourceTree = "<group>"; };
+		26C7C07C27641FF8008C52C0 /* CropRightView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CropRightView.h; sourceTree = "<group>"; };
+		26C7C07D27641FF8008C52C0 /* CropRightView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CropRightView.mm; sourceTree = "<group>"; };
 		26C7DA262753415D00170CB2 /* AVFAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AVFAudio.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA28275343C500170CB2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/AudioToolbox.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA2A275343CF00170CB2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
@@ -294,6 +300,10 @@
 				268A931B2762CEAA00B2D74A /* AboutViewController.mm */,
 				261342772753D855001FF0BB /* ActivityIndicatorView.h */,
 				261342782753D869001FF0BB /* ActivityIndicatorView.mm */,
+				26C7C07A27641D78008C52C0 /* CropLeftView.h */,
+				26C7C07927641D78008C52C0 /* CropLeftView.mm */,
+				26C7C07C27641FF8008C52C0 /* CropRightView.h */,
+				26C7C07D27641FF8008C52C0 /* CropRightView.mm */,
 				26E06B8E2759427300D7257E /* MenuButton.h */,
 				26E06B8D2759427300D7257E /* MenuButton.mm */,
 				268A93122762793000B2D74A /* MPEButton.h */,
@@ -475,9 +485,11 @@
 				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderDSPKernel.mm in Sources */,
 				26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */,
+				26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */,
 				268A93142762793000B2D74A /* MPEButton.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
+				26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
 				268A931C2762CEAA00B2D74A /* AboutViewController.mm in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,

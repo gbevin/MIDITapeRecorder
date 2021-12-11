@@ -379,15 +379,47 @@ RECORDER</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ckn-XQ-W53" userLabel="Recorded 4" customClass="MidiTrackView">
                                         <rect key="frame" x="10" y="156" width="50" height="24"/>
                                     </view>
+                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NoZ-ht-iHV" userLabel="Overlay Left">
+                                        <rect key="frame" x="9" y="0.0" width="1" height="190"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NyG-Wr-Hs2" userLabel="Overlay Right">
+                                        <rect key="frame" x="10" y="0.0" width="50.5" height="190"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
                                         <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" systemColor="secondaryLabelColor"/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="31" id="Xru-0r-srh"/>
                                         </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
+                                        </connections>
+                                    </view>
+                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VMc-Bx-bLD" userLabel="Crop Left" customClass="CropLeftView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
+                                        <color key="backgroundColor" name="Green"/>
+                                        <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="31" id="umK-cF-G24"/>
+                                        </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="rFr-lR-4dd" appends="YES" id="HB6-2N-BaC"/>
+                                            <outletCollection property="gestureRecognizers" destination="9So-sX-ZSo" appends="YES" id="14o-D7-X5h"/>
+                                        </connections>
+                                    </view>
+                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y3y-Rr-807" userLabel="Crop Right" customClass="CropRightView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
+                                        <color key="backgroundColor" name="Green"/>
+                                        <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="31" id="LiY-bt-Nmu"/>
+                                        </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="OuL-cY-k9O" appends="YES" id="qvb-5A-OxM"/>
+                                            <outletCollection property="gestureRecognizers" destination="frJ-wJ-GTJ" appends="YES" id="E36-QM-ojA"/>
                                         </connections>
                                     </view>
                                     <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMO-Kd-c0J" userLabel="MPE 1" customClass="MPEButton">
@@ -517,15 +549,24 @@ RECORDER</string>
                                         <variation key="heightClass=compact-widthClass=compact" constant="10"/>
                                     </constraint>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="height" secondItem="GXf-2A-NeK" secondAttribute="height" id="6do-ga-VzD"/>
+                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="7QK-lW-3fX"/>
+                                    <constraint firstItem="VMc-Bx-bLD" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Aax-Ou-q5b"/>
+                                    <constraint firstItem="VMc-Bx-bLD" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="BRf-bf-ZUj"/>
                                     <constraint firstItem="1FX-bJ-B4M" firstAttribute="top" secondItem="gzW-Zc-U4q" secondAttribute="bottom" id="Brp-AU-J1T"/>
+                                    <constraint firstItem="NoZ-ht-iHV" firstAttribute="trailing" secondItem="VMc-Bx-bLD" secondAttribute="centerX" id="CHc-43-25r"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="Cjs-gZ-oPl"/>
                                     <constraint firstItem="L2y-q6-jop" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Cyh-7a-5kD"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="width" secondItem="k5P-YR-lyM" secondAttribute="width" id="DDy-C2-XlZ"/>
+                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Fbo-Ao-cQs"/>
                                     <constraint firstItem="gzW-Zc-U4q" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="Fiv-jH-bb6"/>
+                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="leading" secondItem="y3y-Rr-807" secondAttribute="centerX" id="GaW-3R-AEo"/>
+                                    <constraint firstItem="NoZ-ht-iHV" firstAttribute="leading" secondItem="k5P-YR-lyM" secondAttribute="leading" constant="-1" id="IW9-19-L45"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="JG5-GH-8T7"/>
+                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="trailing" secondItem="k5P-YR-lyM" secondAttribute="trailing" constant="0.5" id="KZL-bQ-X1w"/>
                                     <constraint firstItem="4hw-x8-hn8" firstAttribute="top" secondItem="8lV-Pg-F8C" secondAttribute="bottom" constant="10" id="NQp-ef-clu">
                                         <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                                     </constraint>
+                                    <constraint firstItem="NoZ-ht-iHV" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="NyZ-xB-xPt"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="top" secondItem="8lV-Pg-F8C" secondAttribute="bottom" constant="22" id="OYi-oa-fY8">
                                         <variation key="heightClass=compact-widthClass=compact" constant="18"/>
                                     </constraint>
@@ -546,17 +587,20 @@ RECORDER</string>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="top" secondItem="IWD-hQ-i8x" secondAttribute="bottom" constant="22" id="amw-kq-Ubg">
                                         <variation key="heightClass=compact-widthClass=compact" constant="18"/>
                                     </constraint>
+                                    <constraint firstItem="y3y-Rr-807" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="buh-cl-wMC"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="cTC-go-lpj"/>
                                     <constraint firstItem="L2y-q6-jop" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="cTi-we-c8t"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="width" secondItem="IWD-hQ-i8x" secondAttribute="width" id="cVV-dJ-oLw"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="dE6-vC-SDE"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="dkx-RY-Y8O"/>
                                     <constraint firstItem="g1V-ZB-qzJ" firstAttribute="leading" secondItem="4hw-x8-hn8" secondAttribute="leading" id="faK-oY-jy3"/>
+                                    <constraint firstItem="y3y-Rr-807" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="fzx-xw-BcM"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="gwU-og-p0T"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="hPE-Gu-xQW"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="bottom" secondItem="k5P-YR-lyM" secondAttribute="bottom" constant="2" id="k35-AA-hwr"/>
                                     <constraint firstItem="RMO-Kd-c0J" firstAttribute="top" secondItem="cNu-Gm-9pP" secondAttribute="bottom" id="lIZ-hk-Yne"/>
                                     <constraint firstItem="q3i-Q2-tin" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="ly0-RB-t3l"/>
+                                    <constraint firstItem="NoZ-ht-iHV" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="mqC-oD-pSK"/>
                                     <constraint firstAttribute="height" constant="236" id="mt9-bi-SmS">
                                         <variation key="heightClass=compact-widthClass=compact" constant="190"/>
                                     </constraint>
@@ -564,6 +608,7 @@ RECORDER</string>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="n4A-Rm-Q6y"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="nAB-sM-EPV"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="width" secondItem="8lV-Pg-F8C" secondAttribute="width" id="pYn-P7-tvT"/>
+                                    <constraint firstItem="y3y-Rr-807" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="sfN-g5-jLt"/>
                                     <constraint firstItem="RMO-Kd-c0J" firstAttribute="leading" secondItem="cNu-Gm-9pP" secondAttribute="leading" id="uln-WH-xag"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="height" secondItem="GXf-2A-NeK" secondAttribute="height" id="uvZ-Gd-CAe"/>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="top" secondItem="3fa-4R-nyW" secondAttribute="top" id="vDk-R7-GDs"/>
@@ -572,6 +617,7 @@ RECORDER</string>
                                         <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                                     </constraint>
                                     <constraint firstItem="L2y-q6-jop" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="x4m-0K-5P4"/>
+                                    <constraint firstItem="VMc-Bx-bLD" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="x80-1v-Id6"/>
                                     <constraint firstItem="4hw-x8-hn8" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="zKb-zg-8DS"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="3fa-4R-nyW"/>
@@ -1369,6 +1415,12 @@ RECORDER</string>
                         <outlet property="closeMenuButton2" destination="KNS-Fz-TPp" id="ADJ-hy-rXv"/>
                         <outlet property="closeMenuButton3" destination="mCd-Bd-dSz" id="t7X-rg-vyL"/>
                         <outlet property="closeMenuButton4" destination="eTs-9f-lX9" id="Hfu-rG-sAu"/>
+                        <outlet property="cropLeft" destination="VMc-Bx-bLD" id="9tG-4M-fpf"/>
+                        <outlet property="cropLeftLeading" destination="BRf-bf-ZUj" id="cCe-fF-nbA"/>
+                        <outlet property="cropLeftPanGesture" destination="rFr-lR-4dd" id="9p4-jM-e4H"/>
+                        <outlet property="cropRight" destination="y3y-Rr-807" id="Mgo-sV-gfI"/>
+                        <outlet property="cropRightLeading" destination="buh-cl-wMC" id="XeE-5b-z4t"/>
+                        <outlet property="cropRightPanGesture" destination="OuL-cY-k9O" id="NWI-01-FkM"/>
                         <outlet property="exportButton1" destination="LNR-dr-WIg" id="Rtw-UG-cPH"/>
                         <outlet property="exportButton2" destination="AsM-3p-e3J" id="x7p-3b-ahS"/>
                         <outlet property="exportButton3" destination="fTN-8v-HzS" id="tZN-31-GwI"/>
@@ -1413,10 +1465,12 @@ RECORDER</string>
                         <outlet property="muteButton2" destination="p1L-p9-aSY" id="XdA-Hb-GlT"/>
                         <outlet property="muteButton3" destination="cml-GG-nYY" id="S2y-lk-YYo"/>
                         <outlet property="muteButton4" destination="mth-yQ-zQm" id="dUc-UW-cy7"/>
+                        <outlet property="overlayLeft" destination="NoZ-ht-iHV" id="t5a-mD-0nC"/>
+                        <outlet property="overlayRight" destination="NyG-Wr-Hs2" id="u05-pi-UeR"/>
                         <outlet property="playButton" destination="K2s-Jg-CsH" id="n0h-K8-xXi"/>
                         <outlet property="playhead" destination="L2y-q6-jop" id="wG4-Fw-krm"/>
                         <outlet property="playheadLeading" destination="cTi-we-c8t" id="ag4-Bi-EVh"/>
-                        <outlet property="playheadPanGesture" destination="Sbs-GL-zew" id="sIg-XH-Ryp"/>
+                        <outlet property="playheadPanGesture" destination="Sbs-GL-zew" id="oJz-pJ-OP5"/>
                         <outlet property="recordButton" destination="o1O-TV-EyB" id="XAb-3f-btd"/>
                         <outlet property="recordButton1" destination="jiJ-Fl-4eE" id="sCs-3s-dvh"/>
                         <outlet property="recordButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
@@ -1435,12 +1489,32 @@ RECORDER</string>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
                 <panGestureRecognizer minimumNumberOfTouches="1" id="Sbs-GL-zew" userLabel="Playhead Pan Gesture">
                     <connections>
-                        <action selector="playheadPanGesture:" destination="BYZ-38-t0r" id="x4H-DL-Wol"/>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="iYk-a8-u7Y"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="rFr-lR-4dd" userLabel="Crop Left Pan Gesture">
+                    <connections>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="n6D-4c-Dmw"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="OuL-cY-k9O" userLabel="Crop Right Pan Gesture">
+                    <connections>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="ULh-iK-3qf"/>
                     </connections>
                 </panGestureRecognizer>
                 <tapGestureRecognizer id="5hC-iX-y1X" userLabel="Timeline Tap Gesture">
                     <connections>
                         <action selector="timelineTapGesture:" destination="BYZ-38-t0r" id="fPu-GD-yBq"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="9So-sX-ZSo" userLabel="Crop Left Double Tap Gesture">
+                    <connections>
+                        <action selector="cropLeftDoubleTapGesture:" destination="BYZ-38-t0r" id="vNY-34-QaK"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="frJ-wJ-GTJ" userLabel="Crop Right Double Tap Gesture">
+                    <connections>
+                        <action selector="cropRightDoubleTapGesture:" destination="BYZ-38-t0r" id="z3i-kg-N2n"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -1727,6 +1801,9 @@ under the CC BY 4.0 License.</string>
         <namedColor name="Red">
             <color red="1" green="0.27058823529411763" blue="0.22745098039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="secondaryLabelColor">
+            <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
