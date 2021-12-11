@@ -381,7 +381,14 @@ void MidiRecorderDSPKernel::processOutput() {
         double play_position = _state.playPositionBeats;
         // if the host transport is moving, make that take precedence
         if (_ioState.transportMoving) {
-            play_position = _ioState.currentBeatPosition;
+            if (_state.repeat.test()) {
+                double effective_max_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
+                play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
+            }
+            else {
+                play_position = _ioState.currentBeatPosition;
+            }
+            play_position += _state.startPositionBeats.load();
         }
         double beatrange_begin = play_position;
         double beatrange_end = beatrange_begin + frames_beats;
