@@ -239,7 +239,7 @@
                 case ID_RECORD_4: {
                     UIButton* record_button[MIDI_TRACKS] = { s->_recordButton1, s->_recordButton2, s->_recordButton3, s->_recordButton4 };
                     for (int t = 0; t < MIDI_TRACKS; ++t) {
-                        record_button[t].selected = s->_state->track[t].recordEnabled;
+                        record_button[t].selected = s->_state->track[t].recordEnabled.test();
                     }
 
                     [s applyRecordEnableState];
@@ -251,7 +251,7 @@
                 case ID_MONITOR_4: {
                     UIButton* monitor_button[MIDI_TRACKS] = { s->_monitorButton1, s->_monitorButton2, s->_monitorButton3, s->_monitorButton4 };
                     for (int t = 0; t < MIDI_TRACKS; ++t) {
-                        monitor_button[t].selected = s->_state->track[t].monitorEnabled;
+                        monitor_button[t].selected = s->_state->track[t].monitorEnabled.test();
                     }
                     break;
                 }
@@ -261,12 +261,12 @@
                 case ID_MUTE_4: {
                     UIButton* mute_button[MIDI_TRACKS] = { s->_muteButton1, s->_muteButton2, s->_muteButton3, s->_muteButton4 };
                     for (int t = 0; t < MIDI_TRACKS; ++t) {
-                        mute_button[t].selected = s->_state->track[t].muteEnabled;
+                        mute_button[t].selected = s->_state->track[t].muteEnabled.test();
                     }
                     break;
                 }
                 case ID_REPEAT: {
-                    s.repeatButton.selected = s->_state->repeat;
+                    s.repeatButton.selected = s->_state->repeat.test();
                     break;
                 }
             }
@@ -290,7 +290,7 @@
 
 - (IBAction)rewindPressed:(UIButton*)sender {
     [self setRecord:NO];
-    _state->scheduledRewind = true;
+    _state->processedRewind.clear();
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
 
@@ -309,15 +309,15 @@
             [self startRecord];
         }
         else {
-            _state->scheduledPlay = true;
+            _state->processedPlay.clear();
         }
     }
     else {
         if (_recordButton.selected) {
             [self setRecord:NO];
-            _state->scheduledRewind = true;
+            _state->processedRewind.clear();
         }
-        _state->scheduledStop = true;
+        _state->processedStop.clear();
     }
 }
 
@@ -339,7 +339,7 @@
     else {
         if (_autoPlayFromRecord) {
             _playButton.selected = NO;
-            _state->scheduledStopAndRewind = true;
+            _state->processedStopAndRewind.clear();
         }
     }
     
@@ -398,9 +398,9 @@
 
 - (void)clearAllMarkerPositions {
     _state->playPositionBeats = 0.0;
+    _state->startPositionSet.clear();
     _state->startPositionBeats = 0.0;
-    _state->startPositionSet = false;
-    _state->stopPositionSet = false;
+    _state->stopPositionSet.clear();
     _state->stopPositionBeats = 0.0;
 }
 
@@ -513,7 +513,7 @@
         return;
     }
 
-    _state->scheduledSendMCM[index] = true;
+    _state->processedSendMCM[index].clear();
 }
 
 #pragma mark IBAction - Mute
@@ -682,12 +682,12 @@
 }
 
 - (IBAction)cropLeftDoubleTapGesture:(UITapGestureRecognizer*)sender {
-    _state->startPositionSet = false;
+    _state->startPositionSet.clear();
     _state->startPositionBeats = 0.0;
 }
 
 - (IBAction)cropRightDoubleTapGesture:(UITapGestureRecognizer*)sender {
-    _state->stopPositionSet = false;
+    _state->stopPositionSet.clear();
     _state->stopPositionBeats = _state->maxDuration.load();
 }
 
@@ -703,14 +703,14 @@
 
 - (void)setCropLeftForGesture:(UIGestureRecognizer*)gesture {
     if (gesture.numberOfTouches == 1) {
-        _state->startPositionSet = true;
+        _state->startPositionSet.test_and_set();
         _state->startPositionBeats = MIN([self calculateBeatPositionForGesture:gesture], _state->stopPositionBeats.load());
     }
 }
 
 - (void)setCropRightForGesture:(UIGestureRecognizer*)gesture {
     if (gesture.numberOfTouches == 1) {
-        _state->stopPositionSet = true;
+        _state->stopPositionSet.test_and_set();
         _state->stopPositionBeats = MAX([self calculateBeatPositionForGesture:gesture], _state->startPositionBeats.load());
     }
 }
@@ -791,13 +791,15 @@
 
     dispatch_async(dispatch_get_main_queue(), ^{
         if (start_position_set) {
-            self->_state->startPositionSet = [start_position_set boolValue];
+            if ([start_position_set boolValue]) self->_state->startPositionSet.test_and_set();
+            else                                self->_state->startPositionSet.clear();
         }
         if (start_position_beats) {
             self->_state->startPositionBeats = [start_position_beats doubleValue];
         }
         if (stop_position_set) {
-            self->_state->stopPositionSet = [stop_position_set boolValue];
+            if ([stop_position_set boolValue]) self->_state->stopPositionSet.test_and_set();
+            else                               self->_state->stopPositionSet.clear();
         }
         if (stop_position_beats) {
             self->_state->stopPositionBeats = [stop_position_beats doubleValue];
@@ -854,13 +856,16 @@
         }
         
         if (send_mpe) {
-            self->_state->sendMpeConfigOnPlay = [send_mpe boolValue];
+            if ([send_mpe boolValue]) self->_state->sendMpeConfigOnPlay.test_and_set();
+            else                      self->_state->sendMpeConfigOnPlay.clear();
         }
         if (mpe_details) {
-            self->_state->displayMpeConfigDetails = [mpe_details boolValue];
+            if ([mpe_details boolValue]) self->_state->displayMpeConfigDetails.test_and_set();
+            else                         self->_state->displayMpeConfigDetails.clear();
         }
         if (auto_trim) {
-            self->_state->autoTrimRecordings = [auto_trim boolValue];
+            if ([auto_trim boolValue]) self->_state->autoTrimRecordings.test_and_set();
+            else                       self->_state->autoTrimRecordings.clear();
         }
 
         [self updateRoutingState];
@@ -885,9 +890,9 @@
 
 - (NSDictionary*)currentSettingsToDict {
     return @{
-        @"startPositionSet" : @(_state->startPositionSet.load()),
+        @"startPositionSet" : @(_state->startPositionSet.test()),
         @"startPositionBeats" : @(_state->startPositionBeats.load()),
-        @"stopPositionSet" : @(_state->stopPositionSet.load()),
+        @"stopPositionSet" : @(_state->stopPositionSet.test()),
         @"stopPositionBeats" : @(_state->stopPositionBeats.load()),
         @"playPositionBeats" : @(_state->playPositionBeats.load()),
         @"Routing" : @(_routingButton.selected),
@@ -904,9 +909,9 @@
         @"Mute2" : @(_muteButton2.selected),
         @"Mute3" : @(_muteButton3.selected),
         @"Mute4" : @(_muteButton4.selected),
-        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.load()),
-        @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.load()),
-        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.load())
+        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.test()),
+        @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.test()),
+        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test())
     };
 }
 
@@ -939,11 +944,12 @@
     UIButton* record_button[MIDI_TRACKS] = { _recordButton1, _recordButton2, _recordButton3, _recordButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_state->track[t].recordEnabled != record_button[t].selected) {
-            _state->track[t].recordEnabled = record_button[t].selected;
+        if (_state->track[t].recordEnabled.test() != record_button[t].selected) {
+            if (record_button[t].selected) _state->track[t].recordEnabled.test_and_set();
+            else                           _state->track[t].recordEnabled.clear();
             
             if (_state->hostParamChange) {
-                _state->hostParamChange(ID_RECORD_1 + t, _state->track[t].recordEnabled);
+                _state->hostParamChange(ID_RECORD_1 + t, _state->track[t].recordEnabled.test());
             }
         }
     }
@@ -953,7 +959,7 @@
 
 - (void)applyRecordEnableState {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].recordEnabled);
+        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].recordEnabled.test());
     }
 }
 
@@ -961,11 +967,12 @@
     UIButton* monitor_button[MIDI_TRACKS] = { _monitorButton1, _monitorButton2, _monitorButton3, _monitorButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_state->track[t].monitorEnabled != monitor_button[t].selected) {
-            _state->track[t].monitorEnabled = monitor_button[t].selected;
+        if (_state->track[t].monitorEnabled.test() != monitor_button[t].selected) {
+            if (monitor_button[t].selected) _state->track[t].monitorEnabled.test_and_set();
+            else                            _state->track[t].monitorEnabled.clear();
             
             if (_state->hostParamChange) {
-                _state->hostParamChange(ID_MONITOR_1 + t, _state->track[t].monitorEnabled);
+                _state->hostParamChange(ID_MONITOR_1 + t, _state->track[t].monitorEnabled.test());
             }
         }
     }
@@ -975,22 +982,24 @@
     UIButton* mute_button[MIDI_TRACKS] = { _muteButton1, _muteButton2, _muteButton3, _muteButton4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_state->track[t].muteEnabled != mute_button[t].selected) {
-            _state->track[t].muteEnabled = mute_button[t].selected;
+        if (_state->track[t].muteEnabled.test() != mute_button[t].selected) {
+            if (mute_button[t].selected)    _state->track[t].muteEnabled.test_and_set();
+            else                            _state->track[t].muteEnabled.clear();
             
             if (_state->hostParamChange) {
-                _state->hostParamChange(ID_MUTE_1 + t, _state->track[t].muteEnabled);
+                _state->hostParamChange(ID_MUTE_1 + t, _state->track[t].muteEnabled.test());
             }
         }
     }
 }
 
 - (void)updateRepeatState {
-    if (_state->repeat != _repeatButton.selected) {
-        _state->repeat = _repeatButton.selected;
+    if (_state->repeat.test() != _repeatButton.selected) {
+        if (_repeatButton.selected) _state->repeat.test_and_set();
+        else                        _state->repeat.clear();
         
         if (_state->hostParamChange) {
-            _state->hostParamChange(ID_REPEAT, _state->repeat);
+            _state->hostParamChange(ID_REPEAT, _state->repeat.test());
         }
     }
 }
@@ -1010,48 +1019,26 @@
     ActivityIndicatorView* outputs[MIDI_TRACKS] = { _midiActivityOutput1, _midiActivityOutput2, _midiActivityOutput3, _midiActivityOutput4 };
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_state->track[t].activityInput) {
-            _state->track[t].activityInput = false;
-            inputs[t].showActivity = YES;
-        }
-        else {
-            inputs[t].showActivity = NO;
-        }
-        
-        if (_state->track[t].activityOutput) {
-            _state->track[t].activityOutput = false;
-            outputs[t].showActivity = YES;
-        }
-        else {
-            outputs[t].showActivity = NO;
-        }
+        inputs[t].showActivity = !_state->track[t].processedActivityInput.test_and_set();
+        outputs[t].showActivity = !_state->track[t].processedActivityOutput.test_and_set();
     }
 }
 
 - (void)handleScheduledActions {
     // rewind UI
-    {
-        bool active = true;
-        if (_state->scheduledUIStopAndRewind.compare_exchange_strong(active, false)) {
-            [self setPlay:NO];
-            _state->scheduledRewind = true;
-        }
+    if (!_state->processedUIStopAndRewind.test_and_set()) {
+        [self setPlay:NO];
+        _state->processedRewind.clear();
     }
 
     // play UI
-    {
-        bool active = true;
-        if (_state->scheduledUIPlay.compare_exchange_strong(active, false)) {
-            [self setPlay:YES];
-        }
+    if (!_state->processedUIPlay.test_and_set()) {
+        [self setPlay:YES];
     }
 
     // stop UI
-    {
-        bool active = true;
-        if (_state->scheduledUIStop.compare_exchange_strong(active, false)) {
-            [self setPlay:NO];
-        }
+    if (!_state->processedUIStop.test_and_set()) {
+        [self setPlay:NO];
     }
 }
 
@@ -1107,7 +1094,7 @@
     _overlayLeft.hidden = _playhead.hidden;
     _cropLeft.hidden = _playhead.hidden;
     if (!_cropLeft.hidden) {
-        if (!_state->startPositionSet && !_activePannedMarker) {
+        if (!_state->startPositionSet.test() && !_activePannedMarker) {
             _state->startPositionBeats = 0.0;
         }
         _cropLeftLeading.constant = _state->startPositionBeats * PIXELS_PER_BEAT;
@@ -1117,7 +1104,7 @@
     _overlayRight.hidden = _playhead.hidden;
     _cropRight.hidden = _playhead.hidden;
     if (!_cropRight.hidden) {
-        if (!_state->stopPositionSet && !_activePannedMarker) {
+        if (!_state->stopPositionSet.test() && !_activePannedMarker) {
             _state->stopPositionBeats = _state->maxDuration.load();
         }
         _cropRightLeading.constant = _state->stopPositionBeats * PIXELS_PER_BEAT;
@@ -1125,8 +1112,7 @@
 }
 
 - (void)renderMpeIndicators {
-    bool active = true;
-    bool refresh_mpe_buttons = _state->scheduledUIMpeConfigChange.compare_exchange_strong(active, false);
+    bool refresh_mpe_buttons = !_state->processedUIMpeConfigChange.test_and_set();
 
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -1137,7 +1123,7 @@
             NSString* mpe_label = @"";
             if (state.enabled) {
                 mpe_label = @"MPE";
-                if (_state->displayMpeConfigDetails) {
+                if (_state->displayMpeConfigDetails.test()) {
                     if (state.zone1Active) {
                         mpe_label = [mpe_label stringByAppendingFormat:@" L:%d", state.zone1Members.load()];
                     }
@@ -1193,15 +1179,15 @@
 
 - (void)startRecord {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if (_state->track[t].recordEnabled) {
-            _state->scheduledBeginRecording[t] = true;
+        if (_state->track[t].recordEnabled.test()) {
+            _state->processedBeginRecording[t].clear();
         }
     }
     if (!self.playButton.selected) {
         _autoPlayFromRecord = YES;
         self.playButton.selected = YES;
     }
-    _state->scheduledPlay = true;
+    _state->processedPlay.clear();
 }
 
 - (void)finishRecording:(int)ordinal
@@ -1209,7 +1195,7 @@
             beatToIndex:(RecordedBookmarks)beatToIndex
                 preview:(RecordedPreview)preview
                duration:(double)duration {
-    _state->scheduledEndRecording[ordinal] = true;
+    _state->processedEndRecording[ordinal].clear();
     
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = std::move(data);
@@ -1220,8 +1206,8 @@
 }
 
 - (void)invalidateRecording:(int)ordinal {
-    _state->scheduledNotesOff[ordinal] = true;
-    _state->scheduledInvalidate[ordinal] = true;
+    _state->processedNotesOff[ordinal].clear();
+    _state->processedInvalidate[ordinal].clear();
 }
 
 #pragma mark - UIScrollViewDelegate methods

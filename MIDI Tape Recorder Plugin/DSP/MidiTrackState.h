@@ -20,12 +20,14 @@ struct MidiTrackState {
     MidiTrackState& operator= (const MidiTrackState&) = delete;
     
     std::atomic<int32_t> sourceCable    { 0 };
-    std::atomic<bool> activityInput     { false };
-    std::atomic<bool> activityOutput    { false };
-    std::atomic<bool> recordEnabled     { false };
-    std::atomic<bool> monitorEnabled    { false };
-    std::atomic<bool> muteEnabled       { false };
-    std::atomic<int32_t> recording      { 0 };
+    
+    std::atomic_flag processedActivityInput  { true };
+    std::atomic_flag processedActivityOutput { true };
+    
+    std::atomic_flag recordEnabled  { false };
+    std::atomic_flag monitorEnabled { false };
+    std::atomic_flag muteEnabled    { false };
+    std::atomic_flag recording      { false };
 
     MPEState mpeState;
     

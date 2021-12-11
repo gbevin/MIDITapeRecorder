@@ -60,7 +60,7 @@
                     [_recorder[t] ping:message.timeSampleSeconds];
                 }
                 else if (_state->track[t].sourceCable == message.cable) {
-                    _state->track[t].activityInput = true;
+                    _state->track[t].processedActivityInput.clear();
                     [_recorder[t] recordMidiMessage:message];
                 }
             }

@@ -22,18 +22,21 @@
 
 - (IBAction)sendMpeConfigOnPlayPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    _mainViewController.state->sendMpeConfigOnPlay = sender.selected;
+    if (sender.selected) _mainViewController.state->sendMpeConfigOnPlay.test_and_set();
+    else                 _mainViewController.state->sendMpeConfigOnPlay.clear();
 }
 
 - (IBAction)displayMpeConfigDetailsPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    _mainViewController.state->displayMpeConfigDetails = sender.selected;
-    _mainViewController.state->scheduledUIMpeConfigChange = true;
+    if (sender.selected) _mainViewController.state->displayMpeConfigDetails.test_and_set();
+    else                 _mainViewController.state->displayMpeConfigDetails.clear();
+    _mainViewController.state->processedUIMpeConfigChange.clear();
 }
 
 - (IBAction)autoTrimRecordingsPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    _mainViewController.state->autoTrimRecordings = sender.selected;
+    if (sender.selected) _mainViewController.state->autoTrimRecordings.test_and_set();
+    else                 _mainViewController.state->autoTrimRecordings.clear();
 }
 
 - (IBAction)closeSettingsView:(id)sender {
@@ -43,9 +46,9 @@
 #pragma mark Sync
 
 - (void)sync {
-    _sendMpeConfigOnPlayButton.selected = _mainViewController.state->sendMpeConfigOnPlay;
-    _displayMpeConfigDetailsButton.selected = _mainViewController.state->displayMpeConfigDetails;
-    _autoTrimRecordingsButton.selected = _mainViewController.state->autoTrimRecordings;
+    _sendMpeConfigOnPlayButton.selected = _mainViewController.state->sendMpeConfigOnPlay.test();
+    _displayMpeConfigDetailsButton.selected = _mainViewController.state->displayMpeConfigDetails.test();
+    _autoTrimRecordingsButton.selected = _mainViewController.state->autoTrimRecordings.test();
 }
 
 @end

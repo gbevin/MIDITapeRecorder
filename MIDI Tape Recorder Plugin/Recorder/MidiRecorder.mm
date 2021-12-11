@@ -70,7 +70,7 @@
             auto recorded = std::move(_recording);
             auto recorded_beat_index = std::move(_recordingBeatToIndex);
             double recorded_duration = _recordingDuration;
-            if (_state->autoTrimRecordings && recorded && !recorded->empty()) {
+            if (_state->autoTrimRecordings.test() && recorded && !recorded->empty()) {
                 recorded_duration = ceil(recorded->back().offsetBeats);
             }
             auto recorded_preview = _recordingPreview;
@@ -156,7 +156,7 @@
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
             recorded_duration = [duration doubleValue];
-            if (_state->autoTrimRecordings) {
+            if (_state->autoTrimRecordings.test()) {
                 recorded_duration = ceil(recorded_duration);
             }
         }
@@ -389,7 +389,7 @@
     }
     
     recorded_duration = double(last_offset_ticks) / division;
-    if (_state->autoTrimRecordings) {
+    if (_state->autoTrimRecordings.test()) {
         recorded_duration = ceil(recorded_duration);
     }
     // transfer all the accumulated data to the active recorded data
@@ -519,7 +519,7 @@
             
             mpe_state.enabled = (mpe_state.zone1Active || mpe_state.zone2Active);
             
-            _state->scheduledUIMpeConfigChange = true;
+            _state->processedUIMpeConfigChange.clear();
             
             break;
         }
@@ -531,7 +531,7 @@
         // track the MPE Configuration Message and RPN 0 PitchBend sensitivity
         // when recording is enabled for this track
         // we only look at CC messages for this
-        if (_state->track[_ordinal].recordEnabled &&
+        if (_state->track[_ordinal].recordEnabled.test() &&
             message.length == 3 &&
             (message.data[0] & 0xf0) == 0xb0) {
             uint8_t channel = (message.data[0] & 0x0f);

@@ -25,39 +25,39 @@ struct MidiRecorderState {
 
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic<bool> repeat                    { false };
-    std::atomic<bool> sendMpeConfigOnPlay       { true };
-    std::atomic<bool> displayMpeConfigDetails   { false };
-    std::atomic<bool> autoTrimRecordings        { true };
+    std::atomic_flag repeat                     { false };
+    std::atomic_flag sendMpeConfigOnPlay        { true };
+    std::atomic_flag displayMpeConfigDetails    { false };
+    std::atomic_flag autoTrimRecordings         { true };
 
-    std::atomic<double> tempo            { 120.0 };
-    std::atomic<double> secondsToBeats   { 2.0 };
-    std::atomic<double> beatsToSeconds   { 0.5 };
+    std::atomic<double> tempo           { 120.0 };
+    std::atomic<double> secondsToBeats  { 2.0 };
+    std::atomic<double> beatsToSeconds  { 0.5 };
     
     std::atomic<double> maxDuration { 0.0 };
 
-    std::atomic<double> transportStartSampleSeconds  { 0.0 };
-    std::atomic<bool> startPositionSet               { false };
-    std::atomic<double> startPositionBeats           { 0.0 };
-    std::atomic<bool> stopPositionSet                { false };
-    std::atomic<double> stopPositionBeats            { 0.0 };
-    std::atomic<double> playPositionBeats            { 0.0 };
+    std::atomic_flag startPositionSet               { false };
+    std::atomic_flag stopPositionSet                { false };
+    std::atomic<double> transportStartSampleSeconds { 0.0 };
+    std::atomic<double> startPositionBeats          { 0.0 };
+    std::atomic<double> stopPositionBeats           { 0.0 };
+    std::atomic<double> playPositionBeats           { 0.0 };
 
-    std::atomic<bool> scheduledRewind                        { false };
-    std::atomic<bool> scheduledPlay                          { false };
-    std::atomic<bool> scheduledStop                          { false };
-    std::atomic<bool> scheduledStopAndRewind                 { false };
-    std::atomic<bool> scheduledBeginRecording[MIDI_TRACKS]   { false, false, false, false };
-    std::atomic<bool> scheduledEndRecording[MIDI_TRACKS]     { false, false, false, false };
-    std::atomic<bool> scheduledNotesOff[MIDI_TRACKS]         { false, false, false, false };
-    std::atomic<bool> scheduledInvalidate[MIDI_TRACKS]       { false, false, false, false };
-    std::atomic<bool> scheduledReachEnd                      { false };
-    std::atomic<bool> scheduledSendMCM[MIDI_TRACKS]          { false, false, false, false };
+    std::atomic_flag processedRewind                        { true };
+    std::atomic_flag processedPlay                          { true };
+    std::atomic_flag processedStop                          { true };
+    std::atomic_flag processedStopAndRewind                 { true };
+    std::atomic_flag processedBeginRecording[MIDI_TRACKS]   { true, true, true, true };
+    std::atomic_flag processedEndRecording[MIDI_TRACKS]     { true, true, true, true };
+    std::atomic_flag processedNotesOff[MIDI_TRACKS]         { true, true, true, true };
+    std::atomic_flag processedInvalidate[MIDI_TRACKS]       { true, true, true, true };
+    std::atomic_flag processedReachEnd                      { true };
+    std::atomic_flag processedSendMCM[MIDI_TRACKS]          { true, true, true, true };
 
-    std::atomic<bool> scheduledUIPlay                        { false };
-    std::atomic<bool> scheduledUIStop                        { false };
-    std::atomic<bool> scheduledUIStopAndRewind               { false };
-    std::atomic<bool> scheduledUIMpeConfigChange             { false };
+    std::atomic_flag processedUIPlay            { true };
+    std::atomic_flag processedUIStop            { true };
+    std::atomic_flag processedUIStopAndRewind   { true };
+    std::atomic_flag processedUIMpeConfigChange { true };
 
     TPCircularBuffer midiBuffer;
 };

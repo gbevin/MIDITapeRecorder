@@ -87,7 +87,7 @@ void MidiRecorderDSPKernel::sendMCM(int t) {
         return;
     }
     
-    _state.track[t].activityOutput = true;
+    _state.track[t].processedActivityOutput.clear();
 
     if (mpe_state.zone1Active) {
         sendRpnMessage(t, 0, 0x6, mpe_state.zone1Members.load() << 7);
@@ -107,13 +107,13 @@ void MidiRecorderDSPKernel::sendMCM(int t) {
 
 void MidiRecorderDSPKernel::play() {
     if (_isPlaying == NO) {
-        _state.scheduledStopAndRewind = false;
-        _state.scheduledUIStopAndRewind = false;
+        _state.processedStopAndRewind.test_and_set();
+        _state.processedUIStopAndRewind.test_and_set();
 
         // send out MPE configuration messages based on each track's MPE mode
-        if (_state.sendMpeConfigOnPlay) {
+        if (_state.sendMpeConfigOnPlay.test()) {
             for (int t = 0; t < MIDI_TRACKS; ++t) {
-                if (!_state.track[t].recording) {
+                if (!_state.track[t].recording.test()) {
                     sendMCM(t);
                 }
             }
@@ -129,45 +129,59 @@ void MidiRecorderDSPKernel::stop() {
 }
 
 void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue value) {
+    bool set = bool(value);
     switch (address) {
         case ID_RECORD_1:
-            _state.track[0].recordEnabled = value;
+            if (set) _state.track[0].recordEnabled.test_and_set();
+            else     _state.track[0].recordEnabled.clear();
             break;
         case ID_RECORD_2:
-            _state.track[1].recordEnabled = value;
+            if (set) _state.track[1].recordEnabled.test_and_set();
+            else     _state.track[1].recordEnabled.clear();
             break;
         case ID_RECORD_3:
-            _state.track[2].recordEnabled = value;
+            if (set) _state.track[2].recordEnabled.test_and_set();
+            else     _state.track[2].recordEnabled.clear();
             break;
         case ID_RECORD_4:
-            _state.track[3].recordEnabled = value;
+            if (set) _state.track[3].recordEnabled.test_and_set();
+            else     _state.track[3].recordEnabled.clear();
             break;
         case ID_MONITOR_1:
-            _state.track[0].monitorEnabled = value;
+            if (set) _state.track[0].monitorEnabled.test_and_set();
+            else     _state.track[0].monitorEnabled.clear();
             break;
         case ID_MONITOR_2:
-            _state.track[1].monitorEnabled = value;
+            if (set) _state.track[1].monitorEnabled.test_and_set();
+            else     _state.track[1].monitorEnabled.clear();
             break;
         case ID_MONITOR_3:
-            _state.track[2].monitorEnabled = value;
+            if (set) _state.track[2].monitorEnabled.test_and_set();
+            else     _state.track[2].monitorEnabled.clear();
             break;
         case ID_MONITOR_4:
-            _state.track[3].monitorEnabled = value;
+            if (set) _state.track[3].monitorEnabled.test_and_set();
+            else     _state.track[3].monitorEnabled.clear();
             break;
         case ID_MUTE_1:
-            _state.track[0].muteEnabled = value;
+            if (set) _state.track[0].muteEnabled.test_and_set();
+            else     _state.track[0].muteEnabled.clear();
             break;
         case ID_MUTE_2:
-            _state.track[1].muteEnabled = value;
+            if (set) _state.track[1].muteEnabled.test_and_set();
+            else     _state.track[1].muteEnabled.clear();
             break;
         case ID_MUTE_3:
-            _state.track[2].muteEnabled = value;
+            if (set) _state.track[2].muteEnabled.test_and_set();
+            else     _state.track[2].muteEnabled.clear();
             break;
         case ID_MUTE_4:
-            _state.track[3].muteEnabled = value;
+            if (set) _state.track[3].muteEnabled.test_and_set();
+            else     _state.track[3].muteEnabled.clear();
             break;
         case ID_REPEAT:
-            _state.repeat = value;
+            if (set) _state.repeat.test_and_set();
+            else     _state.repeat.clear();
             break;
     }
 }
@@ -176,31 +190,31 @@ AUValue MidiRecorderDSPKernel::getParameter(AUParameterAddress address) {
     // Return the goal. It is not thread safe to return the ramping value.
     switch (address) {
         case ID_RECORD_1:
-            return _state.track[0].recordEnabled;
+            return _state.track[0].recordEnabled.test();
         case ID_RECORD_2:
-            return _state.track[1].recordEnabled;
+            return _state.track[1].recordEnabled.test();
         case ID_RECORD_3:
-            return _state.track[2].recordEnabled;
+            return _state.track[2].recordEnabled.test();
         case ID_RECORD_4:
-            return _state.track[3].recordEnabled;
+            return _state.track[3].recordEnabled.test();
         case ID_MONITOR_1:
-            return _state.track[0].monitorEnabled;
+            return _state.track[0].monitorEnabled.test();
         case ID_MONITOR_2:
-            return _state.track[1].monitorEnabled;
+            return _state.track[1].monitorEnabled.test();
         case ID_MONITOR_3:
-            return _state.track[2].monitorEnabled;
+            return _state.track[2].monitorEnabled.test();
         case ID_MONITOR_4:
-            return _state.track[3].monitorEnabled;
+            return _state.track[3].monitorEnabled.test();
         case ID_MUTE_1:
-            return _state.track[0].muteEnabled;
+            return _state.track[0].muteEnabled.test();
         case ID_MUTE_2:
-            return _state.track[1].muteEnabled;
+            return _state.track[1].muteEnabled.test();
         case ID_MUTE_3:
-            return _state.track[2].muteEnabled;
+            return _state.track[2].muteEnabled.test();
         case ID_MUTE_4:
-            return _state.track[3].muteEnabled;
+            return _state.track[3].muteEnabled.test();
         case ID_REPEAT:
-            return _state.repeat;
+            return _state.repeat.test();
         default:
             return 0.f;
     }
@@ -221,12 +235,12 @@ void MidiRecorderDSPKernel::handleBufferStart(double timeSampleSeconds) {
 void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds) {
     if (_ioState.transportChanged) {
         if (_ioState.transportMoving) {
-            _state.scheduledPlay = true;
-            _state.scheduledUIPlay = true;
+            _state.processedPlay.clear();
+            _state.processedUIPlay.clear();
         }
         else {
-            _state.scheduledStop = true;
-            _state.scheduledUIStop = true;
+            _state.processedStop.clear();
+            _state.processedUIStop.clear();
         }
     }
     
@@ -236,93 +250,67 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
     
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         // begin recording
-        {
-            bool active = true;
-            if (_state.scheduledBeginRecording[t].compare_exchange_strong(active, false)) {
-                turnOffAllNotesForTrack(t);
-                _state.track[t].recording = YES;
-            }
+        if (!_state.processedBeginRecording[t].test_and_set()) {
+            turnOffAllNotesForTrack(t);
+            _state.track[t].recording.test_and_set();
         }
+
         // end recording
-        {
-            bool active = true;
-            if (_state.scheduledEndRecording[t].compare_exchange_strong(active, false)) {
-                _state.track[t].recording = NO;
-            }
+        if (!_state.processedEndRecording[t].test_and_set()) {
+            _state.track[t].recording.clear();
         }
+        
         // ensure notes off
-        {
-            bool active = true;
-            if (_state.scheduledNotesOff[t].compare_exchange_strong(active, false)) {
-                turnOffAllNotesForTrack(t);
-            }
+        if (!_state.processedNotesOff[t].test_and_set()) {
+            turnOffAllNotesForTrack(t);
         }
+        
         // invalidate
-        {
-            bool active = true;
-            if (_state.scheduledInvalidate[t].compare_exchange_strong(active, false)) {
-                MidiTrackState& track_state = _state.track[t];
-                track_state.recordedMessages.reset();
-                track_state.recordedBeatToIndex.reset();
-                track_state.recordedLength = 0;
-                track_state.recordedDuration = 0.0;
-            }
+        if (!_state.processedInvalidate[t].test_and_set()) {
+            MidiTrackState& track_state = _state.track[t];
+            track_state.recordedMessages.reset();
+            track_state.recordedBeatToIndex.reset();
+            track_state.recordedLength = 0;
+            track_state.recordedDuration = 0.0;
         }
+
         // send MCM
-        {
-            bool active = true;
-            if (_state.scheduledSendMCM[t].compare_exchange_strong(active, false)) {
-                sendMCM(t);
-            }
+        if (!_state.processedSendMCM[t].test_and_set()) {
+            sendMCM(t);
         }
     }
     
     // rewind
-    {
-        bool active = true;
-        if (_state.scheduledRewind.compare_exchange_strong(active, false)) {
-            if (_isPlaying) {
-                _state.transportStartSampleSeconds = timeSampleSeconds;
-            }
-            rewind();
+    if (!_state.processedRewind.test_and_set()) {
+        if (_isPlaying) {
+            _state.transportStartSampleSeconds = timeSampleSeconds;
         }
+        rewind();
     }
 
     // play
-    {
-        bool active = true;
-        if (_state.scheduledPlay.compare_exchange_strong(active, false)) {
-            if (_state.transportStartSampleSeconds == 0.0) {
-                _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
-            }
-            play();
+    if (!_state.processedPlay.test_and_set()) {
+        if (_state.transportStartSampleSeconds == 0.0) {
+            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
         }
+        play();
     }
 
     // stop
-    {
-        bool active = true;
-        if (_state.scheduledStop.compare_exchange_strong(active, false)) {
-            stop();
-        }
+    if (!_state.processedStop.test_and_set()) {
+        stop();
     }
 
     // stop and rewind
-    {
-        bool active = true;
-        if (_state.scheduledStopAndRewind.compare_exchange_strong(active, false)) {
-            stop();
-            rewind();
-        }
+    if (!_state.processedStopAndRewind.test_and_set()) {
+        stop();
+        rewind();
     }
 
     // reach end
-    {
-        bool active = true;
-        if (_state.scheduledReachEnd.compare_exchange_strong(active, false)) {
-            _isPlaying = NO;
-            _state.scheduledUIStopAndRewind = true;
-        }
+    if (!_state.processedReachEnd.test_and_set()) {
+        _isPlaying = NO;
+        _state.processedUIStopAndRewind.clear();
     }
 }
 
@@ -362,8 +350,8 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
         for (int t = 0; t < MIDI_TRACKS; ++t) {
             MidiTrackState& track_state = _state.track[t];
             
-            if (track_state.monitorEnabled && !track_state.muteEnabled && track_state.sourceCable == midiEvent.cable) {
-                _state.track[t].activityOutput = true;
+            if (track_state.monitorEnabled.test() && !track_state.muteEnabled.test() && track_state.sourceCable == midiEvent.cable) {
+                _state.track[t].processedActivityOutput.clear();
                 passThroughMIDIEvent(midiEvent, t);
             }
         }
@@ -413,7 +401,7 @@ void MidiRecorderDSPKernel::processOutput() {
             MidiTrackState& track_state = _state.track[t];
             
             // don't play if the track is recording
-            if (track_state.recording) {
+            if (track_state.recording.test()) {
                 reached_end = NO;
             }
             // play when there are recorded messages
@@ -435,15 +423,14 @@ void MidiRecorderDSPKernel::processOutput() {
                     }
                     // check if the time offset of the message falls within the advancement of the playhead
                     else if (message.offsetBeats < beatrange_end) {
-                        
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
-                        if (!track_state.muteEnabled && _ioState.midiOutputEventBlock) {
+                        if (!track_state.muteEnabled.test() && _ioState.midiOutputEventBlock) {
                             const double offset_seconds = (message.offsetBeats - beatrange_end) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // indicate output activity
-                            track_state.activityOutput = true;
+                            track_state.processedActivityOutput.clear();
                             
                             // track note on/off states
                             trackNotesForTrack(t, message);
@@ -464,18 +451,18 @@ void MidiRecorderDSPKernel::processOutput() {
                 }
                 
                 if (beatrange_end < track_state.recordedDuration &&
-                    (!_state.stopPositionSet || beatrange_end < _state.stopPositionBeats)) {
+                    (!_state.stopPositionSet.test() || beatrange_end < _state.stopPositionBeats)) {
                     reached_end = NO;
                 }
             }
         }
         
         if (reached_end) {
-            if (_state.repeat.load()) {
-                _state.scheduledRewind = true;
+            if (_state.repeat.test()) {
+                _state.processedRewind.clear();
             }
             else {
-                _state.scheduledReachEnd = true;
+                _state.processedReachEnd.clear();
             }
         }
     }
