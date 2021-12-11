@@ -559,10 +559,10 @@ RECORDER</string>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="width" secondItem="k5P-YR-lyM" secondAttribute="width" id="DDy-C2-XlZ"/>
                                     <constraint firstItem="NyG-Wr-Hs2" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Fbo-Ao-cQs"/>
                                     <constraint firstItem="gzW-Zc-U4q" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="Fiv-jH-bb6"/>
-                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="leading" secondItem="y3y-Rr-807" secondAttribute="centerX" id="GaW-3R-AEo"/>
+                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="leading" secondItem="y3y-Rr-807" secondAttribute="centerX" priority="995" id="GaW-3R-AEo"/>
                                     <constraint firstItem="NoZ-ht-iHV" firstAttribute="leading" secondItem="k5P-YR-lyM" secondAttribute="leading" constant="-1" id="IW9-19-L45"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="JG5-GH-8T7"/>
-                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="trailing" secondItem="k5P-YR-lyM" secondAttribute="trailing" constant="0.5" id="KZL-bQ-X1w"/>
+                                    <constraint firstItem="NyG-Wr-Hs2" firstAttribute="trailing" secondItem="k5P-YR-lyM" secondAttribute="trailing" priority="990" constant="0.5" id="KZL-bQ-X1w"/>
                                     <constraint firstItem="4hw-x8-hn8" firstAttribute="top" secondItem="8lV-Pg-F8C" secondAttribute="bottom" constant="10" id="NQp-ef-clu">
                                         <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                                     </constraint>
