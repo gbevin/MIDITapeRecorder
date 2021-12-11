@@ -68,11 +68,13 @@
 @property (weak, nonatomic) IBOutlet UIButton* muteButton3;
 @property (weak, nonatomic) IBOutlet UIButton* muteButton4;
 
+@property (weak, nonatomic) IBOutlet UIButton* menuButtonAll;
 @property (weak, nonatomic) IBOutlet UIButton* menuButton1;
 @property (weak, nonatomic) IBOutlet UIButton* menuButton2;
 @property (weak, nonatomic) IBOutlet UIButton* menuButton3;
 @property (weak, nonatomic) IBOutlet UIButton* menuButton4;
 
+@property (weak, nonatomic) IBOutlet PopupView* menuPopupAll;
 @property (weak, nonatomic) IBOutlet PopupView* menuPopup1;
 @property (weak, nonatomic) IBOutlet PopupView* menuPopup2;
 @property (weak, nonatomic) IBOutlet PopupView* menuPopup3;
@@ -97,11 +99,6 @@
 @property (weak, nonatomic) IBOutlet UIButton* importButton2;
 @property (weak, nonatomic) IBOutlet UIButton* importButton3;
 @property (weak, nonatomic) IBOutlet UIButton* importButton4;
-
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth1;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth2;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth3;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint* menuPopupWidth4;
 
 @property (weak, nonatomic) IBOutlet UIScrollView* tracks;
 
@@ -155,8 +152,6 @@
     
     BOOL _autoPlayFromRecord;
     
-    CGFloat _extendedMenuPopupWidth;
-    
     UIView* _activePannedMarker;
     CGPoint _autoPan;
 }
@@ -191,6 +186,7 @@
     
     _timeline.tracks = _tracks;
     
+    _menuPopupAll.hidden = YES;
     MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
     UIView* menu_popup[MIDI_TRACKS] = { _menuPopup1, _menuPopup2, _menuPopup3, _menuPopup4 };
@@ -199,8 +195,6 @@
         menu_popup[t].hidden = YES;
         mpe_button[t].hidden = YES;
     }
-    
-    _extendedMenuPopupWidth = _menuPopupWidth1.constant;
     
     _timer = [[UIScreen mainScreen] displayLinkWithTarget:self
                                                  selector:@selector(renderloop)];
@@ -405,10 +399,10 @@
 }
 
 - (IBAction)clearAllPressed:(UIButton*)sender {
-    [self hideMenuPopups];
-
     sender.selected = !sender.selected;
     if (!sender.selected) {
+        [self hideMenuPopups];
+
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
             [[self->_midiQueueProcessor recorder:t] clear];
             [view setNeedsLayout];
@@ -529,29 +523,15 @@
 - (IBAction)menuPressed:(UIButton*)sender {
     [self hideMenuPopups];
 
-    NSLayoutConstraint* width_constraint = nil;
     UIView* menu_popup_view = nil;
     
-    if (sender == _menuButton1) {
-        width_constraint = _menuPopupWidth1;
-        menu_popup_view = _menuPopup1;
-    }
-    else if (sender == _menuButton2) {
-        width_constraint = _menuPopupWidth2;
-        menu_popup_view = _menuPopup2;
-    }
-    else if (sender == _menuButton3) {
-        width_constraint = _menuPopupWidth3;
-        menu_popup_view = _menuPopup3;
-    }
-    else if (sender == _menuButton4) {
-        width_constraint = _menuPopupWidth4;
-        menu_popup_view = _menuPopup4;
-    }
+    if (sender == _menuButtonAll)       menu_popup_view = _menuPopupAll;
+    else if (sender == _menuButton1)    menu_popup_view = _menuPopup1;
+    else if (sender == _menuButton2)    menu_popup_view = _menuPopup2;
+    else if (sender == _menuButton3)    menu_popup_view = _menuPopup3;
+    else if (sender == _menuButton4)    menu_popup_view = _menuPopup4;
     
-    if (width_constraint != nil && menu_popup_view != nil) {
-        width_constraint.constant = 40.0;
-        
+    if (menu_popup_view != nil) {
         menu_popup_view.alpha = 0.0;
         for (UIButton* b in menu_popup_view.subviews) {
             b.selected = NO;
@@ -560,26 +540,22 @@
         
         menu_popup_view.hidden = NO;
         
-        [self.view layoutIfNeeded];
-        
         [UIView animateWithDuration:0.2
                               delay:0
                             options:UIViewAnimationOptionCurveEaseOut
                          animations:^() {
-                             width_constraint.constant = self->_extendedMenuPopupWidth;
-                             
                              menu_popup_view.alpha = 1.0;
                              for (UIView* v in menu_popup_view.subviews) {
                                  v.alpha = 1.0;
                              }
-
-                             [self.view layoutIfNeeded];
                          }
                          completion:^(BOOL finished) {}];
     }
 }
 
 - (void)hideMenuPopups {
+    _menuPopupAll.hidden = YES;
+    
     UIView* menu_popup[MIDI_TRACKS] = { _menuPopup1, _menuPopup2, _menuPopup3, _menuPopup4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         menu_popup[t].hidden = YES;

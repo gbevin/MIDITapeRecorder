@@ -165,82 +165,17 @@ RECORDER</string>
                                         </variation>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t63-nw-aik" userLabel="Tools">
-                                        <rect key="frame" x="339" y="-5" width="159" height="30"/>
-                                        <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rMb-cB-tTb" userLabel="Import All" customClass="ToolBarButton">
-                                                <rect key="frame" x="49.5" y="2.5" width="25" height="25"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="30" id="24o-Yn-5ws">
-                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
-                                                    </constraint>
-                                                    <constraint firstAttribute="width" secondItem="rMb-cB-tTb" secondAttribute="height" multiplier="1:1" id="Loh-ey-Mne"/>
-                                                </constraints>
-                                                <color key="tintColor" name="Blue"/>
-                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="">
-                                                    <color key="titleColor" name="Blue"/>
-                                                    <imageReference key="image" image="square_and_arrow_down" symbolScale="large"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="importAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="SXi-yz-WLy"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ggp-z3-sKG" userLabel="Export All" customClass="ToolBarButton">
-                                                <rect key="frame" x="84.5" y="2.5" width="25" height="25"/>
-                                                <color key="tintColor" name="Green"/>
-                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="">
-                                                    <color key="titleColor" name="Green"/>
-                                                    <imageReference key="image" image="square_and_arrow_up" symbolScale="large"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="exportAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Z5o-mE-c8p"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IKB-8s-9oN" userLabel="Clear All" customClass="ToolBarButton">
-                                                <rect key="frame" x="119.5" y="2.5" width="25" height="25"/>
-                                                <color key="tintColor" name="Red"/>
-                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="">
-                                                    <color key="titleColor" name="Red"/>
-                                                    <imageReference key="image" image="trash" symbolScale="large"/>
-                                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="20" scale="large" weight="semibold"/>
-                                                </state>
-                                                <state key="selected" image="questionmark">
-                                                    <color key="titleColor" name="Red"/>
-                                                </state>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
-                                                </userDefinedRuntimeAttributes>
-                                                <connections>
-                                                    <action selector="clearAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1iT-hA-pjJ"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
+                                        <rect key="frame" x="339" y="-5" width="132" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="leading" secondItem="t63-nw-aik" secondAttribute="centerX" constant="5" id="73E-sp-nJd"/>
-                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="ApI-qd-9Cf"/>
-                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="GNr-Hd-4VO"/>
-                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="height" secondItem="rMb-cB-tTb" secondAttribute="height" id="Jq4-gl-Kva"/>
-                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="leading" secondItem="ggp-z3-sKG" secondAttribute="trailing" constant="10" id="KQq-nd-DCh"/>
-                                            <constraint firstItem="IKB-8s-9oN" firstAttribute="width" secondItem="rMb-cB-tTb" secondAttribute="width" id="KwI-Dc-0AO"/>
                                             <constraint firstAttribute="height" constant="30" id="Zvd-51-oxl"/>
-                                            <constraint firstItem="rMb-cB-tTb" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="t63-nw-aik" secondAttribute="leading" id="iEE-px-F7Q"/>
-                                            <constraint firstItem="rMb-cB-tTb" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="naT-hH-9Oo"/>
-                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="width" secondItem="rMb-cB-tTb" secondAttribute="width" id="ndR-G4-KE3"/>
-                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="height" secondItem="rMb-cB-tTb" secondAttribute="height" id="pM1-rO-xwb"/>
-                                            <constraint firstItem="rMb-cB-tTb" firstAttribute="trailing" secondItem="t63-nw-aik" secondAttribute="centerX" constant="-5" id="qrp-sN-MaE"/>
-                                            <constraint firstItem="ggp-z3-sKG" firstAttribute="leading" secondItem="rMb-cB-tTb" secondAttribute="trailing" constant="10" id="tVJ-Kw-7rV"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-KR-jE3" userLabel="Top Right Toolbar">
-                                        <rect key="frame" x="498" y="-11.5" width="60" height="43"/>
+                                        <rect key="frame" x="471" y="-11.5" width="87" height="43"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JCp-rm-sDC" userLabel="Settings">
-                                                <rect key="frame" x="3" y="9" width="25" height="25"/>
+                                                <rect key="frame" x="0.0" y="9" width="25" height="25"/>
                                                 <gestureRecognizers/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="JCp-rm-sDC" secondAttribute="height" multiplier="1:1" id="L8E-69-JcB"/>
@@ -249,10 +184,10 @@ RECORDER</string>
                                                     </constraint>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
-                                                <color key="tintColor" name="Gray0"/>
+                                                <color key="tintColor" name="ActivityOff"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" image="gearshape">
-                                                    <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="titleColor" name="ActivityOff"/>
                                                 </state>
                                                 <state key="selected">
                                                     <color key="titleColor" name="Gray0"/>
@@ -264,7 +199,7 @@ RECORDER</string>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nja-eO-rX7" userLabel="About">
-                                                <rect key="frame" x="32" y="9" width="25" height="25"/>
+                                                <rect key="frame" x="27" y="9" width="25" height="25"/>
                                                 <gestureRecognizers/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="Nja-eO-rX7" secondAttribute="height" multiplier="1:1" id="VIU-Hp-sX6"/>
@@ -273,10 +208,10 @@ RECORDER</string>
                                                     </constraint>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="16"/>
-                                                <color key="tintColor" name="Gray0"/>
+                                                <color key="tintColor" name="ActivityOff"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal">
-                                                    <color key="titleColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color key="titleColor" name="ActivityOff"/>
                                                     <imageReference key="image" image="questionmark_circle" symbolScale="large"/>
                                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large"/>
                                                 </state>
@@ -289,17 +224,129 @@ RECORDER</string>
                                                     <action selector="aboutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FGF-2N-1lV"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mfg-xf-bZ2" userLabel="Menu All" customClass="MenuButton">
+                                                <rect key="frame" x="54" y="9.5" width="25" height="24"/>
+                                                <color key="backgroundColor" name="ActivityOff"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="30" id="8Q4-vE-kv9">
+                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="width" secondItem="Mfg-xf-bZ2" secondAttribute="height" multiplier="1:1" constant="1" id="hNi-lD-xmc"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="ActivityOff"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal">
+                                                    <color key="titleColor" name="ActivityOff"/>
+                                                </state>
+                                                <state key="selected">
+                                                    <color key="titleColor" systemColor="systemYellowColor"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="menuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="mc0-eW-F01"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="JCp-rm-sDC" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="5mn-8a-jFZ"/>
                                             <constraint firstItem="Nja-eO-rX7" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="6WL-e7-BU2"/>
-                                            <constraint firstItem="JCp-rm-sDC" firstAttribute="trailing" secondItem="Ia4-KR-jE3" secondAttribute="centerX" constant="-5" id="Xzo-4F-SdL">
+                                            <constraint firstAttribute="width" constant="120" id="SmA-Xo-kBz">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="87"/>
+                                            </constraint>
+                                            <constraint firstItem="JCp-rm-sDC" firstAttribute="trailing" secondItem="Nja-eO-rX7" secondAttribute="leading" constant="-5" id="VTz-L5-xQs">
                                                 <variation key="heightClass=compact-widthClass=compact" constant="-2"/>
                                             </constraint>
-                                            <constraint firstItem="Nja-eO-rX7" firstAttribute="leading" secondItem="Ia4-KR-jE3" secondAttribute="centerX" constant="5" id="diJ-Mt-Vys">
-                                                <variation key="heightClass=compact-widthClass=compact" constant="2"/>
+                                            <constraint firstItem="Nja-eO-rX7" firstAttribute="trailing" secondItem="Mfg-xf-bZ2" secondAttribute="leading" constant="-5" id="dKK-6Y-ef0">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="-2"/>
                                             </constraint>
+                                            <constraint firstItem="Mfg-xf-bZ2" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="nCD-Qo-Jg2"/>
+                                        </constraints>
+                                    </view>
+                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UYH-l2-tRP" userLabel="Menu Popup All" customClass="PopupView">
+                                        <rect key="frame" x="416" y="-8.5" width="134" height="37"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vil-XU-1yx" userLabel="Close Popup All">
+                                                <rect key="frame" x="104" y="6" width="25" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="rNo-rk-2Yd">
+                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="width" secondItem="vil-XU-1yx" secondAttribute="height" multiplier="1:1" id="zfV-eY-aQg"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                <color key="tintColor" name="Gray0"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="xmark">
+                                                    <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zWY-8O-5GZ"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uwU-Zf-O2H" userLabel="Clear All" customClass="ToolBarButton">
+                                                <rect key="frame" x="74" y="6" width="25" height="25"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Red"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="trash">
+                                                    <color key="titleColor" name="Red"/>
+                                                </state>
+                                                <state key="selected" image="questionmark"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="timedUnselect" value="YES"/>
+                                                </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="clearAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="seF-be-niV"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tkr-ck-4LC" userLabel="Export All" customClass="ToolBarButton">
+                                                <rect key="frame" x="44" y="6" width="25" height="25"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Green"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="square_and_arrow_up">
+                                                    <color key="titleColor" name="Green"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="exportAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="gAt-nq-DTa"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EOL-IE-iqE" userLabel="Import All" customClass="ToolBarButton">
+                                                <rect key="frame" x="14" y="6" width="25" height="25"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Blue"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="square_and_arrow_down">
+                                                    <color key="titleColor" name="Blue"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="importAllPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="75X-Xx-iwm"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="uwU-Zf-O2H" firstAttribute="centerY" secondItem="UYH-l2-tRP" secondAttribute="centerY" id="0JE-2j-azc"/>
+                                            <constraint firstItem="vil-XU-1yx" firstAttribute="leading" secondItem="uwU-Zf-O2H" secondAttribute="trailing" constant="5" id="1eJ-wd-IeY"/>
+                                            <constraint firstItem="EOL-IE-iqE" firstAttribute="trailing" secondItem="Tkr-ck-4LC" secondAttribute="leading" constant="-5" id="1fR-jL-Xgb"/>
+                                            <constraint firstItem="Tkr-ck-4LC" firstAttribute="centerY" secondItem="UYH-l2-tRP" secondAttribute="centerY" id="7DX-6l-3iB"/>
+                                            <constraint firstItem="Tkr-ck-4LC" firstAttribute="height" secondItem="vil-XU-1yx" secondAttribute="height" id="AdC-Zt-XC0"/>
+                                            <constraint firstItem="vil-XU-1yx" firstAttribute="centerY" secondItem="UYH-l2-tRP" secondAttribute="centerY" id="B51-X0-8Ma"/>
+                                            <constraint firstItem="uwU-Zf-O2H" firstAttribute="height" secondItem="vil-XU-1yx" secondAttribute="height" id="LSt-ru-FGr"/>
+                                            <constraint firstItem="uwU-Zf-O2H" firstAttribute="width" secondItem="vil-XU-1yx" secondAttribute="width" id="NrD-b0-gVr"/>
+                                            <constraint firstItem="EOL-IE-iqE" firstAttribute="height" secondItem="vil-XU-1yx" secondAttribute="height" id="Tae-da-QpH"/>
+                                            <constraint firstAttribute="width" constant="150" id="UQT-AE-xCA">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="134"/>
+                                            </constraint>
+                                            <constraint firstItem="Tkr-ck-4LC" firstAttribute="width" secondItem="vil-XU-1yx" secondAttribute="width" id="XFw-qd-FMD"/>
+                                            <constraint firstAttribute="height" constant="43" id="ZAC-Wf-hrJ">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="37"/>
+                                            </constraint>
+                                            <constraint firstItem="EOL-IE-iqE" firstAttribute="centerY" secondItem="UYH-l2-tRP" secondAttribute="centerY" id="dil-Xy-Enx"/>
+                                            <constraint firstItem="EOL-IE-iqE" firstAttribute="width" secondItem="vil-XU-1yx" secondAttribute="width" id="jYa-ws-Z6A"/>
+                                            <constraint firstAttribute="trailing" secondItem="vil-XU-1yx" secondAttribute="trailing" constant="5" id="m6D-ia-ULV"/>
+                                            <constraint firstItem="Tkr-ck-4LC" firstAttribute="trailing" secondItem="uwU-Zf-O2H" secondAttribute="leading" constant="-5" id="s3M-Hz-R73"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -313,7 +360,9 @@ RECORDER</string>
                                     </constraint>
                                     <constraint firstItem="ESp-f1-BSZ" firstAttribute="leading" secondItem="5s5-fr-Amh" secondAttribute="trailing" id="ByR-RR-1h6"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="DfR-Ij-zpC"/>
+                                    <constraint firstItem="UYH-l2-tRP" firstAttribute="trailing" secondItem="Mfg-xf-bZ2" secondAttribute="trailing" id="Md4-4t-Rop"/>
                                     <constraint firstItem="Ia4-KR-jE3" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="PlU-Gi-2KI"/>
+                                    <constraint firstItem="UYH-l2-tRP" firstAttribute="centerY" secondItem="Ia4-KR-jE3" secondAttribute="centerY" id="R20-6u-lUH"/>
                                     <constraint firstItem="j5c-MY-xUb" firstAttribute="leading" secondItem="ESp-f1-BSZ" secondAttribute="trailing" id="UuW-CJ-OWA"/>
                                     <constraint firstItem="t63-nw-aik" firstAttribute="trailing" secondItem="Ia4-KR-jE3" secondAttribute="leading" id="WTr-rD-Wzq"/>
                                     <constraint firstItem="ESp-f1-BSZ" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="YeY-an-lJZ"/>
@@ -957,22 +1006,27 @@ RECORDER</string>
                                 <color key="backgroundColor" name="ActivityOff"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="al1-3s-PG4" userLabel="Menu Popup 1" customClass="PopupView">
-                                <rect key="frame" x="416" y="60.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="63.5" width="134" height="37"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2QK-Kb-gVy" userLabel="Close Popup 1">
-                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="103" y="5.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="2QK-Kb-gVy" secondAttribute="height" multiplier="1:1" id="T5f-W1-qRO"/>
+                                            <constraint firstAttribute="height" constant="30" id="xs4-vV-G9x">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                            </constraint>
                                         </constraints>
                                         <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="xmark"/>
+                                        <state key="normal" image="xmark">
+                                            <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
                                         <connections>
                                             <action selector="closeMenuPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Swn-cj-3wN"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iYd-rc-sVS" userLabel="Clear 1" customClass="ToolBarButton">
-                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="72" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -988,7 +1042,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LNR-dr-WIg" userLabel="Export 1" customClass="ToolBarButton">
-                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="41" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1000,7 +1054,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M47-0G-FMz" userLabel="Import 1" customClass="ToolBarButton">
-                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="10" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1034,12 +1088,15 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UOr-iO-bt0" userLabel="Menu Popup 2" customClass="PopupView">
-                                <rect key="frame" x="416" y="102.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="105.5" width="134" height="37"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KNS-Fz-TPp" userLabel="Close Popup 2">
-                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="103" y="5.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="KNS-Fz-TPp" secondAttribute="height" multiplier="1:1" id="6wh-eo-3H9"/>
+                                            <constraint firstAttribute="height" constant="30" id="tyc-QG-7Ca">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                            </constraint>
                                         </constraints>
                                         <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1049,7 +1106,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yUW-33-hCc" userLabel="Clear 2" customClass="ToolBarButton">
-                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="72" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1065,7 +1122,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AsM-3p-e3J" userLabel="Export 2" customClass="ToolBarButton">
-                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="41" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1077,7 +1134,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NAv-nC-Upf" userLabel="Import 2" customClass="ToolBarButton">
-                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="10" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1112,11 +1169,14 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W3w-9u-4Gg" userLabel="Menu Popup 3" customClass="PopupView">
-                                <rect key="frame" x="416" y="144.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="147.5" width="134" height="37"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mCd-Bd-dSz" userLabel="Close Popup 3">
-                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="103" y="5.5" width="26" height="26"/>
                                         <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="8Al-Qq-dlg">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                            </constraint>
                                             <constraint firstAttribute="width" secondItem="mCd-Bd-dSz" secondAttribute="height" multiplier="1:1" id="wa7-BJ-efD"/>
                                         </constraints>
                                         <color key="tintColor" name="Gray0"/>
@@ -1127,7 +1187,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sqh-Tr-1XP" userLabel="Clear 3" customClass="ToolBarButton">
-                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="72" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1143,7 +1203,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fTN-8v-HzS" userLabel="Export 3" customClass="ToolBarButton">
-                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="41" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1155,7 +1215,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YtR-ZD-uKp" userLabel="Import 3" customClass="ToolBarButton">
-                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="10" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1170,7 +1230,9 @@ RECORDER</string>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="134" id="0qh-yn-Zfn"/>
+                                    <constraint firstAttribute="width" constant="150" id="0qh-yn-Zfn">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="134"/>
+                                    </constraint>
                                     <constraint firstItem="YtR-ZD-uKp" firstAttribute="width" secondItem="mCd-Bd-dSz" secondAttribute="width" id="9Ex-fr-9GE"/>
                                     <constraint firstItem="YtR-ZD-uKp" firstAttribute="centerY" secondItem="W3w-9u-4Gg" secondAttribute="centerY" id="B5P-ab-IyB"/>
                                     <constraint firstItem="YtR-ZD-uKp" firstAttribute="height" secondItem="mCd-Bd-dSz" secondAttribute="height" id="BmU-Rp-4Yc"/>
@@ -1188,12 +1250,15 @@ RECORDER</string>
                                 </constraints>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3P-gv-2c3" userLabel="Menu Popup 4" customClass="PopupView">
-                                <rect key="frame" x="416" y="186.5" width="134" height="43"/>
+                                <rect key="frame" x="416" y="189.5" width="134" height="37"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eTs-9f-lX9" userLabel="Close Popup 4">
-                                        <rect key="frame" x="103" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="103" y="5.5" width="26" height="26"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="eTs-9f-lX9" secondAttribute="height" multiplier="1:1" id="rT5-lH-AMi"/>
+                                            <constraint firstAttribute="height" constant="30" id="xcs-FN-lQ7">
+                                                <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                            </constraint>
                                         </constraints>
                                         <color key="tintColor" name="Gray0"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1205,7 +1270,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="USs-du-xYp" userLabel="Clear 4" customClass="ToolBarButton">
-                                        <rect key="frame" x="72" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="72" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Red"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1221,7 +1286,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wBn-hq-Mac" userLabel="Export 4" customClass="ToolBarButton">
-                                        <rect key="frame" x="41" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="41" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Green"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1233,7 +1298,7 @@ RECORDER</string>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EM-YM-mRQ" userLabel="Import 4" customClass="ToolBarButton">
-                                        <rect key="frame" x="10" y="8.5" width="26" height="26"/>
+                                        <rect key="frame" x="10" y="5.5" width="26" height="26"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                         <color key="tintColor" name="Blue"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1260,7 +1325,9 @@ RECORDER</string>
                                     <constraint firstItem="eTs-9f-lX9" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="gsc-xU-YPw"/>
                                     <constraint firstItem="5EM-YM-mRQ" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="jvK-aD-eZm"/>
                                     <constraint firstItem="5EM-YM-mRQ" firstAttribute="width" secondItem="eTs-9f-lX9" secondAttribute="width" id="tNg-ON-i5k"/>
-                                    <constraint firstAttribute="width" constant="134" id="tOX-eg-yRu"/>
+                                    <constraint firstAttribute="width" constant="150" id="tOX-eg-yRu">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="134"/>
+                                    </constraint>
                                     <constraint firstItem="wBn-hq-Mac" firstAttribute="width" secondItem="eTs-9f-lX9" secondAttribute="width" id="xWD-re-chX"/>
                                     <constraint firstItem="wBn-hq-Mac" firstAttribute="centerY" secondItem="w3P-gv-2c3" secondAttribute="centerY" id="yhT-WT-Ucc"/>
                                 </constraints>
@@ -1291,7 +1358,6 @@ RECORDER</string>
                         <constraints>
                             <constraint firstItem="blx-LE-LOD" firstAttribute="top" secondItem="dom-KY-gSl" secondAttribute="top" id="0YH-Oe-F7m"/>
                             <constraint firstItem="YHo-mc-gVi" firstAttribute="height" secondItem="DG3-EF-njW" secondAttribute="height" id="1qZ-W5-Vu4"/>
-                            <constraint firstItem="Ia4-KR-jE3" firstAttribute="leading" secondItem="qqe-xS-Dtb" secondAttribute="leading" id="2MD-pT-Vg9"/>
                             <constraint firstItem="hXW-n3-IFc" firstAttribute="centerX" secondItem="if6-Qg-HAU" secondAttribute="centerX" id="2lQ-if-cRU"/>
                             <constraint firstItem="3pU-49-ygj" firstAttribute="centerY" secondItem="8lV-Pg-F8C" secondAttribute="centerY" id="2xc-5A-837"/>
                             <constraint firstItem="bKj-4Y-TLw" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="10" id="2yB-Xk-CIx"/>
@@ -1322,6 +1388,7 @@ RECORDER</string>
                             <constraint firstItem="UOr-iO-bt0" firstAttribute="trailing" secondItem="JdH-dA-fdD" secondAttribute="trailing" id="HOZ-vj-Y58"/>
                             <constraint firstItem="Vnj-Hq-OLf" firstAttribute="width" secondItem="3pU-49-ygj" secondAttribute="width" id="HTg-3F-zMY"/>
                             <constraint firstItem="uiz-2Z-3Gl" firstAttribute="centerX" secondItem="blx-LE-LOD" secondAttribute="centerX" id="Hpt-v3-npM"/>
+                            <constraint firstItem="Mfg-xf-bZ2" firstAttribute="trailing" secondItem="w1R-ec-Xai" secondAttribute="trailing" id="JmM-Qg-wOq"/>
                             <constraint firstItem="tCM-sv-7no" firstAttribute="top" secondItem="bKj-4Y-TLw" secondAttribute="bottom" constant="10" id="K8S-nf-oUN"/>
                             <constraint firstItem="hXW-n3-IFc" firstAttribute="width" secondItem="DIz-1j-u10" secondAttribute="width" id="KAd-Xn-nYd"/>
                             <constraint firstItem="y7b-zS-fgR" firstAttribute="width" secondItem="kFp-mR-8eu" secondAttribute="width" id="KYy-N7-fl4"/>
@@ -1329,12 +1396,18 @@ RECORDER</string>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="leading" secondItem="jiJ-Fl-4eE" secondAttribute="trailing" id="L0r-3C-zBW"/>
                             <constraint firstItem="bKj-4Y-TLw" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="Lcy-op-daL"/>
                             <constraint firstItem="0ea-4c-QY8" firstAttribute="centerY" secondItem="IWD-hQ-i8x" secondAttribute="centerY" id="MIR-v0-RY4"/>
-                            <constraint firstItem="w3P-gv-2c3" firstAttribute="height" secondItem="y7b-zS-fgR" secondAttribute="height" constant="-10" id="MrP-Jh-5HH"/>
+                            <constraint firstItem="w3P-gv-2c3" firstAttribute="height" secondItem="y7b-zS-fgR" secondAttribute="height" constant="-10" id="MrP-Jh-5HH">
+                                <variation key="heightClass=compact-widthClass=compact" constant="-16"/>
+                            </constraint>
                             <constraint firstItem="5s5-fr-Amh" firstAttribute="trailing" secondItem="if6-Qg-HAU" secondAttribute="trailing" id="N4G-TG-8TO"/>
                             <constraint firstItem="3pU-49-ygj" firstAttribute="width" secondItem="jiJ-Fl-4eE" secondAttribute="width" id="NfN-EF-6LG"/>
                             <constraint firstItem="VuI-3k-Ts7" firstAttribute="width" secondItem="kFp-mR-8eu" secondAttribute="width" id="OsV-J1-ifW"/>
-                            <constraint firstItem="al1-3s-PG4" firstAttribute="height" secondItem="w1R-ec-Xai" secondAttribute="height" constant="-10" id="Ptz-Id-hzK"/>
-                            <constraint firstItem="W3w-9u-4Gg" firstAttribute="height" secondItem="Vnj-Hq-OLf" secondAttribute="height" constant="-10" id="S4n-wv-Uyn"/>
+                            <constraint firstItem="al1-3s-PG4" firstAttribute="height" secondItem="w1R-ec-Xai" secondAttribute="height" constant="-10" id="Ptz-Id-hzK">
+                                <variation key="heightClass=compact-widthClass=compact" constant="-16"/>
+                            </constraint>
+                            <constraint firstItem="W3w-9u-4Gg" firstAttribute="height" secondItem="Vnj-Hq-OLf" secondAttribute="height" constant="-10" id="S4n-wv-Uyn">
+                                <variation key="heightClass=compact-widthClass=compact" constant="-16"/>
+                            </constraint>
                             <constraint firstItem="VuI-3k-Ts7" firstAttribute="centerX" secondItem="if6-Qg-HAU" secondAttribute="centerX" id="Slo-I0-WM7"/>
                             <constraint firstItem="if6-Qg-HAU" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="TGK-Fj-WcC"/>
                             <constraint firstItem="dom-KY-gSl" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="10" id="UPc-Id-CSi"/>
@@ -1362,7 +1435,9 @@ RECORDER</string>
                             <constraint firstItem="5s5-fr-Amh" firstAttribute="leading" secondItem="jiJ-Fl-4eE" secondAttribute="leading" id="eGK-fe-Phj"/>
                             <constraint firstItem="cml-GG-nYY" firstAttribute="centerX" secondItem="qqe-xS-Dtb" secondAttribute="centerX" id="eMI-Tc-qYp"/>
                             <constraint firstItem="jiJ-Fl-4eE" firstAttribute="centerY" secondItem="GXf-2A-NeK" secondAttribute="centerY" id="f16-Uh-nfj"/>
-                            <constraint firstItem="UOr-iO-bt0" firstAttribute="height" secondItem="JdH-dA-fdD" secondAttribute="height" constant="-10" id="f4C-1Y-tEH"/>
+                            <constraint firstItem="UOr-iO-bt0" firstAttribute="height" secondItem="JdH-dA-fdD" secondAttribute="height" constant="-10" id="f4C-1Y-tEH">
+                                <variation key="heightClass=compact-widthClass=compact" constant="-16"/>
+                            </constraint>
                             <constraint firstItem="xcR-Mq-hiL" firstAttribute="centerY" secondItem="8lV-Pg-F8C" secondAttribute="centerY" id="fqz-X5-XMf"/>
                             <constraint firstItem="2QK-Kb-gVy" firstAttribute="width" secondItem="jiJ-Fl-4eE" secondAttribute="width" id="gE1-gS-GOk"/>
                             <constraint firstItem="y7b-zS-fgR" firstAttribute="centerX" secondItem="w1R-ec-Xai" secondAttribute="centerX" id="gqP-sy-6eX"/>
@@ -1433,14 +1508,12 @@ RECORDER</string>
                         <outlet property="menuButton2" destination="JdH-dA-fdD" id="y6F-TX-1iA"/>
                         <outlet property="menuButton3" destination="Vnj-Hq-OLf" id="eQg-Ar-co4"/>
                         <outlet property="menuButton4" destination="y7b-zS-fgR" id="u1z-tu-gmz"/>
+                        <outlet property="menuButtonAll" destination="Mfg-xf-bZ2" id="rsr-vF-BAf"/>
                         <outlet property="menuPopup1" destination="al1-3s-PG4" id="SDl-SQ-aKR"/>
                         <outlet property="menuPopup2" destination="UOr-iO-bt0" id="qaf-as-eC6"/>
                         <outlet property="menuPopup3" destination="W3w-9u-4Gg" id="pAo-iz-Jk5"/>
                         <outlet property="menuPopup4" destination="w3P-gv-2c3" id="VOp-7g-D3x"/>
-                        <outlet property="menuPopupWidth1" destination="uGU-Zw-cdA" id="bKp-oS-Fhq"/>
-                        <outlet property="menuPopupWidth2" destination="VFN-lg-oEQ" id="WXS-xG-3ja"/>
-                        <outlet property="menuPopupWidth3" destination="0qh-yn-Zfn" id="HTS-qK-ZY7"/>
-                        <outlet property="menuPopupWidth4" destination="tOX-eg-yRu" id="WjN-hG-hwh"/>
+                        <outlet property="menuPopupAll" destination="UYH-l2-tRP" id="af6-82-XEj"/>
                         <outlet property="midiActivityInput1" destination="dom-KY-gSl" id="SfD-tA-CKI"/>
                         <outlet property="midiActivityInput2" destination="0ea-4c-QY8" id="15D-yc-jxE"/>
                         <outlet property="midiActivityInput3" destination="DG3-EF-njW" id="0T2-8h-4ae"/>
