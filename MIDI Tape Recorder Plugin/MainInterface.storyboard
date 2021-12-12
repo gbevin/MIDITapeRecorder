@@ -1701,7 +1701,7 @@ under the CC BY 4.0 License.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZaP-U7-IXL" userLabel="Rate on App Store">
-                                <rect key="frame" x="100" y="127" width="120" height="26"/>
+                                <rect key="frame" x="25" y="127" width="120" height="26"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 <color key="tintColor" name="Orange"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1710,6 +1710,18 @@ under the CC BY 4.0 License.</string>
                                 </state>
                                 <connections>
                                     <action selector="leaveRating:" destination="ma5-k3-7jO" eventType="touchUpInside" id="tmC-dE-Cin"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0r7-eV-ygL" userLabel="Donate to Help">
+                                <rect key="frame" x="175" y="127" width="122" height="26"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                <color key="tintColor" name="Orange"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="DONATE TO HELP ME">
+                                    <color key="titleColor" name="Orange"/>
+                                </state>
+                                <connections>
+                                    <action selector="donate:" destination="ma5-k3-7jO" eventType="touchUpInside" id="JpR-bt-3SD"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tF3-Pz-QUM" userLabel="Close About">
@@ -1733,15 +1745,17 @@ under the CC BY 4.0 License.</string>
                                 <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                             </constraint>
                             <constraint firstItem="4x1-6I-ezK" firstAttribute="centerX" secondItem="mKK-gH-GS8" secondAttribute="centerX" id="ALv-gM-7cR"/>
+                            <constraint firstItem="0r7-eV-ygL" firstAttribute="leading" secondItem="YA7-WJ-vmT" secondAttribute="centerX" constant="15" id="H7J-cC-IJz"/>
                             <constraint firstItem="ZaP-U7-IXL" firstAttribute="top" secondItem="4x1-6I-ezK" secondAttribute="bottom" constant="10" id="TDh-lM-c8d">
                                 <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                             </constraint>
-                            <constraint firstItem="ZaP-U7-IXL" firstAttribute="centerX" secondItem="mKK-gH-GS8" secondAttribute="centerX" id="WIL-hI-rnd"/>
+                            <constraint firstItem="ZaP-U7-IXL" firstAttribute="trailing" secondItem="mKK-gH-GS8" secondAttribute="centerX" constant="-15" id="WIL-hI-rnd"/>
                             <constraint firstItem="K3q-TW-Y3D" firstAttribute="top" secondItem="mKK-gH-GS8" secondAttribute="bottom" constant="10" id="XRp-AC-wBz">
                                 <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                             </constraint>
                             <constraint firstItem="tF3-Pz-QUM" firstAttribute="top" secondItem="KkM-rA-HLA" secondAttribute="top" constant="5" id="hFq-OL-jHN"/>
                             <constraint firstItem="tF3-Pz-QUM" firstAttribute="trailing" secondItem="KkM-rA-HLA" secondAttribute="trailing" constant="-5" id="iaN-Ht-aSJ"/>
+                            <constraint firstItem="0r7-eV-ygL" firstAttribute="top" secondItem="4x1-6I-ezK" secondAttribute="bottom" constant="8" id="mFX-l1-f5U"/>
                             <constraint firstItem="mKK-gH-GS8" firstAttribute="top" secondItem="KkM-rA-HLA" secondAttribute="top" constant="28" id="suo-Oc-wKH">
                                 <variation key="heightClass=compact-widthClass=compact" constant="15"/>
                             </constraint>

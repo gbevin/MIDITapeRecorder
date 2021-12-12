@@ -9,7 +9,7 @@
 #import "AboutViewController.h"
 
 @interface AboutViewController ()
-@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
+@property (weak, nonatomic) IBOutlet UILabel* versionLabel;
 @end
 
 @implementation AboutViewController
@@ -40,6 +40,11 @@
 
 - (IBAction)leaveRating:(id)sender {
     NSURL* url = [NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=1598618004&pageNumber=0&sortOrdering=3&mt=8"];
+    [self openURL:url];
+}
+
+- (IBAction)donate:(id)sender {
+    NSURL* url = [NSURL URLWithString:@"http://paypal.me/geertbevin"];
     [self openURL:url];
 }
 
