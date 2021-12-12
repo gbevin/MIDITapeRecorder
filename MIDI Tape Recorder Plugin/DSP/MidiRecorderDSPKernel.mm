@@ -375,7 +375,10 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
             }
         }
         
-        queueMIDIEvent(midiEvent);
+        // only queue channel voice messages
+        if ((midiEvent.data[0] & 0xf0) != 0xf0) {
+            queueMIDIEvent(midiEvent);
+        }
     }
 }
 
