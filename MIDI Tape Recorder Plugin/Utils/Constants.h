@@ -34,5 +34,8 @@ enum {
     ID_MUTE_3,
     ID_MUTE_4,
     // All non-track specific parameter follow below
-    ID_REPEAT
+    ID_REPEAT,
+    ID_GRID,
+    ID_CHASE,
+    ID_PUNCH_INOUT
 };

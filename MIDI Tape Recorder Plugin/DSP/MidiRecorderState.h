@@ -25,7 +25,11 @@ struct MidiRecorderState {
 
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic_flag repeat                     { false };
+    std::atomic_flag repeat     { false };
+    std::atomic_flag grid       { false };
+    std::atomic_flag chase      { true };
+    std::atomic_flag punchInOut { false };
+
     std::atomic_flag sendMpeConfigOnPlay        { true };
     std::atomic_flag displayMpeConfigDetails    { false };
     std::atomic_flag autoTrimRecordings         { true };

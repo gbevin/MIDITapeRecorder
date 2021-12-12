@@ -183,6 +183,18 @@ void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue val
             if (set) _state.repeat.test_and_set();
             else     _state.repeat.clear();
             break;
+        case ID_GRID:
+            if (set) _state.grid.test_and_set();
+            else     _state.grid.clear();
+            break;
+        case ID_CHASE:
+            if (set) _state.chase.test_and_set();
+            else     _state.chase.clear();
+            break;
+        case ID_PUNCH_INOUT:
+            if (set) _state.punchInOut.test_and_set();
+            else     _state.punchInOut.clear();
+            break;
     }
 }
 
@@ -215,6 +227,12 @@ AUValue MidiRecorderDSPKernel::getParameter(AUParameterAddress address) {
             return _state.track[3].muteEnabled.test();
         case ID_REPEAT:
             return _state.repeat.test();
+        case ID_GRID:
+            return _state.grid.test();
+        case ID_CHASE:
+            return _state.chase.test();
+        case ID_PUNCH_INOUT:
+            return _state.punchInOut.test();
         default:
             return 0.f;
     }

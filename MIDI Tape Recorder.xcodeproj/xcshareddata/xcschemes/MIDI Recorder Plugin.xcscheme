@@ -58,9 +58,9 @@
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
       <RemoteRunnable
-         runnableDebuggingMode = "1"
+         runnableDebuggingMode = "0"
          BundleIdentifier = "com.kymatica.AUM"
-         RemotePath = "/var/containers/Bundle/Application/DEF350F1-C8E9-4A36-B5D8-9E6A3C3F7699/AUM.app">
+         RemotePath = "/var/containers/Bundle/Application/E090BE4D-A785-4952-B4D0-7DC0818F74EC/AUM.app">
       </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference

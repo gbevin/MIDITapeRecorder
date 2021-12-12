@@ -43,6 +43,9 @@
 @property (weak, nonatomic) IBOutlet UIButton* playButton;
 @property (weak, nonatomic) IBOutlet UIButton* recordButton;
 @property (weak, nonatomic) IBOutlet UIButton* repeatButton;
+@property (weak, nonatomic) IBOutlet UIButton* gridButton;
+@property (weak, nonatomic) IBOutlet UIButton* chaseButton;
+@property (weak, nonatomic) IBOutlet UIButton* punchInOutButton;
 @property (weak, nonatomic) IBOutlet UIButton* settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* aboutButton;
 
@@ -186,6 +189,8 @@
     
     _timeline.tracks = _tracks;
     
+    _chaseButton.selected = YES;
+    
     _menuPopupAll.hidden = YES;
     MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
     MPEButton* mpe_button[MIDI_TRACKS] = { _mpeButton1, _mpeButton2, _mpeButton3, _mpeButton4 };
@@ -261,6 +266,18 @@
                 }
                 case ID_REPEAT: {
                     s.repeatButton.selected = s->_state->repeat.test();
+                    break;
+                }
+                case ID_GRID: {
+                    s.gridButton.selected = s->_state->grid.test();
+                    break;
+                }
+                case ID_CHASE: {
+                    s.chaseButton.selected = s->_state->chase.test();
+                    break;
+                }
+                case ID_PUNCH_INOUT: {
+                    s.punchInOutButton.selected = s->_state->punchInOut.test();
                     break;
                 }
             }
@@ -358,6 +375,30 @@
     sender.selected = !sender.selected;
     
     [self updateRepeatState];
+}
+
+#pragma mark IBAction - Grid
+
+- (IBAction)gridPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    
+    [self updateGridState];
+}
+
+#pragma mark IBAction - Chase
+
+- (IBAction)chasePressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    
+    [self updateChaseState];
+}
+
+#pragma mark IBAction - Punch In Out
+
+- (IBAction)punchInOutPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    
+    [self updatePunchInOutState];
 }
 
 #pragma mark IBAction - Import All
@@ -730,6 +771,19 @@
         _autoPan = CGPointMake(pan_x, 0);
     }
     else {
+        // when grid is active, round the marker to the nearest beat boundary
+        if (_state->grid.test()) {
+            if (_activePannedMarker == _playhead) {
+                _state->playPositionBeats = round(_state->playPositionBeats.load());
+            }
+            else if (_activePannedMarker == _cropLeft) {
+                _state->startPositionBeats = round(_state->startPositionBeats.load());
+            }
+            else if (_activePannedMarker == _cropRight) {
+                _state->stopPositionBeats = round(_state->stopPositionBeats.load());
+            }
+        }
+
         [self resetAutomaticPanning];
         _activePannedMarker = nil;
     }
@@ -747,7 +801,10 @@
     id routing = [dict objectForKey:@"Routing"];
     
     id repeat = [dict objectForKey:@"Repeat"];
-    
+    id grid = [dict objectForKey:@"Grid"];
+    id chase = [dict objectForKey:@"Chase"];
+    id punch_inout = [dict objectForKey:@"PunchInOut"];
+
     id record1 = [dict objectForKey:@"Record1"];
     id record2 = [dict objectForKey:@"Record2"];
     id record3 = [dict objectForKey:@"Record3"];
@@ -791,7 +848,16 @@
         if (repeat) {
             self->_repeatButton.selected = [repeat boolValue];
         }
-        
+        if (grid) {
+            self->_gridButton.selected = [grid boolValue];
+        }
+        if (chase) {
+            self->_chaseButton.selected = [chase boolValue];
+        }
+        if (punch_inout) {
+            self->_punchInOutButton.selected = [punch_inout boolValue];
+        }
+
         if (record1) {
             self->_recordButton1.selected = [record1 boolValue];
         }
@@ -846,6 +912,9 @@
 
         [self updateRoutingState];
         [self updateRepeatState];
+        [self updateGridState];
+        [self updateChaseState];
+        [self updatePunchInOutState];
         [self updateMonitorState];
         [self updateRecordEnableState];
         [self updateMuteState];
@@ -873,6 +942,9 @@
         @"playPositionBeats" : @(_state->playPositionBeats.load()),
         @"Routing" : @(_routingButton.selected),
         @"Repeat" : @(_repeatButton.selected),
+        @"Grid" : @(_gridButton.selected),
+        @"Chase" : @(_chaseButton.selected),
+        @"PunchInOut" : @(_punchInOutButton.selected),
         @"Record1" : @(_recordButton1.selected),
         @"Record2" : @(_recordButton2.selected),
         @"Record3" : @(_recordButton3.selected),
@@ -980,6 +1052,39 @@
     }
 }
 
+- (void)updateGridState {
+    if (_state->grid.test() != _gridButton.selected) {
+        if (_gridButton.selected) _state->grid.test_and_set();
+        else                      _state->grid.clear();
+        
+        if (_state->hostParamChange) {
+            _state->hostParamChange(ID_GRID, _state->grid.test());
+        }
+    }
+}
+
+- (void)updateChaseState {
+    if (_state->chase.test() != _chaseButton.selected) {
+        if (_chaseButton.selected) _state->chase.test_and_set();
+        else                       _state->chase.clear();
+        
+        if (_state->hostParamChange) {
+            _state->hostParamChange(ID_CHASE, _state->chase.test());
+        }
+    }
+}
+
+- (void)updatePunchInOutState {
+    if (_state->punchInOut.test() != _punchInOutButton.selected) {
+        if (_punchInOutButton.selected) _state->punchInOut.test_and_set();
+        else                        _state->punchInOut.clear();
+        
+        if (_state->hostParamChange) {
+            _state->hostParamChange(ID_PUNCH_INOUT, _state->punchInOut.test());
+        }
+    }
+}
+
 #pragma mark - Rendering
 
 - (void)viewDidLayoutSubviews {
@@ -1055,7 +1160,8 @@
     _playhead.hidden = ![self hasRecordedDuration];
 
     // scroll view location
-    if (!_playhead.hidden && !_activePannedMarker && (_playButton.selected || _recordButton.selected)) {
+    if (!_playhead.hidden && _state->chase.test() && !_activePannedMarker &&
+        (_playButton.selected || _recordButton.selected)) {
         CGFloat content_offset;
         if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
             content_offset = 0.0;

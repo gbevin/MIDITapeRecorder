@@ -166,9 +166,68 @@ RECORDER</string>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t63-nw-aik" userLabel="Tools">
                                         <rect key="frame" x="339" y="-5" width="132" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dDb-S6-pZD" userLabel="Grid" customClass="ToolBarButton">
+                                                <rect key="frame" x="23.5" y="2.5" width="25" height="25"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Blue"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="grid">
+                                                    <color key="titleColor" name="Blue"/>
+                                                </state>
+                                                <state key="selected">
+                                                    <color key="titleColor" name="Blue"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="gridPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hBU-Yw-ybS"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sq8-b6-k0h" userLabel="Chase" customClass="ToolBarButton">
+                                                <rect key="frame" x="53.5" y="2.5" width="25" height="25"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Green"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="chase_playhead">
+                                                    <color key="titleColor" name="Green"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="chasePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4fV-Fp-xz3"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="81j-AC-XX3" userLabel="Punch In out" customClass="ToolBarButton">
+                                                <rect key="frame" x="83.5" y="2.5" width="25" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="3Sy-yk-jac">
+                                                        <variation key="heightClass=compact-widthClass=compact" constant="25"/>
+                                                    </constraint>
+                                                    <constraint firstAttribute="width" secondItem="81j-AC-XX3" secondAttribute="height" multiplier="1:1" id="eEb-es-5qg"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Red"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="punch_in_out">
+                                                    <color key="titleColor" name="Red"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="punchInOutPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Lyr-a3-9ZM"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstItem="81j-AC-XX3" firstAttribute="leading" secondItem="sq8-b6-k0h" secondAttribute="trailing" constant="5" id="5kO-JQ-Ayj"/>
+                                            <constraint firstItem="sq8-b6-k0h" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="66z-u4-JlJ"/>
+                                            <constraint firstItem="dDb-S6-pZD" firstAttribute="height" secondItem="81j-AC-XX3" secondAttribute="height" id="B88-yD-G8R"/>
+                                            <constraint firstItem="dDb-S6-pZD" firstAttribute="trailing" secondItem="sq8-b6-k0h" secondAttribute="leading" constant="-5" id="CSo-hB-WtO"/>
+                                            <constraint firstItem="dDb-S6-pZD" firstAttribute="width" secondItem="81j-AC-XX3" secondAttribute="width" id="LZg-UG-rwU"/>
+                                            <constraint firstItem="81j-AC-XX3" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="StA-fp-qAs"/>
+                                            <constraint firstItem="sq8-b6-k0h" firstAttribute="centerX" secondItem="t63-nw-aik" secondAttribute="centerX" id="Zu5-Sg-f8X"/>
                                             <constraint firstAttribute="height" constant="30" id="Zvd-51-oxl"/>
+                                            <constraint firstItem="81j-AC-XX3" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="t63-nw-aik" secondAttribute="trailing" id="ab9-N9-bfF"/>
+                                            <constraint firstItem="dDb-S6-pZD" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="bT4-AN-c2W"/>
+                                            <constraint firstItem="sq8-b6-k0h" firstAttribute="height" secondItem="81j-AC-XX3" secondAttribute="height" id="h5S-Sw-bGd"/>
+                                            <constraint firstItem="dDb-S6-pZD" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="t63-nw-aik" secondAttribute="leading" id="he5-KV-Icw"/>
+                                            <constraint firstItem="sq8-b6-k0h" firstAttribute="width" secondItem="81j-AC-XX3" secondAttribute="width" id="q6U-4R-w2f"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-KR-jE3" userLabel="Top Right Toolbar">
@@ -436,17 +495,6 @@ RECORDER</string>
                                         <rect key="frame" x="10" y="0.0" width="50.5" height="190"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
-                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
-                                        <color key="backgroundColor" systemColor="secondaryLabelColor"/>
-                                        <gestureRecognizers/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="31" id="Xru-0r-srh"/>
-                                        </constraints>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
-                                        </connections>
-                                    </view>
                                     <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VMc-Bx-bLD" userLabel="Crop Left" customClass="CropLeftView">
                                         <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
                                         <color key="backgroundColor" name="Green"/>
@@ -469,6 +517,17 @@ RECORDER</string>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="OuL-cY-k9O" appends="YES" id="qvb-5A-OxM"/>
                                             <outletCollection property="gestureRecognizers" destination="frJ-wJ-GTJ" appends="YES" id="E36-QM-ojA"/>
+                                        </connections>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
+                                        <color key="backgroundColor" systemColor="secondaryLabelColor"/>
+                                        <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="31" id="Xru-0r-srh"/>
+                                        </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
                                         </connections>
                                     </view>
                                     <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMO-Kd-c0J" userLabel="MPE 1" customClass="MPEButton">
@@ -1482,6 +1541,7 @@ RECORDER</string>
                     <connections>
                         <outlet property="aboutButton" destination="Nja-eO-rX7" id="3EP-vJ-nYU"/>
                         <outlet property="aboutView" destination="oVL-Ty-mxd" id="Ptu-hk-wqp"/>
+                        <outlet property="chaseButton" destination="sq8-b6-k0h" id="sXb-q5-VLj"/>
                         <outlet property="clearButton1" destination="iYd-rc-sVS" id="aXl-Vg-cLH"/>
                         <outlet property="clearButton2" destination="yUW-33-hCc" id="tF9-sv-RiP"/>
                         <outlet property="clearButton3" destination="Sqh-Tr-1XP" id="NMU-d3-f2T"/>
@@ -1500,6 +1560,7 @@ RECORDER</string>
                         <outlet property="exportButton2" destination="AsM-3p-e3J" id="x7p-3b-ahS"/>
                         <outlet property="exportButton3" destination="fTN-8v-HzS" id="tZN-31-GwI"/>
                         <outlet property="exportButton4" destination="wBn-hq-Mac" id="T9V-5u-g0b"/>
+                        <outlet property="gridButton" destination="dDb-S6-pZD" id="oJn-nV-yO5"/>
                         <outlet property="importButton1" destination="M47-0G-FMz" id="3Hq-pd-Yrl"/>
                         <outlet property="importButton2" destination="NAv-nC-Upf" id="35l-Lt-cfg"/>
                         <outlet property="importButton3" destination="YtR-ZD-uKp" id="gbt-80-yiI"/>
@@ -1544,6 +1605,7 @@ RECORDER</string>
                         <outlet property="playhead" destination="L2y-q6-jop" id="wG4-Fw-krm"/>
                         <outlet property="playheadLeading" destination="cTi-we-c8t" id="ag4-Bi-EVh"/>
                         <outlet property="playheadPanGesture" destination="Sbs-GL-zew" id="oJz-pJ-OP5"/>
+                        <outlet property="punchInOutButton" destination="81j-AC-XX3" id="gwg-v1-4ac"/>
                         <outlet property="recordButton" destination="o1O-TV-EyB" id="XAb-3f-btd"/>
                         <outlet property="recordButton1" destination="jiJ-Fl-4eE" id="sCs-3s-dvh"/>
                         <outlet property="recordButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
@@ -1836,10 +1898,13 @@ under the CC BY 4.0 License.</string>
     <resources>
         <image name="backward_end" width="135" height="135"/>
         <image name="backward_end_fill" width="135" height="135"/>
+        <image name="chase_playhead" width="135" height="135"/>
         <image name="gearshape" width="135" height="135"/>
         <image name="gearshape_fill" width="135" height="135"/>
+        <image name="grid" width="135" height="135"/>
         <image name="play" width="135" height="135"/>
         <image name="play_fill" width="135" height="135"/>
+        <image name="punch_in_out" width="135" height="135"/>
         <image name="questionmark" width="135" height="135"/>
         <image name="questionmark_circle" width="135" height="135"/>
         <image name="questionmark_circle_fill" width="135" height="135"/>

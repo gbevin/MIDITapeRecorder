@@ -207,6 +207,39 @@
                                                                         flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
+    
+    AUParameter* gridParam = [AUParameterTree createParameterWithIdentifier:@"grid"
+                                                                       name:@"Grid"
+                                                                    address:ID_GRID
+                                                                        min:0
+                                                                        max:1
+                                                                       unit:kAudioUnitParameterUnit_Boolean
+                                                                   unitName:nil
+                                                                      flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                               valueStrings:nil
+                                                        dependentParameters:nil];
+    
+    AUParameter* chaseParam = [AUParameterTree createParameterWithIdentifier:@"chase"
+                                                                        name:@"Chase"
+                                                                     address:ID_CHASE
+                                                                         min:0
+                                                                         max:1
+                                                                        unit:kAudioUnitParameterUnit_Boolean
+                                                                    unitName:nil
+                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                valueStrings:nil
+                                                         dependentParameters:nil];
+    
+    AUParameter* punchInOutParam = [AUParameterTree createParameterWithIdentifier:@"punchInOut"
+                                                                             name:@"Punch In/Out"
+                                                                          address:ID_PUNCH_INOUT
+                                                                              min:0
+                                                                              max:1
+                                                                             unit:kAudioUnitParameterUnit_Boolean
+                                                                         unitName:nil
+                                                                            flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                     valueStrings:nil
+                                                              dependentParameters:nil];
 
     // Initialize the parameter values.
     record1Param.value = 0.0;
@@ -222,6 +255,9 @@
     mute3Param.value = 0.0;
     mute4Param.value = 0.0;
     repeatParam.value = 0.0;
+    gridParam.value = 0.0;
+    chaseParam.value = 1.0;
+    punchInOutParam.value = 0.0;
 
     // Create the parameter tree.
     _parameterTree = [AUParameterTree createTreeWithChildren:@[
@@ -237,7 +273,10 @@
         mute2Param,
         mute3Param,
         mute4Param,
-        repeatParam
+        repeatParam,
+        gridParam,
+        chaseParam,
+        punchInOutParam
     ]];
 }
 
