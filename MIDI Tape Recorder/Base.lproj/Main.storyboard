@@ -17,10 +17,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="icy-BD-jpe">
-                                <rect key="frame" x="317" y="76.5" width="262.5" height="41"/>
+                                <rect key="frame" x="317" y="38.5" width="262.5" height="41"/>
                                 <string key="text">The MIDI Tape Recorder audio unit
 has been installed.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="&lt;version&gt;" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LAF-zp-0Qo" userLabel="Version">
+                                <rect key="frame" x="414" y="99.5" width="68" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -49,11 +55,16 @@ Have fun!</string>
                             <constraint firstItem="xME-Ij-7jb" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="BeW-1y-kuk"/>
                             <constraint firstItem="icy-BD-jpe" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="BiQ-Y2-U1l"/>
                             <constraint firstItem="aIl-eM-Wyd" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="MNT-08-to7"/>
-                            <constraint firstItem="icy-BD-jpe" firstAttribute="bottom" secondItem="aIl-eM-Wyd" secondAttribute="top" constant="-20" id="XcL-cG-7Ot"/>
+                            <constraint firstItem="LAF-zp-0Qo" firstAttribute="bottom" secondItem="aIl-eM-Wyd" secondAttribute="top" constant="-20" id="RKp-63-78z"/>
+                            <constraint firstItem="icy-BD-jpe" firstAttribute="bottom" secondItem="LAF-zp-0Qo" secondAttribute="top" constant="-20" id="XcL-cG-7Ot"/>
                             <constraint firstItem="aIl-eM-Wyd" firstAttribute="height" relation="lessThanOrEqual" secondItem="6Tk-OE-BBY" secondAttribute="height" multiplier="0.3" id="i66-Dc-8zr"/>
+                            <constraint firstItem="LAF-zp-0Qo" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="krc-oP-udz"/>
                             <constraint firstItem="xME-Ij-7jb" firstAttribute="top" secondItem="aIl-eM-Wyd" secondAttribute="bottom" constant="20" id="m0n-6U-k41"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="versionLabel" destination="LAF-zp-0Qo" id="OAM-YH-Mxj"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

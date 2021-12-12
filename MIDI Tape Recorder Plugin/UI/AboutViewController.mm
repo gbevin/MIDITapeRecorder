@@ -8,7 +8,19 @@
 
 #import "AboutViewController.h"
 
+@interface AboutViewController ()
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
+@end
+
 @implementation AboutViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    NSString* shortVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"];
+    NSString* buildNumber = [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"];
+    _versionLabel.text = [NSString stringWithFormat:@"v%@ build %@", shortVersion, buildNumber];
+}
 
 #pragma mark IBActions
 

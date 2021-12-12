@@ -9,15 +9,17 @@
 #import "ViewController.h"
 
 @interface ViewController ()
-
+@property (weak, nonatomic) IBOutlet UILabel* versionLabel;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    NSString* shortVersion = [NSBundle mainBundle].infoDictionary[@"CFBundleShortVersionString"];
+    NSString* buildNumber = [NSBundle mainBundle].infoDictionary[@"CFBundleVersion"];
+    _versionLabel.text = [NSString stringWithFormat:@"v%@ build %@", shortVersion, buildNumber];
 }
-
 
 @end
