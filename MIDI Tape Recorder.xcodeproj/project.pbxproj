@@ -659,7 +659,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder/MIDI Tape Recorder.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
@@ -678,7 +678,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -695,7 +695,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder/MIDI Tape Recorder.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
@@ -714,7 +714,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
@@ -729,7 +729,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder Plugin/MIDI Tape Recorder Plugin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
@@ -742,7 +742,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -758,7 +758,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder Plugin/MIDI Tape Recorder Plugin.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
@@ -771,7 +771,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
