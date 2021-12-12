@@ -41,6 +41,13 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
 }
 
 void MidiRecorderDSPKernel::rewind() {
+    // turn off recording
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        _state.track[t].recording.clear();
+    }
+    _state.processedUIEndRecord.clear();
+
+    // rewind to start position or complete beginning
     double start_position = _state.startPositionBeats.load();
     if (_state.playPositionBeats > start_position) {
         _state.playPositionBeats = start_position;
@@ -48,6 +55,8 @@ void MidiRecorderDSPKernel::rewind() {
     else {
         _state.playPositionBeats = 0.0;
     }
+    
+    // ensure there are no lingering notes
     turnOffAllNotes();
 }
 
@@ -423,18 +432,21 @@ void MidiRecorderDSPKernel::processOutput() {
         // store the play duration for the next process call
         _state.playPositionBeats = beatrange_end;
         
-        BOOL reached_end = YES;
-        
+        int playing_tracks = 0;
+        bool reached_end = YES;
+
         // process all the messages on all the tracks
         for (int t = 0; t < MIDI_TRACKS; ++t) {
             MidiTrackState& track_state = _state.track[t];
             
             // don't play if the track is recording
             if (track_state.recording.test()) {
-                reached_end = NO;
+                // no-op
             }
             // play when there are recorded messages
             else if (track_state.recordedMessages && track_state.recordedLength > 0) {
+                playing_tracks += 1;
+                
                 uint64_t play_counter = track_state.recordedLength;
 
                 int beat_begin = (int)beatrange_begin;
@@ -479,14 +491,13 @@ void MidiRecorderDSPKernel::processOutput() {
                     }
                 }
                 
-                if (beatrange_end < track_state.recordedDuration &&
-                    (!_state.stopPositionSet.test() || beatrange_end < _state.stopPositionBeats)) {
+                if (beatrange_end < _state.stopPositionBeats.load()) {
                     reached_end = NO;
                 }
             }
         }
         
-        if (reached_end) {
+        if (playing_tracks != 0 && reached_end) {
             if (_state.repeat.test()) {
                 _state.processedRewind.clear();
             }

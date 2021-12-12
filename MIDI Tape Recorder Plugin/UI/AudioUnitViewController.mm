@@ -1121,6 +1121,11 @@
     if (!_state->processedUIStop.test_and_set()) {
         [self setPlay:NO];
     }
+
+    // end recording UI
+    if (!_state->processedUIEndRecord.test_and_set()) {
+        [self setRecord:NO];
+    }
 }
 
 - (void)renderPreviews {

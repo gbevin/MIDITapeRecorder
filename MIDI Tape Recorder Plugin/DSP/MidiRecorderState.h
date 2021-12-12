@@ -62,6 +62,7 @@ struct MidiRecorderState {
     std::atomic_flag processedUIStop            { true };
     std::atomic_flag processedUIStopAndRewind   { true };
     std::atomic_flag processedUIMpeConfigChange { true };
+    std::atomic_flag processedUIEndRecord       { true };
 
     TPCircularBuffer midiBuffer;
 };
