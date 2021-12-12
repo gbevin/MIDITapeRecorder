@@ -421,6 +421,14 @@ void MidiRecorderDSPKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
+        // if the duration is totally cleared out,
+        // we've reched the end and stop playing
+        if (_state.maxDuration == 0.0) {
+            _state.processedReachEnd.clear();
+            return;
+        }
+        
+        // determine the beat position of the playhead
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
         const double frames_beats = frames_seconds * _state.secondsToBeats;
 
