@@ -188,6 +188,18 @@ void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue val
             if (set) _state.track[3].muteEnabled.test_and_set();
             else     _state.track[3].muteEnabled.clear();
             break;
+        case ID_REWIND:
+            if (set) _state.rewind.test_and_set();
+            else     _state.rewind.clear();
+            break;
+        case ID_PLAY:
+            if (set) _state.play.test_and_set();
+            else     _state.play.clear();
+            break;
+        case ID_RECORD:
+            if (set) _state.record.test_and_set();
+            else     _state.record.clear();
+            break;
         case ID_REPEAT:
             if (set) _state.repeat.test_and_set();
             else     _state.repeat.clear();
@@ -234,6 +246,12 @@ AUValue MidiRecorderDSPKernel::getParameter(AUParameterAddress address) {
             return _state.track[2].muteEnabled.test();
         case ID_MUTE_4:
             return _state.track[3].muteEnabled.test();
+        case ID_REWIND:
+            return _state.rewind.test();
+        case ID_PLAY:
+            return _state.play.test();
+        case ID_RECORD:
+            return _state.record.test();
         case ID_REPEAT:
             return _state.repeat.test();
         case ID_GRID:

@@ -264,6 +264,20 @@
                     }
                     break;
                 }
+                case ID_REWIND: {
+                    if (s->_state->rewind.test()) {
+                        [self rewindChange];
+                    }
+                    break;
+                }
+                case ID_PLAY: {
+                    [s playChange:s->_state->play.test()];
+                    break;
+                }
+                case ID_RECORD: {
+                    [s recordChange:s->_state->record.test()];
+                    break;
+                }
                 case ID_REPEAT: {
                     s.repeatButton.selected = s->_state->repeat.test();
                     break;
@@ -300,7 +314,12 @@
 #pragma mark IBAction - Rewind
 
 - (IBAction)rewindPressed:(UIButton*)sender {
-    [self setRecord:NO];
+    [self rewindChange];
+}
+
+- (void)rewindChange {
+    [self setRecordState:NO];
+    [self updateRewindState];
     _state->processedRewind.clear();
     [_tracks setContentOffset:CGPointMake(0, 0) animated:NO];
 }
@@ -308,12 +327,17 @@
 #pragma mark IBAction - Play
 
 - (IBAction)playPressed:(UIButton*)sender {
-    _autoPlayFromRecord = NO;
-    [self setPlay:!_playButton.selected];
+    [self playChange:!_playButton.selected];
 }
 
-- (void)setPlay:(BOOL)state {
+- (void)playChange:(BOOL)selected {
+    _autoPlayFromRecord = NO;
+    [self setPlayState:selected];
+}
+
+- (void)setPlayState:(BOOL)state {
     _playButton.selected = state;
+    [self updatePlayState];
 
     if (_playButton.selected) {
         if (_recordButton.selected) {
@@ -325,7 +349,7 @@
     }
     else {
         if (_recordButton.selected) {
-            [self setRecord:NO];
+            [self setRecordState:NO];
             _state->processedRewind.clear();
         }
         _state->processedStop.clear();
@@ -335,8 +359,10 @@
 #pragma mark IBAction - Record
 
 - (IBAction)recordPressed:(UIButton*)sender {
-    BOOL selected = !_recordButton.selected;
-    
+    [self recordChange:!_recordButton.selected];
+}
+
+- (void)recordChange:(BOOL)selected {
     if (selected) {
         _autoPlayFromRecord = NO;
         
@@ -349,17 +375,18 @@
     }
     else {
         if (_autoPlayFromRecord) {
-            _playButton.selected = NO;
+            [self setPlayState:NO];
             _state->processedStopAndRewind.clear();
         }
     }
     
-    [self setRecord:selected];
+    [self setRecordState:selected];
 }
 
-- (void)setRecord:(BOOL)state {
+- (void)setRecordState:(BOOL)state {
     _recordButton.selected = state;
     
+    [self updateRecordState];
     [self updateRecordEnableState];
     
     if (!state) {
@@ -792,14 +819,15 @@
 #pragma mark - State
 
 - (void)readSettingsFromDict:(NSDictionary*)dict {
-    id start_position_set = [dict objectForKey:@"startPositionSet"];
-    id start_position_beats = [dict objectForKey:@"startPositionBeats"];
-    id stop_position_set = [dict objectForKey:@"stopPositionSet"];
-    id stop_position_beats = [dict objectForKey:@"stopPositionBeats"];
-    id play_position_beats = [dict objectForKey:@"playPositionBeats"];
+    id start_position_set = [dict objectForKey:@"StartPositionSet"];
+    id start_position_beats = [dict objectForKey:@"StartPositionBeats"];
+    id stop_position_set = [dict objectForKey:@"StopPositionSet"];
+    id stop_position_beats = [dict objectForKey:@"StopPositionBeats"];
+    id play_position_beats = [dict objectForKey:@"PlayPositionBeats"];
 
     id routing = [dict objectForKey:@"Routing"];
     
+    id record = [dict objectForKey:@"Record"];
     id repeat = [dict objectForKey:@"Repeat"];
     id grid = [dict objectForKey:@"Grid"];
     id chase = [dict objectForKey:@"Chase"];
@@ -845,6 +873,9 @@
             self->_routingButton.selected = [routing boolValue];
         }
 
+        if (record) {
+            self->_recordButton.selected = [record boolValue];
+        }
         if (repeat) {
             self->_repeatButton.selected = [repeat boolValue];
         }
@@ -911,6 +942,7 @@
         }
 
         [self updateRoutingState];
+        [self updateRecordState];
         [self updateRepeatState];
         [self updateGridState];
         [self updateChaseState];
@@ -935,12 +967,13 @@
 
 - (NSDictionary*)currentSettingsToDict {
     return @{
-        @"startPositionSet" : @(_state->startPositionSet.test()),
-        @"startPositionBeats" : @(_state->startPositionBeats.load()),
-        @"stopPositionSet" : @(_state->stopPositionSet.test()),
-        @"stopPositionBeats" : @(_state->stopPositionBeats.load()),
-        @"playPositionBeats" : @(_state->playPositionBeats.load()),
+        @"StartPositionSet" : @(_state->startPositionSet.test()),
+        @"StartPositionBeats" : @(_state->startPositionBeats.load()),
+        @"StopPositionSet" : @(_state->stopPositionSet.test()),
+        @"StopPositionBeats" : @(_state->stopPositionBeats.load()),
+        @"PlayPositionBeats" : @(_state->playPositionBeats.load()),
         @"Routing" : @(_routingButton.selected),
+        @"Record" : @(_recordButton.selected),
         @"Repeat" : @(_repeatButton.selected),
         @"Grid" : @(_gridButton.selected),
         @"Chase" : @(_chaseButton.selected),
@@ -1041,6 +1074,28 @@
     }
 }
 
+- (void)updatePlayState {
+    if (_state->play.test() != _playButton.selected) {
+        if (_playButton.selected) _state->play.test_and_set();
+        else                      _state->play.clear();
+        
+        if (_state->hostParamChange) {
+            _state->hostParamChange(ID_PLAY, _state->play.test());
+        }
+    }
+}
+
+- (void)updateRecordState {
+    if (_state->record.test() != _recordButton.selected) {
+        if (_recordButton.selected) _state->record.test_and_set();
+        else                        _state->record.clear();
+        
+        if (_state->hostParamChange) {
+            _state->hostParamChange(ID_RECORD, _state->record.test());
+        }
+    }
+}
+
 - (void)updateRepeatState {
     if (_state->repeat.test() != _repeatButton.selected) {
         if (_repeatButton.selected) _state->repeat.test_and_set();
@@ -1049,6 +1104,14 @@
         if (_state->hostParamChange) {
             _state->hostParamChange(ID_REPEAT, _state->repeat.test());
         }
+    }
+}
+
+- (void)updateRewindState {
+    _rewindButton.selected = NO;
+    _state->rewind.clear();
+    if (_state->hostParamChange) {
+        _state->hostParamChange(ID_REWIND, _state->rewind.test());
     }
 }
 
@@ -1108,23 +1171,23 @@
 - (void)handleScheduledActions {
     // rewind UI
     if (!_state->processedUIStopAndRewind.test_and_set()) {
-        [self setPlay:NO];
+        [self setPlayState:NO];
         _state->processedRewind.clear();
     }
 
     // play UI
     if (!_state->processedUIPlay.test_and_set()) {
-        [self setPlay:YES];
+        [self setPlayState:YES];
     }
 
     // stop UI
     if (!_state->processedUIStop.test_and_set()) {
-        [self setPlay:NO];
+        [self setPlayState:NO];
     }
 
     // end recording UI
     if (!_state->processedUIEndRecord.test_and_set()) {
-        [self setRecord:NO];
+        [self setRecordState:NO];
     }
 }
 
@@ -1274,8 +1337,11 @@
         }
     }
     if (!self.playButton.selected) {
+        // we don't go through setPlayState since that would
+        // call back into this method
         _autoPlayFromRecord = YES;
         self.playButton.selected = YES;
+        [self updatePlayState];
     }
     _state->processedPlay.clear();
 }

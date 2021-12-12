@@ -65,6 +65,83 @@
 
 - (void)setupParameterTree {
     // Create parameter objects.
+    AUParameter* playParam = [AUParameterTree createParameterWithIdentifier:@"play"
+                                                                       name:@"Play"
+                                                                    address:ID_PLAY
+                                                                        min:0
+                                                                        max:1
+                                                                       unit:kAudioUnitParameterUnit_Boolean
+                                                                   unitName:nil
+                                                                      flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                               valueStrings:nil
+                                                        dependentParameters:nil];
+    
+    AUParameter* recordParam = [AUParameterTree createParameterWithIdentifier:@"record"
+                                                                         name:@"Record"
+                                                                      address:ID_RECORD
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+    
+    AUParameter* repeatParam = [AUParameterTree createParameterWithIdentifier:@"repeat"
+                                                                         name:@"Repeat"
+                                                                      address:ID_REPEAT
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+    
+    AUParameter* rewindParam = [AUParameterTree createParameterWithIdentifier:@"rewind"
+                                                                         name:@"Rewind"
+                                                                      address:ID_REWIND
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+    
+    AUParameter* gridParam = [AUParameterTree createParameterWithIdentifier:@"grid"
+                                                                       name:@"Grid"
+                                                                    address:ID_GRID
+                                                                        min:0
+                                                                        max:1
+                                                                       unit:kAudioUnitParameterUnit_Boolean
+                                                                   unitName:nil
+                                                                      flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                               valueStrings:nil
+                                                        dependentParameters:nil];
+    
+    AUParameter* chaseParam = [AUParameterTree createParameterWithIdentifier:@"chase"
+                                                                        name:@"Chase"
+                                                                     address:ID_CHASE
+                                                                         min:0
+                                                                         max:1
+                                                                        unit:kAudioUnitParameterUnit_Boolean
+                                                                    unitName:nil
+                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                valueStrings:nil
+                                                         dependentParameters:nil];
+    
+    AUParameter* punchInOutParam = [AUParameterTree createParameterWithIdentifier:@"punchInOut"
+                                                                             name:@"Punch In/Out"
+                                                                          address:ID_PUNCH_INOUT
+                                                                              min:0
+                                                                              max:1
+                                                                             unit:kAudioUnitParameterUnit_Boolean
+                                                                         unitName:nil
+                                                                            flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                     valueStrings:nil
+                                                              dependentParameters:nil];
+    
     AUParameter* record1Param = [AUParameterTree createParameterWithIdentifier:@"record1"
                                                                           name:@"Rec 1"
                                                                        address:ID_RECORD_1
@@ -108,7 +185,7 @@
                                                                          flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
-
+    
     AUParameter* monitor1Param = [AUParameterTree createParameterWithIdentifier:@"monitor1"
                                                                            name:@"Mon 1"
                                                                         address:ID_MONITOR_1
@@ -119,7 +196,7 @@
                                                                           flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
-
+    
     AUParameter* monitor2Param = [AUParameterTree createParameterWithIdentifier:@"monitor2"
                                                                            name:@"Mon 2"
                                                                         address:ID_MONITOR_2
@@ -130,7 +207,7 @@
                                                                           flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
-
+    
     AUParameter* monitor3Param = [AUParameterTree createParameterWithIdentifier:@"monitor3"
                                                                            name:@"Mon 3"
                                                                         address:ID_MONITOR_3
@@ -141,7 +218,7 @@
                                                                           flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
-
+    
     AUParameter* monitor4Param = [AUParameterTree createParameterWithIdentifier:@"monitor4"
                                                                            name:@"Mon 4"
                                                                         address:ID_MONITOR_4
@@ -196,52 +273,15 @@
                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
-    
-    AUParameter* repeatParam = [AUParameterTree createParameterWithIdentifier:@"repeat"
-                                                                         name:@"Repeat"
-                                                                      address:ID_REPEAT
-                                                                          min:0
-                                                                          max:1
-                                                                         unit:kAudioUnitParameterUnit_Boolean
-                                                                     unitName:nil
-                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
-                                                                 valueStrings:nil
-                                                          dependentParameters:nil];
-    
-    AUParameter* gridParam = [AUParameterTree createParameterWithIdentifier:@"grid"
-                                                                       name:@"Grid"
-                                                                    address:ID_GRID
-                                                                        min:0
-                                                                        max:1
-                                                                       unit:kAudioUnitParameterUnit_Boolean
-                                                                   unitName:nil
-                                                                      flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
-                                                               valueStrings:nil
-                                                        dependentParameters:nil];
-    
-    AUParameter* chaseParam = [AUParameterTree createParameterWithIdentifier:@"chase"
-                                                                        name:@"Chase"
-                                                                     address:ID_CHASE
-                                                                         min:0
-                                                                         max:1
-                                                                        unit:kAudioUnitParameterUnit_Boolean
-                                                                    unitName:nil
-                                                                       flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
-                                                                valueStrings:nil
-                                                         dependentParameters:nil];
-    
-    AUParameter* punchInOutParam = [AUParameterTree createParameterWithIdentifier:@"punchInOut"
-                                                                             name:@"Punch In/Out"
-                                                                          address:ID_PUNCH_INOUT
-                                                                              min:0
-                                                                              max:1
-                                                                             unit:kAudioUnitParameterUnit_Boolean
-                                                                         unitName:nil
-                                                                            flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
-                                                                     valueStrings:nil
-                                                              dependentParameters:nil];
 
     // Initialize the parameter values.
+    playParam.value = 0.0;
+    recordParam.value = 0.0;
+    repeatParam.value = 0.0;
+    rewindParam.value = 0.0;
+    gridParam.value = 0.0;
+    chaseParam.value = 1.0;
+    punchInOutParam.value = 0.0;
     record1Param.value = 0.0;
     record2Param.value = 0.0;
     record3Param.value = 0.0;
@@ -254,13 +294,16 @@
     mute2Param.value = 0.0;
     mute3Param.value = 0.0;
     mute4Param.value = 0.0;
-    repeatParam.value = 0.0;
-    gridParam.value = 0.0;
-    chaseParam.value = 1.0;
-    punchInOutParam.value = 0.0;
 
     // Create the parameter tree.
     _parameterTree = [AUParameterTree createTreeWithChildren:@[
+        playParam,
+        recordParam,
+        repeatParam,
+        rewindParam,
+        gridParam,
+        chaseParam,
+        punchInOutParam,
         record1Param,
         record2Param,
         record3Param,
@@ -272,11 +315,7 @@
         mute1Param,
         mute2Param,
         mute3Param,
-        mute4Param,
-        repeatParam,
-        gridParam,
-        chaseParam,
-        punchInOutParam
+        mute4Param
     ]];
 }
 
