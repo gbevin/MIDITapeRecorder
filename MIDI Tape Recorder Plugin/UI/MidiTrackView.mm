@@ -164,8 +164,8 @@
             PreviewPixelData& pixel_data = (*_preview)[x];
             if (pixel_data.notes != 0 || pixel_data.events != 0) {
                 // normalize the preview events count
-                float n_notes = MIN(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 1.f);
-                float n_events = MIN(((float)pixel_data.events / MAX_PREVIEW_EVENTS), 1.f);
+                float n_notes = MIN(MAX(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 0.f), 1.f);
+                float n_events = MIN(MAX(((float)pixel_data.events / MAX_PREVIEW_EVENTS), 0.f), 1.f);
                 // increase the weight of the lower events counts so that they show up more easily
                 n_notes = pow(n_notes, 1.0/1.5);
                 n_events = pow(n_events, 1.0/1.5);
