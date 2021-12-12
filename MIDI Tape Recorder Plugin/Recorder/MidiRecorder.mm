@@ -103,28 +103,28 @@
     
     dispatch_barrier_sync(_dispatchQueue, ^{
         MidiTrackState& state = _state->track[_ordinal];
+        NSDictionary* mpe_dict = @{
+            @"zone1Members" : @(state.mpeState.zone1Members.load()),
+            @"zone1ManagerPitchSens" : @(state.mpeState.zone1ManagerPitchSens.load()),
+            @"zone1MemberPitchSens" : @(state.mpeState.zone1MemberPitchSens.load()),
+            @"zone2Members" : @(state.mpeState.zone2Members.load()),
+            @"zone2ManagerPitchSens" : @(state.mpeState.zone2ManagerPitchSens.load()),
+            @"zone2MemberPitchSens" : @(state.mpeState.zone2MemberPitchSens.load()),
+        };
+        
         auto recorded = state.recordedMessages.get();
-        auto recorded_beatindex = state.recordedBeatToIndex.get();
         if (recorded == nullptr) {
-            result = @{};
+            result = @{
+                @"MPE" : mpe_dict
+            };
         }
         else {
             NSData* recorded_data = [NSData dataWithBytes:recorded->data()
                                                    length:recorded->size() * sizeof(RecordedMidiMessage)];
-            NSData* recorded_beatindex_data = [NSData dataWithBytes:recorded_beatindex->data()
-                                                             length:recorded_beatindex->size() * sizeof(int)];
             result = @{
                 @"Recorded" : recorded_data,
-                @"BeatToIndex" : recorded_beatindex_data,
                 @"Duration" : @(state.recordedDuration.load()),
-                @"MPE" : @{
-                    @"zone1Members" : @(state.mpeState.zone1Members.load()),
-                    @"zone1ManagerPitchSens" : @(state.mpeState.zone1ManagerPitchSens.load()),
-                    @"zone1MemberPitchSens" : @(state.mpeState.zone1MemberPitchSens.load()),
-                    @"zone2Members" : @(state.mpeState.zone2Members.load()),
-                    @"zone2ManagerPitchSens" : @(state.mpeState.zone2ManagerPitchSens.load()),
-                    @"zone2MemberPitchSens" : @(state.mpeState.zone2MemberPitchSens.load()),
-                }
+                @"MPE" : mpe_dict
             };
         }
     });
@@ -135,7 +135,6 @@
 - (void)dictToRecorded:(NSDictionary*)dict {
     dispatch_barrier_sync(_dispatchQueue, ^{
         RecordedData recorded(new std::vector<RecordedMidiMessage>());
-        RecordedBookmarks recorded_beatindex(new std::vector<int>());
         double recorded_duration = 0.0;
 
         NSData* recorded_data = [dict objectForKey:@"Recorded"];
@@ -145,14 +144,6 @@
             recorded->assign(data, data + count);
         }
         
-        NSData* recorded_beatindex_data = [dict objectForKey:@"BeatToIndex"];
-        if (recorded_beatindex_data) {
-            recorded_beatindex.reset(new std::vector<int>());
-            int* data = (int*)recorded_beatindex_data.bytes;
-            unsigned long count = recorded_beatindex_data.length / sizeof(int);
-            recorded_beatindex->assign(data, data + count);
-        }
-
         id duration = [dict objectForKey:@"Duration"];
         if (duration) {
             recorded_duration = [duration doubleValue];
@@ -200,11 +191,18 @@
             mpe_state.enabled = (mpe_state.zone1Active || mpe_state.zone2Active);
         }
         
+
+        RecordedBookmarks recorded_beatindex(new std::vector<int>());
         RecordedPreview recorded_preview(new std::vector<PreviewPixelData>());
         if (recorded) {
             for (int m = 0; m < recorded->size(); ++m) {
+                RecordedMidiMessage& message = (*recorded)[m];
+                
+                // update beat to index map
+                [self updateBeatToIndex:recorded_beatindex.get() forIndex:m withMessageOffsetBeats:message.offsetBeats];
+                
                 // update preview
-                [self updatePreview:recorded_preview withMessage:(*recorded)[m]];
+                [self updatePreview:recorded_preview withMessage:message];
             }
         }
 
@@ -309,9 +307,7 @@
         last_offset_ticks = offset_ticks;
         
         // update the beat to index mapping
-        while ((int)duration_beats >= recorded_beatindex->size()) {
-            recorded_beatindex->push_back((int)recorded->size());
-        }
+        [self updateBeatToIndex:recorded_beatindex.get() forIndex:(int)recorded->size() withMessageOffsetBeats:duration_beats];
 
         // handle event
         uint8_t event_identifier = track_bytes[i];
@@ -417,12 +413,13 @@
             }
             
             // while recording, we keep track of the position in the recording that the beginning of a beat
-            // corresponds to, this allow for fast scanning later during playback
+            // corresponds to, this allows for fast scanning later during playback
             if (_recordingBeatToIndex.get()) {
                 int current_beat = (int)_recordingDuration;
-                // fill in any beats that might have been miseed (very unlikely, but best to be safe)
-                // and add the current beat in case this is the first time creating the link to the index
-                while (current_beat >= _recordingBeatToIndex->size()) {
+                // fill in any beats that might have been missed, we keep this continually updated
+                // in the ping method to progressively catch up and reduce the load when a message is actually processed
+                // we exclude the current beat since that will be handled when there's an actual message to process
+                while (current_beat > _recordingBeatToIndex->size()) {
                     _recordingBeatToIndex->push_back((int)_recording->size());
                 }
             }
@@ -579,20 +576,38 @@
             }
         }
 
+        // calculate timing offsets
+        double offset_seconds = message.timeSampleSeconds - _state->transportStartSampleSeconds;
+        double offset_beats = offset_seconds * _state->secondsToBeats;
+
+        // update beat to index map
+        if (_recordingBeatToIndex.get()) {
+            [self updateBeatToIndex:_recordingBeatToIndex.get() forIndex:(int)_recording->size() withMessageOffsetBeats:offset_beats];
+        }
+
         // add message to the recording
         RecordedMidiMessage recorded_message;
-        double offset_seconds = message.timeSampleSeconds - _state->transportStartSampleSeconds;
-        recorded_message.offsetBeats = offset_seconds * _state->secondsToBeats;
+        recorded_message.offsetBeats = offset_beats;
         recorded_message.length = message.length;
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
         _recording->push_back(recorded_message);
-        _recordingDuration = offset_seconds * _state->secondsToBeats;
+        _recordingDuration = offset_beats;
         
         // update the preview
         [self updatePreview:_recordingPreview withMessage:recorded_message];
     });
+}
+
+- (void)updateBeatToIndex:(RecordedBookmarksVector*)beatToIndex forIndex:(int)index withMessageOffsetBeats:(double)offsetBeats {
+    // while recording, we keep track of the position in the recording that the beginning of a beat
+    // corresponds to, this allows for fast scanning later during playback
+    int message_beat = (int)offsetBeats;
+    // we add the message beat in case this is the first time creating the link to the index
+    while (message_beat >= beatToIndex->size()) {
+        beatToIndex->push_back(index);
+    }
 }
 
 - (void)updatePreview:(RecordedPreview)preview withOffsetBeats:(double)offsetBeats {

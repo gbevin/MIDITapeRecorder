@@ -475,11 +475,13 @@ void MidiRecorderDSPKernel::processOutput() {
                 
                 uint64_t play_counter = track_state.recordedLength;
 
+                // jump to the play counter that maps to the current beat index
                 int beat_begin = (int)beatrange_begin;
                 if (beat_begin < track_state.recordedBeatToIndex->size()) {
                     play_counter = (*track_state.recordedBeatToIndex)[beat_begin];
                 }
 
+                // process through the messages until we find the ones that should be played
                 while (play_counter < track_state.recordedLength) {
                     const RecordedMidiMessage& message = (*track_state.recordedMessages)[play_counter];
                     play_counter += 1;

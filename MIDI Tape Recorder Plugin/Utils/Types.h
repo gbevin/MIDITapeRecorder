@@ -16,6 +16,11 @@
 
 struct PreviewPixelData;
 
-typedef std::unique_ptr<std::vector<RecordedMidiMessage>> RecordedData;
-typedef std::unique_ptr<std::vector<int>> RecordedBookmarks;
-typedef std::shared_ptr<std::vector<PreviewPixelData>> RecordedPreview;
+typedef std::vector<RecordedMidiMessage> RecordedDataVector;
+typedef std::unique_ptr<RecordedDataVector> RecordedData;
+
+typedef std::vector<int> RecordedBookmarksVector;
+typedef std::unique_ptr<RecordedBookmarksVector> RecordedBookmarks;
+
+typedef std::vector<PreviewPixelData> RecordedPreviewVector;
+typedef std::shared_ptr<RecordedPreviewVector> RecordedPreview;
