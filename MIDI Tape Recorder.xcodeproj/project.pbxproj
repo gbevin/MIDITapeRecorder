@@ -38,6 +38,8 @@
 		26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB385E275338EE00342496 /* DSPKernelAdapter.mm */; };
 		26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3862275338EE00342496 /* AudioUnitViewController.mm */; };
 		26BB386A275338EE00342496 /* MIDI Tape Recorder Plugin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		26BE25DC27675CD000A6BAB7 /* MidiRecordedData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */; };
+		26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */; };
 		26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrackView.mm */; };
 		26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* TimelineView.mm */; };
 		26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiRecorder.mm */; };
@@ -79,7 +81,6 @@
 
 /* Begin PBXFileReference section */
 		2603D5A1276389C700247A18 /* PreviewPixelData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreviewPixelData.h; sourceTree = "<group>"; };
-		2603D5A32763A8CC00247A18 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
 		261342772753D855001FF0BB /* ActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorView.h; sourceTree = "<group>"; };
 		261342782753D869001FF0BB /* ActivityIndicatorView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityIndicatorView.mm; sourceTree = "<group>"; };
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -135,6 +136,10 @@
 		26BB3867275338EE00342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26BB386F275338F400342496 /* MIDI Tape Recorder Plugin.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "MIDI Tape Recorder Plugin.entitlements"; sourceTree = "<group>"; };
 		26BB387027533A3400342496 /* AudioUnitIOState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioUnitIOState.h; sourceTree = "<group>"; };
+		26BE25DA2766CF8A00A6BAB7 /* MidiRecordedData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecordedData.h; sourceTree = "<group>"; };
+		26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MidiRecordedData.cpp; sourceTree = "<group>"; };
+		26BE25DD27675FD800A6BAB7 /* MidiRecordedPreview.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecordedPreview.h; sourceTree = "<group>"; };
+		26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MidiRecordedPreview.cpp; sourceTree = "<group>"; };
 		26C49D162756D04400A6FAB4 /* MidiTrackView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackView.h; sourceTree = "<group>"; };
 		26C49D172756D04400A6FAB4 /* MidiTrackView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiTrackView.mm; sourceTree = "<group>"; };
 		26C49D192756D41700A6FAB4 /* TimelineView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TimelineView.mm; sourceTree = "<group>"; };
@@ -206,6 +211,10 @@
 			children = (
 				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
+				26BE25DA2766CF8A00A6BAB7 /* MidiRecordedData.h */,
+				26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */,
+				26BE25DD27675FD800A6BAB7 /* MidiRecordedPreview.h */,
+				26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */,
 				26C540C22757C11B004E4813 /* MidiRecorder.h */,
 				26C540C32757C11B004E4813 /* MidiRecorder.mm */,
 				26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */,
@@ -332,7 +341,6 @@
 				26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */,
 				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
 				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
-				2603D5A32763A8CC00247A18 /* Types.h */,
 				26B140822754590300748F00 /* TPCircularBuffer */,
 			);
 			path = Utils;
@@ -492,6 +500,7 @@
 				26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
 				268A931C2762CEAA00B2D74A /* AboutViewController.mm in Sources */,
+				26BE25DC27675CD000A6BAB7 /* MidiRecordedData.cpp in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */,
 				26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */,
@@ -500,6 +509,7 @@
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
+				26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */,
 				26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */,
 				26E06B8F2759427300D7257E /* MenuButton.mm in Sources */,
 				266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */,

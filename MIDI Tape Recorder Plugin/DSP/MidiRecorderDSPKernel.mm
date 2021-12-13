@@ -314,10 +314,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
         if (!_state.processedInvalidate[t].test_and_set()) {
             MidiTrackState& track_state = _state.track[t];
             track_state.recordedMessages.reset();
-            track_state.recordedBeatToIndex.reset();
             track_state.recordedPreview.reset();
-            track_state.recordedLength = 0;
-            track_state.recordedDuration = 0.0;
         }
 
         // send MCM
@@ -470,52 +467,49 @@ void MidiRecorderDSPKernel::processOutput() {
                 // no-op
             }
             // play when there are recorded messages
-            else if (track_state.recordedMessages && track_state.recordedLength > 0) {
+            else if (track_state.recordedMessages && !track_state.recordedMessages->empty()) {
                 playing_tracks += 1;
                 
-                uint64_t play_counter = track_state.recordedLength;
-
-                // jump to the play counter that maps to the current beat index
-                int beat_begin = (int)beatrange_begin;
-                if (beat_begin < track_state.recordedBeatToIndex->size()) {
-                    play_counter = (*track_state.recordedBeatToIndex)[beat_begin];
-                }
-
-                // process through the messages until we find the ones that should be played
-                while (play_counter < track_state.recordedLength) {
-                    const RecordedMidiMessage& message = (*track_state.recordedMessages)[play_counter];
-                    play_counter += 1;
-                    
-                    // check if the message is outdated
-                    if (message.offsetBeats < beatrange_begin) {
-                        continue;
-                    }
-                    // check if the time offset of the message falls within the advancement of the playhead
-                    else if (message.offsetBeats < beatrange_end) {
-                        // if the track is not muted and a MIDI output block exists,
-                        // send the message
-                        if (!track_state.muteEnabled.test() && _ioState.midiOutputEventBlock) {
-                            const double offset_seconds = (message.offsetBeats - beatrange_end) * _state.beatsToSeconds;
-                            const double offset_samples = offset_seconds * _ioState.sampleRate;
-                            
-                            // indicate output activity
-                            track_state.processedActivityOutput.clear();
-                            
-                            // track note on/off states
-                            trackNotesForTrack(t, message);
-
-                            // send the MIDI output message
-                            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
-                                                          t, message.length, &message.data[0]);
-                        }
-                        // if the track is muted, ensure we have no lingering note on messages
-                        else {
-                            turnOffAllNotesForTrack(t);
-                        }
-                    }
-                    // stop playing recorded messages if the one we processed is scheduled for later
-                    else {
+                // iterate over all the beats inside this processing range
+                for (int beat = (int)beatrange_begin; beat <= (int)beatrange_end; ++beat) {
+                    // if the beat falls outside of the range of recorded messages, we're done
+                    if (beat >= track_state.recordedMessages->beatCount()) {
                         break;
+                    }
+                
+                    // process through the messages until we find the ones that should be played
+                    for (const RecordedMidiMessage& message : track_state.recordedMessages->beatData(beat)) {
+                        // check if the message is outdated
+                        if (message.offsetBeats < beatrange_begin) {
+                            continue;
+                        }
+                        // check if the time offset of the message falls within the advancement of the playhead
+                        else if (message.offsetBeats < beatrange_end) {
+                            // if the track is not muted and a MIDI output block exists,
+                            // send the message
+                            if (!track_state.muteEnabled.test() && _ioState.midiOutputEventBlock) {
+                                const double offset_seconds = (message.offsetBeats - beatrange_end) * _state.beatsToSeconds;
+                                const double offset_samples = offset_seconds * _ioState.sampleRate;
+                                
+                                // indicate output activity
+                                track_state.processedActivityOutput.clear();
+                                
+                                // track note on/off states
+                                trackNotesForTrack(t, message);
+
+                                // send the MIDI output message
+                                _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
+                                                              t, message.length, &message.data[0]);
+                            }
+                            // if the track is muted, ensure we have no lingering note on messages
+                            else {
+                                turnOffAllNotesForTrack(t);
+                            }
+                        }
+                        // stop playing recorded messages if the one we processed is scheduled for later
+                        else {
+                            break;
+                        }
                     }
                 }
                 

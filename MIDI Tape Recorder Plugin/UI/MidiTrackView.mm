@@ -24,7 +24,7 @@
 
 @implementation MidiTrackView {
     NSMutableDictionary<NSNumber*, MidiTrackBeatEntry*>* _beatLayers;
-    RecordedPreview _preview;
+    std::shared_ptr<MidiRecordedPreview> _preview;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -43,7 +43,7 @@
     [self updateBeatLayers];
 }
 
-- (void)setPreview:(RecordedPreview)preview {
+- (void)setPreview:(std::shared_ptr<MidiRecordedPreview>)preview {
     if (_preview.get() != preview.get()) {
         _preview = preview;
         
@@ -160,8 +160,8 @@
     int x_begin = beat * PIXELS_PER_BEAT;
     int x_end = x_begin + PIXELS_PER_BEAT;
     for (int x = x_begin; x < x_end; ++x) {
-        if (_preview && x < _preview->size()) {
-            PreviewPixelData& pixel_data = (*_preview)[x];
+        if (_preview && x < _preview->pixels.size()) {
+            PreviewPixelData& pixel_data = _preview->pixels[x];
             if (pixel_data.notes != 0 || pixel_data.events != 0) {
                 // normalize the preview events count
                 float n_notes = MIN(MAX(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 0.f), 1.f);

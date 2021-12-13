@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#include "MidiRecordedPreview.h"
 #include "QueuedMidiMessage.h"
-#include "Types.h"
 
 #import "MidiRecorderDelegate.h"
 
@@ -35,7 +35,7 @@ class MidiRecorderState;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 - (void)clear;
 
-- (double)duration;
-- (RecordedPreview)preview;
+- (double)activeDuration;
+- (std::shared_ptr<MidiRecordedPreview>)activePreview;
 
 @end

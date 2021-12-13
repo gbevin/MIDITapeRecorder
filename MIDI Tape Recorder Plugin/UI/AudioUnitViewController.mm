@@ -1196,9 +1196,9 @@
     __block double max_duration = 0.0;
     
     [self withMidiTrackViews:^(int t, MidiTrackView* view) {
-        view.preview = [self->_midiQueueProcessor recorder:t].preview;
+        view.preview = [self->_midiQueueProcessor recorder:t].activePreview;
         
-        max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].duration);
+        max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].activeDuration);
         
         if (self->_recordButton.selected) {
             [view setNeedsLayout];
@@ -1212,7 +1212,7 @@
 - (BOOL)hasRecordedDuration {
     BOOL has_recorder_duration = NO;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        if ([_midiQueueProcessor recorder:t].duration != 0.0) {
+        if ([_midiQueueProcessor recorder:t].activeDuration != 0.0) {
             has_recorder_duration = YES;
             break;
         }
@@ -1347,18 +1347,13 @@
 }
 
 - (void)finishRecording:(int)ordinal
-                   data:(RecordedData)data
-            beatToIndex:(RecordedBookmarks)beatToIndex
-                preview:(RecordedPreview)preview
-               duration:(double)duration {
+                   data:(std::unique_ptr<MidiRecordedData>)data
+                preview:(std::shared_ptr<MidiRecordedPreview>)preview {
     _state->processedEndRecording[ordinal].clear();
     
     MidiTrackState& state = _state->track[ordinal];
     state.recordedMessages = std::move(data);
-    state.recordedBeatToIndex = std::move(beatToIndex);
     state.recordedPreview = preview;
-    state.recordedLength = (state.recordedMessages ? state.recordedMessages->size() : 0);
-    state.recordedDuration = duration;
 }
 
 - (void)invalidateRecording:(int)ordinal {

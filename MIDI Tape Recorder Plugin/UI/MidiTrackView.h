@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-#include "types.h"
+#include <memory>
+
+#include "MidiRecordedPreview.h"
 
 @interface MidiTrackView : UIView
 
 @property(weak, nonatomic) UIScrollView* tracks;
 
-- (void)setPreview:(RecordedPreview)preview;
+- (void)setPreview:(std::shared_ptr<MidiRecordedPreview>)preview;
 
 @end

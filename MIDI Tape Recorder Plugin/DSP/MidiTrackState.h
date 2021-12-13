@@ -9,10 +9,10 @@
 #pragma once
 
 #include <atomic>
-#include <vector>
 
+#include "MidiRecordedData.h"
+#include "MidiRecordedPreview.h"
 #include "MPEState.h"
-#include "Types.h"
 
 struct MidiTrackState {
     MidiTrackState() {};
@@ -31,10 +31,6 @@ struct MidiTrackState {
 
     MPEState mpeState;
     
-    RecordedData        recordedMessages    { nullptr };
-    RecordedBookmarks   recordedBeatToIndex { nullptr };
-    RecordedPreview     recordedPreview     { nullptr };
-    
-    std::atomic<uint64_t>   recordedLength      { 0 };
-    std::atomic<double>     recordedDuration    { 0.0 };
+    std::unique_ptr<MidiRecordedData> recordedMessages   { nullptr };
+    std::shared_ptr<MidiRecordedPreview> recordedPreview { nullptr };
 };
