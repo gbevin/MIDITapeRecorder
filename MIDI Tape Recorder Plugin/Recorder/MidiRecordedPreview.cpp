@@ -15,7 +15,7 @@ MidiRecordedPreview::MidiRecordedPreview() {
 };
     
 void MidiRecordedPreview::updateWithOffsetBeats(double offsetBeats) {
-    int32_t pixel = int32_t(offsetBeats * PIXELS_PER_BEAT + 0.5);
+    int32_t pixel = std::max(0, int32_t(offsetBeats * PIXELS_PER_BEAT + 0.5));
     
     PreviewPixelData last_pixel_data;
     if (pixel > 0 && !pixels.empty()) {
@@ -32,7 +32,7 @@ void MidiRecordedPreview::updateWithOffsetBeats(double offsetBeats) {
 void MidiRecordedPreview::updateWithMessage(RecordedMidiMessage& message) {
     updateWithOffsetBeats(message.offsetBeats);
     
-    int32_t pixel = int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5);
+    int32_t pixel = std::max(0, int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5));
     PreviewPixelData& pixel_data = pixels[pixel];
 
     // track the note and the events independently
