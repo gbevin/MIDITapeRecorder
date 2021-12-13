@@ -398,13 +398,6 @@ void MidiRecorderDSPKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
-        // if the duration is totally cleared out,
-        // we've reched the end and stop playing
-        if (_state.maxDuration == 0.0) {
-            _state.processedReachEnd.clear();
-            return;
-        }
-        
         // determine the beat position of the playhead
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
         const double frames_beats = frames_seconds * _state.secondsToBeats;
@@ -435,6 +428,7 @@ void MidiRecorderDSPKernel::processOutput() {
         // store the play duration for the next process call
         _state.playPositionBeats = beatrange_end;
         
+        int recording_tracks = 0;
         int playing_tracks = 0;
         bool reached_end = YES;
 
@@ -444,7 +438,7 @@ void MidiRecorderDSPKernel::processOutput() {
             
             // don't play if the track is recording
             if (track_state.recording.test()) {
-                // no-op
+                recording_tracks += 1;
             }
             // play when there are recorded messages
             else if (track_state.recordedMessages && !track_state.recordedMessages->empty()) {
@@ -499,6 +493,14 @@ void MidiRecorderDSPKernel::processOutput() {
             }
         }
         
+        // if we're not recording and the duration is totally cleared out,
+        // we've reched the end and stop playing
+        if (recording_tracks == 0 && _state.maxDuration == 0.0) {
+            _state.processedReachEnd.clear();
+            return;
+        }
+
+        // if we're playing at least one track, auto-rewind or end playing
         if (playing_tracks != 0 && reached_end) {
             if (_state.repeat.test()) {
                 _state.processedRewind.clear();
