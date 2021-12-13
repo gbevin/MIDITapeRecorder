@@ -14,7 +14,6 @@
 @interface DSPKernelAdapter : NSObject
 
 @property(nonatomic) AUAudioFrameCount maximumFramesToRender;
-@property(nonatomic, readonly) AUAudioUnitBus* inputBus;
 @property(nonatomic, readonly) AUAudioUnitBus* outputBus;
 
 - (MidiRecorderState*)state;
