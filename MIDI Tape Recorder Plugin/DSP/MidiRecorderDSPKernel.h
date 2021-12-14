@@ -46,7 +46,8 @@ private:
     void trackNotesForTrack(int track, const RecordedMidiMessage& message);
     void turnOffAllNotes();
     void turnOffAllNotesForTrack(int track);
-    
+    void outputMidiMessages(double beatRrangeBegin, double beatRangeEnd);
+
     bool _bypassed          { false };
     bool _isPlaying         { false };
     
