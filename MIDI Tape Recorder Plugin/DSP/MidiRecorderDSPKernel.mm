@@ -64,6 +64,9 @@ void MidiRecorderDSPKernel::rewind(double timeSampleSeconds) {
     if (_isPlaying) {
         _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
     }
+    else {
+        _state.transportStartSampleSeconds = 0.0;
+    }
 
     // ensure there are no lingering notes
     turnOffAllNotes();
@@ -334,9 +337,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
 
     // play
     if (!_state.processedPlay.test_and_set()) {
-        if (_state.transportStartSampleSeconds == 0.0) {
-            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
-        }
+        _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
         play();
     }
 
