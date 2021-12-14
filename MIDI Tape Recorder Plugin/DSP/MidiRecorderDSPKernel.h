@@ -37,7 +37,7 @@ private:
     void sendRpnMessage(uint8_t cable, uint8_t channel, uint16_t number, uint16_t value);
     void sendMCM(int track);
 
-    void rewind();
+    void rewind(double timeSampleSeconds);
     void play();
     void stop();
 

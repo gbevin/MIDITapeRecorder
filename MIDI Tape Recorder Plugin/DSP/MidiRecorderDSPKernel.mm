@@ -45,7 +45,7 @@ void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
     _bypassed = shouldBypass;
 }
 
-void MidiRecorderDSPKernel::rewind() {
+void MidiRecorderDSPKernel::rewind(double timeSampleSeconds) {
     // turn off recording
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         _state.track[t].recording.clear();
@@ -61,6 +61,10 @@ void MidiRecorderDSPKernel::rewind() {
         _state.playPositionBeats = 0.0;
     }
     
+    if (_isPlaying) {
+        _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+    }
+
     // ensure there are no lingering notes
     turnOffAllNotes();
 }
@@ -325,10 +329,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
     
     // rewind
     if (!_state.processedRewind.test_and_set()) {
-        if (_isPlaying) {
-            _state.transportStartSampleSeconds = timeSampleSeconds;
-        }
-        rewind();
+        rewind(timeSampleSeconds);
     }
 
     // play
@@ -347,7 +348,7 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
     // stop and rewind
     if (!_state.processedStopAndRewind.test_and_set()) {
         stop();
-        rewind();
+        rewind(timeSampleSeconds);
     }
 
     // reach end
