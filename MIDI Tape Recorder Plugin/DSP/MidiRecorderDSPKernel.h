@@ -12,11 +12,6 @@
 #import "DSPKernel.h"
 #import "MidiRecorderState.h"
 
-/*
- MidiRecorderDSPKernel
- Performs simple copying of the input signal to the output.
- As a non-ObjC class, this is safe to use from render thread.
- */
 class MidiRecorderDSPKernel : public DSPKernel {
 public:
     MidiRecorderDSPKernel();
@@ -29,11 +24,8 @@ public:
     void setParameter(AUParameterAddress address, AUValue value);
     AUValue getParameter(AUParameterAddress address);
 
-    void setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList);
-    
     void handleBufferStart(double timeSampleSeconds) override;
     void handleScheduledTransitions(double timeSampleSeconds) override;
-    void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
     void handleParameterEvent(AUParameterEvent const& parameterEvent) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
     void processOutput() override;
@@ -60,7 +52,4 @@ private:
     
     bool _noteStates[MIDI_TRACKS][16][128];
     uint32_t _noteCounts[MIDI_TRACKS];
-
-    AudioBufferList* _inBufferList  { nullptr };
-    AudioBufferList* _outBufferList { nullptr };
 };
