@@ -19,6 +19,7 @@
 @interface MidiRecorderAudioUnit ()
 
 @property (nonatomic, readwrite) AUParameterTree* parameterTree;
+@property AUAudioUnitBusArray* inputBusArray;
 @property AUAudioUnitBusArray* outputBusArray;
 
 @end
@@ -53,7 +54,10 @@
 #pragma mark - AUAudioUnit Setup
 
 - (void)setupAudioBuses {
-    // Create the output bus array.
+    // Create the input and output bus arrays.
+    _inputBusArray  = [[AUAudioUnitBusArray alloc] initWithAudioUnit:self
+                                                             busType:AUAudioUnitBusTypeInput
+                                                              busses: @[_kernelAdapter.inputBus]];
     _outputBusArray = [[AUAudioUnitBusArray alloc] initWithAudioUnit:self
                                                              busType:AUAudioUnitBusTypeOutput
                                                               busses: @[_kernelAdapter.outputBus]];
@@ -358,6 +362,13 @@
     _kernelAdapter.maximumFramesToRender = maximumFramesToRender;
 }
 
+// If an audio unit has input, an audio unit's audio input connection points.
+// Subclassers must override this property getter and should return the same object every time.
+// See sample code.
+- (AUAudioUnitBusArray*)inputBusses {
+    return _inputBusArray;
+}
+
 // An audio unit's audio output connection points.
 // Subclassers must override this property getter and should return the same object every time.
 // See sample code.
@@ -372,6 +383,16 @@
 // Allocate resources required to render.
 // Subclassers should call the superclass implementation.
 - (BOOL)allocateRenderResourcesAndReturnError:(NSError**)outError {
+    if (_kernelAdapter.outputBus.format.channelCount != _kernelAdapter.inputBus.format.channelCount) {
+        if (outError) {
+            *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_FailedInitialization userInfo:nil];
+        }
+        // Notify superclass that initialization was not successful
+        self.renderResourcesAllocated = NO;
+        
+        return NO;
+    }
+    
     [super allocateRenderResourcesAndReturnError:outError];
     [_kernelAdapter allocateRenderResources];
     

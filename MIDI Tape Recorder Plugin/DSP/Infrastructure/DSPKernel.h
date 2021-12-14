@@ -16,13 +16,15 @@
 class DSPKernel {
 public:
 
+    virtual void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) = 0;
+
     virtual void handleBufferStart(double timeSampleSeconds) {}
     virtual void handleScheduledTransitions(double timeSampleSeconds) {}
     virtual void handleMIDIEvent(AUMIDIEvent const& midiEvent) {}
     virtual void handleParameterEvent(AUParameterEvent const& parameterEvent) {}
     virtual void processOutput() {};
 
-    void performAllSimultaneousEvents(AudioTimeStamp const* timestamp, AURenderEvent const* event);
+    void processWithEvents(AudioTimeStamp const* timestamp, AUAudioFrameCount frameCount, AURenderEvent const* events);
 
     AUAudioFrameCount maximumFramesToRender() const;
     void setMaximumFramesToRender(const AUAudioFrameCount& maxFrames);
