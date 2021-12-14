@@ -8,10 +8,15 @@
 
 #import "MidiRecorderDSPKernel.h"
 
-#include <iostream>
-
 #include "Constants.h"
 #include "QueuedMidiMessage.h"
+
+#define DEBUG_MIDI_OUTPUT 0
+
+#if DEBUG_MIDI_OUTPUT
+#include <iostream>
+#include <iomanip>
+#endif
 
 MidiRecorderDSPKernel::MidiRecorderDSPKernel() : _state() {
     TPCircularBufferInit(&_state.midiBuffer, 16384);
@@ -472,6 +477,19 @@ void MidiRecorderDSPKernel::processOutput() {
                                 trackNotesForTrack(t, message);
 
                                 // send the MIDI output message
+#if DEBUG_MIDI_OUTPUT
+                                int status = message.data[0] & 0xf0;
+                                int channel = message.data[0] & 0x0f;
+                                int data1 = message.data[1];
+                                int data2 = message.data[2];
+                                
+                                if (message.length == 2) {
+                                    std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << "   ]" << std::endl;
+                                }
+                                else {
+                                    std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << " " << std::setw(2) << data2 << "]" << std::endl;
+                                }
+#endif
                                 _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
                                                               t, message.length, &message.data[0]);
                             }
