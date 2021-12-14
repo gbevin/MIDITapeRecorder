@@ -53,7 +53,7 @@ void MidiRecorderDSPKernel::rewind() {
     _state.processedUIEndRecord.clear();
 
     // rewind to start position or complete beginning
-    double start_position = _state.startPositionBeats.load();
+    double start_position = _state.startPositionBeats;
     if (_state.playPositionBeats > start_position) {
         _state.playPositionBeats = start_position;
     }
@@ -391,13 +391,6 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     }
 }
 
-void MidiRecorderDSPKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable) {
-    if (_ioState.midiOutputEventBlock) {
-        Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
-        _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
-    }
-}
-
 void MidiRecorderDSPKernel::processOutput() {
     if (!_isPlaying) {
         turnOffAllNotes();
@@ -413,13 +406,13 @@ void MidiRecorderDSPKernel::processOutput() {
         // if the host transport is moving, make that take precedence
         if (_ioState.transportMoving) {
             if (_state.repeat.test()) {
-                double effective_max_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
+                double effective_max_duration = _state.stopPositionBeats - _state.startPositionBeats;
                 play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
             }
             else {
                 play_position = _ioState.currentBeatPosition;
             }
-            play_position += _state.startPositionBeats.load();
+            play_position += _state.startPositionBeats;
         }
         double beatrange_begin = play_position;
         double beatrange_end = beatrange_begin + frames_beats;
@@ -429,102 +422,151 @@ void MidiRecorderDSPKernel::processOutput() {
         if (ABS(play_position - _state.playPositionBeats) >= frames_beats) {
             turnOffAllNotes();
         }
-        
-        // store the play duration for the next process call
-        _state.playPositionBeats = beatrange_end;
-        
-        int recording_tracks = 0;
-        int playing_tracks = 0;
-        bool reached_end = YES;
 
-        // process all the messages on all the tracks
+        // store the play position for the next process call
+        _state.playPositionBeats = beatrange_end;
+
+        // determine if we're recording and/or playing
+        bool recording_tracks = false;
+        bool playing_tracks = false;
         for (int t = 0; t < MIDI_TRACKS; ++t) {
             MidiTrackState& track_state = _state.track[t];
-            
-            // don't play if the track is recording
             if (track_state.recording.test()) {
-                recording_tracks += 1;
+                recording_tracks = true;
             }
             // play when there are recorded messages
             else if (track_state.recordedMessages && !track_state.recordedMessages->empty()) {
-                playing_tracks += 1;
-                
-                // iterate over all the beats inside this processing range
-                for (int beat = (int)beatrange_begin; beat <= (int)beatrange_end; ++beat) {
-                    // if the beat falls outside of the range of recorded messages, we're done
-                    if (beat >= track_state.recordedMessages->beatCount()) {
-                        break;
-                    }
-                
-                    // process through the messages until we find the ones that should be played
-                    for (const RecordedMidiMessage& message : track_state.recordedMessages->beatData(beat)) {
-                        // check if the message is outdated
-                        if (message.offsetBeats < beatrange_begin) {
-                            continue;
-                        }
-                        // check if the time offset of the message falls within the advancement of the playhead
-                        else if (message.offsetBeats < beatrange_end) {
-                            // if the track is not muted and a MIDI output block exists,
-                            // send the message
-                            if (!track_state.muteEnabled.test() && _ioState.midiOutputEventBlock) {
-                                const double offset_seconds = (message.offsetBeats - beatrange_end) * _state.beatsToSeconds;
-                                const double offset_samples = offset_seconds * _ioState.sampleRate;
-                                
-                                // indicate output activity
-                                track_state.processedActivityOutput.clear();
-                                
-                                // track note on/off states
-                                trackNotesForTrack(t, message);
-
-                                // send the MIDI output message
-#if DEBUG_MIDI_OUTPUT
-                                int status = message.data[0] & 0xf0;
-                                int channel = message.data[0] & 0x0f;
-                                int data1 = message.data[1];
-                                int data2 = message.data[2];
-                                
-                                if (message.length == 2) {
-                                    std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << "   ]" << std::endl;
-                                }
-                                else {
-                                    std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << " " << std::setw(2) << data2 << "]" << std::endl;
-                                }
-#endif
-                                _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
-                                                              t, message.length, &message.data[0]);
-                            }
-                            // if the track is muted, ensure we have no lingering note on messages
-                            else {
-                                turnOffAllNotesForTrack(t);
-                            }
-                        }
-                        // stop playing recorded messages if the one we processed is scheduled for later
-                        else {
-                            break;
-                        }
-                    }
-                }
-                
-                if (beatrange_end < _state.stopPositionBeats.load()) {
-                    reached_end = NO;
-                }
+                playing_tracks = true;
             }
         }
         
-        // if we're not recording and the duration is totally cleared out,
-        // we've reched the end and stop playing
-        if (recording_tracks == 0 && _state.maxDuration == 0.0) {
-            _state.processedReachEnd.clear();
-            return;
+        // we only repeat if there's at least one track playing
+        bool repeat_active = _state.repeat.test() && playing_tracks;
+        
+        // detect whether we wrap around in this buffer
+        double beatrange_wraparound = 0.0;
+        if (repeat_active) {
+            if (beatrange_end > _state.stopPositionBeats) {
+                beatrange_wraparound = beatrange_end - _state.stopPositionBeats;
+                beatrange_end = _state.stopPositionBeats;
+            }
         }
 
-        // if we're playing at least one track, auto-rewind or end playing
-        if (playing_tracks != 0 && reached_end) {
-            if (_state.repeat.test()) {
-                _state.processedRewind.clear();
+        // output the MIDI messages
+        outputMidiMessages(beatrange_begin, beatrange_end);
+
+        // handle repeat
+        if (repeat_active) {
+            // check if we've reached the stop position and set up the repeat
+            if (beatrange_end == _state.stopPositionBeats) {
+                // ensure there are no lingering notes
+                turnOffAllNotes();
+                
+                // turn off recording
+                recording_tracks = false;
+                for (int t = 0; t < MIDI_TRACKS; ++t) {
+                    _state.track[t].recording.clear();
+                }
+                _state.processedUIEndRecord.clear();
+                
+                // start over from the start position for the next process call
+                _state.playPositionBeats = _state.startPositionBeats.load();
+                _state.transportStartSampleSeconds = _state.transportStartSampleSeconds + (_state.stopPositionBeats - _state.startPositionBeats) * _state.beatsToSeconds;
             }
-            else {
-                _state.processedReachEnd.clear();
+
+            // handle the possible in-buffer wrap around
+            if (beatrange_wraparound > 0.0) {
+                beatrange_begin = _state.startPositionBeats;
+                beatrange_end = beatrange_begin + beatrange_wraparound;
+                
+                // output MIDI messages for the wrap-around section
+                outputMidiMessages(beatrange_begin, beatrange_end);
+
+                // store the advanced play position for the next process call
+                _state.playPositionBeats = beatrange_end;
+            }
+        }
+        // if we're playing at least one track and reached the stop position, end playing
+        else if (!recording_tracks && playing_tracks && beatrange_end == _state.stopPositionBeats) {
+            _state.processedReachEnd.clear();
+        }
+
+        // if we're not recording and the duration is totally cleared out,
+        // we've reched the end and stop playing
+        if (!recording_tracks && _state.maxDuration == 0.0) {
+            _state.processedReachEnd.clear();
+        }
+    }
+}
+
+void MidiRecorderDSPKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable) {
+    if (_ioState.midiOutputEventBlock) {
+        Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
+        _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
+    }
+}
+
+void MidiRecorderDSPKernel::outputMidiMessages(double beatRangeBegin, double beatRangeEnd) {
+    // process all the messages on all the tracks
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        MidiTrackState& track_state = _state.track[t];
+        
+        // play when the track is not recording and there are recorded messages
+        if (!track_state.recording.test() && track_state.recordedMessages && !track_state.recordedMessages->empty()) {
+            // iterate over all the beats inside this processing range
+            for (int beat = (int)beatRangeBegin; beat <= (int)beatRangeEnd; ++beat) {
+                // if the beat falls outside of the range of recorded messages, we're done
+                if (beat >= track_state.recordedMessages->beatCount()) {
+                    break;
+                }
+            
+                // process through the messages until we find the ones that should be played
+                for (const RecordedMidiMessage& message : track_state.recordedMessages->beatData(beat)) {
+                    // check if the message is outdated
+                    if (message.offsetBeats < beatRangeBegin) {
+                        continue;
+                    }
+                    // check if the time offset of the message falls within the advancement of the playhead
+                    else if (message.offsetBeats < beatRangeEnd) {
+                        // if the track is not muted and a MIDI output block exists,
+                        // send the message
+                        if (!track_state.muteEnabled.test() && _ioState.midiOutputEventBlock) {
+                            const double offset_seconds = (message.offsetBeats - beatRangeEnd) * _state.beatsToSeconds;
+                            const double offset_samples = offset_seconds * _ioState.sampleRate;
+                            
+                            // indicate output activity
+                            track_state.processedActivityOutput.clear();
+                            
+                            // track note on/off states
+                            trackNotesForTrack(t, message);
+
+#if DEBUG_MIDI_OUTPUT
+                            int status = message.data[0] & 0xf0;
+                            int channel = message.data[0] & 0x0f;
+                            int data1 = message.data[1];
+                            int data2 = message.data[2];
+                            
+                            if (message.length == 2) {
+                                std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << "   ]" << std::endl;
+                            }
+                            else {
+                                std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << " " << std::setw(2) << data2 << "]" << std::endl;
+                            }
+#endif
+                            // send the MIDI output message
+                            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
+                                                          t, message.length, &message.data[0]);
+                        }
+                        // if the track is muted, ensure we have no lingering note on messages
+                        else {
+                            turnOffAllNotesForTrack(t);
+                        }
+                    }
+                    // stop playing recorded messages if the one we processed is scheduled for later
+                    else {
+                        break;
+                    }
+                }
             }
         }
     }
