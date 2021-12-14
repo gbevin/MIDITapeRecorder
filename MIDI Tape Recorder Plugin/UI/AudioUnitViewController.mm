@@ -748,14 +748,14 @@
 - (void)setCropLeftForGesture:(UIGestureRecognizer*)gesture {
     if (gesture.numberOfTouches == 1) {
         _state->startPositionSet.test_and_set();
-        _state->startPositionBeats = MIN([self calculateBeatPositionForGesture:gesture], _state->stopPositionBeats.load());
+        _state->startPositionBeats = MIN([self calculateBeatPositionForGesture:gesture], _state->stopPositionBeats.load() - 1.0);
     }
 }
 
 - (void)setCropRightForGesture:(UIGestureRecognizer*)gesture {
     if (gesture.numberOfTouches == 1) {
         _state->stopPositionSet.test_and_set();
-        _state->stopPositionBeats = MAX([self calculateBeatPositionForGesture:gesture], _state->startPositionBeats.load());
+        _state->stopPositionBeats = MAX([self calculateBeatPositionForGesture:gesture], _state->startPositionBeats.load() + 1.0);
     }
 }
 
