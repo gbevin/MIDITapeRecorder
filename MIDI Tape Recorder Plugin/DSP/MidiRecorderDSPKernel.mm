@@ -287,6 +287,14 @@ void MidiRecorderDSPKernel::handleBufferStart(double timeSampleSeconds) {
 void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds) {
     if (_ioState.transportChanged) {
         if (_ioState.transportMoving) {
+            if (_state.record.test()) {
+                for (int t = 0; t < MIDI_TRACKS; ++t) {
+                    if (_state.track[t].recordEnabled.test()) {
+                        _state.processedBeginRecording[t].clear();
+                    }
+                }
+            }
+            
             _state.processedPlay.clear();
             _state.processedUIPlay.clear();
         }
