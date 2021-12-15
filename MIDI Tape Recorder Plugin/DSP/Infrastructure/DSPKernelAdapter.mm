@@ -1,5 +1,5 @@
 //
-//  MidiRecorderDSPKernel.mm
+//  MidiRecorderKernel.mm
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -15,12 +15,12 @@
 
 #include "BufferedAudioBus.hpp"
 
-#import "MidiRecorderDSPKernel.h"
+#import "MidiRecorderKernel.h"
 #import "DSPKernelAdapter.h"
 
 @implementation DSPKernelAdapter {
     // C++ members need to be ivars; they would be copied on access if they were properties.
-    MidiRecorderDSPKernel _kernel;
+    MidiRecorderKernel _kernel;
 }
 
 - (instancetype)init {
@@ -88,7 +88,7 @@
      render, we're doing it wrong.
      */
     // Specify captured objects are mutable.
-    __block MidiRecorderDSPKernel* kernel = &_kernel;
+    __block MidiRecorderKernel* kernel = &_kernel;
 
     return ^AUAudioUnitStatus(AudioUnitRenderActionFlags*                actionFlags,
                               const AudioTimeStamp*                      timestamp,

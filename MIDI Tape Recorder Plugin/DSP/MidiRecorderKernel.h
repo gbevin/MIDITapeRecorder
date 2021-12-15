@@ -1,5 +1,5 @@
 //
-//  MidiRecorderDSPKernel.h
+//  MidiRecorderKernel.h
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
@@ -12,9 +12,9 @@
 #import "DSPKernel.h"
 #import "MidiRecorderState.h"
 
-class MidiRecorderDSPKernel : public DSPKernel {
+class MidiRecorderKernel : public DSPKernel {
 public:
-    MidiRecorderDSPKernel();
+    MidiRecorderKernel();
     
     void cleanup();
 

@@ -1,12 +1,12 @@
 //
-//  MidiRecorderDSPKernel.cpp
+//  MidiRecorderKernel.cpp
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/28/21.
 //  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
-#import "MidiRecorderDSPKernel.h"
+#import "MidiRecorderKernel.h"
 
 #include "Constants.h"
 #include "QueuedMidiMessage.h"
@@ -18,7 +18,7 @@
 #include <iomanip>
 #endif
 
-MidiRecorderDSPKernel::MidiRecorderDSPKernel() : _state() {
+MidiRecorderKernel::MidiRecorderKernel() : _state() {
     TPCircularBufferInit(&_state.midiBuffer, 16384);
     
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -32,20 +32,20 @@ MidiRecorderDSPKernel::MidiRecorderDSPKernel() : _state() {
     }
 }
 
-void MidiRecorderDSPKernel::cleanup() {
+void MidiRecorderKernel::cleanup() {
     TPCircularBufferCleanup(&_state.midiBuffer);
     _ioState.reset();
 }
 
-bool MidiRecorderDSPKernel::isBypassed() {
+bool MidiRecorderKernel::isBypassed() {
     return _bypassed;
 }
 
-void MidiRecorderDSPKernel::setBypass(bool shouldBypass) {
+void MidiRecorderKernel::setBypass(bool shouldBypass) {
     _bypassed = shouldBypass;
 }
 
-void MidiRecorderDSPKernel::rewind(double timeSampleSeconds) {
+void MidiRecorderKernel::rewind(double timeSampleSeconds) {
     // turn off recording
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         _state.track[t].recording.clear();
@@ -72,7 +72,7 @@ void MidiRecorderDSPKernel::rewind(double timeSampleSeconds) {
     turnOffAllNotes();
 }
 
-void MidiRecorderDSPKernel::sendRpnMessage(uint8_t cable, uint8_t channel, uint16_t number, uint16_t value) {
+void MidiRecorderKernel::sendRpnMessage(uint8_t cable, uint8_t channel, uint16_t number, uint16_t value) {
     if (cable >= MIDI_TRACKS || channel > 0xf) {
         return;
     }
@@ -102,7 +102,7 @@ void MidiRecorderDSPKernel::sendRpnMessage(uint8_t cable, uint8_t channel, uint1
     }
 }
 
-void MidiRecorderDSPKernel::sendMCM(int t) {
+void MidiRecorderKernel::sendMCM(int t) {
     MPEState& mpe_state = _state.track[t].mpeState;
     if (!mpe_state.enabled) {
         return;
@@ -126,7 +126,7 @@ void MidiRecorderDSPKernel::sendMCM(int t) {
     }
 }
 
-void MidiRecorderDSPKernel::play() {
+void MidiRecorderKernel::play() {
     if (_isPlaying == NO) {
         _state.processedStopAndRewind.test_and_set();
         _state.processedUIStopAndRewind.test_and_set();
@@ -144,12 +144,12 @@ void MidiRecorderDSPKernel::play() {
     }
 }
 
-void MidiRecorderDSPKernel::stop() {
+void MidiRecorderKernel::stop() {
     _state.transportStartSampleSeconds = 0.0;
     _isPlaying = NO;
 }
 
-void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue value) {
+void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value) {
     bool set = bool(value);
     switch (address) {
         case ID_RECORD_1:
@@ -231,7 +231,7 @@ void MidiRecorderDSPKernel::setParameter(AUParameterAddress address, AUValue val
     }
 }
 
-AUValue MidiRecorderDSPKernel::getParameter(AUParameterAddress address) {
+AUValue MidiRecorderKernel::getParameter(AUParameterAddress address) {
     // Return the goal. It is not thread safe to return the ramping value.
     switch (address) {
         case ID_RECORD_1:
@@ -277,14 +277,14 @@ AUValue MidiRecorderDSPKernel::getParameter(AUParameterAddress address) {
     }
 }
 
-void MidiRecorderDSPKernel::handleBufferStart(double timeSampleSeconds) {
+void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = timeSampleSeconds;
     
     TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }
 
-void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds) {
+void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     if (_ioState.transportChanged) {
         if (_ioState.transportMoving) {
             if (_state.record.test()) {
@@ -367,13 +367,13 @@ void MidiRecorderDSPKernel::handleScheduledTransitions(double timeSampleSeconds)
     }
 }
 
-void MidiRecorderDSPKernel::handleParameterEvent(AUParameterEvent const& parameterEvent) {
+void MidiRecorderKernel::handleParameterEvent(AUParameterEvent const& parameterEvent) {
     // we only have parameter state switches, so we don't need to ramp and it's all related to
     // user interface funtionality, so being sample accurate is not critical either
     setParameter(parameterEvent.parameterAddress, parameterEvent.value);
 }
 
-void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
+void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     if (midiEvent.cable < 0 || midiEvent.cable >= MIDI_TRACKS) {
         return;
     }
@@ -401,7 +401,7 @@ void MidiRecorderDSPKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     }
 }
 
-void MidiRecorderDSPKernel::processOutput() {
+void MidiRecorderKernel::processOutput() {
     if (!_isPlaying) {
         turnOffAllNotes();
     }
@@ -509,14 +509,14 @@ void MidiRecorderDSPKernel::processOutput() {
     }
 }
 
-void MidiRecorderDSPKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable) {
+void MidiRecorderKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable) {
     if (_ioState.midiOutputEventBlock) {
         Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
         _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
     }
 }
 
-void MidiRecorderDSPKernel::outputMidiMessages(double beatRangeBegin, double beatRangeEnd) {
+void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRangeEnd) {
     // process all the messages on all the tracks
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MidiTrackState& track_state = _state.track[t];
@@ -582,7 +582,7 @@ void MidiRecorderDSPKernel::outputMidiMessages(double beatRangeBegin, double bea
     }
 }
 
-void MidiRecorderDSPKernel::trackNotesForTrack(int track, const RecordedMidiMessage& message) {
+void MidiRecorderKernel::trackNotesForTrack(int track, const RecordedMidiMessage& message) {
     int status = message.data[0];
     int type = status & 0xf0;
     int chan = (status & 0x0f);
@@ -603,13 +603,13 @@ void MidiRecorderDSPKernel::trackNotesForTrack(int track, const RecordedMidiMess
     }
 }
 
-void MidiRecorderDSPKernel::turnOffAllNotes() {
+void MidiRecorderKernel::turnOffAllNotes() {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         turnOffAllNotesForTrack(t);
     }
 }
 
-void MidiRecorderDSPKernel::turnOffAllNotesForTrack(int track) {
+void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
     if (track < 0 || track >= MIDI_TRACKS) {
         return;
     }
@@ -636,7 +636,7 @@ void MidiRecorderDSPKernel::turnOffAllNotesForTrack(int track) {
     }
 }
 
-void MidiRecorderDSPKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
+void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
     message.cable = midiEvent.cable;
