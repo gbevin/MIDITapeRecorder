@@ -20,6 +20,7 @@ class RecordedMidiMessage;
 - (void)finishRecording:(int)ordinal
                    data:(std::unique_ptr<MidiRecordedData>)data
                 preview:(std::shared_ptr<MidiRecordedPreview>)preview;
+- (void)prepareRecording:(int)ordinal;
 - (void)invalidateRecording:(int)ordinal;
 
 @end

@@ -603,8 +603,8 @@
     return duration;
 }
 
-- (std::shared_ptr<MidiRecordedPreview>)activePreview {
-    __block std::shared_ptr<MidiRecordedPreview> preview = nullptr;
+- (std::shared_ptr<MidiPreviewProvider>)activePreview {
+    __block std::shared_ptr<MidiPreviewProvider> preview = nullptr;
     
     dispatch_sync(_dispatchQueue, ^{
         if (_record == YES) {

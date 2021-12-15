@@ -81,6 +81,7 @@
 
 /* Begin PBXFileReference section */
 		2603D5A1276389C700247A18 /* PreviewPixelData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreviewPixelData.h; sourceTree = "<group>"; };
+		260EF237276A285E00FC6C65 /* MidiPreviewProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiPreviewProvider.h; sourceTree = "<group>"; };
 		261342772753D855001FF0BB /* ActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorView.h; sourceTree = "<group>"; };
 		261342782753D869001FF0BB /* ActivityIndicatorView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ActivityIndicatorView.mm; sourceTree = "<group>"; };
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -195,6 +196,67 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		260EF238276A2B4A00FC6C65 /* State */ = {
+			isa = PBXGroup;
+			children = (
+				26BB387027533A3400342496 /* AudioUnitIOState.h */,
+				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
+				26C540C92757EC28004E4813 /* MidiTrackState.h */,
+				268A93182762997400B2D74A /* MPEState.h */,
+				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
+				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
+				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
+			);
+			path = State;
+			sourceTree = "<group>";
+		};
+		260EF239276A2B8600FC6C65 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				26BB3861275338EE00342496 /* AudioUnitViewController.h */,
+				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
+				268A931A2762CEAA00B2D74A /* AboutViewController.h */,
+				268A931B2762CEAA00B2D74A /* AboutViewController.mm */,
+				268A931E2762D21200B2D74A /* SettingsViewController.h */,
+				268A931D2762D21200B2D74A /* SettingsViewController.mm */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		260EF23A276A2B9C00FC6C65 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				261342772753D855001FF0BB /* ActivityIndicatorView.h */,
+				261342782753D869001FF0BB /* ActivityIndicatorView.mm */,
+				26C7C07A27641D78008C52C0 /* CropLeftView.h */,
+				26C7C07927641D78008C52C0 /* CropLeftView.mm */,
+				26C7C07C27641FF8008C52C0 /* CropRightView.h */,
+				26C7C07D27641FF8008C52C0 /* CropRightView.mm */,
+				26C49D162756D04400A6FAB4 /* MidiTrackView.h */,
+				26C49D172756D04400A6FAB4 /* MidiTrackView.mm */,
+				268A930C27616A2300B2D74A /* PlayheadView.h */,
+				268A930B27616A2200B2D74A /* PlayheadView.mm */,
+				266465EE27597987002D4459 /* PopupView.h */,
+				266465EF27597988002D4459 /* PopupView.mm */,
+				26C49D1A2756D41700A6FAB4 /* TimelineView.h */,
+				26C49D192756D41700A6FAB4 /* TimelineView.mm */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		260EF23C276A2BD300FC6C65 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				26E06B8E2759427300D7257E /* MenuButton.h */,
+				26E06B8D2759427300D7257E /* MenuButton.mm */,
+				268A93122762793000B2D74A /* MPEButton.h */,
+				268A93132762793000B2D74A /* MPEButton.mm */,
+				266465EB27596B50002D4459 /* ToolBarButton.h */,
+				266465EC27596B50002D4459 /* ToolBarButton.mm */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
 		26B140822754590300748F00 /* TPCircularBuffer */ = {
 			isa = PBXGroup;
 			children = (
@@ -209,6 +271,7 @@
 		26B1408E2754716500748F00 /* Recorder */ = {
 			isa = PBXGroup;
 			children = (
+				260EF237276A285E00FC6C65 /* MidiPreviewProvider.h */,
 				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
 				26BE25DA2766CF8A00A6BAB7 /* MidiRecordedData.h */,
@@ -268,6 +331,7 @@
 				26BB384F275338EE00342496 /* Audio Unit */,
 				26BB3853275338EE00342496 /* DSP */,
 				26B1408E2754716500748F00 /* Recorder */,
+				260EF238276A2B4A00FC6C65 /* State */,
 				26BB3860275338EE00342496 /* UI */,
 				26C540BF27570B06004E4813 /* Utils */,
 			);
@@ -287,15 +351,8 @@
 			isa = PBXGroup;
 			children = (
 				26FA446E2756F4FA00EA133C /* Infrastructure */,
-				26BB387027533A3400342496 /* AudioUnitIOState.h */,
 				26BB385C275338EE00342496 /* MidiRecorderDSPKernel.h */,
 				26C7DA3327534BE300170CB2 /* MidiRecorderDSPKernel.mm */,
-				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
-				26C540C92757EC28004E4813 /* MidiTrackState.h */,
-				268A93182762997400B2D74A /* MPEState.h */,
-				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
-				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
-				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
 			);
 			path = DSP;
 			sourceTree = "<group>";
@@ -303,32 +360,9 @@
 		26BB3860275338EE00342496 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				26BB3861275338EE00342496 /* AudioUnitViewController.h */,
-				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
-				268A931A2762CEAA00B2D74A /* AboutViewController.h */,
-				268A931B2762CEAA00B2D74A /* AboutViewController.mm */,
-				261342772753D855001FF0BB /* ActivityIndicatorView.h */,
-				261342782753D869001FF0BB /* ActivityIndicatorView.mm */,
-				26C7C07A27641D78008C52C0 /* CropLeftView.h */,
-				26C7C07927641D78008C52C0 /* CropLeftView.mm */,
-				26C7C07C27641FF8008C52C0 /* CropRightView.h */,
-				26C7C07D27641FF8008C52C0 /* CropRightView.mm */,
-				26E06B8E2759427300D7257E /* MenuButton.h */,
-				26E06B8D2759427300D7257E /* MenuButton.mm */,
-				268A93122762793000B2D74A /* MPEButton.h */,
-				268A93132762793000B2D74A /* MPEButton.mm */,
-				268A930C27616A2300B2D74A /* PlayheadView.h */,
-				268A930B27616A2200B2D74A /* PlayheadView.mm */,
-				266465EE27597987002D4459 /* PopupView.h */,
-				266465EF27597988002D4459 /* PopupView.mm */,
-				268A931E2762D21200B2D74A /* SettingsViewController.h */,
-				268A931D2762D21200B2D74A /* SettingsViewController.mm */,
-				266465EB27596B50002D4459 /* ToolBarButton.h */,
-				266465EC27596B50002D4459 /* ToolBarButton.mm */,
-				26C49D162756D04400A6FAB4 /* MidiTrackView.h */,
-				26C49D172756D04400A6FAB4 /* MidiTrackView.mm */,
-				26C49D1A2756D41700A6FAB4 /* TimelineView.h */,
-				26C49D192756D41700A6FAB4 /* TimelineView.mm */,
+				260EF23C276A2BD300FC6C65 /* Buttons */,
+				260EF23A276A2B9C00FC6C65 /* Views */,
+				260EF239276A2B8600FC6C65 /* ViewControllers */,
 			);
 			path = UI;
 			sourceTree = "<group>";

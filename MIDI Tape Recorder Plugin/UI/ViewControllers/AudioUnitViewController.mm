@@ -1361,6 +1361,10 @@
     _state->processedInvalidate[ordinal].clear();
 }
 
+- (void)prepareRecording:(int)ordinal {
+    _state->processedNotesOff[ordinal].clear();
+}
+
 #pragma mark - UIScrollViewDelegate methods
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
