@@ -47,6 +47,7 @@ struct MidiRecordedData {
     
     RecordedBeatVector beats    { };
     bool hasMessages            { false };
+    double start                { -1.0 };
     double lastBeatOffset       { 0.0 };
     double duration             { 0.0 };
 };

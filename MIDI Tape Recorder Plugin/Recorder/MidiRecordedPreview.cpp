@@ -58,11 +58,3 @@ void MidiRecordedPreview::updateWithMessage(RecordedMidiMessage& message) {
         pixel_data.events += 1;
     }
 }
-
-unsigned long MidiRecordedPreview::pixelCount() {
-    return pixels.size();
-}
-
-PreviewPixelData& MidiRecordedPreview::pixelData(int pixel) {
-    return pixels[pixel];
-}

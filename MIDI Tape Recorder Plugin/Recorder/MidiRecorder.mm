@@ -25,7 +25,7 @@
     int16_t _lastDataLsb[16];
 
     std::unique_ptr<MidiRecordedData> _recording;
-    std::shared_ptr<MidiRecordedPreview> _recordingPreview;
+    std::unique_ptr<MidiRecordedPreview> _recordingPreview;
 }
 
 - (instancetype)initWithOrdinal:(int)ordinal {
@@ -67,7 +67,7 @@
             if (_state->autoTrimRecordings.test() && recorded) {
                 recorded->trimDuration();
             }
-            auto recorded_preview = _recordingPreview;
+            auto recorded_preview = std::move(_recordingPreview);
 
             _recording.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
@@ -75,12 +75,7 @@
             if (_delegate) {
                 [_delegate finishRecording:_ordinal
                                       data:std::move(recorded)
-                                   preview:recorded_preview];
-            }
-        }
-        else {
-            if (_delegate) {
-                [_delegate invalidateRecording:_ordinal];
+                                   preview:std::move(recorded_preview)];
             }
         }
     });
@@ -109,8 +104,8 @@
         }
         else {
             NSMutableData* recorded_data = [NSMutableData new];
-            for (auto beat : recorded->beats) {
-                for (auto message : beat) {
+            for (RecordedDataVector& beat : recorded->beats) {
+                for (RecordedMidiMessage& message : beat) {
                     [recorded_data appendBytes:&message length:sizeof(RecordedMidiMessage)];
                 }
             }
@@ -188,19 +183,19 @@
         
 
         // update preview
-        std::shared_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
+        std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
         if (recorded) {
-            for (auto beat : recorded->beats) {
-                for (auto message : beat) {
+            for (RecordedDataVector& beat : recorded->beats) {
+                for (RecordedMidiMessage& message : beat) {
                     recorded_preview->updateWithMessage(message);
                 }
             }
         }
 
         if (_delegate) {
-            [_delegate finishRecording:_ordinal
-                                  data:std::move(recorded)
-                               preview:recorded_preview];
+            [_delegate finishImport:_ordinal
+                               data:std::move(recorded)
+                            preview:std::move(recorded_preview)];
         }
     });
 }
@@ -233,8 +228,8 @@
 
     // add midi events to track
     int64_t last_offset_ticks = 0;
-    for (auto beat : recorded->beats) {
-        for (auto message : beat) {
+    for (RecordedDataVector& beat : recorded->beats) {
+        for (RecordedMidiMessage& message : beat) {
             int64_t offset_ticks = int64_t(message.offsetBeats * MIDI_BEAT_TICKS);
             uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
             writeMidiVarLen(track, delta_ticks);
@@ -276,7 +271,7 @@
 
     // prepare local data to accumulate into
     std::unique_ptr<MidiRecordedData> recorded(new MidiRecordedData());
-    std::shared_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
+    std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
     double recorded_duration = 0.0;
 
     // process the track events
@@ -376,9 +371,9 @@
     
     // transfer all the accumulated data to the active recorded data
     if (_delegate) {
-        [_delegate finishRecording:_ordinal
-                              data:std::move(recorded)
-                           preview:recorded_preview];
+        [_delegate finishImport:_ordinal
+                           data:std::move(recorded)
+                        preview:std::move(recorded_preview)];
     }
 }
 
@@ -387,6 +382,11 @@
 - (void)ping:(double)timeSampleSeconds {
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record && _recording) {
+            // mark the first time the recording had processing
+            if (_recording->start < 0.0) {
+                _recording->start = _state->playPositionBeats;
+            }
+            
             // update the recording duration even when there's no incoming messages
             if (_state->transportStartSampleSeconds == 0.0) {
                 _recording->duration = 0.0;
@@ -398,7 +398,11 @@
             _recording->populateUpToBeat(_recording->duration);
             
             // update the preview in case of gaps
-            if (_recordingPreview && !_recording->empty()) {
+            if (_recordingPreview) {
+                if (_recordingPreview->startPixel < 0) {
+                    _recordingPreview->startPixel = _recording->start * PIXELS_PER_BEAT;
+                }
+                
                 _recordingPreview->updateWithOffsetBeats(_recording->duration);
             }
         }
@@ -593,31 +597,54 @@
         if (_record == YES) {
             duration = _recording->duration;
         }
-        else {
-            if (_state->track[_ordinal].recordedMessages) {
-                duration = _state->track[_ordinal].recordedMessages->duration;
-            }
+        if (_state && _state->track[_ordinal].recordedMessages) {
+            duration = MAX(duration, _state->track[_ordinal].recordedMessages->duration);
         }
     });
     
     return duration;
 }
 
-- (std::shared_ptr<MidiPreviewProvider>)activePreview {
-    __block std::shared_ptr<MidiPreviewProvider> preview = nullptr;
+#pragma mark MidiPreviewProvider
+
+- (unsigned long)previewPixelCount {
+    unsigned long count = 0;
     
-    dispatch_sync(_dispatchQueue, ^{
-        if (_record == YES) {
-            preview = _recordingPreview;
-        }
-        else {
-            if (_state->track[_ordinal].recordedPreview) {
-                preview = _state->track[_ordinal].recordedPreview;
-            }
-        }
-    });
+    if (_state && _state->track[_ordinal].recordedPreview) {
+        count = _state->track[_ordinal].recordedPreview->pixels.size();
+    }
+    if (_record == YES) {
+        count = MAX(count, _recordingPreview->pixels.size());
+    }
     
-    return preview;
+    return count;
+}
+
+- (PreviewPixelData)previewPixelData:(int)pixel {
+    PreviewPixelData data;
+    
+    if (_state &&
+        _state->track[_ordinal].recordedPreview &&
+        pixel >= _state->track[_ordinal].recordedPreview->startPixel &&
+        pixel < _state->track[_ordinal].recordedPreview->pixels.size()) {
+        data = _state->track[_ordinal].recordedPreview->pixels[pixel];
+    }
+    
+    if (_record == YES) {
+        if (pixel >= _recordingPreview->startPixel && pixel < _recordingPreview->pixels.size()) {
+            data = _recordingPreview->pixels[pixel];
+        }
+    }
+    
+    return data;
+}
+
+- (BOOL)refreshPreviewBeat:(int)beat {
+    if (_state == nullptr) {
+        return YES;
+    }
+    int play_beat = _state->playPositionBeats;
+    return _record == YES && (play_beat == beat || play_beat - 1 == beat);
 }
 
 @end

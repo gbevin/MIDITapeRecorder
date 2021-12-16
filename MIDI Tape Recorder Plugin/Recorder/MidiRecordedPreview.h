@@ -10,23 +10,21 @@
 
 #include <vector>
 
-#include "MidiPreviewProvider.h"
 #include "PreviewPixelData.h"
+#include "RecordedMidiMessage.h"
 
 typedef std::vector<PreviewPixelData> RecordedPreviewVector;
 
 class RecordedMidiMessage;
 
-struct MidiRecordedPreview : public MidiPreviewProvider {
+struct MidiRecordedPreview {
     MidiRecordedPreview();
     MidiRecordedPreview(const MidiRecordedPreview&) = delete;
     MidiRecordedPreview& operator= (const MidiRecordedPreview&) = delete;
     
     void updateWithOffsetBeats(double offsetBeats);
     void updateWithMessage(RecordedMidiMessage& message);
-    
-    unsigned long pixelCount() override;
-    PreviewPixelData& pixelData(int pixel) override;
 
+    int startPixel               { -1 };
     RecordedPreviewVector pixels { };
 };

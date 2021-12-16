@@ -40,6 +40,7 @@ private:
     void rewind(double timeSampleSeconds);
     void play();
     void stop();
+    void endRecording(int track);
 
     void passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable);
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);

@@ -150,6 +150,8 @@
     MidiRecorderAudioUnit* _audioUnit;
     MidiRecorderState* _state;
     CADisplayLink* _timer;
+    
+    BOOL _restoringState;
 
     MidiQueueProcessor* _midiQueueProcessor;
     
@@ -168,6 +170,8 @@
         _state = nil;
         _audioUnit = nil;
         _timer = nil;
+        
+        _restoringState = NO;
         
         _midiQueueProcessor = [MidiQueueProcessor new];
         for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -197,6 +201,7 @@
     UIView* menu_popup[MIDI_TRACKS] = { _menuPopup1, _menuPopup2, _menuPopup3, _menuPopup4 };
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         midi_track[t].tracks = _tracks;
+        midi_track[t].previewProvider = [_midiQueueProcessor recorder:t];
         menu_popup[t].hidden = YES;
         mpe_button[t].hidden = YES;
     }
@@ -390,8 +395,11 @@
     [self updateRecordEnableState];
     
     if (!state) {
+        AudioUnitViewController* __weak weak_self = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self renderPreviews];
+            AudioUnitViewController* s = weak_self;
+            if (!s) return;
+            [s renderPreviews];
         });
     }
 }
@@ -473,6 +481,7 @@
 
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
             [[self->_midiQueueProcessor recorder:t] clear];
+            [view rebuild];
             [view setNeedsLayout];
         }];
 
@@ -501,7 +510,7 @@
         }
     }
     else {
-        self->_settingsView.alpha = 1.0;
+        _settingsView.alpha = 1.0;
         [self closeAboutView:nil];
     }
 }
@@ -685,11 +694,12 @@
         int track = ((ImportMidiDocumentPickerViewController*)controller).track;
         [_midiQueueProcessor midiFileToRecordedTrack:contents ordinal:track];
         
-        [self renderPreviews];
-        
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+            [view rebuild];
             [view setNeedsLayout];
         }];
+        
+        [self renderPreviews];
     }
 }
 
@@ -708,9 +718,12 @@
             return;
         }
         
-        MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
-        [[_midiQueueProcessor recorder:(int)index] clear];
-        [midi_track[index] setNeedsLayout];
+        int t = (int)index;
+        [[_midiQueueProcessor recorder:t] clear];
+        [self withMidiTrack:t view:^(MidiTrackView *view) {
+            [view rebuild];
+            [view setNeedsLayout];
+        }];
         
         // if the recorder is fully empty, reset transport
         if (![self hasRecordedDuration]) {
@@ -818,10 +831,27 @@
 
 #pragma mark - State
 
+- (void)readFullStateFromDict:(NSDictionary*)dict {
+    AudioUnitViewController* __weak weak_self = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        AudioUnitViewController* s = weak_self;
+        if (!s) return;
+
+        @synchronized(s) {
+            s->_restoringState = YES;
+            
+            [s readRecordingsFromDict:dict];
+            [s readSettingsFromDict:dict];
+            
+            s->_restoringState = NO;
+        }
+    });
+}
+
 - (void)readSettingsFromDict:(NSDictionary*)dict {
     id start_position_set = [dict objectForKey:@"StartPositionSet"];
-    id start_position_beats = [dict objectForKey:@"StartPositionBeats"];
     id stop_position_set = [dict objectForKey:@"StopPositionSet"];
+    id start_position_beats = [dict objectForKey:@"StartPositionBeats"];
     id stop_position_beats = [dict objectForKey:@"StopPositionBeats"];
     id play_position_beats = [dict objectForKey:@"PlayPositionBeats"];
 
@@ -850,109 +880,107 @@
     id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
     id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (start_position_set) {
-            if ([start_position_set boolValue]) self->_state->startPositionSet.test_and_set();
-            else                                self->_state->startPositionSet.clear();
-        }
-        if (start_position_beats) {
-            self->_state->startPositionBeats = [start_position_beats doubleValue];
-        }
-        if (stop_position_set) {
-            if ([stop_position_set boolValue]) self->_state->stopPositionSet.test_and_set();
-            else                               self->_state->stopPositionSet.clear();
-        }
-        if (stop_position_beats) {
-            self->_state->stopPositionBeats = [stop_position_beats doubleValue];
-        }
-        if (play_position_beats) {
-            self->_state->playPositionBeats = [play_position_beats doubleValue];
-        }
+    if (start_position_set) {
+        if ([start_position_set boolValue]) _state->startPositionSet.test_and_set();
+        else                                _state->startPositionSet.clear();
+    }
+    if (stop_position_set) {
+        if ([stop_position_set boolValue]) _state->stopPositionSet.test_and_set();
+        else                               _state->stopPositionSet.clear();
+    }
+    if (start_position_beats) {
+        _state->startPositionBeats = [start_position_beats doubleValue];
+    }
+    if (stop_position_beats) {
+        _state->stopPositionBeats = [stop_position_beats doubleValue];
+    }
+    if (play_position_beats) {
+        _state->playPositionBeats = [play_position_beats doubleValue];
+    }
 
-        if (routing) {
-            self->_routingButton.selected = [routing boolValue];
-        }
+    if (routing) {
+        _routingButton.selected = [routing boolValue];
+    }
 
-        if (record) {
-            self->_recordButton.selected = [record boolValue];
-        }
-        if (repeat) {
-            self->_repeatButton.selected = [repeat boolValue];
-        }
-        if (grid) {
-            self->_gridButton.selected = [grid boolValue];
-        }
-        if (chase) {
-            self->_chaseButton.selected = [chase boolValue];
-        }
-        if (punch_inout) {
-            self->_punchInOutButton.selected = [punch_inout boolValue];
-        }
+    if (record) {
+        _recordButton.selected = [record boolValue];
+    }
+    if (repeat) {
+        _repeatButton.selected = [repeat boolValue];
+    }
+    if (grid) {
+        _gridButton.selected = [grid boolValue];
+    }
+    if (chase) {
+        _chaseButton.selected = [chase boolValue];
+    }
+    if (punch_inout) {
+        _punchInOutButton.selected = [punch_inout boolValue];
+    }
 
-        if (record1) {
-            self->_recordButton1.selected = [record1 boolValue];
-        }
-        if (record2) {
-            self->_recordButton2.selected = [record2 boolValue];
-        }
-        if (record3) {
-            self->_recordButton3.selected = [record3 boolValue];
-        }
-        if (record4) {
-            self->_recordButton4.selected = [record4 boolValue];
-        }
+    if (record1) {
+        _recordButton1.selected = [record1 boolValue];
+    }
+    if (record2) {
+        _recordButton2.selected = [record2 boolValue];
+    }
+    if (record3) {
+        _recordButton3.selected = [record3 boolValue];
+    }
+    if (record4) {
+        _recordButton4.selected = [record4 boolValue];
+    }
 
-        if (monitor1) {
-            self->_monitorButton1.selected = [monitor1 boolValue];
-        }
-        if (monitor2) {
-            self->_monitorButton2.selected = [monitor2 boolValue];
-        }
-        if (monitor3) {
-            self->_monitorButton3.selected = [monitor3 boolValue];
-        }
-        if (monitor4) {
-            self->_monitorButton4.selected = [monitor4 boolValue];
-        }
+    if (monitor1) {
+        _monitorButton1.selected = [monitor1 boolValue];
+    }
+    if (monitor2) {
+        _monitorButton2.selected = [monitor2 boolValue];
+    }
+    if (monitor3) {
+        _monitorButton3.selected = [monitor3 boolValue];
+    }
+    if (monitor4) {
+        _monitorButton4.selected = [monitor4 boolValue];
+    }
 
-        if (mute1) {
-            self->_muteButton1.selected = [mute1 boolValue];
-        }
-        if (mute2) {
-            self->_muteButton2.selected = [mute2 boolValue];
-        }
-        if (mute3) {
-            self->_muteButton3.selected = [mute3 boolValue];
-        }
-        if (mute4) {
-            self->_muteButton4.selected = [mute4 boolValue];
-        }
-        
-        if (send_mpe) {
-            if ([send_mpe boolValue]) self->_state->sendMpeConfigOnPlay.test_and_set();
-            else                      self->_state->sendMpeConfigOnPlay.clear();
-        }
-        if (mpe_details) {
-            if ([mpe_details boolValue]) self->_state->displayMpeConfigDetails.test_and_set();
-            else                         self->_state->displayMpeConfigDetails.clear();
-        }
-        if (auto_trim) {
-            if ([auto_trim boolValue]) self->_state->autoTrimRecordings.test_and_set();
-            else                       self->_state->autoTrimRecordings.clear();
-        }
+    if (mute1) {
+        _muteButton1.selected = [mute1 boolValue];
+    }
+    if (mute2) {
+        _muteButton2.selected = [mute2 boolValue];
+    }
+    if (mute3) {
+        _muteButton3.selected = [mute3 boolValue];
+    }
+    if (mute4) {
+        _muteButton4.selected = [mute4 boolValue];
+    }
+    
+    if (send_mpe) {
+        if ([send_mpe boolValue]) _state->sendMpeConfigOnPlay.test_and_set();
+        else                      _state->sendMpeConfigOnPlay.clear();
+    }
+    if (mpe_details) {
+        if ([mpe_details boolValue]) _state->displayMpeConfigDetails.test_and_set();
+        else                         _state->displayMpeConfigDetails.clear();
+    }
+    if (auto_trim) {
+        if ([auto_trim boolValue]) _state->autoTrimRecordings.test_and_set();
+        else                       _state->autoTrimRecordings.clear();
+    }
 
-        [self updateRoutingState];
-        [self updateRecordState];
-        [self updateRepeatState];
-        [self updateGridState];
-        [self updateChaseState];
-        [self updatePunchInOutState];
-        [self updateMonitorState];
-        [self updateRecordEnableState];
-        [self updateMuteState];
-        
-        [self->_settingsViewController sync];
-    });
+    [self updateRoutingState];
+    [self updateRecordState];
+    [self updateRepeatState];
+    [self updateGridState];
+    [self updateChaseState];
+    [self updatePunchInOutState];
+    [self updateMonitorState];
+    [self updateRecordEnableState];
+    [self updateMuteState];
+    
+    [_settingsViewController sync];
 }
 
 - (void)readRecordingsFromDict:(NSDictionary*)dict {
@@ -965,11 +993,16 @@
     }
 }
 
+- (void)currentFullStateToDict:(NSMutableDictionary*)dict {
+    [dict addEntriesFromDictionary:[self currentSettingsToDict]];
+    [dict addEntriesFromDictionary:[self currentRecordingsToDict]];
+}
+
 - (NSDictionary*)currentSettingsToDict {
     return @{
         @"StartPositionSet" : @(_state->startPositionSet.test()),
-        @"StartPositionBeats" : @(_state->startPositionBeats.load()),
         @"StopPositionSet" : @(_state->stopPositionSet.test()),
+        @"StartPositionBeats" : @(_state->startPositionBeats.load()),
         @"StopPositionBeats" : @(_state->stopPositionBeats.load()),
         @"PlayPositionBeats" : @(_state->playPositionBeats.load()),
         @"Routing" : @(_routingButton.selected),
@@ -1170,6 +1203,11 @@
 
 - (void)handleScheduledActions {
     // rewind UI
+    if (!_state->processedUIRewind.test_and_set()) {
+        [self positionViewLocation];
+    }
+
+    // stop and rewind UI
     if (!_state->processedUIStopAndRewind.test_and_set()) {
         [self setPlayState:NO];
         _state->processedRewind.clear();
@@ -1189,6 +1227,11 @@
     if (!_state->processedUIEndRecord.test_and_set()) {
         [self setRecordState:NO];
     }
+
+    // rebuild track UI
+    if (!_state->processedUIEndRecord.test_and_set()) {
+        [self setRecordState:NO];
+    }
 }
 
 - (void)renderPreviews {
@@ -1196,8 +1239,6 @@
     __block double max_duration = 0.0;
     
     [self withMidiTrackViews:^(int t, MidiTrackView* view) {
-        view.preview = [self->_midiQueueProcessor recorder:t].activePreview;
-        
         max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].activeDuration);
         
         if (self->_recordButton.selected) {
@@ -1221,6 +1262,21 @@
     return has_recorder_duration;
 }
 
+- (void)positionViewLocation {
+    if (!_playhead.hidden && _state->chase.test() && !_activePannedMarker) {
+        CGFloat play_position = _state->playPositionBeats * PIXELS_PER_BEAT;
+        CGFloat content_offset;
+        if (play_position < _tracks.frame.size.width / 2.0) {
+            content_offset = 0.0;
+        }
+        else {
+            content_offset = MAX(MIN(play_position - _tracks.frame.size.width / 2.0,
+                                 _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left), 0.0);
+        }
+        [_tracks setContentOffset:CGPointMake(content_offset, 0) animated:NO];
+    }
+}
+
 - (void)renderPlayhead {
     // playhead position
     _state->playPositionBeats = MIN(_state->playPositionBeats.load(), _state->maxDuration.load());
@@ -1228,17 +1284,8 @@
     _playhead.hidden = ![self hasRecordedDuration];
 
     // scroll view location
-    if (!_playhead.hidden && _state->chase.test() && !_activePannedMarker &&
-        (_playButton.selected || _recordButton.selected)) {
-        CGFloat content_offset;
-        if (_playhead.frame.origin.x < _tracks.frame.size.width / 2.0) {
-            content_offset = 0.0;
-        }
-        else {
-            content_offset = MAX(MIN(_playhead.frame.origin.x - _tracks.frame.size.width / 2.0,
-                                 _tracks.contentSize.width - _tracks.bounds.size.width + _tracks.contentInset.left), 0.0);
-        }
-        [_tracks setContentOffset:CGPointMake(content_offset, 0) animated:NO];
+    if (_playButton.selected || _recordButton.selected) {
+        [self positionViewLocation];
     }
     
     // start position crop marker
@@ -1319,11 +1366,16 @@
 
         [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
 
-        [self handleScheduledActions];
+        @synchronized(self) {
+            if (!_restoringState) {
+                [self renderPreviews];
+                [self renderMpeIndicators];
+                [self renderPlayhead];
+
+                [self handleScheduledActions];
+            }
+        }
         
-        [self renderPreviews];
-        [self renderPlayhead];
-        [self renderMpeIndicators];
         [self applyAutoPan];
     }
 }
@@ -1348,21 +1400,33 @@
 
 - (void)finishRecording:(int)ordinal
                    data:(std::unique_ptr<MidiRecordedData>)data
-                preview:(std::shared_ptr<MidiRecordedPreview>)preview {
-    _state->processedEndRecording[ordinal].clear();
+                preview:(std::unique_ptr<MidiRecordedPreview>)preview {
+    MidiTrackState& track_state = _state->track[ordinal];
+    track_state.pendingRecordedMessages = std::move(data);
+    track_state.pendingRecordedPreview = std::move(preview);
     
-    MidiTrackState& state = _state->track[ordinal];
-    state.recordedMessages = std::move(data);
-    state.recordedPreview = preview;
+    _state->processedEndRecording[ordinal].clear();
+}
+
+- (void)finishImport:(int)ordinal
+                data:(std::unique_ptr<MidiRecordedData>)data
+             preview:(std::unique_ptr<MidiRecordedPreview>)preview {
+    MidiTrackState& track_state = _state->track[ordinal];
+    track_state.pendingRecordedMessages = nullptr;
+    track_state.pendingRecordedPreview = nullptr;
+    track_state.recordedMessages = std::move(data);
+    track_state.recordedPreview = std::move(preview);
+    
+    [self withMidiTrack:ordinal view:^(MidiTrackView *view) {
+        [view rebuild];
+    }];
+
+    _state->processedImport[ordinal].clear();
 }
 
 - (void)invalidateRecording:(int)ordinal {
     _state->processedNotesOff[ordinal].clear();
     _state->processedInvalidate[ordinal].clear();
-}
-
-- (void)prepareRecording:(int)ordinal {
-    _state->processedNotesOff[ordinal].clear();
 }
 
 #pragma mark - UIScrollViewDelegate methods
@@ -1383,6 +1447,15 @@
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         block(t, midi_track[t]);
     }
+}
+
+- (void)withMidiTrack:(int)t view:(void (^)(MidiTrackView* view))block {
+    if (t < 0 || t >= MIDI_TRACKS) {
+        return;
+    }
+    
+    MidiTrackView* midi_track[MIDI_TRACKS] = { _midiTrack1, _midiTrack2, _midiTrack3, _midiTrack4 };
+    block(midi_track[t]);
 }
 
 #pragma mark Segues

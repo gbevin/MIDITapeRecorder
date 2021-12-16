@@ -423,8 +423,7 @@
         return;
     }
 
-    [_vc readSettingsFromDict:fullState];
-    [_vc readRecordingsFromDict:fullState];
+    [_vc readFullStateFromDict:fullState];
 }
 
 - (NSDictionary<NSString *,id>*)fullState {
@@ -433,8 +432,7 @@
     }
 
     NSMutableDictionary* state = [NSMutableDictionary new];
-    [state addEntriesFromDictionary:[_vc currentSettingsToDict]];
-    [state addEntriesFromDictionary:[_vc currentRecordingsToDict]];
+    [_vc currentFullStateToDict:state];
     [state addEntriesFromDictionary:[super fullState]];
     return state;
 }

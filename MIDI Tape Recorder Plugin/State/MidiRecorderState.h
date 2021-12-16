@@ -57,16 +57,18 @@ struct MidiRecorderState {
     std::atomic_flag processedStopAndRewind                 { true };
     std::atomic_flag processedBeginRecording[MIDI_TRACKS]   { true, true, true, true };
     std::atomic_flag processedEndRecording[MIDI_TRACKS]     { true, true, true, true };
+    std::atomic_flag processedImport[MIDI_TRACKS]           { true, true, true, true };
     std::atomic_flag processedNotesOff[MIDI_TRACKS]         { true, true, true, true };
     std::atomic_flag processedInvalidate[MIDI_TRACKS]       { true, true, true, true };
     std::atomic_flag processedReachEnd                      { true };
     std::atomic_flag processedSendMCM[MIDI_TRACKS]          { true, true, true, true };
 
-    std::atomic_flag processedUIPlay            { true };
-    std::atomic_flag processedUIStop            { true };
-    std::atomic_flag processedUIStopAndRewind   { true };
-    std::atomic_flag processedUIMpeConfigChange { true };
-    std::atomic_flag processedUIEndRecord       { true };
+    std::atomic_flag processedUIRewind                      { true };
+    std::atomic_flag processedUIPlay                        { true };
+    std::atomic_flag processedUIStop                        { true };
+    std::atomic_flag processedUIStopAndRewind               { true };
+    std::atomic_flag processedUIMpeConfigChange             { true };
+    std::atomic_flag processedUIEndRecord                   { true };
 
     TPCircularBuffer midiBuffer;
 };

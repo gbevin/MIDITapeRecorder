@@ -12,11 +12,14 @@
 
 #include "Constants.h"
 
+#import "MidiPreviewProvider.h"
+
 @interface MidiTrackBeatEntry : NSObject;
-@property BOOL complete;
+
 @property CAShapeLayer* beatLayer;
 @property CAShapeLayer* previewNotesLayer;
 @property CAShapeLayer* previewEventsLayer;
+
 @end
 
 @implementation MidiTrackBeatEntry;
@@ -24,7 +27,6 @@
 
 @implementation MidiTrackView {
     NSMutableDictionary<NSNumber*, MidiTrackBeatEntry*>* _beatLayers;
-    std::shared_ptr<MidiPreviewProvider> _preview;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
@@ -43,19 +45,15 @@
     [self updateBeatLayers];
 }
 
-- (void)setPreview:(std::shared_ptr<MidiPreviewProvider>)preview {
-    if (_preview.get() != preview.get()) {
-        _preview = preview;
-        
-        for (MidiTrackBeatEntry* entry in _beatLayers.allValues) {
-            [entry.beatLayer removeFromSuperlayer];
-            [entry.previewNotesLayer removeFromSuperlayer];
-            [entry.previewEventsLayer removeFromSuperlayer];
-        }
-        [_beatLayers removeAllObjects];
-
-        _beatLayers = [NSMutableDictionary new];
+- (void)rebuild {
+    for (MidiTrackBeatEntry* entry in _beatLayers.allValues) {
+        [entry.beatLayer removeFromSuperlayer];
+        [entry.previewNotesLayer removeFromSuperlayer];
+        [entry.previewEventsLayer removeFromSuperlayer];
     }
+    [_beatLayers removeAllObjects];
+
+    _beatLayers = [NSMutableDictionary new];
 }
 
 - (void)updateBeatLayers {
@@ -81,7 +79,7 @@
     
     for (int beat = begin_beat; beat <= end_beat; ++beat) {
         MidiTrackBeatEntry* entry = [_beatLayers objectForKey:@(beat)];
-        if (entry && !entry.complete) {
+        if (entry && [_previewProvider refreshPreviewBeat:beat]) {
             [entry.previewNotesLayer removeFromSuperlayer];
             [entry.previewEventsLayer removeFromSuperlayer];
             
@@ -89,7 +87,7 @@
             entry.previewEventsLayer = nil;
         }
         
-        if (entry == nil || !entry.complete) {
+        if (entry == nil || entry.previewNotesLayer == nil || entry.previewEventsLayer == nil) {
             int x = beat * PIXELS_PER_BEAT;
             
             if (entry == nil) {
@@ -148,7 +146,6 @@
             }
 
             // remember the layers
-            entry.complete = complete;
             [_beatLayers setObject:entry forKey:@(beat)];
         }
     }
@@ -160,8 +157,8 @@
     int x_begin = beat * PIXELS_PER_BEAT;
     int x_end = x_begin + PIXELS_PER_BEAT;
     for (int x = x_begin; x < x_end; ++x) {
-        if (_preview && x < _preview->pixelCount()) {
-            PreviewPixelData& pixel_data = _preview->pixelData(x);
+        if (_previewProvider && x < [_previewProvider previewPixelCount]) {
+            PreviewPixelData pixel_data =[_previewProvider previewPixelData:x];
             if (pixel_data.notes != 0 || pixel_data.events != 0) {
                 // normalize the preview events count
                 float n_notes = MIN(MAX(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 0.f), 1.f);

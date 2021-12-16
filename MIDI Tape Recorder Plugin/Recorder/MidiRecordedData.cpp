@@ -22,7 +22,9 @@ RecordedDataVector& MidiRecordedData::beatData(int beat) {
 }
 
 void MidiRecordedData::trimDuration() {
-    duration = ceil(lastBeatOffset);
+    if (hasMessages) {
+        duration = ceil(lastBeatOffset);
+    }
 }
 
 bool MidiRecordedData::empty() {

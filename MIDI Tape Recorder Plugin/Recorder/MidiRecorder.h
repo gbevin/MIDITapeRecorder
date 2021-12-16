@@ -8,14 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-#include "MidiPreviewProvider.h"
 #include "QueuedMidiMessage.h"
 
+#import "MidiPreviewProvider.h"
 #import "MidiRecorderDelegate.h"
 
 class MidiRecorderState;
 
-@interface MidiRecorder : NSObject
+@interface MidiRecorder : NSObject<MidiPreviewProvider>
 
 @property(readonly) int ordinal;
 @property(nonatomic) BOOL record;
@@ -36,6 +36,5 @@ class MidiRecorderState;
 - (void)clear;
 
 - (double)activeDuration;
-- (std::shared_ptr<MidiPreviewProvider>)activePreview;
 
 @end

@@ -13,10 +13,8 @@
 
 @interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate, UIDocumentPickerDelegate, UIScrollViewDelegate>
 
-- (void)readSettingsFromDict:(NSDictionary*)data;
-- (void)readRecordingsFromDict:(NSDictionary*)data;
-- (NSDictionary*)currentSettingsToDict;
-- (NSDictionary*)currentRecordingsToDict;
+- (void)readFullStateFromDict:(NSDictionary*)dict;
+- (void)currentFullStateToDict:(NSMutableDictionary*)dict;
 
 - (MidiRecorderState*)state;
 

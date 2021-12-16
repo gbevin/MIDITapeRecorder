@@ -65,6 +65,7 @@ void MidiRecorderKernel::rewind(double timeSampleSeconds) {
         _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
     }
     else {
+        _state.processedUIRewind.clear();
         _state.transportStartSampleSeconds = 0.0;
     }
 
@@ -149,6 +150,102 @@ void MidiRecorderKernel::stop() {
     _isPlaying = NO;
 }
 
+void MidiRecorderKernel::endRecording(int track) {
+    MidiTrackState& track_state = _state.track[track];
+    
+    track_state.recording.clear();
+    
+    // if this is a direct recording, just move all the data over
+    if (track_state.recordedMessages.get() == nullptr) {
+        track_state.recordedMessages = std::move(track_state.pendingRecordedMessages);
+        track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
+    }
+    // if this is an overdub, replace the new sections
+    else {
+        // ensure that the recorded preview has the same length as the pending preview
+        // anyting that's longer can just be moved over
+        RecordedPreviewVector& pending_pixels = track_state.pendingRecordedPreview->pixels;
+        RecordedPreviewVector& recorded_pixels = track_state.recordedPreview->pixels;
+
+        for (unsigned long p = recorded_pixels.size(); p < pending_pixels.size(); ++p) {
+            recorded_pixels.push_back(pending_pixels[p]);
+        }
+        
+        // process the individual beats of the pending recording
+        double start = track_state.pendingRecordedMessages->start;
+        double stop = track_state.pendingRecordedMessages->duration;
+        int start_beat = (int)start;
+        int stop_beat = (int)stop;
+        
+        RecordedBeatVector& pending_beats = track_state.pendingRecordedMessages->beats;
+        RecordedBeatVector& recorded_beats = track_state.recordedMessages->beats;
+
+        // process the beats that were affected by the overdub
+        for (int beat = start_beat; beat <= stop_beat && beat < pending_beats.size(); ++beat) {
+            RecordedDataVector& pending_data = pending_beats[beat];
+
+            int start_pixel = beat * PIXELS_PER_BEAT;
+            int stop_pixel = MIN(start_pixel + PIXELS_PER_BEAT, (int)pending_pixels.size());
+
+            // if the beat is longer than the original recording, simply move all the data over
+            if (beat >= recorded_beats.size()) {
+                recorded_beats.push_back(std::move(pending_beats[beat]));
+            }
+            else {
+                // copy the relevant preview pixels
+                for (int p = start_pixel; p < stop_pixel; ++p) {
+                    recorded_pixels[p] = pending_pixels[p];
+                }
+                
+                // if the beat is not either of the extremeties of the overdub
+                if (beat != start_beat && beat != stop_beat) {
+                    // move all the data
+                    recorded_beats[beat] = std::move(pending_beats[beat]);
+                }
+                // start beat of the overdub
+                else if (beat == start_beat) {
+                    RecordedDataVector& recorded_data = recorded_beats[beat];
+
+                    // trim the messages at the end of the beat to not overlap with the overdub
+                    while (!recorded_data.empty() && recorded_data.back().offsetBeats >= start) {
+                        recorded_data.pop_back();
+                    }
+                    
+                    // add the overdub events
+                    auto it = pending_data.begin();
+                    while (it != pending_data.end()) {
+                        recorded_data.push_back(std::move(*it));
+                        it++;
+                    }
+                }
+                // stop beat of the overdub
+                else if (beat == stop_beat) {
+                    RecordedDataVector& recorded_data = recorded_beats[beat];
+
+                    // trim the messages at the start of the beat to not overlap with the overdub
+                    while (!recorded_data.empty() && recorded_data.front().offsetBeats <= stop) {
+                        recorded_data.erase(recorded_data.begin());
+                    }
+                
+                    // add the overdub events
+                    auto it = pending_data.rbegin();
+                    while (it != pending_data.rend()) {
+                        recorded_data.insert(recorded_data.begin(), std::move(*it));
+                        it++;
+                    }
+                }
+            }
+        }
+        
+        // update the other state values
+        track_state.recordedPreview->startPixel = std::min(track_state.recordedPreview->startPixel, track_state.pendingRecordedPreview->startPixel);
+        
+        track_state.recordedMessages->hasMessages = track_state.recordedMessages->hasMessages | track_state.pendingRecordedMessages->hasMessages;
+        track_state.recordedMessages->start = std::min(track_state.recordedMessages->start, track_state.pendingRecordedMessages->start);
+        track_state.recordedMessages->lastBeatOffset = std::max(track_state.recordedMessages->lastBeatOffset, track_state.pendingRecordedMessages->lastBeatOffset);
+        track_state.recordedMessages->duration = std::max(track_state.recordedMessages->duration, track_state.pendingRecordedMessages->duration);
+    }
+}
 void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value) {
     bool set = bool(value);
     switch (address) {
@@ -309,17 +406,24 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // this prevents split-state conditions to change semantics in the middle of processing
     
     for (int t = 0; t < MIDI_TRACKS; ++t) {
+        MidiTrackState& track_state = _state.track[t];
+        
         // begin recording
         if (!_state.processedBeginRecording[t].test_and_set()) {
             turnOffAllNotesForTrack(t);
-            _state.track[t].recording.test_and_set();
+            track_state.recording.test_and_set();
         }
 
         // end recording
         if (!_state.processedEndRecording[t].test_and_set()) {
-            _state.track[t].recording.clear();
+            endRecording(t);
         }
-        
+
+        // import
+        if (!_state.processedImport[t].test_and_set()) {
+            turnOffAllNotesForTrack(t);
+        }
+
         // ensure notes off
         if (!_state.processedNotesOff[t].test_and_set()) {
             turnOffAllNotesForTrack(t);
@@ -327,7 +431,6 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         
         // invalidate
         if (!_state.processedInvalidate[t].test_and_set()) {
-            MidiTrackState& track_state = _state.track[t];
             track_state.recordedMessages.reset();
             track_state.recordedPreview.reset();
         }
@@ -497,12 +600,12 @@ void MidiRecorderKernel::processOutput() {
             }
         }
         // if we're playing at least one track and reached the stop position, end playing
-        else if (!recording_tracks && playing_tracks && beatrange_end == _state.stopPositionBeats) {
+        else if (!recording_tracks && playing_tracks && beatrange_end >= _state.stopPositionBeats) {
             _state.processedReachEnd.clear();
         }
 
         // if we're not recording and the duration is totally cleared out,
-        // we've reched the end and stop playing
+        // we've reached the end and stop playing
         if (!recording_tracks && _state.maxDuration == 0.0) {
             _state.processedReachEnd.clear();
         }

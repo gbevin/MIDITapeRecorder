@@ -6,12 +6,12 @@
 //  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
 //
 
-#pragma once
-
 #include "PreviewPixelData.h"
 
-class MidiPreviewProvider {
-public:
-    virtual unsigned long pixelCount() = 0;
-    virtual PreviewPixelData& pixelData(int pixel) = 0;
-};
+@protocol MidiPreviewProvider <NSObject>
+
+- (unsigned long)previewPixelCount;
+- (PreviewPixelData)previewPixelData:(int)pixel;
+- (BOOL)refreshPreviewBeat:(int)beat;
+
+@end
