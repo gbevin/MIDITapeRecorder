@@ -44,7 +44,7 @@
 }
 
 - (IBAction)donate:(id)sender {
-    NSURL* url = [NSURL URLWithString:@"http://paypal.me/geertbevin"];
+    NSURL* url = [NSURL URLWithString:@"https://www.paypal.com/donate/?hosted_button_id=GPXMXLYEU6WKS"];
     [self openURL:url];
 }
 
