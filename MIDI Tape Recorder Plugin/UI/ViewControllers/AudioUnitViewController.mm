@@ -237,6 +237,7 @@
         total -= interval;
         [prefs setDouble:total forKey:PREF_TOTAL_FOREGROUND_TIME];
     }
+    _lastForegroundMoment = [NSDate date];
 }
 
 - (void)checkDonateCondition {
