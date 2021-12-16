@@ -56,6 +56,7 @@
 		26F3615F276B0A2200077518 /* DonateViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F3615D276B0A2200077518 /* DonateViewController.mm */; };
 		26F36162276B0BDC00077518 /* Preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F36161276B0BDB00077518 /* Preferences.mm */; };
 		26F36165276B0D0200077518 /* URLHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F36164276B0D0200077518 /* URLHelper.mm */; };
+		26F36168276B957400077518 /* NoteState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F36167276B954400077518 /* NoteState.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -176,6 +177,8 @@
 		26F36161276B0BDB00077518 /* Preferences.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Preferences.mm; sourceTree = "<group>"; };
 		26F36163276B0D0200077518 /* URLHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLHelper.h; sourceTree = "<group>"; };
 		26F36164276B0D0200077518 /* URLHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = URLHelper.mm; sourceTree = "<group>"; };
+		26F36166276B8B1000077518 /* NoteState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoteState.h; sourceTree = "<group>"; };
+		26F36167276B954400077518 /* NoteState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NoteState.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +215,8 @@
 				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
 				26C540C92757EC28004E4813 /* MidiTrackState.h */,
 				268A93182762997400B2D74A /* MPEState.h */,
+				26F36166276B8B1000077518 /* NoteState.h */,
+				26F36167276B954400077518 /* NoteState.cpp */,
 				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
 				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
 				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
@@ -554,6 +559,7 @@
 				26BE25DC27675CD000A6BAB7 /* MidiRecordedData.cpp in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */,
+				26F36168276B957400077518 /* NoteState.cpp in Sources */,
 				26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */,
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,

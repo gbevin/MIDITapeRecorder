@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "NoteState.h"
+
 #import "AudioUnitIOState.h"
 #import "DSPKernel.h"
 #import "MidiRecorderState.h"
@@ -44,14 +46,12 @@ private:
 
     void passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable);
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
-    void trackNotesForTrack(int track, const RecordedMidiMessage& message);
     void turnOffAllNotes();
     void turnOffAllNotesForTrack(int track);
     void outputMidiMessages(double beatRrangeBegin, double beatRangeEnd);
 
-    bool _bypassed          { false };
-    bool _isPlaying         { false };
+    bool _bypassed  { false };
+    bool _isPlaying { false };
     
-    bool _noteStates[MIDI_TRACKS][16][128];
-    uint32_t _noteCounts[MIDI_TRACKS];
+    NoteState _noteStates[MIDI_TRACKS];
 };

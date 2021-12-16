@@ -20,16 +20,6 @@
 
 MidiRecorderKernel::MidiRecorderKernel() : _state() {
     TPCircularBufferInit(&_state.midiBuffer, 16384);
-    
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        for (int ch = 0; ch < 16; ++ch) {
-            for (int n = 0; n < 128; ++n) {
-                _noteStates[t][ch][n] = false;
-            }
-        }
-        
-        _noteCounts[t] = 0;
-    }
 }
 
 void MidiRecorderKernel::cleanup() {
@@ -651,7 +641,7 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
                             track_state.processedActivityOutput.clear();
                             
                             // track note on/off states
-                            trackNotesForTrack(t, message);
+                            _noteStates[t].trackNotesForMessage(message);
 
 #if DEBUG_MIDI_OUTPUT
                             int status = message.data[0] & 0xf0;
@@ -685,27 +675,6 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
     }
 }
 
-void MidiRecorderKernel::trackNotesForTrack(int track, const RecordedMidiMessage& message) {
-    int status = message.data[0];
-    int type = status & 0xf0;
-    int chan = (status & 0x0f);
-    int val = message.data[2];
-    if (type == MIDI_NOTE_OFF ||
-        (type == MIDI_NOTE_ON && val == 0)) {
-        if (_noteStates[track][chan][message.data[1]] == true &&
-            _noteCounts[track] > 0) {
-            _noteCounts[track] -= 1;
-        }
-        _noteStates[track][chan][message.data[1]] = false;
-    }
-    else if (type == MIDI_NOTE_ON) {
-        if (_noteStates[track][chan][message.data[1]] == false) {
-            _noteCounts[track] += 1;
-        }
-        _noteStates[track][chan][message.data[1]] = true;
-    }
-}
-
 void MidiRecorderKernel::turnOffAllNotes() {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         turnOffAllNotesForTrack(t);
@@ -717,24 +686,11 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
         return;
     }
     
-    if (_noteCounts[track] == 0) {
-        return;
-    }
-    
-    if (_ioState.midiOutputEventBlock) {
-        for (int ch = 0; ch < 16; ++ch) {
-            for (int n = 0; n < 128; ++n) {
-                if (_noteStates[track][ch][n]) {
-                    uint8_t data[3];
-                    data[0] = MIDI_NOTE_OFF | ch;
-                    data[1] = n;
-                    data[2] = 0x07;
-                    _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + _ioState.frameCount,
-                                                  track, 3, &data[0]);
-                    _noteStates[track][ch][n] = false;
-                    _noteCounts[track] -= 1;
-                };
-            }
+    std::vector<NoteOffMessage> messages = _noteStates[track].turnOffAllNotesAndGenerateMessages();
+    if (!messages.empty() && _ioState.midiOutputEventBlock) {
+        for (NoteOffMessage& message : messages) {
+            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + _ioState.frameCount,
+                                          track, 3, &message.data[0]);
         }
     }
 }

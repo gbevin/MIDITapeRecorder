@@ -9,6 +9,8 @@
 #pragma once
 
 static const int MIDI_TRACKS = 4;
+static const int MIDI_CHANNELS = 16;
+static const int MIDI_NOTES = 128;
 
 static const int MIDI_NOTE_OFF = 128;
 static const int MIDI_NOTE_ON = 144;

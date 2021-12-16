@@ -19,10 +19,10 @@
     
     MidiRecorderState* _state;
     
-    int16_t _lastRpnMsb[16];
-    int16_t _lastRpnLsb[16];
-    int16_t _lastDataMsb[16];
-    int16_t _lastDataLsb[16];
+    int16_t _lastRpnMsb[MIDI_CHANNELS];
+    int16_t _lastRpnLsb[MIDI_CHANNELS];
+    int16_t _lastDataMsb[MIDI_CHANNELS];
+    int16_t _lastDataLsb[MIDI_CHANNELS];
 
     std::unique_ptr<MidiRecordedData> _recording;
     std::unique_ptr<MidiRecordedPreview> _recordingPreview;
@@ -37,7 +37,7 @@
         
         _state = nil;
         
-        for (int ch = 0; ch < 16; ++ch) {
+        for (int ch = 0; ch < MIDI_CHANNELS; ++ch) {
             _lastRpnMsb[ch] = 0x7f;
             _lastRpnLsb[ch] = 0x7f;
             _lastDataMsb[ch] = 0;
