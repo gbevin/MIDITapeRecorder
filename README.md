@@ -5,7 +5,7 @@ Created by Geert Bevin.
 This work is freely distributed under the Creative Commons Attribution 4.0 International, an approved Free Culture License.
 
 If you want to support my efforts, please consider donating through:
-http://paypal.me/geertbevin
+http://uwyn.com/donate
 
 ## Description
 

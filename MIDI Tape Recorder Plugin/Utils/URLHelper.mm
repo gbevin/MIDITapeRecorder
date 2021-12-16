@@ -21,5 +21,5 @@ void openURL(NSURL* url) {
 }
 
 void openDonateURL() {
-    openURL([NSURL URLWithString:@"https://www.paypal.com/donate/?hosted_button_id=GPXMXLYEU6WKS"]);
+    openURL([NSURL URLWithString:@"http://uwyn.com/donate"]);
 }
