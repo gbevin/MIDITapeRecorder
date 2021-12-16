@@ -16,11 +16,13 @@
 #import "AboutViewController.h"
 #import "CropLeftView.h"
 #import "CropRightView.h"
+#import "DonateViewController.h"
 #import "MidiQueueProcessor.h"
 #import "MidiRecorder.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiTrackView.h"
 #import "MPEButton.h"
+#import "Preferences.h"
 #import "PopupView.h"
 #import "SettingsViewController.h"
 #import "TimelineView.h"
@@ -48,6 +50,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* punchInOutButton;
 @property (weak, nonatomic) IBOutlet UIButton* settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* aboutButton;
+@property (weak, nonatomic) IBOutlet UIButton* donateButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
@@ -128,9 +131,11 @@
 
 @property (weak, nonatomic) IBOutlet UIView* settingsView;
 @property (weak, nonatomic) IBOutlet UIView* aboutView;
+@property (weak, nonatomic) IBOutlet UIView* donateView;
 
 @property (weak, nonatomic) IBOutlet SettingsViewController* settingsViewController;
 @property (weak, nonatomic) IBOutlet AboutViewController* aboutViewController;
+@property (weak, nonatomic) IBOutlet DonateViewController* donateViewController;
 
 @end
 
@@ -159,6 +164,8 @@
     
     UIView* _activePannedMarker;
     CGPoint _autoPan;
+    
+    NSDate* _lastForegroundMoment;
 }
 
 #pragma mark - Init
@@ -181,6 +188,8 @@
         _autoPlayFromRecord = NO;
         _activePannedMarker = nil;
         _autoPan = CGPointZero;
+        
+        _lastForegroundMoment = [NSDate date];
     }
     
     return self;
@@ -189,6 +198,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self autoShowDonateButton];
+
     _tracks.delegate = self;
     
     _timeline.tracks = _tracks;
@@ -212,6 +223,37 @@
     _timer.paused = NO;
     [_timer addToRunLoop:[NSRunLoop mainRunLoop]
                  forMode:NSDefaultRunLoopMode];
+    
+    _lastForegroundMoment = [NSDate date];
+}
+
+#pragma mark - Donate Call To Action
+
+- (void)calculateTotalForegroundTime {
+    NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
+    NSTimeInterval total = [prefs doubleForKey:PREF_TOTAL_FOREGROUND_TIME];
+    if (_lastForegroundMoment) {
+        NSTimeInterval interval = [_lastForegroundMoment timeIntervalSinceNow];
+        total -= interval;
+        [prefs setDouble:total forKey:PREF_TOTAL_FOREGROUND_TIME];
+    }
+}
+
+- (void)checkDonateCondition {
+    NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
+    if (![prefs objectForKey:PREF_DONATE_VIEW_SHOWN]) {
+        [self calculateTotalForegroundTime];
+        if ([prefs doubleForKey:PREF_TOTAL_FOREGROUND_TIME] > (60 * 30) /* 30 minutes */) {
+            [prefs setBool:YES forKey:PREF_DONATE_CONDITION_MET];
+        }
+    }
+}
+
+- (void)autoShowDonateButton {
+    NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
+    if (![prefs objectForKey:PREF_DONATE_VIEW_SHOWN] && [prefs boolForKey:PREF_DONATE_CONDITION_MET]) {
+        _donateButton.hidden = NO;
+    }
 }
 
 #pragma mark - Create AudioUnit
@@ -358,6 +400,9 @@
             _state->processedRewind.clear();
         }
         _state->processedStop.clear();
+        
+        [self checkDonateCondition];
+        [self autoShowDonateButton];
     }
 }
 
@@ -498,7 +543,7 @@
     _settingsView.alpha = 0.0;
     _settingsView.hidden = !sender.selected;
     
-    if (_aboutView.hidden) {
+    if (_aboutView.hidden && _donateView.hidden) {
         if (sender.selected) {
             [UIView animateWithDuration:0.2
                                   delay:0
@@ -512,6 +557,7 @@
     else {
         _settingsView.alpha = 1.0;
         [self closeAboutView:nil];
+        [self closeDonateView:nil];
     }
 }
 
@@ -533,7 +579,7 @@
     _aboutView.alpha = 0.0;
     _aboutView.hidden = !sender.selected;
     
-    if (_settingsView.hidden) {
+    if (_settingsView.hidden && _donateView.hidden) {
         if (sender.selected) {
             [UIView animateWithDuration:0.2
                                   delay:0
@@ -548,6 +594,7 @@
         self->_aboutView.alpha = 1.0;
         
         [self closeSettingsView:nil];
+        [self closeDonateView:nil];
     }
 }
 
@@ -558,6 +605,41 @@
 - (IBAction)closeAboutView:(id)sender {
     _aboutButton.selected = NO;
     _aboutView.hidden = YES;
+}
+
+#pragma mark IBAction - Donate
+
+- (IBAction)donatePressed:(UIButton*)sender {
+    _donateView.alpha = 0.0;
+    _donateView.hidden = NO;
+    
+    if (_settingsView.hidden && _aboutView.hidden) {
+        [UIView animateWithDuration:0.2
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^() {
+                             self->_donateView.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {}];
+    }
+    else {
+        self->_donateView.alpha = 1.0;
+        
+        [self closeSettingsView:nil];
+        [self closeAboutView:nil];
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setObject:@(YES) forKey:PREF_DONATE_VIEW_SHOWN];
+    _donateButton.hidden = YES;
+}
+
+- (void)closeDonateView {
+    [self closeDonateView:nil];
+}
+
+- (IBAction)closeDonateView:(id)sender {
+    _donateButton.selected = NO;
+    _donateView.hidden = YES;
 }
 
 #pragma mark IBAction - Monitor Enable
@@ -1464,6 +1546,10 @@
     if ([segue.destinationViewController isKindOfClass:AboutViewController.class]) {
         _aboutViewController = segue.destinationViewController;
         _aboutViewController.mainViewController = self;
+    }
+    else if ([segue.destinationViewController isKindOfClass:DonateViewController.class]) {
+        _donateViewController = segue.destinationViewController;
+        _donateViewController.mainViewController = self;
     }
     else if ([segue.destinationViewController isKindOfClass:SettingsViewController.class]) {
         _settingsViewController = segue.destinationViewController;

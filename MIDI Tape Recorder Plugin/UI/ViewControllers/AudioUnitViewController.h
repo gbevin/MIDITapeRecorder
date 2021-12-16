@@ -19,6 +19,7 @@
 - (MidiRecorderState*)state;
 
 - (void)closeAboutView;
+- (void)closeDonateView;
 - (void)closeSettingsView;
 
 @end

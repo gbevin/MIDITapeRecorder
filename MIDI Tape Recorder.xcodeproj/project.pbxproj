@@ -53,6 +53,9 @@
 		26E06B8F2759427300D7257E /* MenuButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26E06B8D2759427300D7257E /* MenuButton.mm */; };
 		26EE71D227534E11006C6B73 /* MidiRecorderKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderKernel.mm */; };
 		26EF4D4C2759D26D00E4A19A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EF4D4B2759D26D00E4A19A /* StoreKit.framework */; };
+		26F3615F276B0A2200077518 /* DonateViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F3615D276B0A2200077518 /* DonateViewController.mm */; };
+		26F36162276B0BDC00077518 /* Preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F36161276B0BDB00077518 /* Preferences.mm */; };
+		26F36165276B0D0200077518 /* URLHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F36164276B0D0200077518 /* URLHelper.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -167,6 +170,12 @@
 		26E06B8D2759427300D7257E /* MenuButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuButton.mm; sourceTree = "<group>"; };
 		26E06B8E2759427300D7257E /* MenuButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
 		26EF4D4B2759D26D00E4A19A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		26F3615D276B0A2200077518 /* DonateViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DonateViewController.mm; sourceTree = "<group>"; };
+		26F3615E276B0A2200077518 /* DonateViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DonateViewController.h; sourceTree = "<group>"; };
+		26F36160276B0BDB00077518 /* Preferences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = "<group>"; };
+		26F36161276B0BDB00077518 /* Preferences.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Preferences.mm; sourceTree = "<group>"; };
+		26F36163276B0D0200077518 /* URLHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = URLHelper.h; sourceTree = "<group>"; };
+		26F36164276B0D0200077518 /* URLHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = URLHelper.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -217,6 +226,8 @@
 				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
 				268A931A2762CEAA00B2D74A /* AboutViewController.h */,
 				268A931B2762CEAA00B2D74A /* AboutViewController.mm */,
+				26F3615E276B0A2200077518 /* DonateViewController.h */,
+				26F3615D276B0A2200077518 /* DonateViewController.mm */,
 				268A931E2762D21200B2D74A /* SettingsViewController.h */,
 				268A931D2762D21200B2D74A /* SettingsViewController.mm */,
 			);
@@ -375,6 +386,10 @@
 				26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */,
 				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
 				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
+				26F36160276B0BDB00077518 /* Preferences.h */,
+				26F36161276B0BDB00077518 /* Preferences.mm */,
+				26F36163276B0D0200077518 /* URLHelper.h */,
+				26F36164276B0D0200077518 /* URLHelper.mm */,
 				26B140822754590300748F00 /* TPCircularBuffer */,
 			);
 			path = Utils;
@@ -525,6 +540,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
+				26F36162276B0BDC00077518 /* Preferences.mm in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderKernel.mm in Sources */,
 				26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */,
 				26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */,
@@ -534,6 +550,7 @@
 				26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
 				268A931C2762CEAA00B2D74A /* AboutViewController.mm in Sources */,
+				26F3615F276B0A2200077518 /* DonateViewController.mm in Sources */,
 				26BE25DC27675CD000A6BAB7 /* MidiRecordedData.cpp in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */,
@@ -541,6 +558,7 @@
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
+				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
 				26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */,
