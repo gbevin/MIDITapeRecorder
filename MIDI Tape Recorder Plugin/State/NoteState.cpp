@@ -57,10 +57,10 @@ std::vector<NoteOffMessage> NoteState::turnOffAllNotesAndGenerateMessages() {
             if (activeNotes[ch][n]) {
                 result.push_back(NoteOffMessage(ch, n));
                 activeNotes[ch][n] = false;
-                noteCount -= 1;
-            };
+            }
         }
     }
+    noteCount = 0;
 
     return result;
 }
