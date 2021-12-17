@@ -628,11 +628,13 @@
         pixel >= _state->track[_ordinal].recordedPreview->startPixel &&
         pixel < _state->track[_ordinal].recordedPreview->pixels.size()) {
         data = _state->track[_ordinal].recordedPreview->pixels[pixel];
+        data.recording = false;
     }
     
     if (_record == YES) {
         if (pixel >= _recordingPreview->startPixel && pixel < _recordingPreview->pixels.size()) {
             data = _recordingPreview->pixels[pixel];
+            data.recording = true;
         }
     }
     

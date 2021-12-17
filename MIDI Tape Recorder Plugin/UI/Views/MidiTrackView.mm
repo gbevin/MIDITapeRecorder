@@ -19,6 +19,8 @@
 @property CAShapeLayer* beatLayer;
 @property CAShapeLayer* previewNotesLayer;
 @property CAShapeLayer* previewEventsLayer;
+@property CAShapeLayer* recordingNotesLayer;
+@property CAShapeLayer* recordingEventsLayer;
 
 @end
 
@@ -45,11 +47,21 @@
     [self updateBeatLayers];
 }
 
+- (void)removePreviewLayers:(MidiTrackBeatEntry*)entry {
+    if (entry.previewNotesLayer) [entry.previewNotesLayer removeFromSuperlayer];
+    if (entry.previewEventsLayer) [entry.previewEventsLayer removeFromSuperlayer];
+    if (entry.recordingNotesLayer) [entry.recordingNotesLayer removeFromSuperlayer];
+    if (entry.recordingEventsLayer) [entry.recordingEventsLayer removeFromSuperlayer];
+    entry.previewNotesLayer = nil;
+    entry.previewEventsLayer = nil;
+    entry.recordingNotesLayer = nil;
+    entry.recordingEventsLayer = nil;
+}
+
 - (void)rebuild {
     for (MidiTrackBeatEntry* entry in _beatLayers.allValues) {
         [entry.beatLayer removeFromSuperlayer];
-        [entry.previewNotesLayer removeFromSuperlayer];
-        [entry.previewEventsLayer removeFromSuperlayer];
+        [self removePreviewLayers:entry];
     }
     [_beatLayers removeAllObjects];
 
@@ -68,8 +80,7 @@
         if (beat.intValue < begin_beat || beat.intValue > end_beat) {
             MidiTrackBeatEntry* entry = [_beatLayers objectForKey:beat];
             [entry.beatLayer removeFromSuperlayer];
-            [entry.previewNotesLayer removeFromSuperlayer];
-            [entry.previewEventsLayer removeFromSuperlayer];
+            [self removePreviewLayers:entry];
 
             [_beatLayers removeObjectForKey:beat];
         }
@@ -80,11 +91,7 @@
     for (int beat = begin_beat; beat <= end_beat; ++beat) {
         MidiTrackBeatEntry* entry = [_beatLayers objectForKey:@(beat)];
         if (entry && [_previewProvider refreshPreviewBeat:beat]) {
-            [entry.previewNotesLayer removeFromSuperlayer];
-            [entry.previewEventsLayer removeFromSuperlayer];
-            
-            entry.previewNotesLayer = nil;
-            entry.previewEventsLayer = nil;
+            [self removePreviewLayers:entry];
         }
         
         if (entry == nil || entry.previewNotesLayer == nil || entry.previewEventsLayer == nil) {
@@ -111,12 +118,10 @@
                 entry.beatLayer = beat_layer;
             }
             
-            BOOL complete = YES;
-            
             // draw the notes
             if (entry.previewNotesLayer == nil) {
                 UIBezierPath* preview_notes_path = [UIBezierPath bezierPath];
-                complete &= [self createPreviewPath:preview_notes_path beat:beat drawNotes:YES];
+                [self createPreviewPath:preview_notes_path beat:beat drawNotes:YES drawRecording:NO];
                 
                 CAShapeLayer* preview_notes_layer = [CAShapeLayer layer];
                 preview_notes_layer.contentsScale = [UIScreen mainScreen].scale;
@@ -132,7 +137,7 @@
             // draw the event
             if (entry.previewEventsLayer == nil) {
                 UIBezierPath* preview_events_path = [UIBezierPath bezierPath];
-                complete &= [self createPreviewPath:preview_events_path beat:beat drawNotes:NO];
+                [self createPreviewPath:preview_events_path beat:beat drawNotes:NO drawRecording:NO];
                 
                 CAShapeLayer* preview_events_layer = [CAShapeLayer layer];
                 preview_events_layer.contentsScale = [UIScreen mainScreen].scale;
@@ -144,6 +149,38 @@
                 
                 entry.previewEventsLayer = preview_events_layer;
             }
+            
+            // draw the recording notes
+            if (entry.recordingNotesLayer == nil) {
+                UIBezierPath* preview_notes_path = [UIBezierPath bezierPath];
+                [self createPreviewPath:preview_notes_path beat:beat drawNotes:YES drawRecording:YES];
+                
+                CAShapeLayer* preview_notes_layer = [CAShapeLayer layer];
+                preview_notes_layer.contentsScale = [UIScreen mainScreen].scale;
+                preview_notes_layer.path = preview_notes_path.CGPath;
+                preview_notes_layer.opacity = 1.0;
+                preview_notes_layer.strokeColor = [UIColor colorNamed:@"RecordingNotes"].CGColor;
+
+                [self.layer addSublayer:preview_notes_layer];
+
+                entry.recordingNotesLayer = preview_notes_layer;
+            }
+
+            // draw the recording event
+            if (entry.recordingEventsLayer == nil) {
+                UIBezierPath* preview_events_path = [UIBezierPath bezierPath];
+                [self createPreviewPath:preview_events_path beat:beat drawNotes:NO drawRecording:YES];
+                
+                CAShapeLayer* preview_events_layer = [CAShapeLayer layer];
+                preview_events_layer.contentsScale = [UIScreen mainScreen].scale;
+                preview_events_layer.path = preview_events_path.CGPath;
+                preview_events_layer.opacity = 1.0;
+                preview_events_layer.strokeColor = [UIColor colorNamed:@"RecordingEvents"].CGColor;
+
+                [self.layer addSublayer:preview_events_layer];
+                
+                entry.recordingEventsLayer = preview_events_layer;
+            }
 
             // remember the layers
             [_beatLayers setObject:entry forKey:@(beat)];
@@ -151,14 +188,13 @@
     }
 }
 
-- (BOOL)createPreviewPath:(UIBezierPath*)path beat:(int)beat drawNotes:(BOOL)drawNotes {
-    BOOL complete = YES;
-    
+- (void)createPreviewPath:(UIBezierPath*)path beat:(int)beat drawNotes:(BOOL)drawNotes drawRecording:(BOOL)drawRecording {
     int x_begin = beat * PIXELS_PER_BEAT;
     int x_end = x_begin + PIXELS_PER_BEAT;
     for (int x = x_begin; x < x_end; ++x) {
         if (_previewProvider && x < [_previewProvider previewPixelCount]) {
             PreviewPixelData pixel_data =[_previewProvider previewPixelData:x];
+            if ((pixel_data.recording && drawRecording) || (!pixel_data.recording && !drawRecording))
             if (pixel_data.notes != 0 || pixel_data.events != 0) {
                 // normalize the preview events count
                 float n_notes = MIN(MAX(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 0.f), 1.f);
@@ -178,12 +214,7 @@
                 }
             }
         }
-        else {
-            complete = NO;
-        }
     }
-    
-    return complete;
 }
 
 @end

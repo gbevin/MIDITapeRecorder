@@ -1315,6 +1315,16 @@
     if (!_state->processedUIEndRecord.test_and_set()) {
         [self setRecordState:NO];
     }
+    
+    // rebuild track preview
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if (!_state->processedUIRebuildPreview[t].test_and_set()) {
+            [self withMidiTrack:t view:^(MidiTrackView *view) {
+                [view rebuild];
+                [view setNeedsLayout];
+            }];
+        }
+    }
 }
 
 - (void)renderPreviews {

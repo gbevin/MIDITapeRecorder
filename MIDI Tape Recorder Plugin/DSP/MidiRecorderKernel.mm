@@ -407,6 +407,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         // end recording
         if (!_state.processedEndRecording[t].test_and_set()) {
             endRecording(t);
+            _state.processedUIRebuildPreview[t].clear();
         }
 
         // import
