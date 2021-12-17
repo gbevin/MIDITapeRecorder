@@ -26,6 +26,7 @@
 #import "PopupView.h"
 #import "PunchInView.h"
 #import "PunchOutView.h"
+#import "RecorderUndoManager.h"
 #import "SettingsViewController.h"
 #import "TimelineView.h"
 
@@ -172,7 +173,7 @@
     CADisplayLink* _timer;
     BOOL _renderReady;
     
-    NSUndoManager* _mainUndoManager;
+    RecorderUndoManager* _mainUndoManager;
 
     BOOL _restoringState;
 
@@ -199,8 +200,9 @@
         _timer = nil;
         _renderReady = NO;
         
-        _mainUndoManager = [NSUndoManager new];
+        _mainUndoManager = [RecorderUndoManager new];
         _mainUndoManager.levelsOfUndo = 10;
+        _mainUndoManager.groupsByEvent = NO;
         
         _restoringState = NO;
         
@@ -467,23 +469,21 @@
 }
 
 - (void)setRecordState:(BOOL)state {
-    [self undoGroupBegin];
-    
-    _recordButton.selected = state;
-    
-    [self updateRecordState];
-    [self updateRecordEnableState];
-    
-    if (!state) {
-        AudioUnitViewController* __weak weak_self = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            AudioUnitViewController* s = weak_self;
-            if (!s) return;
-            [s renderPreviews];
-        });
-    }
-    
-    [self undoGroupEnd];
+    [_mainUndoManager withUndoGroup:^{
+        self->_recordButton.selected = state;
+        
+        [self updateRecordState];
+        [self updateRecordEnableState];
+        
+        if (!state) {
+            AudioUnitViewController* __weak weak_self = self;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                AudioUnitViewController* s = weak_self;
+                if (!s) return;
+                [s renderPreviews];
+            });
+        };
+    }];
 }
 
 #pragma mark IBAction - Repeat
@@ -565,21 +565,19 @@
     if (!sender.selected) {
         [self hideMenuPopups];
 
-        [self undoGroupBegin];
+        [_mainUndoManager withUndoGroup:^{
+            [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+                [self registerRecordedForUndo:t];
+                [[self->_midiQueueProcessor recorder:t] clear];
+                [view rebuild];
+                [view setNeedsLayout];
+            }];
+            
+            [self registerSettingsForUndo];
 
-        [self withMidiTrackViews:^(int t, MidiTrackView* view) {
-            [self registerRecordedForUndo:t];
-            [[self->_midiQueueProcessor recorder:t] clear];
-            [view rebuild];
-            [view setNeedsLayout];
+            // since the recorder is fully empty, reset all markers
+            [self clearAllMarkerPositions];
         }];
-        
-        [self registerSettingsForUndo];
-
-        // since the recorder is fully empty, reset all markers
-        [self clearAllMarkerPositions];
-        
-        [self undoGroupEnd];
     }
 }
 
@@ -821,12 +819,10 @@
         NSData* contents = [NSData dataWithContentsOfURL:url];
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
 
-        [self undoGroupBegin];
-        
-        int track = ((ImportMidiDocumentPickerViewController*)controller).track;
-        [_midiQueueProcessor midiFileToRecordedTrack:contents ordinal:track];
-        
-        [self undoGroupEnd];
+        [_mainUndoManager withUndoGroup:^{
+            int track = ((ImportMidiDocumentPickerViewController*)controller).track;
+            [self->_midiQueueProcessor midiFileToRecordedTrack:contents ordinal:track];
+        }];
 
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
             [view rebuild];
@@ -845,8 +841,6 @@
 - (IBAction)clearPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     if (!sender.selected) {
-        [self undoGroupBegin];
-        
         [self hideMenuPopups];
 
         NSUInteger index = [@[_clearButton1, _clearButton2, _clearButton3, _clearButton4] indexOfObject:sender];
@@ -855,8 +849,11 @@
         }
         
         int t = (int)index;
-        [self registerRecordedForUndo:t];
-        [[_midiQueueProcessor recorder:t] clear];
+        [_mainUndoManager withUndoGroup:^{
+            [self registerRecordedForUndo:t];
+            [[self->_midiQueueProcessor recorder:t] clear];
+        }];
+        
         [self withMidiTrack:t view:^(MidiTrackView *view) {
             [view rebuild];
             [view setNeedsLayout];
@@ -866,8 +863,6 @@
         if (![self hasRecordedDuration]) {
             [self clearAllMarkerPositions];
         }
-        
-        [self undoGroupEnd];
     }
 }
 
@@ -1077,14 +1072,12 @@
         @synchronized(s) {
             s->_restoringState = YES;
             
-            [s undoGroupBegin];
-                        
-            [s readRecordingsFromDict:dict];
-            
-            [s registerSettingsForUndo];
-            [s readSettingsFromDict:dict];
-            
-            [s undoGroupEnd];
+            [s->_mainUndoManager withUndoGroup:^{
+                [s readRecordingsFromDict:dict];
+                
+                [s registerSettingsForUndo];
+                [s readSettingsFromDict:dict];
+            }];
             
             s->_restoringState = NO;
         }
@@ -1724,22 +1717,6 @@
 }
 
 #pragma mark - Undo
-
-- (void)undoGroupBegin {
-    if (!_renderReady || _mainUndoManager.undoing) {
-        return;
-    }
-    
-    [_mainUndoManager beginUndoGrouping];
-}
-
-- (void)undoGroupEnd {
-    if (!_renderReady || _mainUndoManager.undoing) {
-        return;
-    }
-    
-    [_mainUndoManager endUndoGrouping];
-}
 
 - (void)undoManagerUpdated {
     _undoButton.enabled = _mainUndoManager.canUndo;
