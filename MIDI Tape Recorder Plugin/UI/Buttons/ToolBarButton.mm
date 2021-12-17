@@ -58,8 +58,18 @@
     [self updateButtonStyle];
 }
 
+- (void)setEnabled:(BOOL)enabled {
+    super.enabled = enabled;
+    
+    [self updateButtonStyle];
+}
+
 - (void)updateButtonStyle {
-    if (self.selected || self.highlighted) {
+    if (!self.enabled) {
+        self.backgroundColor = UIColor.clearColor;
+        self.tintColor = [UIColor colorNamed:@"Gray3"];
+    }
+    else if (self.selected || self.highlighted) {
         self.backgroundColor = self.currentTitleColor;
         self.tintColor = UIColor.blackColor;
     }

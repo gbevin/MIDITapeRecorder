@@ -54,6 +54,8 @@
 #pragma mark Transport
 
 - (void)setRecord:(BOOL)record {
+    __block BOOL finish_recording = NO;
+    
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record == record) {
             return;
@@ -71,14 +73,18 @@
 
             _recording.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
-
-            if (_delegate) {
-                [_delegate finishRecording:_ordinal
-                                      data:std::move(recorded)
-                                   preview:std::move(recorded_preview)];
-            }
+            
+            MidiTrackState& track_state = _state->track[_ordinal];
+            track_state.pendingRecordedMessages = std::move(recorded);
+            track_state.pendingRecordedPreview = std::move(recorded_preview);
+            
+            finish_recording = YES;
         }
     });
+
+    if (_delegate && finish_recording) {
+        [_delegate finishRecording:_ordinal];
+    }
 }
 
 #pragma mark State
@@ -86,17 +92,17 @@
 - (NSDictionary*)recordedAsDict {
     __block NSDictionary* result;
     dispatch_barrier_sync(_dispatchQueue, ^{
-        MidiTrackState& state = _state->track[_ordinal];
+        MidiTrackState& track_state = _state->track[_ordinal];
         NSDictionary* mpe_dict = @{
-            @"zone1Members" : @(state.mpeState.zone1Members.load()),
-            @"zone1ManagerPitchSens" : @(state.mpeState.zone1ManagerPitchSens.load()),
-            @"zone1MemberPitchSens" : @(state.mpeState.zone1MemberPitchSens.load()),
-            @"zone2Members" : @(state.mpeState.zone2Members.load()),
-            @"zone2ManagerPitchSens" : @(state.mpeState.zone2ManagerPitchSens.load()),
-            @"zone2MemberPitchSens" : @(state.mpeState.zone2MemberPitchSens.load()),
+            @"zone1Members" : @(track_state.mpeState.zone1Members.load()),
+            @"zone1ManagerPitchSens" : @(track_state.mpeState.zone1ManagerPitchSens.load()),
+            @"zone1MemberPitchSens" : @(track_state.mpeState.zone1MemberPitchSens.load()),
+            @"zone2Members" : @(track_state.mpeState.zone2Members.load()),
+            @"zone2ManagerPitchSens" : @(track_state.mpeState.zone2ManagerPitchSens.load()),
+            @"zone2MemberPitchSens" : @(track_state.mpeState.zone2MemberPitchSens.load()),
         };
         
-        auto recorded = state.recordedMessages.get();
+        auto recorded = track_state.recordedMessages.get();
         if (recorded == nullptr) {
             result = @{
                 @"MPE" : mpe_dict
@@ -191,13 +197,15 @@
                 }
             }
         }
-
-        if (_delegate) {
-            [_delegate finishImport:_ordinal
-                               data:std::move(recorded)
-                            preview:std::move(recorded_preview)];
-        }
+        
+        MidiTrackState& track_state = _state->track[_ordinal];
+        track_state.pendingRecordedMessages = std::move(recorded);
+        track_state.pendingRecordedPreview = std::move(recorded_preview);
     });
+
+    if (_delegate) {
+        [_delegate finishImport:_ordinal];
+    }
 }
 
 #pragma mark MIDI files
@@ -269,111 +277,115 @@
         return;
     }
 
-    // prepare local data to accumulate into
-    std::unique_ptr<MidiRecordedData> recorded(new MidiRecordedData());
-    std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
-    double recorded_duration = 0.0;
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        // prepare local data to accumulate into
+        std::unique_ptr<MidiRecordedData> recorded(new MidiRecordedData());
+        std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
+        double recorded_duration = 0.0;
 
-    // process the track events
-    int64_t last_offset_ticks = 0;
-    uint8_t running_status = 0;
-    uint32_t i = 0;
-    uint8_t* track_bytes = (uint8_t*)track.bytes;
-    while (i < track.length) {
-        // read variable length delta time
-        uint32_t delta_ticks;
-        i += readMidiVarLen(&track_bytes[i], delta_ticks);
-        
-        int64_t offset_ticks = last_offset_ticks + delta_ticks;
-        double duration_beats = double(offset_ticks) / division;
-        last_offset_ticks = offset_ticks;
-        
-        // handle event
-        uint8_t event_identifier = track_bytes[i];
-        i += 1;
-        switch (event_identifier) {
-            // sysex event
-            case 0xf0:
-            case 0xf7: {
-                // capture the event length
-                uint32_t length;
-                i += readMidiVarLen(&track_bytes[i], length);
-                // skip over the event data
-                i += length;
-                break;
-            }
-            // meta event
-            case 0xff: {
-                // skip over the event type
-                i += 1;
-                // capture the event length
-                uint32_t length;
-                i += readMidiVarLen(&track_bytes[i], length);
-                // skip over the event data
-                i += length;
-                break;
-            }
-            // midi event
-            default: {
-                uint8_t d0 = event_identifier;
-                // check for status byte
-                if ((d0 & 0x80) != 0) {
-                    running_status = d0;
+        // process the track events
+        int64_t last_offset_ticks = 0;
+        uint8_t running_status = 0;
+        uint32_t i = 0;
+        uint8_t* track_bytes = (uint8_t*)track.bytes;
+        while (i < track.length) {
+            // read variable length delta time
+            uint32_t delta_ticks;
+            i += readMidiVarLen(&track_bytes[i], delta_ticks);
+            
+            int64_t offset_ticks = last_offset_ticks + delta_ticks;
+            double duration_beats = double(offset_ticks) / division;
+            last_offset_ticks = offset_ticks;
+            
+            // handle event
+            uint8_t event_identifier = track_bytes[i];
+            i += 1;
+            switch (event_identifier) {
+                // sysex event
+                case 0xf0:
+                case 0xf7: {
+                    // capture the event length
+                    uint32_t length;
+                    i += readMidiVarLen(&track_bytes[i], length);
+                    // skip over the event data
+                    i += length;
+                    break;
                 }
-                // not a status byte, we'll reuse the previous one as running status
-                else {
-                    d0 = running_status;
-                }
-                
-                RecordedMidiMessage msg;
-                msg.offsetBeats = duration_beats;
-
-                // get the data bytes based on the active state
-                // one data byte
-                if ((d0 & 0xf0) == 0xc0 || (d0 & 0xf0) == 0xd0) {
-                    uint8_t d1 = track_bytes[i];
+                // meta event
+                case 0xff: {
+                    // skip over the event type
                     i += 1;
+                    // capture the event length
+                    uint32_t length;
+                    i += readMidiVarLen(&track_bytes[i], length);
+                    // skip over the event data
+                    i += length;
+                    break;
+                }
+                // midi event
+                default: {
+                    uint8_t d0 = event_identifier;
+                    // check for status byte
+                    if ((d0 & 0x80) != 0) {
+                        running_status = d0;
+                    }
+                    // not a status byte, we'll reuse the previous one as running status
+                    else {
+                        d0 = running_status;
+                    }
                     
-                    msg.length = 2;
-                    msg.data[0] = d0;
-                    msg.data[1] = d1;
-                    msg.data[2] = 0;
-                }
-                // two data bytes
-                else {
-                    uint8_t d1 = track_bytes[i];
-                    i += 1;
-                    uint8_t d2 = track_bytes[i];
-                    i += 1;
+                    RecordedMidiMessage msg;
+                    msg.offsetBeats = duration_beats;
+
+                    // get the data bytes based on the active state
+                    // one data byte
+                    if ((d0 & 0xf0) == 0xc0 || (d0 & 0xf0) == 0xd0) {
+                        uint8_t d1 = track_bytes[i];
+                        i += 1;
+                        
+                        msg.length = 2;
+                        msg.data[0] = d0;
+                        msg.data[1] = d1;
+                        msg.data[2] = 0;
+                    }
+                    // two data bytes
+                    else {
+                        uint8_t d1 = track_bytes[i];
+                        i += 1;
+                        uint8_t d2 = track_bytes[i];
+                        i += 1;
+                        
+                        msg.length = 3;
+                        msg.data[0] = d0;
+                        msg.data[1] = d1;
+                        msg.data[2] = d2;
+                    }
+
+                    // add the recorded message
+                    recorded->addMessageToBeat(msg);
                     
-                    msg.length = 3;
-                    msg.data[0] = d0;
-                    msg.data[1] = d1;
-                    msg.data[2] = d2;
+                    // update the preview
+                    recorded_preview->updateWithMessage(msg);
+
+                    break;
                 }
-
-                // add the recorded message
-                recorded->addMessageToBeat(msg);
-                
-                // update the preview
-                recorded_preview->updateWithMessage(msg);
-
-                break;
             }
         }
-    }
+        
+        recorded_duration = double(last_offset_ticks) / division;
+        if (_state->autoTrimRecordings.test()) {
+            recorded_duration = ceil(recorded_duration);
+            recorded->duration = recorded_duration;
+        }
+        
+        // transfer all the accumulated data to the active recorded data
+        MidiTrackState& track_state = _state->track[_ordinal];
+        track_state.pendingRecordedMessages = std::move(recorded);
+        track_state.pendingRecordedPreview = std::move(recorded_preview);
+    });
     
-    recorded_duration = double(last_offset_ticks) / division;
-    if (_state->autoTrimRecordings.test()) {
-        recorded_duration = ceil(recorded_duration);
-        recorded->duration = recorded_duration;
-    }
-    
-    // transfer all the accumulated data to the active recorded data
     if (_delegate) {
-        [_delegate finishImport:_ordinal
-                           data:std::move(recorded)
-                        preview:std::move(recorded_preview)];
+        [_delegate finishImport:_ordinal];
     }
 }
 

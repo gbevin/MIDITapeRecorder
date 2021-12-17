@@ -17,12 +17,8 @@ class RecordedMidiMessage;
 @protocol MidiRecorderDelegate <NSObject>
 
 - (void)startRecord;
-- (void)finishRecording:(int)ordinal
-                   data:(std::unique_ptr<MidiRecordedData>)data
-                preview:(std::unique_ptr<MidiRecordedPreview>)preview;
-- (void)finishImport:(int)ordinal
-                data:(std::unique_ptr<MidiRecordedData>)data
-             preview:(std::unique_ptr<MidiRecordedPreview>)preview;
+- (void)finishRecording:(int)ordinal;
+- (void)finishImport:(int)ordinal;
 - (void)invalidateRecording:(int)ordinal;
 
 @end

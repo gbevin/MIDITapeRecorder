@@ -50,6 +50,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* gridButton;
 @property (weak, nonatomic) IBOutlet UIButton* chaseButton;
 @property (weak, nonatomic) IBOutlet UIButton* punchInOutButton;
+@property (weak, nonatomic) IBOutlet UIButton* undoButton;
 @property (weak, nonatomic) IBOutlet UIButton* settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* aboutButton;
 @property (weak, nonatomic) IBOutlet UIButton* donateButton;
@@ -169,7 +170,10 @@
     MidiRecorderAudioUnit* _audioUnit;
     MidiRecorderState* _state;
     CADisplayLink* _timer;
+    BOOL _renderReady;
     
+    NSUndoManager* _mainUndoManager;
+
     BOOL _restoringState;
 
     MidiQueueProcessor* _midiQueueProcessor;
@@ -193,6 +197,10 @@
         _state = nil;
         _audioUnit = nil;
         _timer = nil;
+        _renderReady = NO;
+        
+        _mainUndoManager = [NSUndoManager new];
+        _mainUndoManager.levelsOfUndo = 10;
         
         _restoringState = NO;
         
@@ -241,8 +249,14 @@
     _timer.paused = NO;
     [_timer addToRunLoop:[NSRunLoop mainRunLoop]
                  forMode:NSDefaultRunLoopMode];
-    
+
     _lastForegroundMoment = [NSDate date];
+    
+    [self undoManagerUpdated];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(undoManagerUpdated)
+                                                 name:NSUndoManagerCheckpointNotification
+                                               object:_mainUndoManager];
 }
 
 #pragma mark - Donate Call To Action
@@ -453,6 +467,8 @@
 }
 
 - (void)setRecordState:(BOOL)state {
+    [self undoGroupBegin];
+    
     _recordButton.selected = state;
     
     [self updateRecordState];
@@ -466,6 +482,8 @@
             [s renderPreviews];
         });
     }
+    
+    [self undoGroupEnd];
 }
 
 #pragma mark IBAction - Repeat
@@ -547,14 +565,21 @@
     if (!sender.selected) {
         [self hideMenuPopups];
 
+        [self undoGroupBegin];
+
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+            [self registerRecordedForUndo:t];
             [[self->_midiQueueProcessor recorder:t] clear];
             [view rebuild];
             [view setNeedsLayout];
         }];
+        
+        [self registerSettingsForUndo];
 
         // since the recorder is fully empty, reset all markers
         [self clearAllMarkerPositions];
+        
+        [self undoGroupEnd];
     }
 }
 
@@ -796,9 +821,13 @@
         NSData* contents = [NSData dataWithContentsOfURL:url];
         [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
 
+        [self undoGroupBegin];
+        
         int track = ((ImportMidiDocumentPickerViewController*)controller).track;
         [_midiQueueProcessor midiFileToRecordedTrack:contents ordinal:track];
         
+        [self undoGroupEnd];
+
         [self withMidiTrackViews:^(int t, MidiTrackView* view) {
             [view rebuild];
             [view setNeedsLayout];
@@ -816,6 +845,8 @@
 - (IBAction)clearPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     if (!sender.selected) {
+        [self undoGroupBegin];
+        
         [self hideMenuPopups];
 
         NSUInteger index = [@[_clearButton1, _clearButton2, _clearButton3, _clearButton4] indexOfObject:sender];
@@ -824,6 +855,7 @@
         }
         
         int t = (int)index;
+        [self registerRecordedForUndo:t];
         [[_midiQueueProcessor recorder:t] clear];
         [self withMidiTrack:t view:^(MidiTrackView *view) {
             [view rebuild];
@@ -834,10 +866,18 @@
         if (![self hasRecordedDuration]) {
             [self clearAllMarkerPositions];
         }
+        
+        [self undoGroupEnd];
     }
 }
 
-#pragma mark IBAction - UIGestureRecognizerDelegate
+#pragma mark IBAction - Undo
+
+- (IBAction)undoPressed:(UIButton*)sender {
+    [_mainUndoManager undo];
+}
+
+#pragma mark UIGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch {
     // only pan the overlay area on the timeline area
@@ -1037,8 +1077,14 @@
         @synchronized(s) {
             s->_restoringState = YES;
             
+            [s undoGroupBegin];
+                        
             [s readRecordingsFromDict:dict];
+            
+            [s registerSettingsForUndo];
             [s readSettingsFromDict:dict];
+            
+            [s undoGroupEnd];
             
             s->_restoringState = NO;
         }
@@ -1614,6 +1660,8 @@
 
 - (void)renderloop {
     if (_audioUnit) {
+        _renderReady = YES;
+        
         [self checkActivityIndicators];
 
         [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
@@ -1632,7 +1680,7 @@
     }
 }
 
-#pragma mark - MidiRecorderDelegate methods
+#pragma mark - MidiRecorderDelegate
 
 - (void)startRecord {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -1650,24 +1698,18 @@
     _state->processedPlay.clear();
 }
 
-- (void)finishRecording:(int)ordinal
-                   data:(std::unique_ptr<MidiRecordedData>)data
-                preview:(std::unique_ptr<MidiRecordedPreview>)preview {
-    MidiTrackState& track_state = _state->track[ordinal];
-    track_state.pendingRecordedMessages = std::move(data);
-    track_state.pendingRecordedPreview = std::move(preview);
+- (void)finishRecording:(int)ordinal {
+    [self registerRecordedForUndo:ordinal];
     
     _state->processedEndRecording[ordinal].clear();
 }
 
-- (void)finishImport:(int)ordinal
-                data:(std::unique_ptr<MidiRecordedData>)data
-             preview:(std::unique_ptr<MidiRecordedPreview>)preview {
+- (void)finishImport:(int)ordinal {
+    [self registerRecordedForUndo:ordinal];
+    
     MidiTrackState& track_state = _state->track[ordinal];
-    track_state.pendingRecordedMessages = nullptr;
-    track_state.pendingRecordedPreview = nullptr;
-    track_state.recordedMessages = std::move(data);
-    track_state.recordedPreview = std::move(preview);
+    track_state.recordedMessages = std::move(track_state.pendingRecordedMessages);
+    track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
     
     [self withMidiTrack:ordinal view:^(MidiTrackView *view) {
         [view rebuild];
@@ -1681,7 +1723,55 @@
     _state->processedInvalidate[ordinal].clear();
 }
 
-#pragma mark - UIScrollViewDelegate methods
+#pragma mark - Undo
+
+- (void)undoGroupBegin {
+    if (!_renderReady || _mainUndoManager.undoing) {
+        return;
+    }
+    
+    [_mainUndoManager beginUndoGrouping];
+}
+
+- (void)undoGroupEnd {
+    if (!_renderReady || _mainUndoManager.undoing) {
+        return;
+    }
+    
+    [_mainUndoManager endUndoGrouping];
+}
+
+- (void)undoManagerUpdated {
+    _undoButton.enabled = _mainUndoManager.canUndo;
+}
+
+- (void)restoreSettings:(NSDictionary*)data {
+    [self readSettingsFromDict:data];
+}
+
+- (void)registerSettingsForUndo {
+    if (!_renderReady || _mainUndoManager.undoing) {
+        return;
+    }
+    
+    [[_mainUndoManager prepareWithInvocationTarget:self] restoreSettings:[self currentSettingsToDict]];
+}
+
+- (void)restoreRecorded:(int)ordinal withData:(NSDictionary*)data {
+    [[_midiQueueProcessor recorder:ordinal] dictToRecorded:data];
+}
+
+- (void)registerRecordedForUndo:(int)ordinal {
+    if (!_renderReady || _mainUndoManager.undoing) {
+        return;
+    }
+    
+    MidiRecorder* recorder = [_midiQueueProcessor recorder:ordinal];
+    [[_mainUndoManager prepareWithInvocationTarget:self] restoreRecorded:ordinal
+                                                                withData:[recorder recordedAsDict]];
+}
+
+#pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView*)scrollView {
     scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x, 0);
