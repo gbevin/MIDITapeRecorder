@@ -445,9 +445,6 @@ RECORDER</string>
                                             <constraint firstAttribute="width" constant="50" id="HUg-bg-jWJ"/>
                                             <constraint firstAttribute="height" constant="20" id="xMq-RR-lYI"/>
                                         </constraints>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="5hC-iX-y1X" appends="YES" id="TKI-8f-ZnJ"/>
-                                        </connections>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GXf-2A-NeK" userLabel="Recorded 1" customClass="MidiTrackView">
                                         <rect key="frame" x="10" y="30" width="50" height="24"/>
@@ -487,11 +484,11 @@ RECORDER</string>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ckn-XQ-W53" userLabel="Recorded 4" customClass="MidiTrackView">
                                         <rect key="frame" x="10" y="156" width="50" height="24"/>
                                     </view>
-                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NoZ-ht-iHV" userLabel="Overlay Left">
+                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NoZ-ht-iHV" userLabel="Crop Overlay Left">
                                         <rect key="frame" x="9" y="0.0" width="1" height="190"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NyG-Wr-Hs2" userLabel="Overlay Right">
+                                    <view alpha="0.5" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NyG-Wr-Hs2" userLabel="Crop Overlay Right">
                                         <rect key="frame" x="10" y="0.0" width="50.5" height="190"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
@@ -519,6 +516,13 @@ RECORDER</string>
                                             <outletCollection property="gestureRecognizers" destination="frJ-wJ-GTJ" appends="YES" id="E36-QM-ojA"/>
                                         </connections>
                                     </view>
+                                    <view alpha="0.10000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4h-05-372" userLabel="Punch Overlay">
+                                        <rect key="frame" x="10" y="0.0" width="0.0" height="190"/>
+                                        <color key="backgroundColor" name="Red"/>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="q0h-LC-ndn" appends="YES" id="dVe-9K-fMJ"/>
+                                        </connections>
+                                    </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
                                         <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
                                         <color key="backgroundColor" systemColor="secondaryLabelColor"/>
@@ -528,6 +532,30 @@ RECORDER</string>
                                         </constraints>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
+                                        </connections>
+                                    </view>
+                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4B3-p1-vNp" userLabel="Punch In" customClass="PunchInView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
+                                        <color key="backgroundColor" name="Red"/>
+                                        <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="31" id="H05-Lt-Cny"/>
+                                        </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="27v-Yl-oL1" appends="YES" id="yi0-bp-Gk3"/>
+                                            <outletCollection property="gestureRecognizers" destination="xL0-lc-Sen" appends="YES" id="xPS-6g-2Wq"/>
+                                        </connections>
+                                    </view>
+                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QBm-qI-U3B" userLabel="Punch Out" customClass="PunchOutView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="190"/>
+                                        <color key="backgroundColor" name="Red"/>
+                                        <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="31" id="1Zu-KT-ZqN"/>
+                                        </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="25J-YX-R2T" appends="YES" id="Mgm-fa-ZjD"/>
+                                            <outletCollection property="gestureRecognizers" destination="kRC-JK-CMg" appends="YES" id="7P0-mK-eie"/>
                                         </connections>
                                     </view>
                                     <button opaque="NO" alpha="0.69999999999999996" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RMO-Kd-c0J" userLabel="MPE 1" customClass="MPEButton">
@@ -651,23 +679,29 @@ RECORDER</string>
                                 <constraints>
                                     <constraint firstItem="gzW-Zc-U4q" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="1t5-Wa-Kzd"/>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="3D2-fK-3Ww"/>
+                                    <constraint firstItem="c4h-05-372" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="3jH-Ky-oBY"/>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="4B5-Hf-abC"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="height" secondItem="GXf-2A-NeK" secondAttribute="height" id="5BZ-nb-eM2"/>
+                                    <constraint firstItem="4B3-p1-vNp" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="5EU-2H-z63"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="top" secondItem="k5P-YR-lyM" secondAttribute="bottom" constant="12" id="5VU-FN-m26">
                                         <variation key="heightClass=compact-widthClass=compact" constant="10"/>
                                     </constraint>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="height" secondItem="GXf-2A-NeK" secondAttribute="height" id="6do-ga-VzD"/>
                                     <constraint firstItem="NyG-Wr-Hs2" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="7QK-lW-3fX"/>
                                     <constraint firstItem="VMc-Bx-bLD" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Aax-Ou-q5b"/>
+                                    <constraint firstItem="QBm-qI-U3B" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="B5f-Ku-nSP"/>
                                     <constraint firstItem="VMc-Bx-bLD" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="BRf-bf-ZUj"/>
                                     <constraint firstItem="1FX-bJ-B4M" firstAttribute="top" secondItem="gzW-Zc-U4q" secondAttribute="bottom" id="Brp-AU-J1T"/>
                                     <constraint firstItem="NoZ-ht-iHV" firstAttribute="trailing" secondItem="VMc-Bx-bLD" secondAttribute="centerX" id="CHc-43-25r"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="Cjs-gZ-oPl"/>
                                     <constraint firstItem="L2y-q6-jop" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Cyh-7a-5kD"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="width" secondItem="k5P-YR-lyM" secondAttribute="width" id="DDy-C2-XlZ"/>
+                                    <constraint firstItem="c4h-05-372" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="E4d-Dq-dOH"/>
+                                    <constraint firstItem="4B3-p1-vNp" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Ehb-4s-w81"/>
                                     <constraint firstItem="NyG-Wr-Hs2" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="Fbo-Ao-cQs"/>
                                     <constraint firstItem="gzW-Zc-U4q" firstAttribute="width" secondItem="FZ7-pN-WjG" secondAttribute="width" id="Fiv-jH-bb6"/>
                                     <constraint firstItem="NyG-Wr-Hs2" firstAttribute="leading" secondItem="y3y-Rr-807" secondAttribute="centerX" priority="995" id="GaW-3R-AEo"/>
+                                    <constraint firstItem="QBm-qI-U3B" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="H01-z7-bmR"/>
                                     <constraint firstItem="NoZ-ht-iHV" firstAttribute="leading" secondItem="k5P-YR-lyM" secondAttribute="leading" constant="-1" id="IW9-19-L45"/>
                                     <constraint firstItem="GXf-2A-NeK" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="JG5-GH-8T7"/>
                                     <constraint firstItem="NyG-Wr-Hs2" firstAttribute="trailing" secondItem="k5P-YR-lyM" secondAttribute="trailing" priority="990" constant="0.5" id="KZL-bQ-X1w"/>
@@ -680,6 +714,7 @@ RECORDER</string>
                                     </constraint>
                                     <constraint firstItem="ckn-XQ-W53" firstAttribute="bottom" secondItem="3fa-4R-nyW" secondAttribute="bottom" constant="-10" id="P0K-JF-vdw"/>
                                     <constraint firstItem="z7h-Mc-fnQ" firstAttribute="top" secondItem="q3i-Q2-tin" secondAttribute="bottom" id="P1i-gz-hgM"/>
+                                    <constraint firstItem="4B3-p1-vNp" firstAttribute="centerX" secondItem="k5P-YR-lyM" secondAttribute="leading" id="Q3f-V0-ZIq"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="top" secondItem="GXf-2A-NeK" secondAttribute="bottom" constant="22" id="T5J-pp-56N">
                                         <variation key="heightClass=compact-widthClass=compact" constant="18"/>
                                     </constraint>
@@ -687,6 +722,7 @@ RECORDER</string>
                                     <constraint firstItem="q3i-Q2-tin" firstAttribute="top" secondItem="GXf-2A-NeK" secondAttribute="bottom" constant="10" id="Uav-xG-pIb">
                                         <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                                     </constraint>
+                                    <constraint firstItem="c4h-05-372" firstAttribute="leading" secondItem="4B3-p1-vNp" secondAttribute="centerX" id="VVu-74-090"/>
                                     <constraint firstItem="k5P-YR-lyM" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="VaF-ZP-RZQ"/>
                                     <constraint firstItem="z7h-Mc-fnQ" firstAttribute="leading" secondItem="q3i-Q2-tin" secondAttribute="leading" id="WU5-yR-g6f"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="ZEK-bw-aEL"/>
@@ -701,6 +737,7 @@ RECORDER</string>
                                     <constraint firstItem="8lV-Pg-F8C" firstAttribute="width" secondItem="IWD-hQ-i8x" secondAttribute="width" id="cVV-dJ-oLw"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="leading" secondItem="3fa-4R-nyW" secondAttribute="leading" constant="10" id="dE6-vC-SDE"/>
                                     <constraint firstItem="cNu-Gm-9pP" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="dkx-RY-Y8O"/>
+                                    <constraint firstItem="c4h-05-372" firstAttribute="trailing" secondItem="QBm-qI-U3B" secondAttribute="centerX" id="euu-fn-ZH3"/>
                                     <constraint firstItem="g1V-ZB-qzJ" firstAttribute="leading" secondItem="4hw-x8-hn8" secondAttribute="leading" id="faK-oY-jy3"/>
                                     <constraint firstItem="y3y-Rr-807" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="fzx-xw-BcM"/>
                                     <constraint firstItem="IWD-hQ-i8x" firstAttribute="trailing" secondItem="3fa-4R-nyW" secondAttribute="trailing" constant="-10" id="gwU-og-p0T"/>
@@ -726,10 +763,14 @@ RECORDER</string>
                                     </constraint>
                                     <constraint firstItem="L2y-q6-jop" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="x4m-0K-5P4"/>
                                     <constraint firstItem="VMc-Bx-bLD" firstAttribute="height" secondItem="FZ7-pN-WjG" secondAttribute="height" id="x80-1v-Id6"/>
+                                    <constraint firstItem="QBm-qI-U3B" firstAttribute="top" secondItem="FZ7-pN-WjG" secondAttribute="top" id="xjq-OU-od8"/>
                                     <constraint firstItem="4hw-x8-hn8" firstAttribute="centerX" secondItem="FZ7-pN-WjG" secondAttribute="centerX" id="zKb-zg-8DS"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="3fa-4R-nyW"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="FZ7-pN-WjG"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="5hC-iX-y1X" appends="YES" id="P3l-l0-JiD"/>
+                                </connections>
                             </scrollView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dom-KY-gSl" userLabel="Activity Input 1" customClass="ActivityIndicatorView">
                                 <rect key="frame" x="10" y="79.5" width="5" height="5"/>
@@ -1583,6 +1624,8 @@ RECORDER</string>
                         <outlet property="cropLeft" destination="VMc-Bx-bLD" id="9tG-4M-fpf"/>
                         <outlet property="cropLeftLeading" destination="BRf-bf-ZUj" id="cCe-fF-nbA"/>
                         <outlet property="cropLeftPanGesture" destination="rFr-lR-4dd" id="9p4-jM-e4H"/>
+                        <outlet property="cropOverlayLeft" destination="NoZ-ht-iHV" id="t5a-mD-0nC"/>
+                        <outlet property="cropOverlayRight" destination="NyG-Wr-Hs2" id="u05-pi-UeR"/>
                         <outlet property="cropRight" destination="y3y-Rr-807" id="Mgo-sV-gfI"/>
                         <outlet property="cropRightLeading" destination="buh-cl-wMC" id="XeE-5b-z4t"/>
                         <outlet property="cropRightPanGesture" destination="OuL-cY-k9O" id="NWI-01-FkM"/>
@@ -1631,13 +1674,19 @@ RECORDER</string>
                         <outlet property="muteButton2" destination="p1L-p9-aSY" id="XdA-Hb-GlT"/>
                         <outlet property="muteButton3" destination="cml-GG-nYY" id="S2y-lk-YYo"/>
                         <outlet property="muteButton4" destination="mth-yQ-zQm" id="dUc-UW-cy7"/>
-                        <outlet property="overlayLeft" destination="NoZ-ht-iHV" id="t5a-mD-0nC"/>
-                        <outlet property="overlayRight" destination="NyG-Wr-Hs2" id="u05-pi-UeR"/>
                         <outlet property="playButton" destination="K2s-Jg-CsH" id="n0h-K8-xXi"/>
                         <outlet property="playhead" destination="L2y-q6-jop" id="wG4-Fw-krm"/>
                         <outlet property="playheadLeading" destination="cTi-we-c8t" id="ag4-Bi-EVh"/>
                         <outlet property="playheadPanGesture" destination="Sbs-GL-zew" id="oJz-pJ-OP5"/>
+                        <outlet property="punchIn" destination="4B3-p1-vNp" id="4pn-oy-nhf"/>
+                        <outlet property="punchInLeading" destination="Q3f-V0-ZIq" id="OPY-3b-NUJ"/>
                         <outlet property="punchInOutButton" destination="81j-AC-XX3" id="gwg-v1-4ac"/>
+                        <outlet property="punchInPanGesture" destination="27v-Yl-oL1" id="Gkr-31-LzS"/>
+                        <outlet property="punchOut" destination="QBm-qI-U3B" id="vXG-Ga-ARd"/>
+                        <outlet property="punchOutLeading" destination="B5f-Ku-nSP" id="LmQ-B7-qo7"/>
+                        <outlet property="punchOutPanGesture" destination="25J-YX-R2T" id="Zur-bV-rWV"/>
+                        <outlet property="punchOverlay" destination="c4h-05-372" id="bZB-5O-eMT"/>
+                        <outlet property="punchOverlayPanGesture" destination="q0h-LC-ndn" id="cmo-qO-0g1"/>
                         <outlet property="recordButton" destination="o1O-TV-EyB" id="XAb-3f-btd"/>
                         <outlet property="recordButton1" destination="jiJ-Fl-4eE" id="sCs-3s-dvh"/>
                         <outlet property="recordButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
@@ -1649,16 +1698,12 @@ RECORDER</string>
                         <outlet property="settingsButton" destination="JCp-rm-sDC" id="P67-2C-noq"/>
                         <outlet property="settingsView" destination="kxe-e6-6XJ" id="AZ3-8t-XDn"/>
                         <outlet property="timeline" destination="k5P-YR-lyM" id="iLw-rk-VBV"/>
+                        <outlet property="timelineTapGesture" destination="5hC-iX-y1X" id="4NN-AD-WQu"/>
                         <outlet property="timelineWidth" destination="HUg-bg-jWJ" id="bIC-Jm-cE0"/>
                         <outlet property="tracks" destination="tCM-sv-7no" id="Hkf-8A-Ysn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="Sbs-GL-zew" userLabel="Playhead Pan Gesture">
-                    <connections>
-                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="iYk-a8-u7Y"/>
-                    </connections>
-                </panGestureRecognizer>
                 <panGestureRecognizer minimumNumberOfTouches="1" id="rFr-lR-4dd" userLabel="Crop Left Pan Gesture">
                     <connections>
                         <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="n6D-4c-Dmw"/>
@@ -1669,11 +1714,6 @@ RECORDER</string>
                         <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="ULh-iK-3qf"/>
                     </connections>
                 </panGestureRecognizer>
-                <tapGestureRecognizer id="5hC-iX-y1X" userLabel="Timeline Tap Gesture">
-                    <connections>
-                        <action selector="timelineTapGesture:" destination="BYZ-38-t0r" id="fPu-GD-yBq"/>
-                    </connections>
-                </tapGestureRecognizer>
                 <tapGestureRecognizer numberOfTapsRequired="2" id="9So-sX-ZSo" userLabel="Crop Left Double Tap Gesture">
                     <connections>
                         <action selector="cropLeftDoubleTapGesture:" destination="BYZ-38-t0r" id="vNY-34-QaK"/>
@@ -1682,6 +1722,43 @@ RECORDER</string>
                 <tapGestureRecognizer numberOfTapsRequired="2" id="frJ-wJ-GTJ" userLabel="Crop Right Double Tap Gesture">
                     <connections>
                         <action selector="cropRightDoubleTapGesture:" destination="BYZ-38-t0r" id="z3i-kg-N2n"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="Sbs-GL-zew" userLabel="Playhead Pan Gesture">
+                    <connections>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="iYk-a8-u7Y"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="27v-Yl-oL1" userLabel="Punch In Pan Gesture">
+                    <connections>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="Tnb-E0-uE0"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="q0h-LC-ndn" userLabel="Punch Overlay Pan Gesture">
+                    <connections>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="4m0-Kd-nM4"/>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="xQD-8v-yg6"/>
+                    </connections>
+                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="25J-YX-R2T" userLabel="Punch Out Pan Gesture">
+                    <connections>
+                        <action selector="markerPanGesture:" destination="BYZ-38-t0r" id="3vz-0V-BED"/>
+                    </connections>
+                </panGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="xL0-lc-Sen" userLabel="Punch In Double Tap Gesture">
+                    <connections>
+                        <action selector="punchInDoubleTapGesture:" destination="BYZ-38-t0r" id="3dL-hx-vhx"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer numberOfTapsRequired="2" id="kRC-JK-CMg" userLabel="Punch Out Double Tap Gesture">
+                    <connections>
+                        <action selector="punchOutDoubleTapGesture:" destination="BYZ-38-t0r" id="IgT-6P-k4H"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="5hC-iX-y1X" userLabel="Timeline Tap Gesture">
+                    <connections>
+                        <action selector="timelineTapGesture:" destination="BYZ-38-t0r" id="fPu-GD-yBq"/>
+                        <outlet property="delegate" destination="BYZ-38-t0r" id="RHr-M3-dD8"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>

@@ -46,10 +46,14 @@ struct MidiRecorderState {
 
     std::atomic_flag startPositionSet               { false };
     std::atomic_flag stopPositionSet                { false };
+    std::atomic_flag punchInPositionSet             { false };
+    std::atomic_flag punchOutPositionSet            { false };
     std::atomic<double> transportStartSampleSeconds { 0.0 };
     std::atomic<double> startPositionBeats          { 0.0 };
     std::atomic<double> stopPositionBeats           { 0.0 };
     std::atomic<double> playPositionBeats           { 0.0 };
+    std::atomic<double> punchInPositionBeats        { 0.0 };
+    std::atomic<double> punchOutPositionBeats       { 0.0 };
 
     std::atomic_flag processedRewind                        { true };
     std::atomic_flag processedPlay                          { true };

@@ -11,7 +11,7 @@
 #include "MidiRecorderState.h"
 #import "MidiRecorderDelegate.h"
 
-@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate, UIDocumentPickerDelegate, UIScrollViewDelegate>
+@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate, UIDocumentPickerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 - (void)readFullStateFromDict:(NSDictionary*)dict;
 - (void)currentFullStateToDict:(NSMutableDictionary*)dict;

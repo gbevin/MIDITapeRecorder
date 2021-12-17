@@ -24,6 +24,8 @@
 #import "MPEButton.h"
 #import "Preferences.h"
 #import "PopupView.h"
+#import "PunchInView.h"
+#import "PunchOutView.h"
 #import "SettingsViewController.h"
 #import "TimelineView.h"
 
@@ -109,20 +111,32 @@
 @property (weak, nonatomic) IBOutlet UIScrollView* tracks;
 
 @property (weak, nonatomic) IBOutlet TimelineView* timeline;
+@property (weak, nonatomic) IBOutlet UITapGestureRecognizer *timelineTapGesture;
 
 @property (weak, nonatomic) IBOutlet UIView* playhead;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* playheadLeading;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* playheadPanGesture;
 
-@property (weak, nonatomic) IBOutlet UIView* overlayLeft;
+@property (weak, nonatomic) IBOutlet UIView* cropOverlayLeft;
 @property (weak, nonatomic) IBOutlet CropLeftView* cropLeft;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* cropLeftLeading;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* cropLeftPanGesture;
 
-@property (weak, nonatomic) IBOutlet UIView* overlayRight;
+@property (weak, nonatomic) IBOutlet UIView* cropOverlayRight;
 @property (weak, nonatomic) IBOutlet CropRightView* cropRight;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* cropRightLeading;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* cropRightPanGesture;
+
+@property (weak, nonatomic) IBOutlet PunchInView* punchIn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* punchInLeading;
+@property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* punchInPanGesture;
+
+@property (weak, nonatomic) IBOutlet UIView* punchOverlay;
+@property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* punchOverlayPanGesture;
+
+@property (weak, nonatomic) IBOutlet PunchOutView* punchOut;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* punchOutLeading;
+@property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* punchOutPanGesture;
 
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack1;
 @property (weak, nonatomic) IBOutlet MidiTrackView* midiTrack2;
@@ -164,6 +178,8 @@
     
     UIView* _activePannedMarker;
     CGPoint _autoPan;
+    double _punchOverlayPanStart;
+    double _punchOverlayPanStartInPosition;
     
     NSDate* _lastForegroundMoment;
 }
@@ -188,6 +204,8 @@
         _autoPlayFromRecord = NO;
         _activePannedMarker = nil;
         _autoPan = CGPointZero;
+        _punchOverlayPanStart = -1.0;
+        _punchOverlayPanStartInPosition = -1.0;
         
         _lastForegroundMoment = [NSDate date];
     }
@@ -518,6 +536,10 @@
     _state->startPositionBeats = 0.0;
     _state->stopPositionSet.clear();
     _state->stopPositionBeats = 0.0;
+    _state->punchInPositionSet.clear();
+    _state->punchInPositionBeats = 0.0;
+    _state->punchOutPositionSet.clear();
+    _state->punchOutPositionBeats = 0.0;
 }
 
 - (IBAction)clearAllPressed:(UIButton*)sender {
@@ -815,6 +837,26 @@
     }
 }
 
+#pragma mark IBAction - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer shouldReceiveTouch:(UITouch*)touch {
+    // only pan the overlay area on the timeline area
+    if (gestureRecognizer == _punchOverlayPanGesture) {
+        if ([touch locationInView:_tracks].y > _timeline.frame.size.height) {
+            return NO;
+        }
+    }
+    
+    // only use the timeline tap gesture on the timeline area
+    if (gestureRecognizer == _timelineTapGesture) {
+        if ([touch locationInView:_tracks].y > _timeline.frame.size.height) {
+            return NO;
+        }
+    }
+
+    return YES;
+}
+
 #pragma mark IBAction - Gestures
 
 - (IBAction)timelineTapGesture:(UITapGestureRecognizer*)gesture {
@@ -829,6 +871,16 @@
 - (IBAction)cropRightDoubleTapGesture:(UITapGestureRecognizer*)sender {
     _state->stopPositionSet.clear();
     _state->stopPositionBeats = _state->maxDuration.load();
+}
+
+- (IBAction)punchInDoubleTapGesture:(UITapGestureRecognizer*)sender {
+    _state->punchInPositionSet.clear();
+    _state->punchInPositionBeats = 0.0;
+}
+
+- (IBAction)punchOutDoubleTapGesture:(UITapGestureRecognizer*)sender {
+    _state->punchOutPositionSet.clear();
+    _state->punchOutPositionBeats = _state->maxDuration.load();
 }
 
 - (double)calculateBeatPositionForGesture:(UIGestureRecognizer*)gesture {
@@ -855,6 +907,43 @@
     }
 }
 
+- (void)setPunchInForGesture:(UIGestureRecognizer*)gesture {
+    if (gesture.numberOfTouches == 1) {
+        _state->punchInPositionSet.test_and_set();
+        _state->punchInPositionBeats = MIN([self calculateBeatPositionForGesture:gesture], _state->punchOutPositionBeats.load() - 1.0);
+    }
+}
+
+- (void)setPunchOutForGesture:(UIGestureRecognizer*)gesture {
+    if (gesture.numberOfTouches == 1) {
+        _state->punchOutPositionSet.test_and_set();
+        _state->punchOutPositionBeats = MAX([self calculateBeatPositionForGesture:gesture], _state->punchInPositionBeats.load() + 1.0);
+    }
+}
+
+- (void)setPunchOverlayForGesture:(UIGestureRecognizer*)gesture {
+    if (gesture.numberOfTouches == 1) {
+        double position = [self calculateBeatPositionForGesture:gesture];
+        double delta = 0.0;
+        if (_punchOverlayPanStart == -1.0) {
+            _punchOverlayPanStart = position;
+            _punchOverlayPanStartInPosition = _state->punchInPositionBeats.load();
+        }
+        else {
+            delta = position - _punchOverlayPanStart;
+        }
+        double punch_in = _state->punchInPositionBeats;
+        double punch_out = _state->punchOutPositionBeats;
+        double punch_range = punch_out - punch_in;
+        _state->punchInPositionSet.test_and_set();
+        _state->punchOutPositionSet.test_and_set();
+        _state->punchInPositionBeats = MIN(MAX(_punchOverlayPanStartInPosition + delta, 0.0), _timelineWidth.constant / PIXELS_PER_BEAT - punch_range);
+        _state->punchOutPositionBeats = _state->punchInPositionBeats + punch_range;
+        _state->punchInPositionBeats = MIN(_state->punchInPositionBeats.load(), _state->punchOutPositionBeats.load() - 1.0);
+        _state->punchOutPositionBeats = MAX(_state->punchOutPositionBeats.load(), _state->punchInPositionBeats.load() + 1.0);
+    }
+}
+
 - (IBAction)markerPanGesture:(UIPanGestureRecognizer*)gesture {
     if (gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
         if (gesture.state == UIGestureRecognizerStateBegan) {
@@ -870,6 +959,15 @@
         }
         else if (_activePannedMarker == _cropRight) {
             [self setCropRightForGesture:gesture];
+        }
+        else if (_activePannedMarker == _punchIn) {
+            [self setPunchInForGesture:gesture];
+        }
+        else if (_activePannedMarker == _punchOut) {
+            [self setPunchOutForGesture:gesture];
+        }
+        else if (_activePannedMarker == _punchOverlay) {
+            [self setPunchOverlayForGesture:gesture];
         }
 
         const CGPoint pos = [gesture locationInView:_tracks.superview];
@@ -905,6 +1003,22 @@
             else if (_activePannedMarker == _cropRight) {
                 _state->stopPositionBeats = round(_state->stopPositionBeats.load());
             }
+            else if (_activePannedMarker == _punchIn) {
+                _state->punchInPositionBeats = round(_state->punchInPositionBeats.load());
+            }
+            else if (_activePannedMarker == _punchOut) {
+                _state->punchOutPositionBeats = round(_state->punchOutPositionBeats.load());
+            }
+            else if (_activePannedMarker == _punchOverlay) {
+                _state->punchInPositionBeats = round(_state->punchInPositionBeats.load());
+                _state->punchOutPositionBeats = round(_state->punchOutPositionBeats.load());
+            }
+        }
+        
+        // reset the state of the punch overlay panning
+        if (_activePannedMarker == _punchOverlay) {
+            _punchOverlayPanStart = -1.0;
+            _punchOverlayPanStartInPosition = -1.0;
         }
 
         [self resetAutomaticPanning];
@@ -937,6 +1051,10 @@
     id start_position_beats = [dict objectForKey:@"StartPositionBeats"];
     id stop_position_beats = [dict objectForKey:@"StopPositionBeats"];
     id play_position_beats = [dict objectForKey:@"PlayPositionBeats"];
+    id punchin_position_set = [dict objectForKey:@"PunchInPositionSet"];
+    id punchout_position_set = [dict objectForKey:@"PunchOutPositionSet"];
+    id punchin_position_beats = [dict objectForKey:@"PunchInPositionBeats"];
+    id punchout_position_beats = [dict objectForKey:@"PunchOutPositionBeats"];
 
     id routing = [dict objectForKey:@"Routing"];
     
@@ -979,6 +1097,20 @@
     }
     if (play_position_beats) {
         _state->playPositionBeats = [play_position_beats doubleValue];
+    }
+    if (punchin_position_set) {
+        if ([punchin_position_set boolValue]) _state->punchInPositionSet.test_and_set();
+        else                                  _state->punchInPositionSet.clear();
+    }
+    if (punchout_position_set) {
+        if ([punchout_position_set boolValue]) _state->punchOutPositionSet.test_and_set();
+        else                                   _state->punchOutPositionSet.clear();
+    }
+    if (punchin_position_beats) {
+        _state->punchInPositionBeats = [punchin_position_beats doubleValue];
+    }
+    if (punchout_position_beats) {
+        _state->punchOutPositionBeats = [punchout_position_beats doubleValue];
     }
 
     if (routing) {
@@ -1088,6 +1220,10 @@
         @"StartPositionBeats" : @(_state->startPositionBeats.load()),
         @"StopPositionBeats" : @(_state->stopPositionBeats.load()),
         @"PlayPositionBeats" : @(_state->playPositionBeats.load()),
+        @"PunchInPositionSet" : @(_state->punchInPositionSet.test()),
+        @"PunchOutPositionSet" : @(_state->punchOutPositionSet.test()),
+        @"PunchInPositionBeats" : @(_state->punchInPositionBeats.load()),
+        @"PunchOutPositionBeats" : @(_state->punchOutPositionBeats.load()),
         @"Routing" : @(_routingButton.selected),
         @"Record" : @(_recordButton.selected),
         @"Repeat" : @(_repeatButton.selected),
@@ -1383,7 +1519,7 @@
     
     // start position crop marker
     _state->startPositionBeats = MIN(_state->startPositionBeats.load(), _state->maxDuration.load());
-    _overlayLeft.hidden = _playhead.hidden;
+    _cropOverlayLeft.hidden = _playhead.hidden;
     _cropLeft.hidden = _playhead.hidden;
     if (!_cropLeft.hidden) {
         if (!_state->startPositionSet.test() && !_activePannedMarker) {
@@ -1394,7 +1530,7 @@
 
     // stop position crop marker
     _state->stopPositionBeats = MIN(_state->stopPositionBeats.load(), _state->maxDuration.load());
-    _overlayRight.hidden = _playhead.hidden;
+    _cropOverlayRight.hidden = _playhead.hidden;
     _cropRight.hidden = _playhead.hidden;
     if (!_cropRight.hidden) {
         if (!_state->stopPositionSet.test() && !_activePannedMarker) {
@@ -1402,6 +1538,29 @@
         }
         _cropRightLeading.constant = _state->stopPositionBeats * PIXELS_PER_BEAT;
     }
+    
+    // punch in marker
+    _state->punchInPositionBeats = MIN(_state->punchInPositionBeats.load(), _state->maxDuration.load());
+    _punchIn.hidden = _playhead.hidden || !_punchInOutButton.selected;
+    if (!_punchIn.hidden) {
+        if (!_state->punchInPositionSet.test() && !_activePannedMarker) {
+            _state->punchInPositionBeats = 0.0;
+        }
+        _punchInLeading.constant = _state->punchInPositionBeats * PIXELS_PER_BEAT;
+    }
+
+    // punch out marker
+    _state->punchOutPositionBeats = MIN(_state->punchOutPositionBeats.load(), _state->maxDuration.load());
+    _punchOut.hidden = _playhead.hidden || !_punchInOutButton.selected;
+    if (!_punchOut.hidden) {
+        if (!_state->punchOutPositionSet.test() && !_activePannedMarker) {
+            _state->punchOutPositionBeats = _state->maxDuration.load();
+        }
+        _punchOutLeading.constant = _state->punchOutPositionBeats * PIXELS_PER_BEAT;
+    }
+    
+    // punch overlay
+    _punchOverlay.hidden = _punchIn.hidden || _punchOut.hidden;
 }
 
 - (void)renderMpeIndicators {

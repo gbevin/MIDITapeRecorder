@@ -57,6 +57,8 @@
 		26F36162276B0BDC00077518 /* Preferences.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F36161276B0BDB00077518 /* Preferences.mm */; };
 		26F36165276B0D0200077518 /* URLHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F36164276B0D0200077518 /* URLHelper.mm */; };
 		26F36168276B957400077518 /* NoteState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F36167276B954400077518 /* NoteState.cpp */; };
+		26F3616D276CA0DD00077518 /* PunchOutView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F3616A276CA0DD00077518 /* PunchOutView.mm */; };
+		26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26F3616C276CA0DD00077518 /* PunchInView.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,6 +181,10 @@
 		26F36164276B0D0200077518 /* URLHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = URLHelper.mm; sourceTree = "<group>"; };
 		26F36166276B8B1000077518 /* NoteState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NoteState.h; sourceTree = "<group>"; };
 		26F36167276B954400077518 /* NoteState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NoteState.cpp; sourceTree = "<group>"; };
+		26F36169276CA0DD00077518 /* PunchInView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PunchInView.h; sourceTree = "<group>"; };
+		26F3616A276CA0DD00077518 /* PunchOutView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PunchOutView.mm; sourceTree = "<group>"; };
+		26F3616B276CA0DD00077518 /* PunchOutView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PunchOutView.h; sourceTree = "<group>"; };
+		26F3616C276CA0DD00077518 /* PunchInView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PunchInView.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +260,10 @@
 				268A930B27616A2200B2D74A /* PlayheadView.mm */,
 				266465EE27597987002D4459 /* PopupView.h */,
 				266465EF27597988002D4459 /* PopupView.mm */,
+				26F36169276CA0DD00077518 /* PunchInView.h */,
+				26F3616C276CA0DD00077518 /* PunchInView.mm */,
+				26F3616B276CA0DD00077518 /* PunchOutView.h */,
+				26F3616A276CA0DD00077518 /* PunchOutView.mm */,
 				26C49D1A2756D41700A6FAB4 /* TimelineView.h */,
 				26C49D192756D41700A6FAB4 /* TimelineView.mm */,
 			);
@@ -551,6 +561,7 @@
 				26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */,
 				268A93142762793000B2D74A /* MPEButton.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
+				26F3616D276CA0DD00077518 /* PunchOutView.mm in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
 				26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
@@ -565,6 +576,7 @@
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
 				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
+				26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
 				26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */,
