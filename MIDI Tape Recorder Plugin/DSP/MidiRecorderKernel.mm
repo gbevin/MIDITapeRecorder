@@ -372,6 +372,11 @@ void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
 }
 
 void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
+    // we rely on the single-threaded nature of the audio callback thread to coordinate
+    // important state transitions at the beginning of the callback, before anything else
+    // this prevents split-state conditions to change semantics in the middle of processing
+
+    // host transport sync
     if (_ioState.transportChanged) {
         if (_ioState.transportMoving) {
             if (_state.record.test()) {
@@ -391,10 +396,23 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         }
     }
     
-    // we rely on the single-threaded nature of the audio callback thread to coordinate
-    // important state transitions at the beginning of the callback, before anything else
-    // this prevents split-state conditions to change semantics in the middle of processing
-    
+    // record arming while host transport is already moving
+    if (!_state.processedRecordArmed.test_and_set()) {
+        if (_ioState.transportMoving) {
+            if (_state.record.test()) {
+                for (int t = 0; t < MIDI_TRACKS; ++t) {
+                    if (_state.track[t].recordEnabled.test()) {
+                        _state.processedBeginRecording[t].clear();
+                    }
+                }
+            }
+
+            _state.processedPlay.clear();
+            _state.processedUIPlay.clear();
+        }
+    }
+
+    // individual track states
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MidiTrackState& track_state = _state.track[t];
         

@@ -461,6 +461,7 @@
         }
         else {
             _state->transportStartSampleSeconds = 0.0;
+            _state->processedRecordArmed.clear();
         }
     }
     else {
