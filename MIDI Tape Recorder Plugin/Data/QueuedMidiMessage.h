@@ -23,4 +23,4 @@ struct QueuedMidiMessage {
     uint8_t length:4;
 };
 
-static const int32_t QUEUED_MSG_SIZE = sizeof(QueuedMidiMessage);
+const int32_t QUEUED_MSG_SIZE = sizeof(QueuedMidiMessage);

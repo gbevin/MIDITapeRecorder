@@ -8,22 +8,31 @@
 
 #pragma once
 
+#include <cstdint>
+
 enum RecordedMidiMessageType {
     MIDI_1_0 = 0,
     INTERNAL = 1
 };
 
+enum InternalMessageStatus {
+    UNDEFINED_INTERNAL_MESSAGE = 0,
+    OVERDUB_START_MESSAGE = 1,
+    OVERDUB_STOP_MESSAGE = 2
+};
+
 struct RecordedMidiMessage {
-    RecordedMidiMessage() {
-        length = 0;
-        type = MIDI_1_0;
-    }
+    RecordedMidiMessage();
     
     double offsetBeats  { 0.0 };
     uint8_t data[3]     { 0, 0, 0 };
     
     uint8_t length:4;
     RecordedMidiMessageType type:4;
-};
+    
+    bool isOverdubStart() const;
+    bool isOverdubStop() const;
 
-static const int32_t RECORDED_MSG_SIZE = sizeof(RecordedMidiMessage);
+    static RecordedMidiMessage makeOverdubStartMessage(double offsetBeats);
+    static RecordedMidiMessage makeOverdubStopMessage(double offsetBeats);
+};

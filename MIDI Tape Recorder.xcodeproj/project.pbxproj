@@ -11,6 +11,8 @@
 		2613427B2753D995001FF0BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2613427A2753D995001FF0BB /* Assets.xcassets */; };
 		2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2613427C2753DA69001FF0BB /* CoreGraphics.framework */; };
 		261D69332753BCDA003527B2 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261D69322753BCDA003527B2 /* AudioToolbox.framework */; };
+		262A75AD276E915400FE6FDF /* RecordedMidiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */; };
+		265BB625276EA3CA00471388 /* NoteTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 265BB623276EA3CA00471388 /* NoteTracker.cpp */; };
 		266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EC27596B50002D4459 /* ToolBarButton.mm */; };
 		266465F027597988002D4459 /* PopupView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EF27597988002D4459 /* PopupView.mm */; };
 		2682D465276D4A270076D20B /* RecorderUndoManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2682D464276D4A270076D20B /* RecorderUndoManager.mm */; };
@@ -94,6 +96,9 @@
 		2613427A2753D995001FF0BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2613427C2753DA69001FF0BB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
 		261D69322753BCDA003527B2 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = RecordedMidiMessage.cpp; sourceTree = "<group>"; };
+		265BB623276EA3CA00471388 /* NoteTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NoteTracker.cpp; sourceTree = "<group>"; };
+		265BB624276EA3CA00471388 /* NoteTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoteTracker.h; sourceTree = "<group>"; };
 		266465EB27596B50002D4459 /* ToolBarButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ToolBarButton.h; sourceTree = "<group>"; };
 		266465EC27596B50002D4459 /* ToolBarButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ToolBarButton.mm; sourceTree = "<group>"; };
 		266465EE27597987002D4459 /* PopupView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PopupView.h; sourceTree = "<group>"; };
@@ -226,6 +231,8 @@
 				268A93182762997400B2D74A /* MPEState.h */,
 				26F36166276B8B1000077518 /* NoteState.h */,
 				26F36167276B954400077518 /* NoteState.cpp */,
+				265BB624276EA3CA00471388 /* NoteTracker.h */,
+				265BB623276EA3CA00471388 /* NoteTracker.cpp */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -293,6 +300,7 @@
 				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
 				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
 				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
+				262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -575,6 +583,7 @@
 				268A93142762793000B2D74A /* MPEButton.mm in Sources */,
 				26BB385F275338EE00342496 /* DSPKernelAdapter.mm in Sources */,
 				26F3616D276CA0DD00077518 /* PunchOutView.mm in Sources */,
+				265BB625276EA3CA00471388 /* NoteTracker.cpp in Sources */,
 				261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */,
 				26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */,
 				266465F027597988002D4459 /* PopupView.mm in Sources */,
@@ -587,6 +596,7 @@
 				26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */,
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
+				262A75AD276E915400FE6FDF /* RecordedMidiMessage.cpp in Sources */,
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
 				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
 				26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */,

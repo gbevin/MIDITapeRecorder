@@ -66,9 +66,6 @@
         if (record == NO) {
             // when recording is stopped, we move the recording data to the recorded data
             auto recorded = std::move(_recording);
-            if (_state->autoTrimRecordings.test() && recorded) {
-                recorded->trimDuration();
-            }
             auto recorded_preview = std::move(_recordingPreview);
 
             _recording.reset(new MidiRecordedData());
@@ -236,6 +233,10 @@
     int64_t last_offset_ticks = 0;
     for (RecordedDataVector& beat : recorded->beats) {
         for (RecordedMidiMessage& message : beat) {
+            if (message.type == INTERNAL) {
+                continue;
+            }
+            
             int64_t offset_ticks = int64_t(message.offsetBeats * MIDI_BEAT_TICKS);
             uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
             writeMidiVarLen(track, delta_ticks);

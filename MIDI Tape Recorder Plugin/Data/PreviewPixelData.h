@@ -14,7 +14,7 @@ struct PreviewPixelData {
         recording = false;
     }
     
-    int8_t notes:7;
+    uint8_t notes:7;
     bool recording:1;
     
     uint8_t events  { 0 };

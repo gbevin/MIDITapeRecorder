@@ -36,26 +36,31 @@ void MidiRecordedPreview::updateWithMessage(RecordedMidiMessage& message) {
     PreviewPixelData& pixel_data = pixels[pixel];
 
     // track the note and the events independently
-    if (message.length == 3 &&
+    if (message.type == INTERNAL) {
+        if (message.isOverdubStart() || message.isOverdubStop()) {
+            pixel_data.notes = 0;
+        }
+    }
+    else if (message.length == 3 &&
         ((message.data[0] & 0xf0) == 0x90 ||
          (message.data[0] & 0xf0) == 0x80)) {
         // note on
         if ((message.data[0] & 0xf0) == 0x90) {
             // note on with zero velocity == note off
             if (message.data[2] == 0) {
-                if (pixel_data.notes > -0x40) {
+                if (pixel_data.notes > 0) {
                     pixel_data.notes -= 1;
                 }
             }
             else {
-                if (pixel_data.notes < 0x3f) {
+                if (pixel_data.notes < 0x7f) {
                     pixel_data.notes += 1;
                 }
             }
         }
         // note off
         else if ((message.data[0] & 0xf0) == 0x80) {
-            if (pixel_data.notes > -0x40) {
+            if (pixel_data.notes > 0) {
                 pixel_data.notes -= 1;
             }
         }

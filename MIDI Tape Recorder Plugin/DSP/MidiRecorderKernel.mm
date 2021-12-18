@@ -9,6 +9,7 @@
 #import "MidiRecorderKernel.h"
 
 #include "Constants.h"
+#include "NoteTracker.h"
 #include "QueuedMidiMessage.h"
 
 #define DEBUG_MIDI_OUTPUT 0
@@ -149,6 +150,11 @@ void MidiRecorderKernel::endRecording(int track) {
     if (track_state.recordedMessages.get() == nullptr) {
         track_state.recordedMessages = std::move(track_state.pendingRecordedMessages);
         track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
+
+        // we auto-trim new recordings when this is an active preference
+        if (_state.autoTrimRecordings.test() && track_state.recordedMessages) {
+            track_state.recordedMessages->trimDuration();
+        }
     }
     // if this is an overdub, replace the new sections
     else {
@@ -161,14 +167,29 @@ void MidiRecorderKernel::endRecording(int track) {
             recorded_pixels.push_back(pending_pixels[p]);
         }
         
+        RecordedBeatVector& pending_beats = track_state.pendingRecordedMessages->beats;
+        RecordedBeatVector& recorded_beats = track_state.recordedMessages->beats;
+
         // process the individual beats of the pending recording
         double start = track_state.pendingRecordedMessages->start;
         double stop = track_state.pendingRecordedMessages->duration;
         int start_beat = (int)start;
-        int stop_beat = (int)stop;
+        int stop_beat = MIN((int)stop, (int)pending_beats.size() - 1);
         
-        RecordedBeatVector& pending_beats = track_state.pendingRecordedMessages->beats;
-        RecordedBeatVector& recorded_beats = track_state.recordedMessages->beats;
+        // track the erased note changes during the overdub recording
+        NoteTracker erased_state;
+        for (int beat = start_beat; beat <= stop_beat && beat < recorded_beats.size(); ++beat) {
+            RecordedDataVector& data = recorded_beats[beat];
+            for (RecordedMidiMessage& message : data) {
+                if (message.offsetBeats < start || message.offsetBeats > stop) {
+                    continue;
+                }
+                
+                erased_state.trackNotesForMessage(message);
+            }
+        }
+        std::vector<NoteOnMessage> note_ons = erased_state.allNoteOnMessages();
+        std::vector<NoteOffMessage> note_offs = erased_state.allNoteOffMessages();
 
         // process the beats that were affected by the overdub
         for (int beat = start_beat; beat <= stop_beat && beat < pending_beats.size(); ++beat) {
@@ -202,6 +223,20 @@ void MidiRecorderKernel::endRecording(int track) {
                         recorded_data.pop_back();
                     }
                     
+                    // add the potential note offs that have been erased through the overdub to prevent hanging notes
+                    if (note_offs.size() > 0) {
+                        for (NoteOffMessage& note_off : note_offs) {
+                            RecordedMidiMessage message;
+                            message.offsetBeats = start;
+                            message.length = 3;
+                            memcpy(&message.data[0], &note_off.data[0], 3);
+                            recorded_data.push_back(message);
+                        }
+                    }
+                    
+                    // add the internal start overdub message
+                    recorded_data.push_back(RecordedMidiMessage::makeOverdubStartMessage(start));
+
                     // add the overdub events
                     auto it = pending_data.begin();
                     while (it != pending_data.end()) {
@@ -223,6 +258,34 @@ void MidiRecorderKernel::endRecording(int track) {
                     while (it != pending_data.rend()) {
                         recorded_data.insert(recorded_data.begin(), std::move(*it));
                         it++;
+                    }
+                    
+                    // turn off all overdub notes that are still lingering
+                    if (_noteStates[track].hasLingeringNotes()) {
+                        std::vector<NoteOffMessage> messages = _noteStates[track].turnOffAllNotesAndGenerateMessages();
+                        if (!messages.empty() && _ioState.midiOutputEventBlock) {
+                            for (NoteOffMessage& note_off : messages) {
+                                RecordedMidiMessage message;
+                                message.offsetBeats = stop;
+                                message.length = 3;
+                                memcpy(&message.data[0], &note_off.data[0], 3);
+                                recorded_data.push_back(message);
+                            }
+                        }
+                    }
+                    
+                    // add the internal stop overdub message
+                    recorded_data.push_back(RecordedMidiMessage::makeOverdubStopMessage(stop));
+
+                    // add the potential note ons that have been erased through the overdub
+                    if (note_ons.size() > 0) {
+                        for (NoteOnMessage& note_on : note_ons) {
+                            RecordedMidiMessage message;
+                            message.offsetBeats = stop;
+                            message.length = 3;
+                            memcpy(&message.data[0], &note_on.data[0], 3);
+                            recorded_data.push_back(message);
+                        }
                     }
                 }
             }
@@ -658,28 +721,46 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
                             const double offset_seconds = (message.offsetBeats - beatRangeEnd) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
-                            // indicate output activity
-                            track_state.processedActivityOutput.clear();
-                            
-                            // track note on/off states
-                            _noteStates[t].trackNotesForMessage(message);
+                            // handle internal messages
+                            if (message.type == INTERNAL) {
+                                if (message.isOverdubStart() || message.isOverdubStop()) {
+                                    turnOffAllNotesForTrack(t);
+                                }
+                            }
+                            // handle regular MIDI messages
+                            else if (message.type == MIDI_1_0) {
+                                // indicate output activity
+                                track_state.processedActivityOutput.clear();
+                                
+                                // track note on/off states
+                                _noteStates[t].trackNotesForMessage(message);
 
 #if DEBUG_MIDI_OUTPUT
-                            int status = message.data[0] & 0xf0;
-                            int channel = message.data[0] & 0x0f;
-                            int data1 = message.data[1];
-                            int data2 = message.data[2];
-                            
-                            if (message.length == 2) {
-                                std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << "   ]" << std::endl;
-                            }
-                            else {
-                                std::cout << t << " " << std::setw(10) << std::fixed << std::setprecision(4) << message.offsetBeats << " : " << message.length << " - " << std::setw(2) << channel << " [" << std::hex << std::setw(2) << status << " " << std::setw(2) << data1 << " " << std::setw(2) << data2 << "]" << std::endl;
-                            }
+                                uint8_t status = message.data[0] & 0xf0;
+                                uint8_t channel = message.data[0] & 0x0f;
+                                uint8_t data1 = message.data[1];
+                                uint8_t data2 = message.data[2];
+                                
+                                if (message.length == 2) {
+                                    NSLog(@"%f %d : %d - %2s [%3s %3s    ]",
+                                          message.offsetBeats, t, message.length,
+                                          [NSString stringWithFormat:@"%d", channel].UTF8String,
+                                          [NSString stringWithFormat:@"%d", status].UTF8String,
+                                          [NSString stringWithFormat:@"%d", data1].UTF8String);
+                                }
+                                else {
+                                    NSLog(@"%f %d : %d - %2s [%3s %3s %3s]",
+                                          message.offsetBeats, t, message.length,
+                                          [NSString stringWithFormat:@"%d", channel].UTF8String,
+                                          [NSString stringWithFormat:@"%d", status].UTF8String,
+                                          [NSString stringWithFormat:@"%d", data1].UTF8String,
+                                          [NSString stringWithFormat:@"%d", data2].UTF8String);
+                                }
 #endif
-                            // send the MIDI output message
-                            _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
-                                                          t, message.length, &message.data[0]);
+                                // send the MIDI output message
+                                _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
+                                                              t, message.length, &message.data[0]);
+                            }
                         }
                         // if the track is muted, ensure we have no lingering note on messages
                         else {
@@ -707,9 +788,25 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
         return;
     }
     
+    if (!_noteStates[track].hasLingeringNotes()) {
+        return;
+    }
+    
     std::vector<NoteOffMessage> messages = _noteStates[track].turnOffAllNotesAndGenerateMessages();
     if (!messages.empty() && _ioState.midiOutputEventBlock) {
         for (NoteOffMessage& message : messages) {
+#if DEBUG_MIDI_OUTPUT
+            uint8_t status = message.data[0] & 0xf0;
+            uint8_t channel = message.data[0] & 0x0f;
+            uint8_t data1 = message.data[1];
+            uint8_t data2 = message.data[2];
+            
+            NSLog(@"%2s [%3s %3s %3s]",
+                  [NSString stringWithFormat:@"%d", channel].UTF8String,
+                  [NSString stringWithFormat:@"%d", status].UTF8String,
+                  [NSString stringWithFormat:@"%d", data1].UTF8String,
+                  [NSString stringWithFormat:@"%d", data2].UTF8String);
+#endif
             _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + _ioState.frameCount,
                                           track, 3, &message.data[0]);
         }

@@ -8,17 +8,17 @@
 
 #pragma once
 
-static const int MIDI_TRACKS = 4;
-static const int MIDI_CHANNELS = 16;
-static const int MIDI_NOTES = 128;
+const int MIDI_TRACKS = 4;
+const int MIDI_CHANNELS = 16;
+const int MIDI_NOTES = 128;
 
-static const int MIDI_NOTE_OFF = 128;
-static const int MIDI_NOTE_ON = 144;
+const int MIDI_NOTE_OFF = 128;
+const int MIDI_NOTE_ON = 144;
 
-static const int PIXELS_PER_BEAT = 32;
-static const int MAX_PREVIEW_EVENTS = 0xf;
+const int PIXELS_PER_BEAT = 32;
+const int MAX_PREVIEW_EVENTS = 0xf;
 
-static const int32_t MIDI_BEAT_TICKS = 0x7fff;
+const int32_t MIDI_BEAT_TICKS = 0x7fff;
 
 enum PluginParameters {
     // We group all the per-track parameters sequentially so that we can just apply an offset

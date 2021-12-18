@@ -14,8 +14,13 @@
 #include "Constants.h"
 #include "RecordedMidiMessage.h"
 
+struct NoteOnMessage {
+    NoteOnMessage(uint8_t channel, uint8_t note, uint8_t velocity);
+    uint8_t data[3];
+};
+
 struct NoteOffMessage {
-    NoteOffMessage(uint8_t channel, uint8_t note);
+    NoteOffMessage(uint8_t channel, uint8_t note, uint8_t velocity);
     uint8_t data[3];
 };
 
@@ -25,12 +30,11 @@ public:
     NoteState(const NoteState&) = delete;
     NoteState& operator= (const NoteState&) = delete;
     
+    bool hasLingeringNotes();
     void trackNotesForMessage(const RecordedMidiMessage& message);
     std::vector<NoteOffMessage> turnOffAllNotesAndGenerateMessages();
     
 private:
-    bool activeNotes[MIDI_CHANNELS][MIDI_NOTES];
-    uint32_t noteCount;
+    bool _activeNotes[MIDI_CHANNELS][MIDI_NOTES];
+    uint32_t _noteCount;
 };
-
-
