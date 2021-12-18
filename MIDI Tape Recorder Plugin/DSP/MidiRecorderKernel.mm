@@ -174,10 +174,11 @@ void MidiRecorderKernel::endRecording(int track) {
         for (int beat = start_beat; beat <= stop_beat && beat < pending_beats.size(); ++beat) {
             RecordedDataVector& pending_data = pending_beats[beat];
 
-            int start_pixel = beat * PIXELS_PER_BEAT;
-            int stop_pixel = MIN(start_pixel + PIXELS_PER_BEAT, (int)pending_pixels.size());
+            int start_pixel = MAX(beat * PIXELS_PER_BEAT, start * PIXELS_PER_BEAT);
+            int stop_pixel = MIN(MIN(start_pixel + PIXELS_PER_BEAT, stop * PIXELS_PER_BEAT), (int)pending_pixels.size());
 
             // if the beat is longer than the original recording, simply move all the data over
+            // the preview pixels have already been moved over
             if (beat >= recorded_beats.size()) {
                 recorded_beats.push_back(std::move(pending_beats[beat]));
             }
