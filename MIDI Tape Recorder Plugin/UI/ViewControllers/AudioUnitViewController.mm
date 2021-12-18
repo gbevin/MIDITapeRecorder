@@ -1745,7 +1745,7 @@
     _state->processedInvalidate[ordinal].clear();
 }
 
-#pragma mark - Undo
+#pragma mark - Undo / redo
 
 - (void)undoManagerUpdated {
     _undoButton.enabled = _mainUndoManager.canUndo;
@@ -1766,6 +1766,9 @@
 
 - (void)restoreRecorded:(int)ordinal withData:(NSDictionary*)data {
     [[_midiQueueProcessor recorder:ordinal] dictToRecorded:data];
+    [self withMidiTrack:ordinal view:^(MidiTrackView* view) {
+        [view rebuild];
+    }];
 }
 
 - (void)registerRecordedForUndo:(int)ordinal {
