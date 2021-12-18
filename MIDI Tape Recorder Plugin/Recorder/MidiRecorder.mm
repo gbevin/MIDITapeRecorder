@@ -391,30 +391,39 @@
 
 - (void)ping:(double)timeSampleSeconds {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record && _recording) {
-            // mark the first time the recording had processing
-            if (_recording->start < 0.0) {
-                _recording->start = _state->playPositionBeats;
+        // don't record if record enable isn't active
+        if (!_record || !_recording) {
+            return;
+        }
+        
+        // if punch in/out is active, only record during the punch in/out positions
+        if (_state->punchInOut.test() &&
+            (_state->playPositionBeats < _state->punchInPositionBeats.load() || _state->playPositionBeats > _state->punchOutPositionBeats.load())) {
+            return;
+        }
+
+        // mark the first time the recording had processing
+        if (_recording->start < 0.0) {
+            _recording->start = _state->playPositionBeats;
+        }
+        
+        // update the recording duration even when there's no incoming messages
+        if (_state->transportStartSampleSeconds == 0.0) {
+            _recording->duration = 0.0;
+        }
+        else {
+            _recording->duration = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
+        }
+        
+        _recording->populateUpToBeat(_recording->duration);
+        
+        // update the preview in case of gaps
+        if (_recordingPreview) {
+            if (_recordingPreview->startPixel < 0) {
+                _recordingPreview->startPixel = _recording->start * PIXELS_PER_BEAT;
             }
             
-            // update the recording duration even when there's no incoming messages
-            if (_state->transportStartSampleSeconds == 0.0) {
-                _recording->duration = 0.0;
-            }
-            else {
-                _recording->duration = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
-            }
-            
-            _recording->populateUpToBeat(_recording->duration);
-            
-            // update the preview in case of gaps
-            if (_recordingPreview) {
-                if (_recordingPreview->startPixel < 0) {
-                    _recordingPreview->startPixel = _recording->start * PIXELS_PER_BEAT;
-                }
-                
-                _recordingPreview->updateWithOffsetBeats(_recording->duration);
-            }
+            _recordingPreview->updateWithOffsetBeats(_recording->duration);
         }
     });
 }
@@ -551,6 +560,12 @@
         
         // don't record if record enable isn't active
         if (!_record || !_recording) {
+            return;
+        }
+        
+        // if punch in/out is active, only record during the punch in/out positions
+        if (_state->punchInOut.test() &&
+            (_state->playPositionBeats < _state->punchInPositionBeats.load() || _state->playPositionBeats > _state->punchOutPositionBeats.load())) {
             return;
         }
 

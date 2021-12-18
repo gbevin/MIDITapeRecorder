@@ -1431,7 +1431,7 @@
 - (void)updatePunchInOutState {
     if (_state->punchInOut.test() != _punchInOutButton.selected) {
         if (_punchInOutButton.selected) _state->punchInOut.test_and_set();
-        else                        _state->punchInOut.clear();
+        else                            _state->punchInOut.clear();
         
         if (_state->hostParamChange) {
             _state->hostParamChange(ID_PUNCH_INOUT, _state->punchInOut.test());

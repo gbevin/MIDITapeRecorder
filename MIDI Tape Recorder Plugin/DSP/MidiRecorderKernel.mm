@@ -615,8 +615,9 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MidiTrackState& track_state = _state.track[t];
         
-        // play when the track is not recording and there are recorded messages
-        if (!track_state.recording.test() && track_state.recordedMessages && !track_state.recordedMessages->empty()) {
+        // play when there are recorded messages and the track is not recording, or it's recording and outside the punch in/out range
+        if (track_state.recordedMessages && !track_state.recordedMessages->empty() &&
+            (!track_state.recording.test() || (_state.punchInOut.test() && (_state.playPositionBeats < _state.punchInPositionBeats.load() || _state.playPositionBeats > _state.punchOutPositionBeats.load())))) {
             // iterate over all the beats inside this processing range
             for (int beat = (int)beatRangeBegin; beat <= (int)beatRangeEnd; ++beat) {
                 // if the beat falls outside of the range of recorded messages, we're done
