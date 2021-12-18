@@ -230,25 +230,49 @@ RECORDER</string>
                                                     <action selector="undoPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dq3-1j-Q6U"/>
                                                 </connections>
                                             </button>
+                                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7hB-oX-D3M" userLabel="Redo" customClass="ToolBarButton">
+                                                <rect key="frame" x="131" y="2.5" width="25" height="25"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="7hB-oX-D3M" secondAttribute="height" multiplier="1:1" id="DD3-JK-3GY"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                                <color key="tintColor" name="Orange"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="redo">
+                                                    <color key="titleColor" name="Orange"/>
+                                                </state>
+                                                <state key="disabled">
+                                                    <color key="titleColor" name="Orange"/>
+                                                </state>
+                                                <state key="selected">
+                                                    <color key="titleColor" name="Blue"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="redoPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Q7Y-hU-Itg"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="sq8-b6-k0h" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="66z-u4-JlJ"/>
                                             <constraint firstItem="0Uy-sE-T22" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="6Aq-te-5zP"/>
                                             <constraint firstItem="dDb-S6-pZD" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="t63-nw-aik" secondAttribute="leading" id="E9I-lL-LwV"/>
-                                            <constraint firstItem="81j-AC-XX3" firstAttribute="leading" secondItem="t63-nw-aik" secondAttribute="centerX" constant="2" id="FjL-LL-vKb"/>
                                             <constraint firstItem="dDb-S6-pZD" firstAttribute="height" secondItem="0Uy-sE-T22" secondAttribute="height" id="Geg-GU-6TJ"/>
                                             <constraint firstItem="sq8-b6-k0h" firstAttribute="height" secondItem="0Uy-sE-T22" secondAttribute="height" id="HL2-Ma-eUb"/>
                                             <constraint firstItem="81j-AC-XX3" firstAttribute="width" secondItem="0Uy-sE-T22" secondAttribute="width" id="KRz-xg-tyO"/>
                                             <constraint firstItem="dDb-S6-pZD" firstAttribute="trailing" secondItem="sq8-b6-k0h" secondAttribute="leading" constant="-4" id="M0z-Vm-Gx7"/>
+                                            <constraint firstItem="7hB-oX-D3M" firstAttribute="height" secondItem="0Uy-sE-T22" secondAttribute="height" id="QAN-lF-gde"/>
+                                            <constraint firstItem="81j-AC-XX3" firstAttribute="leading" secondItem="sq8-b6-k0h" secondAttribute="trailing" constant="4" id="QFs-RU-5cO"/>
                                             <constraint firstItem="81j-AC-XX3" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="StA-fp-qAs"/>
                                             <constraint firstAttribute="height" constant="30" id="Zvd-51-oxl"/>
                                             <constraint firstItem="dDb-S6-pZD" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="bT4-AN-c2W"/>
+                                            <constraint firstItem="7hB-oX-D3M" firstAttribute="leading" secondItem="0Uy-sE-T22" secondAttribute="trailing" constant="4" id="fI1-qK-Tg4"/>
                                             <constraint firstItem="sq8-b6-k0h" firstAttribute="width" secondItem="0Uy-sE-T22" secondAttribute="width" id="gHv-V8-E06"/>
                                             <constraint firstItem="0Uy-sE-T22" firstAttribute="leading" secondItem="81j-AC-XX3" secondAttribute="trailing" constant="4" id="ld8-I6-ryS"/>
                                             <constraint firstItem="81j-AC-XX3" firstAttribute="height" secondItem="0Uy-sE-T22" secondAttribute="height" id="lex-xI-rqM"/>
                                             <constraint firstItem="sq8-b6-k0h" firstAttribute="trailing" secondItem="t63-nw-aik" secondAttribute="centerX" constant="-2" id="lv4-EW-bG4"/>
                                             <constraint firstItem="dDb-S6-pZD" firstAttribute="width" secondItem="0Uy-sE-T22" secondAttribute="width" id="mu0-vd-xsc"/>
+                                            <constraint firstItem="7hB-oX-D3M" firstAttribute="centerY" secondItem="t63-nw-aik" secondAttribute="centerY" id="n88-IF-WSL"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-KR-jE3" userLabel="Top Right Toolbar">
@@ -1634,6 +1658,7 @@ RECORDER</string>
                         <outlet property="aboutButton" destination="Nja-eO-rX7" id="3EP-vJ-nYU"/>
                         <outlet property="aboutView" destination="oVL-Ty-mxd" id="Ptu-hk-wqp"/>
                         <outlet property="chaseButton" destination="sq8-b6-k0h" id="sXb-q5-VLj"/>
+                        <outlet property="chaseTrailing" destination="lv4-EW-bG4" id="Z9x-xd-USL"/>
                         <outlet property="clearButton1" destination="iYd-rc-sVS" id="aXl-Vg-cLH"/>
                         <outlet property="clearButton2" destination="yUW-33-hCc" id="tF9-sv-RiP"/>
                         <outlet property="clearButton3" destination="Sqh-Tr-1XP" id="NMU-d3-f2T"/>
@@ -1713,6 +1738,7 @@ RECORDER</string>
                         <outlet property="recordButton2" destination="DIz-1j-u10" id="NFk-zV-skF"/>
                         <outlet property="recordButton3" destination="3pU-49-ygj" id="SGm-AW-hgY"/>
                         <outlet property="recordButton4" destination="kFp-mR-8eu" id="3ap-5b-qrI"/>
+                        <outlet property="redoButton" destination="7hB-oX-D3M" id="9gK-ME-cWJ"/>
                         <outlet property="repeatButton" destination="c7Q-aj-bBd" id="87T-Wd-5jZ"/>
                         <outlet property="rewindButton" destination="IuJ-5c-4Lw" id="GBN-OS-J6L"/>
                         <outlet property="routingButton" destination="5s5-fr-Amh" id="xra-8t-WwU"/>
@@ -1721,6 +1747,7 @@ RECORDER</string>
                         <outlet property="timeline" destination="k5P-YR-lyM" id="iLw-rk-VBV"/>
                         <outlet property="timelineTapGesture" destination="5hC-iX-y1X" id="4NN-AD-WQu"/>
                         <outlet property="timelineWidth" destination="HUg-bg-jWJ" id="bIC-Jm-cE0"/>
+                        <outlet property="toolbar" destination="bKj-4Y-TLw" id="Xc7-rv-Eex"/>
                         <outlet property="tracks" destination="tCM-sv-7no" id="Hkf-8A-Ysn"/>
                         <outlet property="undoButton" destination="0Uy-sE-T22" id="ucj-su-WQq"/>
                     </connections>
@@ -2137,6 +2164,7 @@ this plugin stays maintained and keeps getting better.</string>
         <image name="questionmark_circle_fill" width="135" height="135"/>
         <image name="record_circle" width="135" height="135"/>
         <image name="record_circle_fill" width="135" height="135"/>
+        <image name="redo" width="102" height="102"/>
         <image name="repeat" width="135" height="135"/>
         <image name="square_and_arrow_down" width="135" height="135"/>
         <image name="square_and_arrow_up" width="135" height="135"/>

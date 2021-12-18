@@ -42,6 +42,8 @@
 @property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput3;
 @property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityOutput4;
 
+@property (weak, nonatomic) IBOutlet UIView* toolbar;
+
 @property (weak, nonatomic) IBOutlet UIButton* routingButton;
 
 @property (weak, nonatomic) IBOutlet UIButton* rewindButton;
@@ -52,10 +54,12 @@
 @property (weak, nonatomic) IBOutlet UIButton* chaseButton;
 @property (weak, nonatomic) IBOutlet UIButton* punchInOutButton;
 @property (weak, nonatomic) IBOutlet UIButton* undoButton;
+@property (weak, nonatomic) IBOutlet UIButton* redoButton;
 @property (weak, nonatomic) IBOutlet UIButton* settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* aboutButton;
 @property (weak, nonatomic) IBOutlet UIButton* donateButton;
 
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* chaseTrailing;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
 @property (weak, nonatomic) IBOutlet UIButton* recordButton1;
@@ -866,10 +870,14 @@
     }
 }
 
-#pragma mark IBAction - Undo
+#pragma mark IBAction - Undo / Redo
 
 - (IBAction)undoPressed:(UIButton*)sender {
     [_mainUndoManager undo];
+}
+
+- (IBAction)redoPressed:(UIButton*)sender {
+    [_mainUndoManager redo];
 }
 
 #pragma mark UIGestureRecognizerDelegate
@@ -1442,6 +1450,15 @@
 #pragma mark - Rendering
 
 - (void)viewDidLayoutSubviews {
+    if (_toolbar.bounds.size.width >= 686) {
+        _redoButton.hidden = NO;
+        _chaseTrailing.constant = -2 - (4 + _redoButton.bounds.size.width) / 2.0;
+    }
+    else {
+        _redoButton.hidden = YES;
+        _chaseTrailing.constant = -2;
+    }
+
     [_timeline setNeedsLayout];
 
     [self withMidiTrackViews:^(int t, MidiTrackView* view) {
@@ -1720,6 +1737,7 @@
 
 - (void)undoManagerUpdated {
     _undoButton.enabled = _mainUndoManager.canUndo;
+    _redoButton.enabled = _mainUndoManager.canRedo;
 }
 
 - (void)restoreSettings:(NSDictionary*)data {
@@ -1727,7 +1745,7 @@
 }
 
 - (void)registerSettingsForUndo {
-    if (!_renderReady || _mainUndoManager.undoing) {
+    if (!_renderReady) {
         return;
     }
     
@@ -1739,7 +1757,7 @@
 }
 
 - (void)registerRecordedForUndo:(int)ordinal {
-    if (!_renderReady || _mainUndoManager.undoing) {
+    if (!_renderReady) {
         return;
     }
     
