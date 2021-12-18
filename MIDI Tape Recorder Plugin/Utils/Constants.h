@@ -20,7 +20,7 @@ static const int MAX_PREVIEW_EVENTS = 0xf;
 
 static const int32_t MIDI_BEAT_TICKS = 0x7fff;
 
-enum {
+enum PluginParameters {
     // We group all the per-track parameters sequentially so that we can just apply an offset
     // to determine which track parameter needs to be addressed
     ID_RECORD_1,

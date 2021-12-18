@@ -43,15 +43,21 @@ void MidiRecordedPreview::updateWithMessage(RecordedMidiMessage& message) {
         if ((message.data[0] & 0xf0) == 0x90) {
             // note on with zero velocity == note off
             if (message.data[2] == 0) {
-                pixel_data.notes -= 1;
+                if (pixel_data.notes > -0x40) {
+                    pixel_data.notes -= 1;
+                }
             }
             else {
-                pixel_data.notes += 1;
+                if (pixel_data.notes < 0x3f) {
+                    pixel_data.notes += 1;
+                }
             }
         }
         // note off
         else if ((message.data[0] & 0xf0) == 0x80) {
-            pixel_data.notes -= 1;
+            if (pixel_data.notes > -0x40) {
+                pixel_data.notes -= 1;
+            }
         }
     }
     else if (pixel_data.events < 0xff) {

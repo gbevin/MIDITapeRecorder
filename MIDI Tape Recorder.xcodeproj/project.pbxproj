@@ -226,9 +226,6 @@
 				268A93182762997400B2D74A /* MPEState.h */,
 				26F36166276B8B1000077518 /* NoteState.h */,
 				26F36167276B954400077518 /* NoteState.cpp */,
-				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
-				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
-				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -286,6 +283,20 @@
 			path = Buttons;
 			sourceTree = "<group>";
 		};
+		262A75AB276E267700FE6FDF /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				26BE25DA2766CF8A00A6BAB7 /* MidiRecordedData.h */,
+				26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */,
+				26BE25DD27675FD800A6BAB7 /* MidiRecordedPreview.h */,
+				26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */,
+				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
+				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
+				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		26B140822754590300748F00 /* TPCircularBuffer */ = {
 			isa = PBXGroup;
 			children = (
@@ -303,10 +314,6 @@
 				260EF237276A285E00FC6C65 /* MidiPreviewProvider.h */,
 				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
-				26BE25DA2766CF8A00A6BAB7 /* MidiRecordedData.h */,
-				26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */,
-				26BE25DD27675FD800A6BAB7 /* MidiRecordedPreview.h */,
-				26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */,
 				26C540C22757C11B004E4813 /* MidiRecorder.h */,
 				26C540C32757C11B004E4813 /* MidiRecorder.mm */,
 				26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */,
@@ -358,6 +365,7 @@
 				26BB3867275338EE00342496 /* Info.plist */,
 				2613427A2753D995001FF0BB /* Assets.xcassets */,
 				26BB384F275338EE00342496 /* Audio Unit */,
+				262A75AB276E267700FE6FDF /* Data */,
 				26BB3853275338EE00342496 /* DSP */,
 				26B1408E2754716500748F00 /* Recorder */,
 				260EF238276A2B4A00FC6C65 /* State */,

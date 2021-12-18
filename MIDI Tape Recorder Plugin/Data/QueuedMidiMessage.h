@@ -9,14 +9,18 @@
 #pragma once
 
 struct QueuedMidiMessage {
-    QueuedMidiMessage() {}
+    QueuedMidiMessage() {
+        cable = 0;
+        length = 0;
+    }
     QueuedMidiMessage(const QueuedMidiMessage&) = delete;
     QueuedMidiMessage& operator= (const QueuedMidiMessage&) = delete;
     
     double timeSampleSeconds    { 0.0 };
-    uint8_t cable               { 0 };
-    uint16_t length             { 0 };
-    uint8_t data[3]             { 0, 0, 0};
+    uint8_t data[3]             { 0, 0, 0 };
+    
+    uint8_t cable:4;
+    uint8_t length:4;
 };
 
 static const int32_t QUEUED_MSG_SIZE = sizeof(QueuedMidiMessage);
