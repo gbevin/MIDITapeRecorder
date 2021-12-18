@@ -20,6 +20,10 @@ Features:
 * Four independent tracks for recording MIDI channel voice messages
 * Sample accurate MIDI recording and playback
 * Real-time display of active recorded notes and other received messages
+* MPE support
+* Multi-level undo and redo
+* Overdub recording
+* Punch in and punch out recording for automated regional overdubbing
 * Automated storage and recall of all recordings inside the AUv3 host project
 * MIDI file import and export for the project or each individual track
 * Repeated playback with start and stop locators
@@ -31,3 +35,5 @@ Features:
 * Clear all recordings or clear a single track
 * Activity indicators for MIDI input and output on each track
 * Optional per-track record enable, input monitoring, and mute
+* Four virtual MIDI cable inputs if the AUv3 host supports it
+* Optional routing of first virtual MIDI cable to all tracks
