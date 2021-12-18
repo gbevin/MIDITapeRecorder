@@ -111,7 +111,7 @@
         else {
             NSMutableData* recorded_data = [NSMutableData new];
             for (RecordedDataVector& beat : recorded->beats) {
-                [recorded_data appendBytes:&beat.data()[0] length:beat.size()*sizeof(RecordedMidiMessage)];
+                [recorded_data appendBytes:beat.data() length:beat.size()*sizeof(RecordedMidiMessage)];
             }
             result = @{
                 @"Recorded" : recorded_data,
