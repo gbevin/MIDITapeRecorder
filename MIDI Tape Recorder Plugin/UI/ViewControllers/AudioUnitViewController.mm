@@ -60,6 +60,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* donateButton;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* chaseTrailing;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint* undoLeading;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
 @property (weak, nonatomic) IBOutlet UIButton* recordButton1;
@@ -1450,13 +1451,23 @@
 #pragma mark - Rendering
 
 - (void)viewDidLayoutSubviews {
-    if (_toolbar.bounds.size.width >= 686) {
+    // dynamically adapt the undo/redo section of the toolbar based
+    // on the available width
+    NSLog(@"%f %f", self.view.bounds.size.width, _redoButton.bounds.size.width);
+    if (self.view.bounds.size.width >= 768) {
         _redoButton.hidden = NO;
-        _chaseTrailing.constant = -2 - (4 + _redoButton.bounds.size.width) / 2.0;
+        _chaseTrailing.constant = -2.0 - 3.0 * (4.0 + _redoButton.bounds.size.width) / 4.0;
+        _undoLeading.constant = 4.0 + (4.0 + _redoButton.bounds.size.width) / 2.0;
+    }
+    else if (self.view.bounds.size.width >= 686) {
+        _redoButton.hidden = NO;
+        _chaseTrailing.constant = -2.0 - (4.0 + _redoButton.bounds.size.width) / 2.0;
+        _undoLeading.constant = 4.0;
     }
     else {
         _redoButton.hidden = YES;
-        _chaseTrailing.constant = -2;
+        _chaseTrailing.constant = -2.0;
+        _undoLeading.constant = 4.0;
     }
 
     [_timeline setNeedsLayout];

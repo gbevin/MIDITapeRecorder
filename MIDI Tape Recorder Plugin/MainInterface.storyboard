@@ -215,10 +215,10 @@ RECORDER</string>
                                                     </constraint>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                                <color key="tintColor" name="Orange"/>
+                                                <color key="tintColor" name="Gray1"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" image="undo">
-                                                    <color key="titleColor" name="Orange"/>
+                                                    <color key="titleColor" name="Gray1"/>
                                                 </state>
                                                 <state key="disabled">
                                                     <color key="titleColor" name="Orange"/>
@@ -236,10 +236,10 @@ RECORDER</string>
                                                     <constraint firstAttribute="width" secondItem="7hB-oX-D3M" secondAttribute="height" multiplier="1:1" id="DD3-JK-3GY"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                                <color key="tintColor" name="Orange"/>
+                                                <color key="tintColor" name="Gray1"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" image="redo">
-                                                    <color key="titleColor" name="Orange"/>
+                                                    <color key="titleColor" name="Gray1"/>
                                                 </state>
                                                 <state key="disabled">
                                                     <color key="titleColor" name="Orange"/>
@@ -1750,6 +1750,7 @@ RECORDER</string>
                         <outlet property="toolbar" destination="bKj-4Y-TLw" id="Xc7-rv-Eex"/>
                         <outlet property="tracks" destination="tCM-sv-7no" id="Hkf-8A-Ysn"/>
                         <outlet property="undoButton" destination="0Uy-sE-T22" id="ucj-su-WQq"/>
+                        <outlet property="undoLeading" destination="ld8-I6-ryS" id="cbX-5s-xan"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -2179,6 +2180,9 @@ this plugin stays maintained and keeps getting better.</string>
         </namedColor>
         <namedColor name="Gray0">
             <color red="0.66666666666666663" green="0.66666666666666663" blue="0.68627450980392157" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Gray1">
+            <color red="0.38823529411764707" green="0.38823529411764707" blue="0.40000000000000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="Gray2">
             <color red="0.33333333333333331" green="0.33333333333333331" blue="0.34509803921568627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
