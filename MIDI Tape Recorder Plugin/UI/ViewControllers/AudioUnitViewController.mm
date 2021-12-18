@@ -1454,7 +1454,6 @@
 - (void)viewDidLayoutSubviews {
     // dynamically adapt the undo/redo section of the toolbar based
     // on the available width
-    NSLog(@"%f %f", self.view.bounds.size.width, _redoButton.bounds.size.width);
     if (self.view.bounds.size.width >= 768) {
         _redoButton.hidden = NO;
         _chaseTrailing.constant = -2.0 - 3.0 * (4.0 + _redoButton.bounds.size.width) / 4.0;
