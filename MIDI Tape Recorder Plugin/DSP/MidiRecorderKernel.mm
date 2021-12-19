@@ -147,13 +147,13 @@ void MidiRecorderKernel::endRecording(int track) {
     track_state.recording.clear();
     
     // if this is a direct recording, just move all the data over
-    if (track_state.recordedMessages.get() == nullptr) {
-        track_state.recordedMessages = std::move(track_state.pendingRecordedMessages);
+    if (track_state.recordedData.get() == nullptr) {
+        track_state.recordedData = std::move(track_state.pendingRecordedData);
         track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
 
         // we auto-trim new recordings when this is an active preference
-        if (_state.autoTrimRecordings.test() && track_state.recordedMessages) {
-            track_state.recordedMessages->trimDuration();
+        if (_state.autoTrimRecordings.test() && track_state.recordedData) {
+            track_state.recordedData->trimDuration();
         }
     }
     // if this is an overdub, replace the new sections
@@ -167,12 +167,12 @@ void MidiRecorderKernel::endRecording(int track) {
             recorded_pixels.push_back(pending_pixels[p]);
         }
         
-        RecordedBeatVector& pending_beats = track_state.pendingRecordedMessages->beats;
-        RecordedBeatVector& recorded_beats = track_state.recordedMessages->beats;
+        RecordedBeatVector& pending_beats = track_state.pendingRecordedData->beats;
+        RecordedBeatVector& recorded_beats = track_state.recordedData->beats;
 
         // process the individual beats of the pending recording
-        double start = track_state.pendingRecordedMessages->start;
-        double stop = track_state.pendingRecordedMessages->duration;
+        double start = track_state.pendingRecordedData->start;
+        double stop = track_state.pendingRecordedData->duration;
         int start_beat = (int)start;
         int stop_beat = MIN((int)stop, (int)pending_beats.size() - 1);
         
@@ -294,10 +294,10 @@ void MidiRecorderKernel::endRecording(int track) {
         // update the other state values
         track_state.recordedPreview->startPixel = std::min(track_state.recordedPreview->startPixel, track_state.pendingRecordedPreview->startPixel);
         
-        track_state.recordedMessages->hasMessages = track_state.recordedMessages->hasMessages | track_state.pendingRecordedMessages->hasMessages;
-        track_state.recordedMessages->start = std::min(track_state.recordedMessages->start, track_state.pendingRecordedMessages->start);
-        track_state.recordedMessages->lastBeatOffset = std::max(track_state.recordedMessages->lastBeatOffset, track_state.pendingRecordedMessages->lastBeatOffset);
-        track_state.recordedMessages->duration = std::max(track_state.recordedMessages->duration, track_state.pendingRecordedMessages->duration);
+        track_state.recordedData->hasMessages = track_state.recordedData->hasMessages | track_state.pendingRecordedData->hasMessages;
+        track_state.recordedData->start = std::min(track_state.recordedData->start, track_state.pendingRecordedData->start);
+        track_state.recordedData->lastBeatOffset = std::max(track_state.recordedData->lastBeatOffset, track_state.pendingRecordedData->lastBeatOffset);
+        track_state.recordedData->duration = std::max(track_state.recordedData->duration, track_state.pendingRecordedData->duration);
     }
 }
 void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value) {
@@ -504,7 +504,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         
         // invalidate
         if (!_state.processedInvalidate[t].test_and_set()) {
-            track_state.recordedMessages.reset();
+            track_state.recordedData.reset();
             track_state.recordedPreview.reset();
         }
 
@@ -592,7 +592,7 @@ void MidiRecorderKernel::processOutput() {
                 recording_tracks = true;
             }
             // play when there are recorded messages
-            else if (track_state.recordedMessages && !track_state.recordedMessages->empty()) {
+            else if (track_state.recordedData && !track_state.recordedData->empty()) {
                 playing_tracks = true;
             }
         }
@@ -699,17 +699,17 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
         MidiTrackState& track_state = _state.track[t];
         
         // play when there are recorded messages and the track is not recording, or it's recording and outside the punch in/out range
-        if (track_state.recordedMessages && !track_state.recordedMessages->empty() &&
+        if (track_state.recordedData && !track_state.recordedData->empty() &&
             (!track_state.recording.test() || _state.inactivePunchInOut())) {
             // iterate over all the beats inside this processing range
             for (int beat = (int)beatRangeBegin; beat <= (int)beatRangeEnd; ++beat) {
                 // if the beat falls outside of the range of recorded messages, we're done
-                if (beat >= track_state.recordedMessages->beatCount()) {
+                if (beat >= track_state.recordedData->beatCount()) {
                     break;
                 }
             
                 // process through the messages until we find the ones that should be played
-                for (const RecordedMidiMessage& message : track_state.recordedMessages->beatData(beat)) {
+                for (const RecordedMidiMessage& message : track_state.recordedData->beatData(beat)) {
                     // check if the message is outdated
                     if (message.offsetBeats < beatRangeBegin) {
                         continue;

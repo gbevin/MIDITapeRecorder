@@ -31,9 +31,9 @@ struct MidiTrackState {
 
     MPEState mpeState;
     
-    std::unique_ptr<MidiRecordedData> recordedMessages   { nullptr };
+    std::unique_ptr<MidiRecordedData> recordedData       { nullptr };
     std::unique_ptr<MidiRecordedPreview> recordedPreview { nullptr };
     
-    std::unique_ptr<MidiRecordedData> pendingRecordedMessages   { nullptr };
+    std::unique_ptr<MidiRecordedData> pendingRecordedData       { nullptr };
     std::unique_ptr<MidiRecordedPreview> pendingRecordedPreview { nullptr };
 };

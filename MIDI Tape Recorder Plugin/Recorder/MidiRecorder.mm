@@ -24,7 +24,7 @@
     int16_t _lastDataMsb[MIDI_CHANNELS];
     int16_t _lastDataLsb[MIDI_CHANNELS];
 
-    std::unique_ptr<MidiRecordedData> _recording;
+    std::unique_ptr<MidiRecordedData> _recordingData;
     std::unique_ptr<MidiRecordedPreview> _recordingPreview;
 }
 
@@ -44,7 +44,7 @@
             _lastDataLsb[ch] = 0;
         }
         
-        _recording.reset(new MidiRecordedData());
+        _recordingData.reset(new MidiRecordedData());
         _recordingPreview.reset(new MidiRecordedPreview());
     }
     
@@ -65,14 +65,14 @@
         
         if (record == NO) {
             // when recording is stopped, we move the recording data to the recorded data
-            auto recorded = std::move(_recording);
+            auto recorded_data = std::move(_recordingData);
             auto recorded_preview = std::move(_recordingPreview);
 
-            _recording.reset(new MidiRecordedData());
+            _recordingData.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
             
             MidiTrackState& track_state = _state->track[_ordinal];
-            track_state.pendingRecordedMessages = std::move(recorded);
+            track_state.pendingRecordedData = std::move(recorded_data);
             track_state.pendingRecordedPreview = std::move(recorded_preview);
             
             finish_recording = YES;
@@ -99,20 +99,20 @@
             @"zone2MemberPitchSens" : @(track_state.mpeState.zone2MemberPitchSens.load()),
         };
         
-        auto recorded = track_state.recordedMessages.get();
-        if (recorded == nullptr) {
+        auto recorded_data = track_state.recordedData.get();
+        if (recorded_data == nullptr) {
             result = @{
                 @"MPE" : mpe_dict
             };
         }
         else {
-            NSMutableData* recorded_data = [NSMutableData new];
-            for (RecordedDataVector& beat : recorded->beats) {
-                [recorded_data appendBytes:beat.data() length:beat.size()*sizeof(RecordedMidiMessage)];
+            NSMutableData* recorded_object = [NSMutableData new];
+            for (RecordedDataVector& beat : recorded_data->beats) {
+                [recorded_object appendBytes:beat.data() length:beat.size()*sizeof(RecordedMidiMessage)];
             }
             result = @{
-                @"Recorded" : recorded_data,
-                @"Duration" : @(recorded->duration),
+                @"Recorded" : recorded_object,
+                @"Duration" : @(recorded_data->duration),
                 @"MPE" : mpe_dict
             };
         }
@@ -122,15 +122,15 @@
 
 - (void)dictToRecorded:(NSDictionary*)dict {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        std::unique_ptr<MidiRecordedData> recorded(new MidiRecordedData());
+        std::unique_ptr<MidiRecordedData> recorded_data(new MidiRecordedData());
         double recorded_duration = 0.0;
 
-        NSData* recorded_data = [dict objectForKey:@"Recorded"];
-        if (recorded_data) {
-            RecordedMidiMessage* data = (RecordedMidiMessage*)recorded_data.bytes;
-            unsigned long count = recorded_data.length / sizeof(RecordedMidiMessage);
+        NSData* recorded_object = [dict objectForKey:@"Recorded"];
+        if (recorded_object) {
+            RecordedMidiMessage* data = (RecordedMidiMessage*)recorded_object.bytes;
+            unsigned long count = recorded_object.length / sizeof(RecordedMidiMessage);
             for (int i = 0; i < count; ++i) {
-                recorded->addMessageToBeat(data[i]);
+                recorded_data->addMessageToBeat(data[i]);
             }
         }
         
@@ -140,7 +140,7 @@
             if (_state->autoTrimRecordings.test()) {
                 recorded_duration = ceil(recorded_duration);
             }
-            recorded->duration = recorded_duration;
+            recorded_data->duration = recorded_duration;
         }
         
         NSDictionary* mpe = [dict objectForKey:@"MPE"];
@@ -185,8 +185,8 @@
 
         // update preview
         std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
-        if (recorded) {
-            for (RecordedDataVector& beat : recorded->beats) {
+        if (recorded_data) {
+            for (RecordedDataVector& beat : recorded_data->beats) {
                 for (RecordedMidiMessage& message : beat) {
                     recorded_preview->updateWithMessage(message);
                 }
@@ -194,7 +194,7 @@
         }
         
         MidiTrackState& track_state = _state->track[_ordinal];
-        track_state.pendingRecordedMessages = std::move(recorded);
+        track_state.pendingRecordedData = std::move(recorded_data);
         track_state.pendingRecordedPreview = std::move(recorded_preview);
     });
 
@@ -207,8 +207,8 @@
 
 - (NSData*)recordedAsMidiTrackChunk {
     MidiTrackState& state = _state->track[_ordinal];
-    auto recorded = state.recordedMessages.get();
-    if (!recorded || recorded->empty()) {
+    auto recorded_data = state.recordedData.get();
+    if (!recorded_data || recorded_data->empty()) {
         return nil;
     }
 
@@ -231,7 +231,7 @@
 
     // add midi events to track
     int64_t last_offset_ticks = 0;
-    for (RecordedDataVector& beat : recorded->beats) {
+    for (RecordedDataVector& beat : recorded_data->beats) {
         for (RecordedMidiMessage& message : beat) {
             if (message.type == INTERNAL) {
                 continue;
@@ -249,7 +249,7 @@
     }
     
     // add end of track meta event
-    int64_t offset_ticks = int64_t(recorded->duration * MIDI_BEAT_TICKS);
+    int64_t offset_ticks = int64_t(recorded_data->duration * MIDI_BEAT_TICKS);
     uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
     writeMidiVarLen(track, delta_ticks);
     uint8_t meta_end_of_track[] = { 0xff, 0x2f, 0x00 };
@@ -278,7 +278,7 @@
 
     dispatch_barrier_sync(_dispatchQueue, ^{
         // prepare local data to accumulate into
-        std::unique_ptr<MidiRecordedData> recorded(new MidiRecordedData());
+        std::unique_ptr<MidiRecordedData> recorded_data(new MidiRecordedData());
         std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
         double recorded_duration = 0.0;
 
@@ -361,7 +361,7 @@
                     }
 
                     // add the recorded message
-                    recorded->addMessageToBeat(msg);
+                    recorded_data->addMessageToBeat(msg);
                     
                     // update the preview
                     recorded_preview->updateWithMessage(msg);
@@ -374,12 +374,12 @@
         recorded_duration = double(last_offset_ticks) / division;
         if (_state->autoTrimRecordings.test()) {
             recorded_duration = ceil(recorded_duration);
-            recorded->duration = recorded_duration;
+            recorded_data->duration = recorded_duration;
         }
         
         // transfer all the accumulated data to the active recorded data
         MidiTrackState& track_state = _state->track[_ordinal];
-        track_state.pendingRecordedMessages = std::move(recorded);
+        track_state.pendingRecordedData = std::move(recorded_data);
         track_state.pendingRecordedPreview = std::move(recorded_preview);
     });
     
@@ -393,37 +393,37 @@
 - (void)ping:(double)timeSampleSeconds {
     dispatch_barrier_sync(_dispatchQueue, ^{
         // don't record if record enable isn't active
-        if (!_record || !_recording) {
+        if (!_record || !_recordingData) {
             return;
         }
         
-        // if punch in/out is active, only record during the punch in/out positions
+        // if punch in/out is enabled, only record during the punch in/out positions
         if (_state->inactivePunchInOut()) {
             return;
         }
 
         // mark the first time the recording had processing
-        if (_recording->start < 0.0) {
-            _recording->start = _state->playPositionBeats;
+        if (_recordingData->start < 0.0) {
+            _recordingData->start = _state->playPositionBeats;
         }
         
         // update the recording duration even when there's no incoming messages
         if (_state->transportStartSampleSeconds == 0.0) {
-            _recording->duration = 0.0;
+            _recordingData->duration = 0.0;
         }
         else {
-            _recording->duration = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
+            _recordingData->duration = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
         }
         
-        _recording->populateUpToBeat(_recording->duration);
+        _recordingData->populateUpToBeat(_recordingData->duration);
         
         // update the preview in case of gaps
         if (_recordingPreview) {
             if (_recordingPreview->startPixel < 0) {
-                _recordingPreview->startPixel = _recording->start * PIXELS_PER_BEAT;
+                _recordingPreview->startPixel = _recordingData->start * PIXELS_PER_BEAT;
             }
             
-            _recordingPreview->updateWithOffsetBeats(_recording->duration);
+            _recordingPreview->updateWithOffsetBeats(_recordingData->duration);
         }
     });
 }
@@ -559,18 +559,18 @@
         }
         
         // don't record if record enable isn't active
-        if (!_record || !_recording) {
+        if (!_record || !_recordingData) {
             return;
         }
         
-        // if punch in/out is active, only record during the punch in/out positions
+        // if punch in/out is enabled, only record during the punch in/out positions
         if (_state->inactivePunchInOut()) {
             return;
         }
 
         // auto start the recording on the first received message
         // if the recording hasn't started yet
-        if (_recording->empty() && _state->transportStartSampleSeconds == 0.0) {
+        if (_recordingData->empty() && _state->transportStartSampleSeconds == 0.0) {
             if (_delegate) {
                 _state->transportStartSampleSeconds = message.timeSampleSeconds - _state->playPositionBeats * _state->beatsToSeconds;
                 [_delegate startRecord];
@@ -588,7 +588,7 @@
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
-        _recording->addMessageToBeat(recorded_message);
+        _recordingData->addMessageToBeat(recorded_message);
         
         // update the preview
         _recordingPreview->updateWithMessage(recorded_message);
@@ -603,7 +603,7 @@
             [_delegate invalidateRecording:_ordinal];
         }
 
-        _recording.reset(new MidiRecordedData());
+        _recordingData.reset(new MidiRecordedData());
         _recordingPreview.reset(new MidiRecordedPreview());
     });
 }
@@ -619,10 +619,10 @@
     
     dispatch_sync(_dispatchQueue, ^{
         if (_record == YES) {
-            duration = _recording->duration;
+            duration = _recordingData->duration;
         }
-        if (_state && _state->track[_ordinal].recordedMessages) {
-            duration = MAX(duration, _state->track[_ordinal].recordedMessages->duration);
+        if (_state && _state->track[_ordinal].recordedData) {
+            duration = MAX(duration, _state->track[_ordinal].recordedData->duration);
         }
     });
     

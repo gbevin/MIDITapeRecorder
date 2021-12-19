@@ -1729,7 +1729,7 @@
     [self registerRecordedForUndo:ordinal];
     
     MidiTrackState& track_state = _state->track[ordinal];
-    track_state.recordedMessages = std::move(track_state.pendingRecordedMessages);
+    track_state.recordedData = std::move(track_state.pendingRecordedData);
     track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
     
     [self withMidiTrack:ordinal view:^(MidiTrackView *view) {
