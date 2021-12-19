@@ -1372,12 +1372,7 @@
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (_state->track[t].recordEnabled.test() != record_button[t].selected) {
-            if (record_button[t].selected) _state->track[t].recordEnabled.test_and_set();
-            else                           _state->track[t].recordEnabled.clear();
-            
-            if (_state->hostParamChange) {
-                _state->hostParamChange(ID_RECORD_1 + t, _state->track[t].recordEnabled.test());
-            }
+            _state->hostParamChange(ID_RECORD_1 + t, record_button[t].selected);
         }
     }
     
@@ -1395,12 +1390,7 @@
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (_state->track[t].monitorEnabled.test() != monitor_button[t].selected) {
-            if (monitor_button[t].selected) _state->track[t].monitorEnabled.test_and_set();
-            else                            _state->track[t].monitorEnabled.clear();
-            
-            if (_state->hostParamChange) {
-                _state->hostParamChange(ID_MONITOR_1 + t, _state->track[t].monitorEnabled.test());
-            }
+            _state->hostParamChange(ID_MONITOR_1 + t, monitor_button[t].selected);
         }
     }
 }
@@ -1410,87 +1400,49 @@
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (_state->track[t].muteEnabled.test() != mute_button[t].selected) {
-            if (mute_button[t].selected)    _state->track[t].muteEnabled.test_and_set();
-            else                            _state->track[t].muteEnabled.clear();
-            
-            if (_state->hostParamChange) {
-                _state->hostParamChange(ID_MUTE_1 + t, _state->track[t].muteEnabled.test());
-            }
+            _state->hostParamChange(ID_MUTE_1 + t, mute_button[t].selected);
         }
     }
 }
 
 - (void)updatePlayState {
     if (_state->play.test() != _playButton.selected) {
-        if (_playButton.selected) _state->play.test_and_set();
-        else                      _state->play.clear();
-        
-        if (_state->hostParamChange) {
-            _state->hostParamChange(ID_PLAY, _state->play.test());
-        }
+        _state->hostParamChange(ID_PLAY, _playButton.selected);
     }
 }
 
 - (void)updateRecordState {
     if (_state->record.test() != _recordButton.selected) {
-        if (_recordButton.selected) _state->record.test_and_set();
-        else                        _state->record.clear();
-        
-        if (_state->hostParamChange) {
-            _state->hostParamChange(ID_RECORD, _state->record.test());
-        }
+        _state->hostParamChange(ID_RECORD, _recordButton.selected);
     }
 }
 
 - (void)updateRepeatState {
     if (_state->repeat.test() != _repeatButton.selected) {
-        if (_repeatButton.selected) _state->repeat.test_and_set();
-        else                        _state->repeat.clear();
-        
-        if (_state->hostParamChange) {
-            _state->hostParamChange(ID_REPEAT, _state->repeat.test());
-        }
+        _state->hostParamChange(ID_REPEAT, _repeatButton.selected);
     }
 }
 
 - (void)updateRewindState {
     _rewindButton.selected = NO;
-    _state->rewind.clear();
-    if (_state->hostParamChange) {
-        _state->hostParamChange(ID_REWIND, _state->rewind.test());
-    }
+    _state->hostParamChange(ID_REWIND, _rewindButton.selected);
 }
 
 - (void)updateGridState {
     if (_state->grid.test() != _gridButton.selected) {
-        if (_gridButton.selected) _state->grid.test_and_set();
-        else                      _state->grid.clear();
-        
-        if (_state->hostParamChange) {
-            _state->hostParamChange(ID_GRID, _state->grid.test());
-        }
+        _state->hostParamChange(ID_GRID, _gridButton.selected);
     }
 }
 
 - (void)updateChaseState {
     if (_state->chase.test() != _chaseButton.selected) {
-        if (_chaseButton.selected) _state->chase.test_and_set();
-        else                       _state->chase.clear();
-        
-        if (_state->hostParamChange) {
-            _state->hostParamChange(ID_CHASE, _state->chase.test());
-        }
+        _state->hostParamChange(ID_CHASE, _chaseButton.selected);
     }
 }
 
 - (void)updatePunchInOutState {
     if (_state->punchInOut.test() != _punchInOutButton.selected) {
-        if (_punchInOutButton.selected) _state->punchInOut.test_and_set();
-        else                            _state->punchInOut.clear();
-        
-        if (_state->hostParamChange) {
-            _state->hostParamChange(ID_PUNCH_INOUT, _state->punchInOut.test());
-        }
+        _state->hostParamChange(ID_PUNCH_INOUT, _punchInOutButton.selected);
     }
 }
 
