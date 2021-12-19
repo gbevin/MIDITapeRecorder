@@ -20,5 +20,5 @@
 
 - (void)setupAudioBuses;
 - (void)setupParameterTree;
-- (void)setupParameterCallbacks;
+- (void)setupParameterCallbacks:(AUParameterObserverToken)token;
 @end

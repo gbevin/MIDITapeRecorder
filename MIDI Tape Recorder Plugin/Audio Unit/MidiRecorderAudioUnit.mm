@@ -39,7 +39,6 @@
     
     [self setupAudioBuses];
     [self setupParameterTree];
-    [self setupParameterCallbacks];
     
     _vc = nil;
     
@@ -315,7 +314,7 @@
     ]];
 }
 
-- (void)setupParameterCallbacks {
+- (void)setupParameterCallbacks:(AUParameterObserverToken)token {
     // Make a local pointer to the kernel to avoid capturing self.
     __block DSPKernelAdapter* kernelAdapter = _kernelAdapter;
     
@@ -343,7 +342,7 @@
     kernelAdapter.state->hostParamChange = ^(uint64_t address, float value) {
         AUParameter* param = [param_tree parameterWithAddress:address];
         if (param) {
-            [param setValue:value originator:kernelAdapter.state atHostTime:mach_absolute_time() eventType:AUParameterAutomationEventTypeValue];
+            [param setValue:value originator:token atHostTime:mach_absolute_time() eventType:AUParameterAutomationEventTypeValue];
         }
     };
 }

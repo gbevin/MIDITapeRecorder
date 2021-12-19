@@ -317,7 +317,7 @@
     });
 
     // get the parameter tree and add observers for any parameters that the UI needs to keep in sync with the AudioUnit
-    [_audioUnit.parameterTree tokenByAddingParameterObserver:^(AUParameterAddress address, AUValue value) {
+    AUParameterObserverToken token = [_audioUnit.parameterTree tokenByAddingParameterObserver:^(AUParameterAddress address, AUValue value) {
         dispatch_async(dispatch_get_main_queue(), ^{
             AudioUnitViewController* s = weak_self;
             if (!s) return;
@@ -387,6 +387,8 @@
             }
         });
     }];
+
+    [_audioUnit setupParameterCallbacks:token];
 
     return _audioUnit;
 }
