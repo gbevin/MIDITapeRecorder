@@ -107,12 +107,12 @@
         }
         else {
             NSMutableData* recorded_object = [NSMutableData new];
-            for (RecordedDataVector& beat : recorded_data->beats) {
+            for (RecordedDataVector& beat : recorded_data->getBeats()) {
                 [recorded_object appendBytes:beat.data() length:beat.size()*sizeof(RecordedMidiMessage)];
             }
             result = @{
                 @"Recorded" : recorded_object,
-                @"Duration" : @(recorded_data->duration),
+                @"Duration" : @(recorded_data->getDuration()),
                 @"MPE" : mpe_dict
             };
         }
@@ -140,7 +140,7 @@
             if (_state->autoTrimRecordings.test()) {
                 recorded_duration = ceil(recorded_duration);
             }
-            recorded_data->duration = recorded_duration;
+            recorded_data->increaseDuration(recorded_duration);
         }
         
         NSDictionary* mpe = [dict objectForKey:@"MPE"];
@@ -186,7 +186,7 @@
         // update preview
         std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
         if (recorded_data) {
-            for (RecordedDataVector& beat : recorded_data->beats) {
+            for (RecordedDataVector& beat : recorded_data->getBeats()) {
                 for (RecordedMidiMessage& message : beat) {
                     recorded_preview->updateWithMessage(message);
                 }
@@ -231,7 +231,7 @@
 
     // add midi events to track
     int64_t last_offset_ticks = 0;
-    for (RecordedDataVector& beat : recorded_data->beats) {
+    for (RecordedDataVector& beat : recorded_data->getBeats()) {
         for (RecordedMidiMessage& message : beat) {
             if (message.type == INTERNAL) {
                 continue;
@@ -249,7 +249,7 @@
     }
     
     // add end of track meta event
-    int64_t offset_ticks = int64_t(recorded_data->duration * MIDI_BEAT_TICKS);
+    int64_t offset_ticks = int64_t(recorded_data->getDuration() * MIDI_BEAT_TICKS);
     uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
     writeMidiVarLen(track, delta_ticks);
     uint8_t meta_end_of_track[] = { 0xff, 0x2f, 0x00 };
@@ -374,7 +374,7 @@
         recorded_duration = double(last_offset_ticks) / division;
         if (_state->autoTrimRecordings.test()) {
             recorded_duration = ceil(recorded_duration);
-            recorded_data->duration = recorded_duration;
+            recorded_data->increaseDuration(recorded_duration);
         }
         
         // transfer all the accumulated data to the active recorded data
@@ -401,29 +401,24 @@
         if (_state->inactivePunchInOut()) {
             return;
         }
+        
+        // if transport isn't running, don't update recording
+        if (_state->transportStartSampleSeconds == 0.0) {
+            return;
+        }
 
         // mark the first time the recording had processing
-        if (_recordingData->start < 0.0) {
-            _recordingData->start = _state->playPositionBeats;
-        }
+        _recordingData->setStartIfNeeded(_state->playPositionBeats);
         
         // update the recording duration even when there's no incoming messages
-        if (_state->transportStartSampleSeconds == 0.0) {
-            _recordingData->duration = 0.0;
-        }
-        else {
-            _recordingData->duration = (timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats;
-        }
+        _recordingData->increaseDuration((timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats);
         
-        _recordingData->populateUpToBeat(_recordingData->duration);
+        _recordingData->populateUpToBeat(_recordingData->getDuration());
         
         // update the preview in case of gaps
         if (_recordingPreview) {
-            if (_recordingPreview->startPixel < 0) {
-                _recordingPreview->startPixel = _recordingData->start * PIXELS_PER_BEAT;
-            }
-            
-            _recordingPreview->updateWithOffsetBeats(_recordingData->duration);
+            _recordingPreview->setStartIfNeeded(_recordingData->getStart());
+            _recordingPreview->updateWithOffsetBeats(_recordingData->getDuration());
         }
     });
 }
@@ -619,10 +614,10 @@
     
     dispatch_sync(_dispatchQueue, ^{
         if (_record == YES) {
-            duration = _recordingData->duration;
+            duration = _recordingData->getDuration();
         }
         if (_state && _state->track[_ordinal].recordedData) {
-            duration = MAX(duration, _state->track[_ordinal].recordedData->duration);
+            duration = MAX(duration, _state->track[_ordinal].recordedData->getDuration());
         }
     });
     
@@ -635,10 +630,11 @@
     unsigned long count = 0;
     
     if (_state && _state->track[_ordinal].recordedPreview) {
-        count = _state->track[_ordinal].recordedPreview->pixels.size();
+        count = _state->track[_ordinal].recordedPreview->getPixels().size();
     }
+    
     if (_record == YES) {
-        count = MAX(count, _recordingPreview->pixels.size());
+        count = MAX(count, _recordingPreview->getPixels().size());
     }
     
     return count;
@@ -647,18 +643,18 @@
 - (PreviewPixelData)previewPixelData:(int)pixel {
     PreviewPixelData data;
     
-    if (_state &&
-        _state->track[_ordinal].recordedPreview &&
-        pixel >= _state->track[_ordinal].recordedPreview->startPixel &&
-        pixel < _state->track[_ordinal].recordedPreview->pixels.size()) {
-        data = _state->track[_ordinal].recordedPreview->pixels[pixel];
-        data.recording = false;
+    if (_state && _state->track[_ordinal].recordedPreview) {
+        MidiRecordedPreview* recorded_preview = _state->track[_ordinal].recordedPreview.get();
+        if (recorded_preview->hasStarted() && pixel >= recorded_preview->getStartPixel() && pixel < recorded_preview->getPixels().size()) {
+            data = recorded_preview->getPixels()[pixel];
+            data.dirty = false;
+        }
     }
     
     if (_record == YES) {
-        if (pixel >= _recordingPreview->startPixel && pixel < _recordingPreview->pixels.size()) {
-            data = _recordingPreview->pixels[pixel];
-            data.recording = true;
+        if (_recordingPreview->hasStarted() && pixel >= _recordingPreview->getStartPixel() && pixel < _recordingPreview->getPixels().size()) {
+            data = _recordingPreview->getPixels()[pixel];
+            data.dirty = true;
         }
     }
     

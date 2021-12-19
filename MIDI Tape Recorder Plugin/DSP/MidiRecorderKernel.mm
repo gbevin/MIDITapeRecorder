@@ -38,9 +38,6 @@ void MidiRecorderKernel::setBypass(bool shouldBypass) {
 
 void MidiRecorderKernel::rewind(double timeSampleSeconds) {
     // turn off recording
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        _state.track[t].recording.clear();
-    }
     _state.processedUIEndRecord.clear();
 
     // rewind to start position or complete beginning
@@ -147,7 +144,7 @@ void MidiRecorderKernel::endRecording(int track) {
     track_state.recording.clear();
     
     // if this is a direct recording, just move all the data over
-    if (track_state.recordedData.get() == nullptr) {
+    if (!track_state.recordedData || track_state.recordedData->empty()) {
         track_state.recordedData = std::move(track_state.pendingRecordedData);
         track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
 
@@ -160,19 +157,19 @@ void MidiRecorderKernel::endRecording(int track) {
     else {
         // ensure that the recorded preview has the same length as the pending preview
         // anyting that's longer can just be moved over
-        RecordedPreviewVector& pending_pixels = track_state.pendingRecordedPreview->pixels;
-        RecordedPreviewVector& recorded_pixels = track_state.recordedPreview->pixels;
+        RecordedPreviewVector& pending_pixels = track_state.pendingRecordedPreview->getPixels();
+        RecordedPreviewVector& recorded_pixels = track_state.recordedPreview->getPixels();
 
         for (unsigned long p = recorded_pixels.size(); p < pending_pixels.size(); ++p) {
             recorded_pixels.push_back(pending_pixels[p]);
         }
         
-        RecordedBeatVector& pending_beats = track_state.pendingRecordedData->beats;
-        RecordedBeatVector& recorded_beats = track_state.recordedData->beats;
+        RecordedBeatVector& pending_beats = track_state.pendingRecordedData->getBeats();
+        RecordedBeatVector& recorded_beats = track_state.recordedData->getBeats();
 
         // process the individual beats of the pending recording
-        double start = track_state.pendingRecordedData->start;
-        double stop = track_state.pendingRecordedData->duration;
+        double start = track_state.pendingRecordedData->getStart();
+        double stop = track_state.pendingRecordedData->getDuration();
         int start_beat = (int)start;
         int stop_beat = MIN((int)stop, (int)pending_beats.size() - 1);
         
@@ -292,12 +289,8 @@ void MidiRecorderKernel::endRecording(int track) {
         }
         
         // update the other state values
-        track_state.recordedPreview->startPixel = std::min(track_state.recordedPreview->startPixel, track_state.pendingRecordedPreview->startPixel);
-        
-        track_state.recordedData->hasMessages = track_state.recordedData->hasMessages | track_state.pendingRecordedData->hasMessages;
-        track_state.recordedData->start = std::min(track_state.recordedData->start, track_state.pendingRecordedData->start);
-        track_state.recordedData->lastBeatOffset = std::max(track_state.recordedData->lastBeatOffset, track_state.pendingRecordedData->lastBeatOffset);
-        track_state.recordedData->duration = std::max(track_state.recordedData->duration, track_state.pendingRecordedData->duration);
+        track_state.recordedPreview->applyOverdubInfo(*track_state.pendingRecordedPreview);
+        track_state.recordedData->applyOverdubInfo(*track_state.pendingRecordedData);
     }
 }
 void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value) {
@@ -441,8 +434,10 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // this prevents split-state conditions to change semantics in the middle of processing
 
     // host transport sync
-    if (_ioState.transportChanged) {
-        if (_ioState.transportMoving) {
+    if (_ioState.transportMoving) {
+        // transport starting while record is armed or
+        // record arming while host transport is already moving
+        if (_ioState.transportChanged || !_state.processedRecordArmed.test_and_set()) {
             if (_state.record.test()) {
                 for (int t = 0; t < MIDI_TRACKS; ++t) {
                     if (_state.track[t].recordEnabled.test()) {
@@ -454,26 +449,11 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
             _state.processedPlay.clear();
             _state.processedUIPlay.clear();
         }
-        else {
-            _state.processedStop.clear();
-            _state.processedUIStop.clear();
-        }
     }
-    
-    // record arming while host transport is already moving
-    if (!_state.processedRecordArmed.test_and_set()) {
-        if (_ioState.transportMoving) {
-            if (_state.record.test()) {
-                for (int t = 0; t < MIDI_TRACKS; ++t) {
-                    if (_state.track[t].recordEnabled.test()) {
-                        _state.processedBeginRecording[t].clear();
-                    }
-                }
-            }
-
-            _state.processedPlay.clear();
-            _state.processedUIPlay.clear();
-        }
+    // stop transport when host stopped moving
+    else if (_ioState.transportChanged) {
+        _state.processedStop.clear();
+        _state.processedUIStop.clear();
     }
 
     // individual track states
@@ -587,8 +567,8 @@ void MidiRecorderKernel::processOutput() {
         bool playing_tracks = false;
         for (int t = 0; t < MIDI_TRACKS; ++t) {
             MidiTrackState& track_state = _state.track[t];
-            if ((track_state.recording.test() && !_state.punchInOut.test()) ||
-                _state.activePunchInOut()) {
+            if (track_state.recording.test() &&
+                (!_state.punchInOut.test() || _state.activePunchInOut())) {
                 recording_tracks = true;
             }
             // play when there are recorded messages
@@ -650,12 +630,11 @@ void MidiRecorderKernel::processOutput() {
                 turnOffAllNotes();
                 
                 // turn off recording
-                recording_tracks = false;
-                for (int t = 0; t < MIDI_TRACKS; ++t) {
-                    _state.track[t].recording.clear();
+                if (recording_tracks) {
+                    _state.processedUIEndRecord.clear();
+                    recording_tracks = false;
                 }
-                _state.processedUIEndRecord.clear();
-                
+
                 // start over from the start position for the next process call
                 _state.playPositionBeats = _state.startPositionBeats.load();
                 _state.transportStartSampleSeconds = _state.transportStartSampleSeconds + (_state.stopPositionBeats - _state.startPositionBeats) * _state.beatsToSeconds;

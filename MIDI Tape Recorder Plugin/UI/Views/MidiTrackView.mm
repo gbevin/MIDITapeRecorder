@@ -194,7 +194,7 @@
     for (int x = x_begin; x < x_end; ++x) {
         if (_previewProvider && x < [_previewProvider previewPixelCount]) {
             PreviewPixelData pixel_data =[_previewProvider previewPixelData:x];
-            if ((pixel_data.recording && drawRecording) || (!pixel_data.recording && !drawRecording))
+            if ((pixel_data.dirty && drawRecording) || (!pixel_data.dirty && !drawRecording))
             if (pixel_data.notes != 0 || pixel_data.events != 0) {
                 // normalize the preview events count
                 float n_notes = MIN(MAX(((float)pixel_data.notes / MAX_PREVIEW_EVENTS), 0.f), 1.f);

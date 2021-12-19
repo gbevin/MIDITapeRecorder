@@ -21,7 +21,8 @@
 typedef std::vector<RecordedMidiMessage> RecordedDataVector;
 typedef std::vector<RecordedDataVector> RecordedBeatVector;
 
-struct MidiRecordedData {
+class MidiRecordedData {
+public:
     MidiRecordedData();
     MidiRecordedData(const MidiRecordedData&) = delete;
     MidiRecordedData& operator= (const MidiRecordedData&) = delete;
@@ -31,7 +32,15 @@ struct MidiRecordedData {
     void trimDuration();
     
     bool empty();
+    RecordedBeatVector& getBeats();
+    double getStart() const;
+    double getDuration() const;
     
+    void setStartIfNeeded(double beats);
+    void increaseDuration(double duration);
+
+    void applyOverdubInfo(const MidiRecordedData& overdub);
+
     /*
      Fill in any beats that might have been missed. We keep this continually updated
      in the ping method to progressively catch up and reduce the load when a message is actually processed.
@@ -45,9 +54,10 @@ struct MidiRecordedData {
      */
     void addMessageToBeat(RecordedMidiMessage& message);
     
-    RecordedBeatVector beats    { };
-    bool hasMessages            { false };
-    double start                { -1.0 };
-    double lastBeatOffset       { 0.0 };
-    double duration             { 0.0 };
+private:
+    RecordedBeatVector _beats   { };
+    bool _hasMessages           { false };
+    double _start               { -1.0 };
+    double _lastBeatOffset      { 0.0 };
+    double _duration            { 0.0 };
 };

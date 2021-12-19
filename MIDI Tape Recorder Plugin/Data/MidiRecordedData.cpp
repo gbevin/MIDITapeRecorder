@@ -14,38 +14,67 @@ MidiRecordedData::MidiRecordedData() {
 };
     
 unsigned long MidiRecordedData::beatCount() {
-    return beats.size();
+    return _beats.size();
 }
 
 RecordedDataVector& MidiRecordedData::beatData(int beat) {
-    return beats[beat];
+    return _beats[beat];
 }
 
 void MidiRecordedData::trimDuration() {
-    if (hasMessages) {
-        duration = ceil(lastBeatOffset);
+    if (_hasMessages) {
+        _duration = ceil(_lastBeatOffset);
     }
 }
 
 bool MidiRecordedData::empty() {
-    return !hasMessages;
+    return !_hasMessages;
+}
+
+RecordedBeatVector& MidiRecordedData::getBeats() {
+    return _beats;
+}
+
+double MidiRecordedData::getStart() const {
+    return _start;
+}
+
+double MidiRecordedData::getDuration() const {
+    return _duration;
+}
+
+void MidiRecordedData::setStartIfNeeded(double beats) {
+    if (_start < 0) {
+        _start = beats;
+    }
+}
+
+void MidiRecordedData::increaseDuration(double duration) {
+    _duration  = std::max(_duration, duration);
+}
+
+void MidiRecordedData::applyOverdubInfo(const MidiRecordedData& overdub) {
+    _hasMessages = _hasMessages | overdub._hasMessages;
+    _start = std::min(_start, overdub._start);
+    _lastBeatOffset = std::max(_lastBeatOffset, overdub._lastBeatOffset);
+    _duration = std::max(_duration, overdub._duration);
 }
 
 void MidiRecordedData::populateUpToBeat(int beat) {
-    while (beat > beats.size()) {
-        beats.push_back(RecordedDataVector());
+    while (beat > _beats.size()) {
+        _beats.push_back(RecordedDataVector());
     }
 }
 
 void MidiRecordedData::addMessageToBeat(RecordedMidiMessage& message) {
     int beat = (int)message.offsetBeats;
-    while (beat >= beats.size()) {
-        beats.push_back(RecordedDataVector());
+    while (beat >= _beats.size()) {
+        _beats.push_back(RecordedDataVector());
     }
     
-    beats[beat].push_back(message);
+    _beats[beat].push_back(message);
     
-    hasMessages = true;
-    lastBeatOffset = message.offsetBeats;
-    duration = message.offsetBeats;
+    _hasMessages = true;
+    _lastBeatOffset = message.offsetBeats;
+    increaseDuration(message.offsetBeats);
 }

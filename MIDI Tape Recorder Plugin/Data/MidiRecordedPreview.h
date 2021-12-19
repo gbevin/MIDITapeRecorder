@@ -17,14 +17,24 @@ typedef std::vector<PreviewPixelData> RecordedPreviewVector;
 
 class RecordedMidiMessage;
 
-struct MidiRecordedPreview {
+class MidiRecordedPreview {
+public:
     MidiRecordedPreview();
     MidiRecordedPreview(const MidiRecordedPreview&) = delete;
     MidiRecordedPreview& operator= (const MidiRecordedPreview&) = delete;
+
+    bool hasStarted() const;
+    int getStartPixel() const;
+    RecordedPreviewVector& getPixels();
     
+    void setStartIfNeeded(double beats);
+
+    void applyOverdubInfo(const MidiRecordedPreview& overdub);
+
     void updateWithOffsetBeats(double offsetBeats);
     void updateWithMessage(RecordedMidiMessage& message);
-
-    int startPixel               { -1 };
-    RecordedPreviewVector pixels { };
+    
+private:
+    int _startPixel               { -1 };
+    RecordedPreviewVector _pixels { };
 };

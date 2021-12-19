@@ -11,20 +11,48 @@
 #include "Constants.h"
 #include "RecordedMidiMessage.h"
 
+static int32_t beatOffsetToPixel(double beatOffset) {
+    return std::max(0, int32_t(beatOffset * PIXELS_PER_BEAT + 0.5));
+}
+
 MidiRecordedPreview::MidiRecordedPreview() {
 };
-    
+
+bool MidiRecordedPreview::hasStarted() const {
+    return _startPixel >= 0;
+}
+
+int MidiRecordedPreview::getStartPixel() const {
+    return _startPixel;
+}
+
+RecordedPreviewVector& MidiRecordedPreview::getPixels() {
+    return _pixels;
+}
+
+void MidiRecordedPreview::setStartIfNeeded(double beats) {
+    if (_startPixel < 0) {
+        _startPixel = beatOffsetToPixel(beats);
+    }
+}
+
+void MidiRecordedPreview::applyOverdubInfo(const MidiRecordedPreview& overdub) {
+    _startPixel = std::min(_startPixel, overdub._startPixel);
+}
+
 void MidiRecordedPreview::updateWithOffsetBeats(double offsetBeats) {
-    int32_t pixel = std::max(0, int32_t(offsetBeats * PIXELS_PER_BEAT + 0.5));
+    setStartIfNeeded(offsetBeats);
+    
+    int32_t pixel = beatOffsetToPixel(offsetBeats);
     
     PreviewPixelData last_pixel_data;
-    if (pixel > 0 && !pixels.empty()) {
-        last_pixel_data = pixels.back();
+    if (pixel > 0 && !_pixels.empty()) {
+        last_pixel_data = _pixels.back();
     }
-    if (pixel >= pixels.size()) {
+    if (pixel >= _pixels.size()) {
         last_pixel_data.events = 0;
-        while (pixels.size() <= pixel) {
-            pixels.push_back(last_pixel_data);
+        while (_pixels.size() <= pixel) {
+            _pixels.push_back(last_pixel_data);
         }
     }
 }
@@ -32,8 +60,8 @@ void MidiRecordedPreview::updateWithOffsetBeats(double offsetBeats) {
 void MidiRecordedPreview::updateWithMessage(RecordedMidiMessage& message) {
     updateWithOffsetBeats(message.offsetBeats);
     
-    int32_t pixel = std::max(0, int32_t(message.offsetBeats * PIXELS_PER_BEAT + 0.5));
-    PreviewPixelData& pixel_data = pixels[pixel];
+    int32_t pixel = beatOffsetToPixel(message.offsetBeats);
+    PreviewPixelData& pixel_data = _pixels[pixel];
 
     // track the note and the events independently
     if (message.type == INTERNAL) {

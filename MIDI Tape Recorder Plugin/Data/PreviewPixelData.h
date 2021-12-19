@@ -11,11 +11,11 @@
 struct PreviewPixelData {
     PreviewPixelData() {
         notes = 0;
-        recording = false;
+        dirty = false;
     }
     
     uint8_t notes:7;
-    bool recording:1;
+    bool dirty:1;
     
     uint8_t events  { 0 };
 };

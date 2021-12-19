@@ -434,7 +434,7 @@
     [self updatePlayState];
 
     if (_playButton.selected) {
-        if (_recordButton.selected) {
+        if (_state->record.test()) {
             [self startRecord];
         }
         else {
@@ -442,7 +442,7 @@
         }
     }
     else {
-        if (_recordButton.selected) {
+        if (_state->record.test()) {
             [self setRecordState:NO];
             _state->processedRewind.clear();
         }
@@ -463,7 +463,7 @@
     if (selected) {
         _autoPlayFromRecord = NO;
         
-        if (_playButton.selected) {
+        if (_state->play.test()) {
             [self startRecord];
         }
         else {
@@ -472,7 +472,7 @@
         }
     }
     else {
-        if (_autoPlayFromRecord) {
+        if (_autoPlayFromRecord && !_state->repeat.test()) {
             [self setPlayState:NO];
             _state->processedStopAndRewind.clear();
         }
@@ -503,7 +503,6 @@
 
 - (IBAction)repeatPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    
     [self updateRepeatState];
 }
 
@@ -511,7 +510,6 @@
 
 - (IBAction)gridPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    
     [self updateGridState];
 }
 
@@ -519,7 +517,6 @@
 
 - (IBAction)chasePressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    
     [self updateChaseState];
 }
 
@@ -527,7 +524,6 @@
 
 - (IBAction)punchInOutPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
-    
     [self updatePunchInOutState];
 }
 
@@ -1510,13 +1506,8 @@
     if (!_state->processedUIEndRecord.test_and_set()) {
         [self setRecordState:NO];
     }
-
-    // rebuild track UI
-    if (!_state->processedUIEndRecord.test_and_set()) {
-        [self setRecordState:NO];
-    }
     
-    // rebuild track preview
+    // rebuild track UI
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (!_state->processedUIRebuildPreview[t].test_and_set()) {
             [self withMidiTrack:t view:^(MidiTrackView *view) {
