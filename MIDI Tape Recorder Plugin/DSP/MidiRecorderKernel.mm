@@ -582,6 +582,24 @@ void MidiRecorderKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
+        // determine if we're recording and/or playing
+        bool recording_tracks = false;
+        bool playing_tracks = false;
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            MidiTrackState& track_state = _state.track[t];
+            if ((track_state.recording.test() && !_state.punchInOut.test()) ||
+                _state.activePunchInOut()) {
+                recording_tracks = true;
+            }
+            // play when there are recorded messages
+            else if (track_state.recordedMessages && !track_state.recordedMessages->empty()) {
+                playing_tracks = true;
+            }
+        }
+
+        // we only repeat if there's at least one track playing
+        bool repeat_active = _state.repeat.test() && playing_tracks;
+        
         // determine the beat position of the playhead
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
         const double frames_beats = frames_seconds * _state.secondsToBeats;
@@ -591,7 +609,7 @@ void MidiRecorderKernel::processOutput() {
         double play_position = _state.playPositionBeats;
         // if the host transport is moving, make that take precedence
         if (_ioState.transportMoving) {
-            if (_state.repeat.test()) {
+            if (repeat_active) {
                 double effective_max_duration = _state.stopPositionBeats - _state.startPositionBeats;
                 play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
             }
@@ -611,24 +629,6 @@ void MidiRecorderKernel::processOutput() {
 
         // store the play position for the next process call
         _state.playPositionBeats = beatrange_end;
-
-        // determine if we're recording and/or playing
-        bool recording_tracks = false;
-        bool playing_tracks = false;
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            MidiTrackState& track_state = _state.track[t];
-            if ((track_state.recording.test() && !_state.punchInOut.test()) ||
-                _state.activePunchInOut()) {
-                recording_tracks = true;
-            }
-            // play when there are recorded messages
-            else if (track_state.recordedMessages && !track_state.recordedMessages->empty()) {
-                playing_tracks = true;
-            }
-        }
-        
-        // we only repeat if there's at least one track playing
-        bool repeat_active = _state.repeat.test() && playing_tracks;
         
         // detect whether we wrap around in this buffer
         double beatrange_wraparound = 0.0;
