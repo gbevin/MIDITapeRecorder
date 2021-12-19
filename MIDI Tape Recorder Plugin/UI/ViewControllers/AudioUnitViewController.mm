@@ -331,7 +331,9 @@
                         record_button[t].selected = s->_state->track[t].recordEnabled.test();
                     }
 
-                    [s applyRecordEnableState];
+                    [s->_mainUndoManager withUndoGroup:^{
+                        [s applyRecordEnableState];
+                    }];
                     break;
                 }
                 case ID_MONITOR_1:
@@ -712,7 +714,9 @@
 - (IBAction)recordEnablePressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     
-    [self updateRecordEnableState];
+    [_mainUndoManager withUndoGroup:^{
+        [self updateRecordEnableState];
+    }];
 }
 
 #pragma mark IBAction - MPE
