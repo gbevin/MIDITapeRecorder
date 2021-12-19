@@ -629,12 +629,27 @@ void MidiRecorderKernel::processOutput() {
                 // ensure there are no lingering notes
                 turnOffAllNotes();
                 
-                // turn off recording
-                if (recording_tracks) {
+                // check whether any events were recorded during this cycle and end recording if there were
+                bool end_recording = false;
+                for (int t = 0; t < MIDI_TRACKS; ++t) {
+                    if (_state.track[t].hasRecordedEvents.test()) {
+                        end_recording = true;
+                        break;
+                    }
+                }
+                
+                // check if we should finish the recording or reset it since no events were recorded
+                if (end_recording) {
                     _state.processedUIEndRecord.clear();
                     recording_tracks = false;
                 }
-
+                else {
+                    for (int t = 0; t < MIDI_TRACKS; ++t) {
+                        _state.processedResetRecording[t].clear();
+                        _state.processedUIRebuildPreview[t].clear();
+                    }
+                }
+                
                 // start over from the start position for the next process call
                 _state.playPositionBeats = _state.startPositionBeats.load();
                 _state.transportStartSampleSeconds = _state.transportStartSampleSeconds + (_state.stopPositionBeats - _state.startPositionBeats) * _state.beatsToSeconds;

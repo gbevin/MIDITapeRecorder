@@ -24,10 +24,11 @@ struct MidiTrackState {
     std::atomic_flag processedActivityInput  { true };
     std::atomic_flag processedActivityOutput { true };
     
-    std::atomic_flag recordEnabled  { false };
-    std::atomic_flag monitorEnabled { false };
-    std::atomic_flag muteEnabled    { false };
-    std::atomic_flag recording      { false };
+    std::atomic_flag recordEnabled      { false };
+    std::atomic_flag monitorEnabled     { false };
+    std::atomic_flag muteEnabled        { false };
+    std::atomic_flag recording          { false };
+    std::atomic_flag hasRecordedEvents  { false };
 
     MPEState mpeState;
     

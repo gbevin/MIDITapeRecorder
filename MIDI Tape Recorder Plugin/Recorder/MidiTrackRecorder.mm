@@ -75,6 +75,10 @@
             track_state.pendingRecordedData = std::move(recorded_data);
             track_state.pendingRecordedPreview = std::move(recorded_preview);
             
+            // reset state
+            _state->processedResetRecording[_ordinal].clear();
+            track_state.hasRecordedEvents.clear();
+
             finish_recording = YES;
         }
     });
@@ -397,13 +401,19 @@
             return;
         }
         
-        // if punch in/out is enabled, only record during the punch in/out positions
-        if (_state->inactivePunchInOut()) {
+        // if transport isn't running, don't update recording
+        if (_state->transportStartSampleSeconds == 0.0) {
             return;
         }
         
-        // if transport isn't running, don't update recording
-        if (_state->transportStartSampleSeconds == 0.0) {
+        // we might have to reset the recording if no events were recorded and it wasn't manually stopped
+        if (!_state->processedResetRecording[_ordinal].test_and_set()) {
+            _recordingData.reset(new MidiRecordedData());
+            _recordingPreview.reset(new MidiRecordedPreview());
+        }
+
+        // if punch in/out is enabled, only record during the punch in/out positions
+        if (_state->inactivePunchInOut()) {
             return;
         }
 
@@ -584,6 +594,7 @@
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
         _recordingData->addMessageToBeat(recorded_message);
+        _state->track[_ordinal].hasRecordedEvents.test_and_set();
         
         // update the preview
         _recordingPreview->updateWithMessage(recorded_message);
