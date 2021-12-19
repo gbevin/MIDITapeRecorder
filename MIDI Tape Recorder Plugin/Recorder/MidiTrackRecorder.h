@@ -1,5 +1,5 @@
 //
-//  MidiRecorder.h
+//  MidiTrackRecorder.h
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 12/1/21.
@@ -11,16 +11,16 @@
 #include "QueuedMidiMessage.h"
 
 #import "MidiPreviewProvider.h"
-#import "MidiRecorderDelegate.h"
+#import "MidiTrackRecorderDelegate.h"
 
 class MidiRecorderState;
 
-@interface MidiRecorder : NSObject<MidiPreviewProvider>
+@interface MidiTrackRecorder : NSObject<MidiPreviewProvider>
 
 @property(readonly) int ordinal;
 @property(nonatomic) BOOL record;
 
-@property id<MidiRecorderDelegate> delegate;
+@property id<MidiTrackRecorderDelegate> delegate;
 
 - (instancetype)init  __attribute__((unavailable("init not available")));
 - (instancetype)initWithOrdinal:(int)ordinal;

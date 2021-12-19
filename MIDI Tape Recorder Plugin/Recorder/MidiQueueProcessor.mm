@@ -13,14 +13,14 @@
 #include "Constants.h"
 #include "MidiHelper.h"
 
-#import "MidiRecorder.h"
+#import "MidiTrackRecorder.h"
 #import "MidiRecorderState.h"
 
 #define DEBUG_MIDI_INPUT 0
 
 @implementation MidiQueueProcessor {
     MidiRecorderState* _state;
-    MidiRecorder* _recorder[MIDI_TRACKS];
+    MidiTrackRecorder* _recorder[MIDI_TRACKS];
 }
 
 - (instancetype)init {
@@ -30,7 +30,7 @@
         _state = nullptr;
         
         for (int t = 0; t < MIDI_TRACKS; ++t) {
-            _recorder[t] = [[MidiRecorder alloc] initWithOrdinal:t];
+            _recorder[t] = [[MidiTrackRecorder alloc] initWithOrdinal:t];
         }
     }
     
@@ -272,7 +272,7 @@
 
 #pragma mark Getters and Setter
 
-- (MidiRecorder*)recorder:(int)ordinal {
+- (MidiTrackRecorder*)recorder:(int)ordinal {
     if (ordinal < 0 || ordinal >= MIDI_TRACKS) {
         return nil;
     }

@@ -18,7 +18,7 @@
 #import "CropRightView.h"
 #import "DonateViewController.h"
 #import "MidiQueueProcessor.h"
-#import "MidiRecorder.h"
+#import "MidiTrackRecorder.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiTrackView.h"
 #import "MPEButton.h"
@@ -1692,7 +1692,7 @@
     }
 }
 
-#pragma mark - MidiRecorderDelegate
+#pragma mark - MidiTrackRecorderDelegate
 
 - (void)startRecord {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -1766,7 +1766,7 @@
         return;
     }
     
-    MidiRecorder* recorder = [_midiQueueProcessor recorder:ordinal];
+    MidiTrackRecorder* recorder = [_midiQueueProcessor recorder:ordinal];
     [[_mainUndoManager prepareWithInvocationTarget:self] restoreRecorded:ordinal
                                                                 withData:[recorder recordedAsDict]];
 }

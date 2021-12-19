@@ -46,7 +46,7 @@
 		26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */; };
 		26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrackView.mm */; };
 		26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* TimelineView.mm */; };
-		26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiRecorder.mm */; };
+		26C540C42757C11B004E4813 /* MidiTrackRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */; };
 		26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7C07927641D78008C52C0 /* CropLeftView.mm */; };
 		26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7C07D27641FF8008C52C0 /* CropRightView.mm */; };
 		26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA262753415D00170CB2 /* AVFAudio.framework */; };
@@ -162,9 +162,9 @@
 		26C49D192756D41700A6FAB4 /* TimelineView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TimelineView.mm; sourceTree = "<group>"; };
 		26C49D1A2756D41700A6FAB4 /* TimelineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimelineView.h; sourceTree = "<group>"; };
 		26C540C127570B3F004E4813 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		26C540C22757C11B004E4813 /* MidiRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorder.h; sourceTree = "<group>"; };
-		26C540C32757C11B004E4813 /* MidiRecorder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorder.mm; sourceTree = "<group>"; };
-		26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderDelegate.h; sourceTree = "<group>"; };
+		26C540C22757C11B004E4813 /* MidiTrackRecorder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackRecorder.h; sourceTree = "<group>"; };
+		26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiTrackRecorder.mm; sourceTree = "<group>"; };
+		26C540C72757D4F4004E4813 /* MidiTrackRecorderDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackRecorderDelegate.h; sourceTree = "<group>"; };
 		26C540C82757E801004E4813 /* QueuedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueuedMidiMessage.h; sourceTree = "<group>"; };
 		26C540C92757EC28004E4813 /* MidiTrackState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackState.h; sourceTree = "<group>"; };
 		26C540CB275823F0004E4813 /* RecordedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordedMidiMessage.h; sourceTree = "<group>"; };
@@ -325,9 +325,9 @@
 				260EF237276A285E00FC6C65 /* MidiPreviewProvider.h */,
 				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
-				26C540C22757C11B004E4813 /* MidiRecorder.h */,
-				26C540C32757C11B004E4813 /* MidiRecorder.mm */,
-				26C540C72757D4F4004E4813 /* MidiRecorderDelegate.h */,
+				26C540C22757C11B004E4813 /* MidiTrackRecorder.h */,
+				26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */,
+				26C540C72757D4F4004E4813 /* MidiTrackRecorderDelegate.h */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";
@@ -604,7 +604,7 @@
 				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
 				26855186276EC6C90082909E /* MidiRecorderState.cpp in Sources */,
 				26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */,
-				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
+				26C540C42757C11B004E4813 /* MidiTrackRecorder.mm in Sources */,
 				2682D465276D4A270076D20B /* RecorderUndoManager.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
 				26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */,

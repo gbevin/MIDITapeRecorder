@@ -10,7 +10,7 @@
 
 #include "TPCircularBuffer.h"
 
-@class MidiRecorder;
+@class MidiTrackRecorder;
 class MidiRecorderState;
 
 @interface MidiQueueProcessor : NSObject
@@ -18,7 +18,7 @@ class MidiRecorderState;
 - (void)processMidiQueue:(TPCircularBuffer*)queue;
 
 - (void)setState:(MidiRecorderState*)state;
-- (MidiRecorder*)recorder:(int)ordinal;
+- (MidiTrackRecorder*)recorder:(int)ordinal;
 
 - (NSData*)recordedTracksAsMidiFile;
 - (NSData*)recordedTrackAsMidiFile:(int)ordinal;

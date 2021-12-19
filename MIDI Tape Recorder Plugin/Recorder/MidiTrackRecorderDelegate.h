@@ -1,5 +1,5 @@
 //
-//  MidiRecorderDelegate.h
+//  MidiTrackRecorderDelegate.h
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 12/1/21.
@@ -12,9 +12,9 @@ class MidiRecordedData;
 class MidiRecordedPreview;
 class RecordedMidiMessage;
 
-@class MidiRecorder;
+@class MidiTrackRecorder;
 
-@protocol MidiRecorderDelegate <NSObject>
+@protocol MidiTrackRecorderDelegate <NSObject>
 
 - (void)startRecord;
 - (void)finishRecording:(int)ordinal;

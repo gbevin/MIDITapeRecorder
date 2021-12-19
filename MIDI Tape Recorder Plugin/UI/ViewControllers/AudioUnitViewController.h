@@ -9,9 +9,9 @@
 #import <CoreAudioKit/CoreAudioKit.h>
 
 #include "MidiRecorderState.h"
-#import "MidiRecorderDelegate.h"
+#import "MidiTrackRecorderDelegate.h"
 
-@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiRecorderDelegate, UIDocumentPickerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface AudioUnitViewController : AUViewController <AUAudioUnitFactory, MidiTrackRecorderDelegate, UIDocumentPickerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 - (void)readFullStateFromDict:(NSDictionary*)dict;
 - (void)currentFullStateToDict:(NSMutableDictionary*)dict;
