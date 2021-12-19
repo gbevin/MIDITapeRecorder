@@ -16,6 +16,7 @@
 		266465ED27596B50002D4459 /* ToolBarButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EC27596B50002D4459 /* ToolBarButton.mm */; };
 		266465F027597988002D4459 /* PopupView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 266465EF27597988002D4459 /* PopupView.mm */; };
 		2682D465276D4A270076D20B /* RecorderUndoManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2682D464276D4A270076D20B /* RecorderUndoManager.mm */; };
+		26855186276EC6C90082909E /* MidiRecorderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26855185276EC6980082909E /* MidiRecorderState.cpp */; };
 		268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A930B27616A2200B2D74A /* PlayheadView.mm */; };
 		268A930F276186EC00B2D74A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268A930E276186EC00B2D74A /* QuartzCore.framework */; };
 		268A93142762793000B2D74A /* MPEButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A93132762793000B2D74A /* MPEButton.mm */; };
@@ -106,6 +107,7 @@
 		266465F1275980BA002D4459 /* GraphicsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicsHelper.h; sourceTree = "<group>"; };
 		2682D463276D4A270076D20B /* RecorderUndoManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecorderUndoManager.h; sourceTree = "<group>"; };
 		2682D464276D4A270076D20B /* RecorderUndoManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RecorderUndoManager.mm; sourceTree = "<group>"; };
+		26855185276EC6980082909E /* MidiRecorderState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MidiRecorderState.cpp; sourceTree = "<group>"; };
 		268A930B27616A2200B2D74A /* PlayheadView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayheadView.mm; sourceTree = "<group>"; };
 		268A930C27616A2300B2D74A /* PlayheadView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayheadView.h; sourceTree = "<group>"; };
 		268A930E276186EC00B2D74A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -227,6 +229,7 @@
 			children = (
 				26BB387027533A3400342496 /* AudioUnitIOState.h */,
 				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
+				26855185276EC6980082909E /* MidiRecorderState.cpp */,
 				26C540C92757EC28004E4813 /* MidiTrackState.h */,
 				268A93182762997400B2D74A /* MPEState.h */,
 				26F36166276B8B1000077518 /* NoteState.h */,
@@ -599,6 +602,7 @@
 				262A75AD276E915400FE6FDF /* RecordedMidiMessage.cpp in Sources */,
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
 				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
+				26855186276EC6C90082909E /* MidiRecorderState.cpp in Sources */,
 				26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiRecorder.mm in Sources */,
 				2682D465276D4A270076D20B /* RecorderUndoManager.mm in Sources */,

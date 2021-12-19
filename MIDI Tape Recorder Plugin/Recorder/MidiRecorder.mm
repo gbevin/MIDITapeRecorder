@@ -398,8 +398,7 @@
         }
         
         // if punch in/out is active, only record during the punch in/out positions
-        if (_state->punchInOut.test() &&
-            (_state->playPositionBeats < _state->punchInPositionBeats.load() || _state->playPositionBeats > _state->punchOutPositionBeats.load())) {
+        if (_state->inactivePunchInOut()) {
             return;
         }
 
@@ -565,8 +564,7 @@
         }
         
         // if punch in/out is active, only record during the punch in/out positions
-        if (_state->punchInOut.test() &&
-            (_state->playPositionBeats < _state->punchInPositionBeats.load() || _state->playPositionBeats > _state->punchOutPositionBeats.load())) {
+        if (_state->inactivePunchInOut()) {
             return;
         }
 

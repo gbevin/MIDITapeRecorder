@@ -77,4 +77,7 @@ struct MidiRecorderState {
     std::atomic_flag processedUIRebuildPreview[MIDI_TRACKS] { true, true, true, true };
 
     TPCircularBuffer midiBuffer;
+    
+    bool inactivePunchInOut();
+    bool activePunchInOut();
 };
