@@ -47,6 +47,7 @@
 		26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D172756D04400A6FAB4 /* MidiTrackView.mm */; };
 		26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C49D192756D41700A6FAB4 /* TimelineView.mm */; };
 		26C540C42757C11B004E4813 /* MidiTrackRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */; };
+		26C578C327712C550046D75B /* TrackButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C578C227712C550046D75B /* TrackButton.mm */; };
 		26C7C07B27641D78008C52C0 /* CropLeftView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7C07927641D78008C52C0 /* CropLeftView.mm */; };
 		26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7C07D27641FF8008C52C0 /* CropRightView.mm */; };
 		26C7DA272753415D00170CB2 /* AVFAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA262753415D00170CB2 /* AVFAudio.framework */; };
@@ -168,6 +169,8 @@
 		26C540C82757E801004E4813 /* QueuedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QueuedMidiMessage.h; sourceTree = "<group>"; };
 		26C540C92757EC28004E4813 /* MidiTrackState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiTrackState.h; sourceTree = "<group>"; };
 		26C540CB275823F0004E4813 /* RecordedMidiMessage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordedMidiMessage.h; sourceTree = "<group>"; };
+		26C578C127712C550046D75B /* TrackButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackButton.h; sourceTree = "<group>"; };
+		26C578C227712C550046D75B /* TrackButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TrackButton.mm; sourceTree = "<group>"; };
 		26C7C07927641D78008C52C0 /* CropLeftView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CropLeftView.mm; sourceTree = "<group>"; };
 		26C7C07A27641D78008C52C0 /* CropLeftView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CropLeftView.h; sourceTree = "<group>"; };
 		26C7C07C27641FF8008C52C0 /* CropRightView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CropRightView.h; sourceTree = "<group>"; };
@@ -289,6 +292,8 @@
 				268A93132762793000B2D74A /* MPEButton.mm */,
 				266465EB27596B50002D4459 /* ToolBarButton.h */,
 				266465EC27596B50002D4459 /* ToolBarButton.mm */,
+				26C578C127712C550046D75B /* TrackButton.h */,
+				26C578C227712C550046D75B /* TrackButton.mm */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -601,6 +606,7 @@
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
 				262A75AD276E915400FE6FDF /* RecordedMidiMessage.cpp in Sources */,
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
+				26C578C327712C550046D75B /* TrackButton.mm in Sources */,
 				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
 				26855186276EC6C90082909E /* MidiRecorderState.cpp in Sources */,
 				26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */,
