@@ -76,7 +76,7 @@
             track_state.pendingRecordedPreview = std::move(recorded_preview);
             
             // reset state
-            _state->processedResetRecording[_ordinal].clear();
+            _state->processedResetRecording[_ordinal].test_and_set();
             track_state.hasRecordedEvents.clear();
 
             finish_recording = YES;
@@ -592,7 +592,7 @@
 
         // add message to the recording
         RecordedMidiMessage recorded_message;
-        recorded_message.offsetBeats = offset_beats;
+        recorded_message.offsetBeats = std::max(0.0, offset_beats);
         recorded_message.length = message.length;
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];

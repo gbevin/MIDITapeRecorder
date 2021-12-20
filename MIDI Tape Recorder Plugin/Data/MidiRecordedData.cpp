@@ -67,7 +67,7 @@ void MidiRecordedData::populateUpToBeat(int beat) {
 }
 
 void MidiRecordedData::addMessageToBeat(RecordedMidiMessage& message) {
-    int beat = (int)message.offsetBeats;
+    int beat = std::max(0, (int)message.offsetBeats);
     while (beat >= _beats.size()) {
         _beats.push_back(RecordedDataVector());
     }
