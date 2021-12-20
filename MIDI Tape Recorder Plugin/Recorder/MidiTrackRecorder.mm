@@ -14,6 +14,8 @@
 #include "MidiHelper.h"
 #include "MidiRecorderState.h"
 
+#define DEBUG_MIDI_RECORD 0
+
 @implementation MidiTrackRecorder {
     dispatch_queue_t _dispatchQueue;
     
@@ -597,12 +599,38 @@
         recorded_message.data[0] = message.data[0];
         recorded_message.data[1] = message.data[1];
         recorded_message.data[2] = message.data[2];
+#if DEBUG_MIDI_RECORD
+        [self logMidiMessage:recorded_message];
+#endif
         _recordingData->addMessageToBeat(recorded_message);
         _state->track[_ordinal].hasRecordedEvents.test_and_set();
         
         // update the preview
         _recordingPreview->updateWithMessage(recorded_message);
     });
+}
+
+- (void)logMidiMessage:(RecordedMidiMessage&)message {
+    uint8_t status = message.data[0] & 0xf0;
+    uint8_t channel = message.data[0] & 0x0f;
+    uint8_t data1 = message.data[1];
+    uint8_t data2 = message.data[2];
+    
+    if (message.length == 2) {
+        NSLog(@"REC %f %d : %d - %d - %2s [%3s %3s    ]",
+              message.offsetBeats, _ordinal, message.type, message.length,
+              [NSString stringWithFormat:@"%d", channel].UTF8String,
+              [NSString stringWithFormat:@"%d", status].UTF8String,
+              [NSString stringWithFormat:@"%d", data1].UTF8String);
+    }
+    else {
+        NSLog(@"REC %f %d : %d - %d - %2s [%3s %3s %3s]",
+              message.offsetBeats, _ordinal, message.type, message.length,
+              [NSString stringWithFormat:@"%d", channel].UTF8String,
+              [NSString stringWithFormat:@"%d", status].UTF8String,
+              [NSString stringWithFormat:@"%d", data1].UTF8String,
+              [NSString stringWithFormat:@"%d", data2].UTF8String);
+    }
 }
 
 - (void)clear {

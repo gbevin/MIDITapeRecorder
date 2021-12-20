@@ -737,14 +737,14 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
                                 uint8_t data2 = message.data[2];
                                 
                                 if (message.length == 2) {
-                                    NSLog(@"%f %d : %d - %2s [%3s %3s    ]",
+                                    NSLog(@"OUT %f %d : %d - %2s [%3s %3s    ]",
                                           message.offsetBeats, t, message.length,
                                           [NSString stringWithFormat:@"%d", channel].UTF8String,
                                           [NSString stringWithFormat:@"%d", status].UTF8String,
                                           [NSString stringWithFormat:@"%d", data1].UTF8String);
                                 }
                                 else {
-                                    NSLog(@"%f %d : %d - %2s [%3s %3s %3s]",
+                                    NSLog(@"OUT %f %d : %d - %2s [%3s %3s %3s]",
                                           message.offsetBeats, t, message.length,
                                           [NSString stringWithFormat:@"%d", channel].UTF8String,
                                           [NSString stringWithFormat:@"%d", status].UTF8String,
@@ -796,7 +796,7 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
             uint8_t data1 = message.data[1];
             uint8_t data2 = message.data[2];
             
-            NSLog(@"%2s [%3s %3s %3s]",
+            NSLog(@"OUT %2s [%3s %3s %3s]",
                   [NSString stringWithFormat:@"%d", channel].UTF8String,
                   [NSString stringWithFormat:@"%d", status].UTF8String,
                   [NSString stringWithFormat:@"%d", data1].UTF8String,

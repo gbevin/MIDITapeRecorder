@@ -51,7 +51,9 @@
         memcpy(&message, bytes, QUEUED_MSG_SIZE);
         
 #if DEBUG_MIDI_INPUT
-        [self logMidiMessage:message];
+        if (message.length > 0) {
+            [self logMidiMessage:message];
+        }
 #endif
         
         if (_state) {
@@ -79,14 +81,14 @@
     uint8_t data2 = message.data[2];
     
     if (message.length == 2) {
-        NSLog(@"%f %d : %d - %2s [%3s %3s    ]",
+        NSLog(@"IN  %f %d : %d - %2s [%3s %3s    ]",
               message.timeSampleSeconds, message.cable, message.length,
               [NSString stringWithFormat:@"%d", channel].UTF8String,
               [NSString stringWithFormat:@"%d", status].UTF8String,
               [NSString stringWithFormat:@"%d", data1].UTF8String);
     }
     else {
-        NSLog(@"%f %d : %d - %2s [%3s %3s %3s]",
+        NSLog(@"IN  %f %d : %d - %2s [%3s %3s %3s]",
               message.timeSampleSeconds, message.cable, message.length,
               [NSString stringWithFormat:@"%d", channel].UTF8String,
               [NSString stringWithFormat:@"%d", status].UTF8String,
