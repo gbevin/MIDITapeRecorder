@@ -1081,7 +1081,7 @@ RECORDER</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <color key="tintColor" name="ActivityOff"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="🅸" image="input_monitor">
+                                <state key="normal" image="input_monitor">
                                     <color key="titleColor" name="Green"/>
                                 </state>
                                 <connections>
