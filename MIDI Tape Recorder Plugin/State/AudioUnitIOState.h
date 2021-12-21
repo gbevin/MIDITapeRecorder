@@ -18,9 +18,11 @@ struct AudioUnitIOState {
     std::atomic<float> sampleRate       { 44100.f };
     std::atomic<uint32_t> frameCount    { 0 };
     
-    std::atomic<bool> transportChanged          { false };
-    std::atomic<bool> transportMoving           { false };
+    std::atomic_flag transportMoving            { false };
     std::atomic<double> transportSamplePosition { 0.0 };
+    std::atomic_flag transportChangeProcessed   { true };
+    std::atomic_flag transportPositionProcessed { true };
+    
     std::atomic<double> currentBeatPosition     { 0.0 };
 
     const AudioTimeStamp* timestamp    { nullptr };

@@ -431,10 +431,11 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // this prevents split-state conditions to change semantics in the middle of processing
 
     // host transport sync
-    if (_ioState.transportMoving) {
+    bool transport_changed = !_ioState.transportChangeProcessed.test_and_set();
+    if (_ioState.transportMoving.test()) {
         // transport starting while record is armed or
         // record arming while host transport is already moving
-        if (_ioState.transportChanged || !_state.processedRecordArmed.test_and_set()) {
+        if (transport_changed || !_state.processedRecordArmed.test_and_set()) {
             if (_state.record.test()) {
                 for (int t = 0; t < MIDI_TRACKS; ++t) {
                     if (_state.track[t].recordEnabled.test()) {
@@ -448,7 +449,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         }
     }
     // stop transport when host stopped moving
-    else if (_ioState.transportChanged) {
+    else if (transport_changed) {
         _state.processedStop.clear();
         _state.processedUIStop.clear();
     }
@@ -555,46 +556,55 @@ void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
 }
 
 void MidiRecorderKernel::processOutput() {
+    // determine if we're recording and/or playing
+    bool recording_tracks = false;
+    bool playing_tracks = false;
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        MidiTrackState& track_state = _state.track[t];
+        if (track_state.recording.test() &&
+            (!_state.punchInOut.test() || _state.activePunchInOut())) {
+            recording_tracks = true;
+        }
+        // play when there are recorded messages
+        else if (track_state.recordedData && !track_state.recordedData->empty()) {
+            playing_tracks = true;
+        }
+    }
+
+    // we only repeat if there's at least one track playing
+    bool repeat_active = _state.repeat.test() && playing_tracks;
+    
+    // if the host transport is moving or the position changed, make that take precedence
+    double play_position = _state.playPositionBeats;
+    bool play_position_changed = false;
+    if (_ioState.transportMoving.test() || !_ioState.transportPositionProcessed.test_and_set()) {
+        if (repeat_active) {
+            double effective_max_duration = _state.stopPositionBeats - _state.startPositionBeats;
+            play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
+        }
+        else {
+            play_position = _ioState.currentBeatPosition;
+        }
+        play_position += _state.startPositionBeats;
+        play_position_changed = true;
+    }
+    
     if (!_isPlaying) {
+        // we update the play position if the host changed it
+        if (play_position_changed) {
+            _state.playPositionBeats = play_position;
+        }
+        
+        // make sure we have no lingering notes
         turnOffAllNotes();
     }
     else {
-        // determine if we're recording and/or playing
-        bool recording_tracks = false;
-        bool playing_tracks = false;
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            MidiTrackState& track_state = _state.track[t];
-            if (track_state.recording.test() &&
-                (!_state.punchInOut.test() || _state.activePunchInOut())) {
-                recording_tracks = true;
-            }
-            // play when there are recorded messages
-            else if (track_state.recordedData && !track_state.recordedData->empty()) {
-                playing_tracks = true;
-            }
-        }
-
-        // we only repeat if there's at least one track playing
-        bool repeat_active = _state.repeat.test() && playing_tracks;
-        
         // determine the beat position of the playhead
         const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
         const double frames_beats = frames_seconds * _state.secondsToBeats;
 
         // calculate the range of beat positions between which the recorded messages
         // should be played
-        double play_position = _state.playPositionBeats;
-        // if the host transport is moving, make that take precedence
-        if (_ioState.transportMoving) {
-            if (repeat_active) {
-                double effective_max_duration = _state.stopPositionBeats - _state.startPositionBeats;
-                play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
-            }
-            else {
-                play_position = _ioState.currentBeatPosition;
-            }
-            play_position += _state.startPositionBeats;
-        }
         double beatrange_begin = play_position;
         double beatrange_end = beatrange_begin + frames_beats;
 

@@ -103,15 +103,31 @@
 
         if (kernel->_ioState.transportStateBlock) {
             AUHostTransportStateFlags transport_state_flags;
+            
+            // transport position
             double sample_position;
             kernel->_ioState.transportStateBlock(&transport_state_flags, &sample_position, nil, nil);
-            kernel->_ioState.transportSamplePosition = sample_position;
-            kernel->_ioState.transportChanged = transport_state_flags & AUHostTransportStateChanged;
-            BOOL moving = transport_state_flags & AUHostTransportStateMoving;
-            if (moving != kernel->_ioState.transportMoving) {
-                kernel->_ioState.transportChanged = YES;
+            if (kernel->_ioState.transportSamplePosition != sample_position) {
+                kernel->_ioState.transportSamplePosition = sample_position;
+                kernel->_ioState.transportPositionProcessed.clear();
             }
-            kernel->_ioState.transportMoving = moving;
+
+            // transport changed
+            if (transport_state_flags & AUHostTransportStateChanged) {
+                kernel->_ioState.transportChangeProcessed.clear();
+            }
+            BOOL moving = transport_state_flags & AUHostTransportStateMoving;
+            if (moving != kernel->_ioState.transportMoving.test()) {
+                kernel->_ioState.transportChangeProcessed.clear();
+            }
+            
+            // transport moving
+            if (moving) {
+                kernel->_ioState.transportMoving.test_and_set();
+            }
+            else {
+                kernel->_ioState.transportMoving.clear();
+            }
         }
         
         if (kernel->_ioState.musicalContext) {
