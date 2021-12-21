@@ -37,6 +37,7 @@ struct MidiRecorderState {
     std::atomic_flag sendMpeConfigOnPlay        { true };
     std::atomic_flag displayMpeConfigDetails    { false };
     std::atomic_flag autoTrimRecordings         { true };
+    std::atomic_flag showToolTips               { true };
 
     std::atomic<double> tempo           { 120.0 };
     std::atomic<double> secondsToBeats  { 2.0 };

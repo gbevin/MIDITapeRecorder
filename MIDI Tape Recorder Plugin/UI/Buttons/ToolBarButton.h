@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ToolBarButton : UIButton
+#import "ToolTipButton.h"
+
+@interface ToolBarButton : ToolTipButton
 
 @property BOOL timedUnselect;
 

@@ -29,6 +29,8 @@
 #import "RecorderUndoManager.h"
 #import "SettingsViewController.h"
 #import "TimelineView.h"
+#import "ToolBarButton.h"
+#import "TrackButton.h"
 
 @interface AudioUnitViewController ()
 
@@ -44,17 +46,20 @@
 
 @property (weak, nonatomic) IBOutlet UIView* toolbar;
 
-@property (weak, nonatomic) IBOutlet UIButton* routingButton;
+@property (weak, nonatomic) IBOutlet UIView* toolTipView;
+@property (weak, nonatomic) IBOutlet UILabel* toolTipLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton* rewindButton;
-@property (weak, nonatomic) IBOutlet UIButton* playButton;
-@property (weak, nonatomic) IBOutlet UIButton* recordButton;
-@property (weak, nonatomic) IBOutlet UIButton* repeatButton;
-@property (weak, nonatomic) IBOutlet UIButton* gridButton;
-@property (weak, nonatomic) IBOutlet UIButton* chaseButton;
-@property (weak, nonatomic) IBOutlet UIButton* punchInOutButton;
-@property (weak, nonatomic) IBOutlet UIButton* undoButton;
-@property (weak, nonatomic) IBOutlet UIButton* redoButton;
+@property (weak, nonatomic) IBOutlet ToolTipButton* routingButton;
+
+@property (weak, nonatomic) IBOutlet ToolBarButton* rewindButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* playButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* recordButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* repeatButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* gridButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* chaseButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* punchInOutButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* undoButton;
+@property (weak, nonatomic) IBOutlet ToolBarButton* redoButton;
 @property (weak, nonatomic) IBOutlet UIButton* settingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* aboutButton;
 @property (weak, nonatomic) IBOutlet UIButton* donateButton;
@@ -63,25 +68,25 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* undoLeading;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* timelineWidth;
 
-@property (weak, nonatomic) IBOutlet UIButton* recordButton1;
-@property (weak, nonatomic) IBOutlet UIButton* recordButton2;
-@property (weak, nonatomic) IBOutlet UIButton* recordButton3;
-@property (weak, nonatomic) IBOutlet UIButton* recordButton4;
+@property (weak, nonatomic) IBOutlet TrackButton* recordButton1;
+@property (weak, nonatomic) IBOutlet TrackButton* recordButton2;
+@property (weak, nonatomic) IBOutlet TrackButton* recordButton3;
+@property (weak, nonatomic) IBOutlet TrackButton* recordButton4;
 
-@property (weak, nonatomic) IBOutlet UIButton* monitorButton1;
-@property (weak, nonatomic) IBOutlet UIButton* monitorButton2;
-@property (weak, nonatomic) IBOutlet UIButton* monitorButton3;
-@property (weak, nonatomic) IBOutlet UIButton* monitorButton4;
+@property (weak, nonatomic) IBOutlet TrackButton* monitorButton1;
+@property (weak, nonatomic) IBOutlet TrackButton* monitorButton2;
+@property (weak, nonatomic) IBOutlet TrackButton* monitorButton3;
+@property (weak, nonatomic) IBOutlet TrackButton* monitorButton4;
 
 @property (weak, nonatomic) IBOutlet MPEButton* mpeButton1;
 @property (weak, nonatomic) IBOutlet MPEButton* mpeButton2;
 @property (weak, nonatomic) IBOutlet MPEButton* mpeButton3;
 @property (weak, nonatomic) IBOutlet MPEButton* mpeButton4;
 
-@property (weak, nonatomic) IBOutlet UIButton* muteButton1;
-@property (weak, nonatomic) IBOutlet UIButton* muteButton2;
-@property (weak, nonatomic) IBOutlet UIButton* muteButton3;
-@property (weak, nonatomic) IBOutlet UIButton* muteButton4;
+@property (weak, nonatomic) IBOutlet TrackButton* muteButton1;
+@property (weak, nonatomic) IBOutlet TrackButton* muteButton2;
+@property (weak, nonatomic) IBOutlet TrackButton* muteButton3;
+@property (weak, nonatomic) IBOutlet TrackButton* muteButton4;
 
 @property (weak, nonatomic) IBOutlet UIButton* menuButtonAll;
 @property (weak, nonatomic) IBOutlet UIButton* menuButton1;
@@ -100,25 +105,28 @@
 @property (weak, nonatomic) IBOutlet UIButton* closeMenuButton3;
 @property (weak, nonatomic) IBOutlet UIButton* closeMenuButton4;
 
-@property (weak, nonatomic) IBOutlet UIButton* clearButton1;
-@property (weak, nonatomic) IBOutlet UIButton* clearButton2;
-@property (weak, nonatomic) IBOutlet UIButton* clearButton3;
-@property (weak, nonatomic) IBOutlet UIButton* clearButton4;
+@property (weak, nonatomic) IBOutlet ToolBarButton* clearButtonAll;
+@property (weak, nonatomic) IBOutlet ToolBarButton* clearButton1;
+@property (weak, nonatomic) IBOutlet ToolBarButton* clearButton2;
+@property (weak, nonatomic) IBOutlet ToolBarButton* clearButton3;
+@property (weak, nonatomic) IBOutlet ToolBarButton* clearButton4;
 
-@property (weak, nonatomic) IBOutlet UIButton* exportButton1;
-@property (weak, nonatomic) IBOutlet UIButton* exportButton2;
-@property (weak, nonatomic) IBOutlet UIButton* exportButton3;
-@property (weak, nonatomic) IBOutlet UIButton* exportButton4;
+@property (weak, nonatomic) IBOutlet ToolBarButton* exportButtonAll;
+@property (weak, nonatomic) IBOutlet ToolBarButton* exportButton1;
+@property (weak, nonatomic) IBOutlet ToolBarButton* exportButton2;
+@property (weak, nonatomic) IBOutlet ToolBarButton* exportButton3;
+@property (weak, nonatomic) IBOutlet ToolBarButton* exportButton4;
 
-@property (weak, nonatomic) IBOutlet UIButton* importButton1;
-@property (weak, nonatomic) IBOutlet UIButton* importButton2;
-@property (weak, nonatomic) IBOutlet UIButton* importButton3;
-@property (weak, nonatomic) IBOutlet UIButton* importButton4;
+@property (weak, nonatomic) IBOutlet ToolBarButton* importButtonAll;
+@property (weak, nonatomic) IBOutlet ToolBarButton* importButton1;
+@property (weak, nonatomic) IBOutlet ToolBarButton* importButton2;
+@property (weak, nonatomic) IBOutlet ToolBarButton* importButton3;
+@property (weak, nonatomic) IBOutlet ToolBarButton* importButton4;
 
 @property (weak, nonatomic) IBOutlet UIScrollView* tracks;
 
 @property (weak, nonatomic) IBOutlet TimelineView* timeline;
-@property (weak, nonatomic) IBOutlet UITapGestureRecognizer *timelineTapGesture;
+@property (weak, nonatomic) IBOutlet UITapGestureRecognizer* timelineTapGesture;
 
 @property (weak, nonatomic) IBOutlet UIView* playhead;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* playheadLeading;
@@ -195,6 +203,8 @@
     double _overlayPanStartFirstPosition;
     
     NSDate* _lastForegroundMoment;
+    
+    NSTimer* _toolTipTimer;
 }
 
 #pragma mark - Init
@@ -267,6 +277,125 @@
                                              selector:@selector(undoManagerUpdated)
                                                  name:NSUndoManagerCheckpointNotification
                                                object:_mainUndoManager];
+    
+    // setup tooltips
+    _routingButton.toolTipDelegate = self;
+    _routingButton.toolTipTextSelected = @"Seperate Input\nFor Each Track";
+    _routingButton.toolTipTextUnselected = @"First Input To\nAll 4 Tracks";
+
+    _rewindButton.toolTipDelegate = self;
+    _rewindButton.toolTipTextHighlighted = @"Rewind";
+
+    _recordButton.toolTipDelegate = self;
+    _recordButton.toolTipTextSelected = @"Record\nArmed";
+    _recordButton.toolTipTextUnselected = @"Record\nDisarmed";
+    
+    _playButton.toolTipDelegate = self;
+    _playButton.toolTipTextSelected = @"Playing\nStarted";
+    _playButton.toolTipTextUnselected = @"Playing\nStopped";
+    
+    _repeatButton.toolTipDelegate = self;
+    _repeatButton.toolTipTextSelected = @"Repeat\nEnabled";
+    _repeatButton.toolTipTextUnselected = @"Repeat\nDisabled";
+
+    _gridButton.toolTipDelegate = self;
+    _gridButton.toolTipTextSelected = @"Snap To Beat\nEnabled";
+    _gridButton.toolTipTextUnselected = @"Snap To Beat\nDisabled";
+
+    _chaseButton.toolTipDelegate = self;
+    _chaseButton.toolTipTextSelected = @"Auto Scroll\nEnabled";
+    _chaseButton.toolTipTextUnselected = @"Auto Scroll\nDisabled";
+
+    _punchInOutButton.toolTipDelegate = self;
+    _punchInOutButton.toolTipTextSelected = @"Punch In/Out\nEnabled";
+    _punchInOutButton.toolTipTextUnselected = @"Punch In/Out\nDisabled";
+    
+    _undoButton.toolTipDelegate = self;
+    _undoButton.toolTipTextHighlighted = @"Undo";
+    
+    _redoButton.toolTipDelegate = self;
+    _redoButton.toolTipTextHighlighted = @"Redo";
+    
+    _recordButton1.toolTipDelegate = self;
+    _recordButton1.toolTipTextSelected = @"Record\nEnabled";
+    _recordButton1.toolTipTextUnselected = @"Record\nDisabled";
+    _recordButton2.toolTipDelegate = self;
+    _recordButton2.toolTipTextSelected = @"Record\nEnabled";
+    _recordButton2.toolTipTextUnselected = @"Record\nDisabled";
+    _recordButton3.toolTipDelegate = self;
+    _recordButton3.toolTipTextSelected = @"Record\nEnabled";
+    _recordButton3.toolTipTextUnselected = @"Record\nDisabled";
+    _recordButton4.toolTipDelegate = self;
+    _recordButton4.toolTipTextSelected = @"Record\nEnabled";
+    _recordButton4.toolTipTextUnselected = @"Record\nDisabled";
+    
+    _monitorButton1.toolTipDelegate = self;
+    _monitorButton1.toolTipTextSelected = @"Input Monitor\nEnabled";
+    _monitorButton1.toolTipTextUnselected = @"Input Monitor\nDisabled";
+    _monitorButton2.toolTipDelegate = self;
+    _monitorButton2.toolTipTextSelected = @"Input Monitor\nEnabled";
+    _monitorButton2.toolTipTextUnselected = @"Input Monitor\nDisabled";
+    _monitorButton3.toolTipDelegate = self;
+    _monitorButton3.toolTipTextSelected = @"Input Monitor\nEnabled";
+    _monitorButton3.toolTipTextUnselected = @"Input Monitor\nDisabled";
+    _monitorButton4.toolTipDelegate = self;
+    _monitorButton4.toolTipTextSelected = @"Input Monitor\nEnabled";
+    _monitorButton4.toolTipTextUnselected = @"Input Monitor\nDisabled";
+    
+    _muteButton1.toolTipDelegate = self;
+    _muteButton1.toolTipTextSelected = @"Mute\nEnabled";
+    _muteButton1.toolTipTextUnselected = @"Mute\nDisabled";
+    _muteButton2.toolTipDelegate = self;
+    _muteButton2.toolTipTextSelected = @"Mute\nEnabled";
+    _muteButton2.toolTipTextUnselected = @"Mute\nDisabled";
+    _muteButton3.toolTipDelegate = self;
+    _muteButton3.toolTipTextSelected = @"Mute\nEnabled";
+    _muteButton3.toolTipTextUnselected = @"Mute\nDisabled";
+    _muteButton4.toolTipDelegate = self;
+    _muteButton4.toolTipTextSelected = @"Mute\nEnabled";
+    _muteButton4.toolTipTextUnselected = @"Mute\nDisabled";
+    
+    _importButtonAll.toolTipDelegate = self;
+    _importButtonAll.toolTipTextHighlighted = @"Import\nAll Tracks";
+    _importButton1.toolTipDelegate = self;
+    _importButton1.toolTipTextHighlighted = @"Import\nOne Track";
+    _importButton2.toolTipDelegate = self;
+    _importButton2.toolTipTextHighlighted = @"Import\nOne Track";
+    _importButton3.toolTipDelegate = self;
+    _importButton3.toolTipTextHighlighted = @"Import\nOne Track";
+    _importButton4.toolTipDelegate = self;
+    _importButton4.toolTipTextHighlighted = @"Import\nOne Track";
+    
+    _exportButtonAll.toolTipDelegate = self;
+    _exportButtonAll.toolTipTextHighlighted = @"Export\nAll Tracks";
+    _exportButton1.toolTipDelegate = self;
+    _exportButton1.toolTipTextHighlighted = @"Export\nOne Track";
+    _exportButton2.toolTipDelegate = self;
+    _exportButton2.toolTipTextHighlighted = @"Export\nOne Track";
+    _exportButton3.toolTipDelegate = self;
+    _exportButton3.toolTipTextHighlighted = @"Export\nOne Track";
+    _exportButton4.toolTipDelegate = self;
+    _exportButton4.toolTipTextHighlighted = @"Export\nOne Track";
+    
+    _clearButtonAll.toolTipDelegate = self;
+    _clearButtonAll.toolTipTextSelected = @"Confirm\nClear All";
+    _clearButton1.toolTipDelegate = self;
+    _clearButton1.toolTipTextSelected = @"Confirm\nClear Track";
+    _clearButton2.toolTipDelegate = self;
+    _clearButton2.toolTipTextSelected = @"Confirm\nClear Track";
+    _clearButton3.toolTipDelegate = self;
+    _clearButton3.toolTipTextSelected = @"Confirm\nClear Track";
+    _clearButton4.toolTipDelegate = self;
+    _clearButton4.toolTipTextSelected = @"Confirm\nClear Track";
+    
+    _mpeButton1.toolTipDelegate = self;
+    _mpeButton1.toolTipTextHighlighted = @"MCM\nSent";
+    _mpeButton2.toolTipDelegate = self;
+    _mpeButton2.toolTipTextHighlighted = @"MCM\nSent";
+    _mpeButton3.toolTipDelegate = self;
+    _mpeButton3.toolTipTextHighlighted = @"MCM\nSent";
+    _mpeButton4.toolTipDelegate = self;
+    _mpeButton4.toolTipTextHighlighted = @"MCM\nSent";
 }
 
 #pragma mark - Donate Call To Action
@@ -652,7 +781,6 @@
         [self closeDonateView:nil];
     }
 }
-
 - (void)closeAboutView {
     [self closeAboutView:nil];
 }
@@ -750,8 +878,10 @@
     if (menu_popup_view != nil) {
         menu_popup_view.alpha = 0.0;
         for (UIButton* b in menu_popup_view.subviews) {
-            b.selected = NO;
-            b.alpha = 0.0;
+            if ([b isKindOfClass:UIButton.class]) {
+                b.selected = NO;
+                b.alpha = 0.0;
+            }
         }
         
         menu_popup_view.hidden = NO;
@@ -762,7 +892,9 @@
                          animations:^() {
                              menu_popup_view.alpha = 1.0;
                              for (UIView* v in menu_popup_view.subviews) {
-                                 v.alpha = 1.0;
+                                 if ([v isKindOfClass:UIButton.class]) {
+                                     v.alpha = 1.0;
+                                 }
                              }
                          }
                          completion:^(BOOL finished) {}];
@@ -880,11 +1012,15 @@
 #pragma mark IBAction - Undo / Redo
 
 - (IBAction)undoPressed:(UIButton*)sender {
+    _restoringState = YES;
     [_mainUndoManager undo];
+    _restoringState = NO;
 }
 
 - (IBAction)redoPressed:(UIButton*)sender {
+    _restoringState = YES;
     [_mainUndoManager redo];
+    _restoringState = NO;
 }
 
 #pragma mark UIGestureRecognizerDelegate
@@ -1170,6 +1306,7 @@
     id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
     id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
     id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
+    id show_tool_tips = [dict objectForKey:@"ShowToolTips"];
 
     if (start_position_set) {
         if ([start_position_set boolValue]) _state->startPositionSet.test_and_set();
@@ -1274,6 +1411,10 @@
         if ([auto_trim boolValue]) _state->autoTrimRecordings.test_and_set();
         else                       _state->autoTrimRecordings.clear();
     }
+    if (show_tool_tips) {
+        if ([show_tool_tips boolValue]) _state->showToolTips.test_and_set();
+        else                            _state->showToolTips.clear();
+    }
 
     [self updateRoutingState];
     [self updateRecordState];
@@ -1334,7 +1475,8 @@
         @"Mute4" : @(_muteButton4.selected),
         @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.test()),
         @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.test()),
-        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test())
+        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
+        @"ShowToolTips" : @(_state->showToolTips.test())
     };
 }
 
@@ -1733,6 +1875,56 @@
 - (void)invalidateRecording:(int)ordinal {
     _state->processedNotesOff[ordinal].clear();
     _state->processedInvalidate[ordinal].clear();
+}
+
+#pragma mark RecorderToolTipDelegate
+
+- (void)displayTooltip:(NSString*)tooltip {
+    if (_restoringState || !_state->showToolTips.test()) {
+        return;
+    }
+    
+    if (_toolTipTimer) {
+        [_toolTipTimer invalidate];
+        _toolTipTimer = nil;
+    }
+    _toolTipTimer = [NSTimer scheduledTimerWithTimeInterval:2.0
+                                                     target:self
+                                                   selector:@selector(hideToolTip:)
+                                                   userInfo:nil
+                                                    repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:_toolTipTimer forMode:NSRunLoopCommonModes];
+    
+    _toolTipLabel.text = tooltip;
+    
+    if (_toolTipView.hidden) {
+        UIView* view = _toolTipView;
+        view.alpha = 0.0;
+        view.hidden = NO;
+        [UIView animateWithDuration:0.2
+                              delay:0
+                            options:UIViewAnimationOptionCurveEaseOut
+                         animations:^() {
+                             view.alpha = 1.0;
+                         }
+                         completion:^(BOOL finished) {}];
+    }
+}
+
+- (void)hideToolTip:(NSTimer*)timer {
+    [timer invalidate];
+    timer = nil;
+    
+    UIView* view = _toolTipView;
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseOut
+                     animations:^() {
+                         view.alpha = 0.0;
+                     }
+                     completion:^(BOOL finished) {
+                         view.hidden = YES;
+                     }];
 }
 
 #pragma mark - Undo / redo

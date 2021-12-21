@@ -8,5 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MPEButton : UIButton
+#import "ToolTipButton.h"
+
+@interface MPEButton : ToolTipButton
 @end

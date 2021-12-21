@@ -13,14 +13,108 @@
 #include "GraphicsHelper.h"
 
 @implementation PopupView {
+    UIVisualEffectView* _blur;
     CAShapeLayer* _popupLayer;
+    UIView* _outline;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         _popupLayer = nil;
+        _outline = nil;
+
+        self.backgroundColor = UIColor.clearColor;
+
+        _outline = [UIView new];
+        _outline.translatesAutoresizingMaskIntoConstraints = NO;
+        _outline.clipsToBounds = NO;
+        
+        [self insertSubview:_outline atIndex:0];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_outline
+                             attribute:NSLayoutAttributeTop
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeTop
+                             multiplier:1.0
+                             constant:0]];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_outline
+                             attribute:NSLayoutAttributeLeading
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeLeading
+                             multiplier:1.0
+                             constant:0]];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_outline
+                             attribute:NSLayoutAttributeHeight
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeHeight
+                             multiplier:1.0
+                             constant:0]];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_outline
+                             attribute:NSLayoutAttributeWidth
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeWidth
+                             multiplier:1.0
+                             constant:0]];
+        
+        _blur = [UIVisualEffectView new];
+        _blur.alpha = 0.95;
+        _blur.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        _blur.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [self insertSubview:_blur atIndex:0];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_blur
+                             attribute:NSLayoutAttributeTop
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeTop
+                             multiplier:1.0
+                             constant:0]];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_blur
+                             attribute:NSLayoutAttributeLeading
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeLeading
+                             multiplier:1.0
+                             constant:0]];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_blur
+                             attribute:NSLayoutAttributeHeight
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeHeight
+                             multiplier:1.0
+                             constant:0]];
+        
+        [self addConstraint:[NSLayoutConstraint
+                             constraintWithItem:_blur
+                             attribute:NSLayoutAttributeWidth
+                             relatedBy:NSLayoutRelationEqual
+                             toItem:self
+                             attribute:NSLayoutAttributeWidth
+                             multiplier:1.0
+                             constant:0]];
+        
+        _blur.layer.cornerRadius = 8.0;
+        _blur.clipsToBounds = YES;
     }
+    
     return self;
 }
 
@@ -33,22 +127,20 @@
     _popupLayer = [CAShapeLayer layer];
     _popupLayer.contentsScale = [UIScreen mainScreen].scale;
     
-    const CGFloat outline_stroke_width = 1.0f;
-    const CGFloat outline_corner_radius = 8.0f;
+    const CGFloat outline_corner_radius = 8.0;
 
-    _popupLayer.path = createRoundedCornerPath(CGRectInset(self.bounds, outline_stroke_width, outline_stroke_width),
-                                               outline_corner_radius);
+    _popupLayer.path = createRoundedCornerPath(self.bounds, outline_corner_radius);
     _popupLayer.opacity = 1.0;
-    _popupLayer.lineWidth = outline_stroke_width;
-    _popupLayer.fillColor = [UIColor colorNamed:@"Gray5"].CGColor;
+    _popupLayer.lineWidth = 1.0;
     _popupLayer.strokeColor = UIColor.blackColor.CGColor;
+    _popupLayer.fillColor = nil;
 
     _popupLayer.shadowColor = UIColor.blackColor.CGColor;
     _popupLayer.shadowOffset = CGSizeMake(0.0, 0.0);
-    _popupLayer.shadowOpacity = 0.7;
+    _popupLayer.shadowOpacity = 1.0;
     _popupLayer.shadowRadius = 4.0;
     
-    [self.layer insertSublayer:_popupLayer atIndex:0];
+    [_outline.layer insertSublayer:_popupLayer atIndex:0];
 }
 
 @end

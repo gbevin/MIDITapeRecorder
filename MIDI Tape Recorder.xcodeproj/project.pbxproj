@@ -56,6 +56,7 @@
 		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
 		26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2C275343DB00170CB2 /* UIKit.framework */; };
 		26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA30275343F800170CB2 /* CoreAudioKit.framework */; };
+		26DA48B42772264D0068DEBB /* ToolTipButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26DA48B22772264D0068DEBB /* ToolTipButton.mm */; };
 		26E06B8F2759427300D7257E /* MenuButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26E06B8D2759427300D7257E /* MenuButton.mm */; };
 		26EE71D227534E11006C6B73 /* MidiRecorderKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderKernel.mm */; };
 		26EF4D4C2759D26D00E4A19A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EF4D4B2759D26D00E4A19A /* StoreKit.framework */; };
@@ -186,6 +187,10 @@
 		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA322753485300170CB2 /* MidiRecorderState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderKernel.mm; sourceTree = "<group>"; };
+		26DA48AE2771A3B10068DEBB /* RecorderToolTipDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecorderToolTipDelegate.h; sourceTree = "<group>"; };
+		26DA48AF2771B0A30068DEBB /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/System/Library/Frameworks/CoreImage.framework; sourceTree = DEVELOPER_DIR; };
+		26DA48B22772264D0068DEBB /* ToolTipButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ToolTipButton.mm; sourceTree = "<group>"; };
+		26DA48B32772264D0068DEBB /* ToolTipButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ToolTipButton.h; sourceTree = "<group>"; };
 		26E06B8D2759427300D7257E /* MenuButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuButton.mm; sourceTree = "<group>"; };
 		26E06B8E2759427300D7257E /* MenuButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuButton.h; sourceTree = "<group>"; };
 		26EF4D4B2759D26D00E4A19A /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -251,6 +256,7 @@
 			children = (
 				26BB3861275338EE00342496 /* AudioUnitViewController.h */,
 				26BB3862275338EE00342496 /* AudioUnitViewController.mm */,
+				26DA48AE2771A3B10068DEBB /* RecorderToolTipDelegate.h */,
 				268A931A2762CEAA00B2D74A /* AboutViewController.h */,
 				268A931B2762CEAA00B2D74A /* AboutViewController.mm */,
 				26F3615E276B0A2200077518 /* DonateViewController.h */,
@@ -295,6 +301,8 @@
 				268A93132762793000B2D74A /* MPEButton.mm */,
 				266465EB27596B50002D4459 /* ToolBarButton.h */,
 				266465EC27596B50002D4459 /* ToolBarButton.mm */,
+				26DA48B32772264D0068DEBB /* ToolTipButton.h */,
+				26DA48B22772264D0068DEBB /* ToolTipButton.mm */,
 				26C578C127712C550046D75B /* TrackButton.h */,
 				26C578C227712C550046D75B /* TrackButton.mm */,
 			);
@@ -447,6 +455,7 @@
 		26C7DA252753415D00170CB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				26DA48AF2771B0A30068DEBB /* CoreImage.framework */,
 				268A930E276186EC00B2D74A /* QuartzCore.framework */,
 				26EF4D4B2759D26D00E4A19A /* StoreKit.framework */,
 				2613427C2753DA69001FF0BB /* CoreGraphics.framework */,
@@ -591,6 +600,7 @@
 				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				26F36162276B0BDC00077518 /* Preferences.mm in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderKernel.mm in Sources */,
+				26DA48B42772264D0068DEBB /* ToolTipButton.mm in Sources */,
 				26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */,
 				26C7C07E27641FF8008C52C0 /* CropRightView.mm in Sources */,
 				268A93142762793000B2D74A /* MPEButton.mm in Sources */,

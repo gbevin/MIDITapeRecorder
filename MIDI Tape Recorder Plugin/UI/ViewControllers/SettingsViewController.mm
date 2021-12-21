@@ -13,6 +13,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* sendMpeConfigOnPlayButton;
 @property (weak, nonatomic) IBOutlet UIButton* displayMpeConfigDetailsButton;
 @property (weak, nonatomic) IBOutlet UIButton* autoTrimRecordingsButton;
+@property (weak, nonatomic) IBOutlet UIButton* showToolTipsButton;
 
 @end
 
@@ -39,6 +40,12 @@
     else                 _mainViewController.state->autoTrimRecordings.clear();
 }
 
+- (IBAction)showToolTipsPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (sender.selected) _mainViewController.state->showToolTips.test_and_set();
+    else                 _mainViewController.state->showToolTips.clear();
+}
+
 - (IBAction)closeSettingsView:(id)sender {
     [_mainViewController closeSettingsView];
 }
@@ -49,6 +56,7 @@
     _sendMpeConfigOnPlayButton.selected = _mainViewController.state->sendMpeConfigOnPlay.test();
     _displayMpeConfigDetailsButton.selected = _mainViewController.state->displayMpeConfigDetails.test();
     _autoTrimRecordingsButton.selected = _mainViewController.state->autoTrimRecordings.test();
+    _showToolTipsButton.selected = _mainViewController.state->showToolTips.test();
 }
 
 @end

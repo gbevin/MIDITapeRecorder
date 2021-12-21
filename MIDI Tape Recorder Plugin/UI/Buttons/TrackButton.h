@@ -8,5 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TrackButton : UIButton
+#import "ToolTipButton.h"
+
+@interface TrackButton : ToolTipButton
 @end
