@@ -11,12 +11,13 @@
 #import <CoreAudioKit/CoreAudioKit.h>
 
 #include "Constants.h"
+#include "Logging.h"
 #include "MidiHelper.h"
 
 #import "MidiTrackRecorder.h"
 #import "MidiRecorderState.h"
 
-#define DEBUG_MIDI_INPUT 0
+#define DEBUG_MIDI_QUEUE 0
 
 @implementation MidiQueueProcessor {
     MidiRecorderState* _state;
@@ -50,9 +51,9 @@
         QueuedMidiMessage message;
         memcpy(&message, bytes, QUEUED_MSG_SIZE);
         
-#if DEBUG_MIDI_INPUT
+#if DEBUG_MIDI_QUEUE
         if (message.length > 0) {
-            [self logMidiMessage:message];
+            logQueuedMidiMessage(@"QUE", message);
         }
 #endif
         
@@ -71,29 +72,6 @@
         TPCircularBufferConsume(queue, QUEUED_MSG_SIZE);
         bufferedBytes -= QUEUED_MSG_SIZE;
         bytes = TPCircularBufferTail(queue, &availableBytes);
-    }
-}
-
-- (void)logMidiMessage:(QueuedMidiMessage&)message {
-    uint8_t status = message.data[0] & 0xf0;
-    uint8_t channel = message.data[0] & 0x0f;
-    uint8_t data1 = message.data[1];
-    uint8_t data2 = message.data[2];
-    
-    if (message.length == 2) {
-        NSLog(@"IN  %f %d : %d - %2s [%3s %3s    ]",
-              message.timeSampleSeconds, message.cable, message.length,
-              [NSString stringWithFormat:@"%d", channel].UTF8String,
-              [NSString stringWithFormat:@"%d", status].UTF8String,
-              [NSString stringWithFormat:@"%d", data1].UTF8String);
-    }
-    else {
-        NSLog(@"IN  %f %d : %d - %2s [%3s %3s %3s]",
-              message.timeSampleSeconds, message.cable, message.length,
-              [NSString stringWithFormat:@"%d", channel].UTF8String,
-              [NSString stringWithFormat:@"%d", status].UTF8String,
-              [NSString stringWithFormat:@"%d", data1].UTF8String,
-              [NSString stringWithFormat:@"%d", data2].UTF8String);
     }
 }
 

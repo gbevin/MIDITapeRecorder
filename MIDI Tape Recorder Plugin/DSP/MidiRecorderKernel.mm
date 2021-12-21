@@ -9,15 +9,12 @@
 #import "MidiRecorderKernel.h"
 
 #include "Constants.h"
+#include "Logging.h"
 #include "NoteTracker.h"
 #include "QueuedMidiMessage.h"
 
+#define DEBUG_MIDI_INPUT 0
 #define DEBUG_MIDI_OUTPUT 0
-
-#if DEBUG_MIDI_OUTPUT
-#include <iostream>
-#include <iomanip>
-#endif
 
 MidiRecorderKernel::MidiRecorderKernel() : _state() {
     TPCircularBufferInit(&_state.midiBuffer, 16384);
@@ -731,26 +728,7 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
                                 _noteStates[t].trackNotesForMessage(message);
 
 #if DEBUG_MIDI_OUTPUT
-                                uint8_t status = message.data[0] & 0xf0;
-                                uint8_t channel = message.data[0] & 0x0f;
-                                uint8_t data1 = message.data[1];
-                                uint8_t data2 = message.data[2];
-                                
-                                if (message.length == 2) {
-                                    NSLog(@"OUT %f %d : %d - %2s [%3s %3s    ]",
-                                          message.offsetBeats, t, message.length,
-                                          [NSString stringWithFormat:@"%d", channel].UTF8String,
-                                          [NSString stringWithFormat:@"%d", status].UTF8String,
-                                          [NSString stringWithFormat:@"%d", data1].UTF8String);
-                                }
-                                else {
-                                    NSLog(@"OUT %f %d : %d - %2s [%3s %3s %3s]",
-                                          message.offsetBeats, t, message.length,
-                                          [NSString stringWithFormat:@"%d", channel].UTF8String,
-                                          [NSString stringWithFormat:@"%d", status].UTF8String,
-                                          [NSString stringWithFormat:@"%d", data1].UTF8String,
-                                          [NSString stringWithFormat:@"%d", data2].UTF8String);
-                                }
+                                logRecordedMidiMessage(t, @"OUT", message);
 #endif
                                 // send the MIDI output message
                                 _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + offset_samples,
@@ -817,5 +795,9 @@ void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     message.data[1] = midiEvent.data[1];
     message.data[2] = midiEvent.data[2];
     
+#if DEBUG_MIDI_INPUT
+    logQueuedMidiMessage(@"IN ", message);
+#endif
+
     TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }
