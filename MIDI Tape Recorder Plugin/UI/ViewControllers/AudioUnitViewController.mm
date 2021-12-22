@@ -1747,7 +1747,7 @@
     // playhead position
     _state->playPositionBeats = MIN(_state->playPositionBeats.load(), _state->maxDuration.load());
     _playheadLeading.constant = _state->playPositionBeats * PIXELS_PER_BEAT;
-    _playhead.hidden = ![self hasRecordedDuration];
+    _playhead.hidden = _state->stopPositionBeats.load() == 0.0;
 
     // scroll view location
     if (_playButton.selected || _recordButton.selected) {
@@ -1766,17 +1766,13 @@
     }
 
     // stop position crop marker
-    _cropOverlayRight.hidden = _playhead.hidden;
-    _cropRight.hidden = _playhead.hidden;
-    if (!_cropRight.hidden) {
-        if (!_state->stopPositionSet.test() && !_activePannedMarker) {
-            _state->stopPositionBeats = _state->maxDuration.load();
-        }
-        _cropRightLeading.constant = _state->stopPositionBeats * PIXELS_PER_BEAT;
+    if (!_state->stopPositionSet.test() && !_activePannedMarker) {
+        _state->stopPositionBeats = _state->maxDuration.load();
     }
+    _cropRightLeading.constant = _state->stopPositionBeats * PIXELS_PER_BEAT;
     
     // crop center overlay
-    _cropOverlayCenter.hidden = _cropOverlayLeft.hidden || _cropOverlayRight.hidden;
+    _cropOverlayCenter.hidden = _playhead.hidden;
 
     // punch in marker
     _state->punchInPositionBeats = MIN(_state->punchInPositionBeats.load(), _state->maxDuration.load());
