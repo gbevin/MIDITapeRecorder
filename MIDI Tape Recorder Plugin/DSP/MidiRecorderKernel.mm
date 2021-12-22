@@ -570,16 +570,11 @@ void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
 void MidiRecorderKernel::processOutput() {
     // determine if we're recording and/or playing
     bool recording_tracks = false;
-    bool playing_tracks = false;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MidiTrackState& track_state = _state.track[t];
         if (track_state.recording.test() &&
             (!_state.punchInOut.test() || _state.activePunchInOut())) {
             recording_tracks = true;
-        }
-        // play when there are recorded messages
-        else if (track_state.recordedData && !track_state.recordedData->empty()) {
-            playing_tracks = true;
         }
     }
 
@@ -687,7 +682,7 @@ void MidiRecorderKernel::processOutput() {
             }
         }
         // if we're playing at least one track and reached the stop position, end playing
-        else if (!recording_tracks && playing_tracks && beatrange_end >= _state.stopPositionBeats) {
+        else if (!recording_tracks && beatrange_end >= _state.stopPositionBeats) {
             _state.processedReachEnd.clear();
         }
     }

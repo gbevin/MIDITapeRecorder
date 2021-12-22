@@ -726,12 +726,13 @@
             [self registerSettingsForUndo];
         }];
         
+        [self clearAllMarkerPositions];
         [self handleFullyEmpty];
     }
 }
 
 - (BOOL)handleFullyEmpty {
-    if (![self hasRecordedDuration]) {
+    if (![self hasRecordedDuration] && _state->stopPositionBeats.load() == 0.0) {
         // since the recorder is fully empty, reset all markers
         [self clearAllMarkerPositions];
         
