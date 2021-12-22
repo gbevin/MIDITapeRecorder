@@ -26,6 +26,7 @@
 
 @implementation MidiRecorderAudioUnit {
     AudioUnitViewController* _vc;
+    AUAudioUnitPreset* _currentPreset;
 }
 
 @synthesize parameterTree = _parameterTree;
@@ -348,6 +349,34 @@
 }
 
 #pragma mark - AUAudioUnit Overrides
+
+- (BOOL)supportsUserPresets {
+    return YES;
+}
+
+- (AUAudioUnitPreset*)currentPreset {
+    return _currentPreset;
+}
+
+- (void)setCurrentPreset:(AUAudioUnitPreset*)currentPreset {
+    if (nil == currentPreset) { return; }
+
+    if (currentPreset.number >= 0) {
+        // no factory presets
+    }
+    else {
+        if (@available(iOS 13.0, *)) {
+            NSDictionary<NSString*, id>* document = [self presetStateFor:currentPreset error:nil];
+            if (document) {
+                [self setFullStateForDocument:document];
+            }
+        }
+        else {
+            // user presets are not available prior to iOS 13
+        }
+        _currentPreset = currentPreset;
+    }
+}
 
 - (AUAudioFrameCount)maximumFramesToRender {
     return _kernelAdapter.maximumFramesToRender;
