@@ -1581,9 +1581,10 @@
 }
 
 - (void)updateRepeatState {
+    if (_repeatButton.selected) _state->processedActivateRepeat.clear();
+    else                        _state->processedDeactivateRepeat.clear();
+    
     if (_state->repeatEnabled.test() != _repeatButton.selected) {
-        if (_repeatButton.selected) _state->processedActivateRepeat.clear();
-        else                        _state->processedDeactivateRepeat.clear();
         _state->hostParamChange(ID_REPEAT, _repeatButton.selected);
     }
 }
