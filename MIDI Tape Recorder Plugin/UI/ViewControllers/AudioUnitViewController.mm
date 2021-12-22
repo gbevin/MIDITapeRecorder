@@ -1071,15 +1071,19 @@
 #pragma mark IBAction - Undo / Redo
 
 - (IBAction)undoPressed:(UIButton*)sender {
-    _restoringState = YES;
-    [_mainUndoManager undo];
-    _restoringState = NO;
+    @synchronized(self) {
+        _restoringState = YES;
+        [_mainUndoManager undo];
+        _restoringState = NO;
+    }
 }
 
 - (IBAction)redoPressed:(UIButton*)sender {
-    _restoringState = YES;
-    [_mainUndoManager redo];
-    _restoringState = NO;
+    @synchronized(self) {
+        _restoringState = YES;
+        [_mainUndoManager redo];
+        _restoringState = NO;
+    }
 }
 
 #pragma mark UIGestureRecognizerDelegate
@@ -2006,6 +2010,7 @@
 }
 
 - (void)restoreSettings:(NSDictionary*)data {
+    [self registerSettingsForUndo];
     [self readSettingsFromDict:data];
 }
 
