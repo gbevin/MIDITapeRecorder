@@ -719,11 +719,11 @@
         
         _state->processedCropAll.clear();
 
+        _state->stopPositionSet.clear();
+        _state->stopPositionBeats = MAX(_state->stopPositionBeats.load() - _state->startPositionBeats.load(), 0.0);
         _state->playPositionBeats = 0.0;
         _state->startPositionSet.clear();
         _state->startPositionBeats = 0.0;
-        _state->stopPositionSet.clear();
-        _state->stopPositionBeats = [self maxRecordedDuration];
         _state->punchInPositionSet.clear();
         _state->punchInPositionBeats = 0.0;
         _state->punchOutPositionSet.clear();
