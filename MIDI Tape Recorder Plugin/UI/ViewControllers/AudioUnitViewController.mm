@@ -1084,7 +1084,8 @@
 
 - (IBAction)cropRightDoubleTapGesture:(UITapGestureRecognizer*)sender {
     _state->stopPositionSet.clear();
-    _state->stopPositionBeats = _state->maxDuration.load();
+    _state->stopPositionBeats = [self maxRecordedDuration];
+    _state->startPositionBeats = MIN(_state->startPositionBeats.load(), _state->stopPositionBeats.load() - 1.0);
 }
 
 - (IBAction)punchInDoubleTapGesture:(UITapGestureRecognizer*)sender {
@@ -1117,7 +1118,7 @@
 - (void)setCropRightForGesture:(UIGestureRecognizer*)gesture {
     if (gesture.numberOfTouches == 1) {
         _state->stopPositionSet.test_and_set();
-        _state->stopPositionBeats = MAX([self calculateBeatPositionForGesture:gesture], _state->startPositionBeats.load() + 1.0);
+        _state->stopPositionBeats = MAX([gesture locationInView:_tracks].x / PIXELS_PER_BEAT, _state->startPositionBeats.load() + 1.0);
     }
 }
 
@@ -1691,7 +1692,7 @@
 
 - (void)renderPreviews {
     // update the previews and the timeline
-    __block double max_duration = 0.0;
+    __block double max_duration = _state->stopPositionBeats;
     
     [self withMidiTrackViews:^(int t, MidiTrackView* view) {
         max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].activeDuration);
@@ -1703,6 +1704,16 @@
     
     _state->maxDuration = max_duration;
     _timelineWidth.constant = _state->maxDuration * PIXELS_PER_BEAT;
+}
+
+- (double)maxRecordedDuration {
+    __block double max_duration = 0.0;
+    
+    [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+        max_duration = MAX(max_duration, [self->_midiQueueProcessor recorder:t].activeDuration);
+    }];
+
+    return max_duration;
 }
 
 - (BOOL)hasRecordedDuration {
@@ -1755,7 +1766,6 @@
     }
 
     // stop position crop marker
-    _state->stopPositionBeats = MIN(_state->stopPositionBeats.load(), _state->maxDuration.load());
     _cropOverlayRight.hidden = _playhead.hidden;
     _cropRight.hidden = _playhead.hidden;
     if (!_cropRight.hidden) {
