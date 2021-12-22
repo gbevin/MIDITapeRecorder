@@ -458,6 +458,20 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         _state.processedUIStop.clear();
     }
 
+    // crop all
+    if (!_state.processedCropAll.test_and_set()) {
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            MidiTrackState& track_state = _state.track[t];
+            track_state.recording.clear();
+            track_state.recordedData = std::move(track_state.pendingRecordedData);
+            track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
+        }
+        
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            _state.processedUIRebuildPreview[t].clear();
+        }
+    }
+
     // individual track states
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MidiTrackState& track_state = _state.track[t];

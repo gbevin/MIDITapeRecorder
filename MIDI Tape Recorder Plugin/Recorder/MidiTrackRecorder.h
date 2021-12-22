@@ -34,6 +34,7 @@ class MidiRecorderState;
 - (void)ping:(double)timeSampleSeconds;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 - (void)clear;
+- (void)crop;
 
 - (double)activeDuration;
 

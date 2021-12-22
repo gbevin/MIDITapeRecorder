@@ -105,6 +105,8 @@
 @property (weak, nonatomic) IBOutlet UIButton* closeMenuButton3;
 @property (weak, nonatomic) IBOutlet UIButton* closeMenuButton4;
 
+@property (weak, nonatomic) IBOutlet ToolBarButton* cropButtonAll;
+
 @property (weak, nonatomic) IBOutlet ToolBarButton* clearButtonAll;
 @property (weak, nonatomic) IBOutlet ToolBarButton* clearButton1;
 @property (weak, nonatomic) IBOutlet ToolBarButton* clearButton2;
@@ -376,7 +378,10 @@
     _exportButton3.toolTipTextHighlighted = @"Export\nOne Track";
     _exportButton4.toolTipDelegate = self;
     _exportButton4.toolTipTextHighlighted = @"Export\nOne Track";
-    
+
+    _cropButtonAll.toolTipDelegate = self;
+    _cropButtonAll.toolTipTextSelected = @"Confirm\nCrop All";
+
     _clearButtonAll.toolTipDelegate = self;
     _clearButtonAll.toolTipTextSelected = @"Confirm\nClear All";
     _clearButton1.toolTipDelegate = self;
@@ -694,6 +699,36 @@
     export_midi.title = @"Export all tracks";
     [export_midi setDelegate:self];
     [self presentViewController:export_midi animated:NO completion:nil];
+}
+
+#pragma mark IBAction - Crop All
+
+- (IBAction)cropAllPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (!sender.selected) {
+        [self hideMenuPopups];
+
+        [_mainUndoManager withUndoGroup:^{
+            [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+                [self registerRecordedForUndo:t];
+                [[self->_midiQueueProcessor recorder:t] crop];
+            }];
+            
+            [self registerSettingsForUndo];
+        }];
+        
+        _state->processedCropAll.clear();
+
+        _state->playPositionBeats = 0.0;
+        _state->startPositionSet.clear();
+        _state->startPositionBeats = 0.0;
+        _state->stopPositionSet.clear();
+        _state->stopPositionBeats = [self maxRecordedDuration];
+        _state->punchInPositionSet.clear();
+        _state->punchInPositionBeats = 0.0;
+        _state->punchOutPositionSet.clear();
+        _state->punchOutPositionBeats = _state->stopPositionBeats.load();
+    }
 }
 
 #pragma mark IBAction - Clear All

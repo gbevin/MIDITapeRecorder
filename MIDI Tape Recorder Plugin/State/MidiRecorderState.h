@@ -68,6 +68,7 @@ struct MidiRecorderState {
     std::atomic_flag processedBeginRecording[MIDI_TRACKS]   { true, true, true, true };
     std::atomic_flag processedEndRecording[MIDI_TRACKS]     { true, true, true, true };
     std::atomic_flag processedImport[MIDI_TRACKS]           { true, true, true, true };
+    std::atomic_flag processedCropAll                       { true };
     std::atomic_flag processedNotesOff[MIDI_TRACKS]         { true, true, true, true };
     std::atomic_flag processedInvalidate[MIDI_TRACKS]       { true, true, true, true };
     std::atomic_flag processedReachEnd                      { true };

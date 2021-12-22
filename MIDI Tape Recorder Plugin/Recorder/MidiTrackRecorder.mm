@@ -624,6 +624,41 @@
     });
 }
 
+- (void)crop {
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        _record = NO;
+
+        MidiTrackState& track_state = _state->track[_ordinal];
+        std::unique_ptr<MidiRecordedData> recorded_data = std::move(track_state.recordedData);
+        std::unique_ptr<MidiRecordedPreview> recorded_preview = std::move(track_state.recordedPreview);
+
+        if (_delegate) {
+            [_delegate invalidateRecording:_ordinal];
+        }
+        
+        if (recorded_data) {
+            std::unique_ptr<MidiRecordedData> cropped_data(new MidiRecordedData());
+            std::unique_ptr<MidiRecordedPreview> cropped_preview(new MidiRecordedPreview());
+
+            double start = _state->startPositionBeats.load();
+            double stop = _state->stopPositionBeats.load();
+            for (RecordedDataVector& beat : recorded_data->getBeats()) {
+                for (RecordedMidiMessage message : beat) {
+                    if (message.offsetBeats >= start && message.offsetBeats <= stop) {
+                        message.offsetBeats = MAX(message.offsetBeats - start, 0.0);
+                        cropped_data->setStartIfNeeded(message.offsetBeats);
+                        cropped_data->addMessageToBeat(message);
+                        cropped_preview->updateWithMessage(message);
+                    }
+                }
+            }
+
+            track_state.pendingRecordedData = std::move(cropped_data);
+            track_state.pendingRecordedPreview = std::move(cropped_preview);
+        }
+    });
+}
+
 #pragma mark Getters and Setter
 
 - (void)setState:(MidiRecorderState*)state {
