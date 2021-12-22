@@ -437,6 +437,9 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         // transport starting while record is armed or
         // record arming while host transport is already moving
         if (transport_changed || !_state.processedRecordArmed.test_and_set()) {
+            _state.processedUIStop.test_and_set();
+            _state.processedStop.test_and_set();
+            
             if (_state.recordArmed.test()) {
                 for (int t = 0; t < MIDI_TRACKS; ++t) {
                     if (_state.track[t].recordEnabled.test()) {
