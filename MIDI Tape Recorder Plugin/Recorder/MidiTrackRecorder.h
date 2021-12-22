@@ -25,7 +25,7 @@ class MidiRecorderState;
 - (instancetype)init  __attribute__((unavailable("init not available")));
 - (instancetype)initWithOrdinal:(int)ordinal;
 
-- (NSDictionary*)recordedAsDict;
+- (NSMutableDictionary*)recordedAsDict;
 - (void)dictToRecorded:(NSDictionary*)dict;
 - (NSData*)recordedAsMidiTrackChunk;
 - (void)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division;

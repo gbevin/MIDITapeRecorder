@@ -93,35 +93,36 @@
 
 #pragma mark State
 
-- (NSDictionary*)recordedAsDict {
-    __block NSDictionary* result;
+- (NSMutableDictionary*)recordedAsDict {
+    __block NSMutableDictionary* result = [NSMutableDictionary new];
     dispatch_barrier_sync(_dispatchQueue, ^{
         MidiTrackState& track_state = _state->track[_ordinal];
-        NSDictionary* mpe_dict = @{
+        NSMutableDictionary* mpe_dict = [NSMutableDictionary new];
+        [mpe_dict addEntriesFromDictionary:@{
             @"zone1Members" : @(track_state.mpeState.zone1Members.load()),
             @"zone1ManagerPitchSens" : @(track_state.mpeState.zone1ManagerPitchSens.load()),
             @"zone1MemberPitchSens" : @(track_state.mpeState.zone1MemberPitchSens.load()),
             @"zone2Members" : @(track_state.mpeState.zone2Members.load()),
             @"zone2ManagerPitchSens" : @(track_state.mpeState.zone2ManagerPitchSens.load()),
             @"zone2MemberPitchSens" : @(track_state.mpeState.zone2MemberPitchSens.load()),
-        };
+        }];
         
         auto recorded_data = track_state.recordedData.get();
         if (recorded_data == nullptr) {
-            result = @{
+            [result addEntriesFromDictionary:@{
                 @"MPE" : mpe_dict
-            };
+            }];
         }
         else {
             NSMutableData* recorded_object = [NSMutableData new];
             for (RecordedDataVector& beat : recorded_data->getBeats()) {
                 [recorded_object appendBytes:beat.data() length:beat.size()*sizeof(RecordedMidiMessage)];
             }
-            result = @{
+            [result addEntriesFromDictionary:@{
                 @"Recorded" : recorded_object,
                 @"Duration" : @(recorded_data->getDuration()),
                 @"MPE" : mpe_dict
-            };
+            }];
         }
     });
     return result;
