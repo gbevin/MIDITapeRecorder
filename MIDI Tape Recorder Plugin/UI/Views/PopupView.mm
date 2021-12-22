@@ -69,8 +69,14 @@
                              constant:0]];
         
         _blur = [UIVisualEffectView new];
-        _blur.alpha = 0.95;
-        _blur.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        if (@available(iOS 13.0, *)) {
+            _blur.alpha = 0.97;
+            _blur.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterialDark];
+        }
+        else {
+            _blur.alpha = 0.95;
+            _blur.effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        }
         _blur.translatesAutoresizingMaskIntoConstraints = NO;
         
         [self insertSubview:_blur atIndex:0];
