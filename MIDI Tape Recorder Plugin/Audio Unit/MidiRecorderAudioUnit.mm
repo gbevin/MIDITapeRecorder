@@ -366,7 +366,11 @@
     }
     else {
         if (@available(iOS 13.0, *)) {
-            NSDictionary<NSString*, id>* document = [self presetStateFor:currentPreset error:nil];
+            NSError* error = nil;
+            NSDictionary<NSString*, id>* document = [self presetStateFor:currentPreset error:&error];
+            if (error) {
+                NSLog(@"Error retrieving preset state for %@ : %@", currentPreset, error);
+            }
             if (document) {
                 [self setFullStateForDocument:document];
             }

@@ -1510,8 +1510,9 @@
     [dict addEntriesFromDictionary:[self currentRecordingsToDict]];
 }
 
-- (NSDictionary*)currentSettingsToDict {
-    return @{
+- (NSMutableDictionary*)currentSettingsToDict {
+    NSMutableDictionary* dict = [NSMutableDictionary new];
+    [dict addEntriesFromDictionary:@{
         @"StartPositionSet" : @(_state->startPositionSet.test()),
         @"StopPositionSet" : @(_state->stopPositionSet.test()),
         @"StartPositionBeats" : @(_state->startPositionBeats.load()),
@@ -1543,10 +1544,11 @@
         @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.test()),
         @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
         @"ShowToolTips" : @(_state->showToolTips.test())
-    };
+    }];
+    return dict;
 }
 
-- (NSDictionary*)currentRecordingsToDict {
+- (NSMutableDictionary*)currentRecordingsToDict {
     NSMutableDictionary* result = [NSMutableDictionary new];
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         [result setObject:[[_midiQueueProcessor recorder:t] recordedAsDict] forKey:[NSString stringWithFormat:@"Recorder%d", t]];
