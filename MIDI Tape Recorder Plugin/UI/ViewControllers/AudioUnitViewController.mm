@@ -486,21 +486,21 @@
                     break;
                 }
                 case ID_REWIND: {
-                    if (s->_state->rewind.test()) {
+                    if (s->_state->rewindTrigger.test()) {
                         [self rewindChange];
                     }
                     break;
                 }
                 case ID_PLAY: {
-                    [s playChange:s->_state->play.test()];
+                    [s playChange:s->_state->playActive.test()];
                     break;
                 }
                 case ID_RECORD: {
-                    [s recordChange:s->_state->record.test()];
+                    [s recordChange:s->_state->recordArmed.test()];
                     break;
                 }
                 case ID_REPEAT: {
-                    s.repeatButton.selected = s->_state->repeat.test();
+                    [s repeatChange:s->_state->repeatEnabled.test()];
                     break;
                 }
                 case ID_GRID: {
@@ -563,15 +563,17 @@
     [self updatePlayState];
 
     if (_playButton.selected) {
-        if (_state->record.test()) {
+        if (_state->recordArmed.test()) {
             [self startRecord];
         }
         else {
-            _state->processedPlay.clear();
+            if (![self handleFullyEmpty]) {
+                _state->processedPlay.clear();
+            }
         }
     }
     else {
-        if (_state->record.test()) {
+        if (_state->recordArmed.test()) {
             [self setRecordState:NO];
             _state->processedRewind.clear();
         }
@@ -592,7 +594,7 @@
     if (selected) {
         _autoPlayFromRecord = NO;
         
-        if (_state->play.test()) {
+        if (_state->playActive.test()) {
             [self startRecord];
         }
         else {
@@ -601,7 +603,7 @@
         }
     }
     else {
-        if (_autoPlayFromRecord && !_state->repeat.test()) {
+        if (_autoPlayFromRecord && !_state->repeatEnabled.test()) {
             [self setPlayState:NO];
             _state->processedStopAndRewind.clear();
         }
@@ -631,8 +633,18 @@
 #pragma mark IBAction - Repeat
 
 - (IBAction)repeatPressed:(UIButton*)sender {
-    sender.selected = !sender.selected;
+    [self repeatChange:!_repeatButton.selected];
+}
+
+- (void)repeatChange:(BOOL)selected {
+    _repeatButton.selected = selected;
     [self updateRepeatState];
+    
+    if (selected) {
+        if (_state->recordArmed.test()) {
+            [self setRecordState:NO];
+        }
+    }
 }
 
 #pragma mark IBAction - Grid
@@ -712,11 +724,25 @@
             }];
             
             [self registerSettingsForUndo];
-
-            // since the recorder is fully empty, reset all markers
-            [self clearAllMarkerPositions];
         }];
+        
+        [self handleFullyEmpty];
     }
+}
+
+- (BOOL)handleFullyEmpty {
+    if (![self hasRecordedDuration]) {
+        // since the recorder is fully empty, reset all markers
+        [self clearAllMarkerPositions];
+        
+        // schedule stopping and rewinding the transport
+        [self setPlayState:NO];
+        _state->processedRewind.clear();
+        
+        return YES;
+    }
+    
+    return NO;
 }
 
 #pragma mark IBAction - Settings
@@ -1002,10 +1028,7 @@
             [view setNeedsLayout];
         }];
         
-        // if the recorder is fully empty, reset transport
-        if (![self hasRecordedDuration]) {
-            [self clearAllMarkerPositions];
-        }
+        [self handleFullyEmpty];
     }
 }
 
@@ -1267,6 +1290,8 @@
             }];
             
             s->_restoringState = NO;
+            
+            [self handleFullyEmpty];
         }
     });
 }
@@ -1544,19 +1569,21 @@
 }
 
 - (void)updatePlayState {
-    if (_state->play.test() != _playButton.selected) {
+    if (_state->playActive.test() != _playButton.selected) {
         _state->hostParamChange(ID_PLAY, _playButton.selected);
     }
 }
 
 - (void)updateRecordState {
-    if (_state->record.test() != _recordButton.selected) {
+    if (_state->recordArmed.test() != _recordButton.selected) {
         _state->hostParamChange(ID_RECORD, _recordButton.selected);
     }
 }
 
 - (void)updateRepeatState {
-    if (_state->repeat.test() != _repeatButton.selected) {
+    if (_state->repeatEnabled.test() != _repeatButton.selected) {
+        if (_repeatButton.selected) _state->processedActivateRepeat.clear();
+        else                        _state->processedDeactivateRepeat.clear();
         _state->hostParamChange(ID_REPEAT, _repeatButton.selected);
     }
 }
@@ -1673,7 +1700,7 @@
     }];
     
     _state->maxDuration = max_duration;
-    _timelineWidth.constant = max_duration * PIXELS_PER_BEAT;
+    _timelineWidth.constant = _state->maxDuration * PIXELS_PER_BEAT;
 }
 
 - (BOOL)hasRecordedDuration {

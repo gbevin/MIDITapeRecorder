@@ -290,6 +290,7 @@ void MidiRecorderKernel::endRecording(int track) {
         track_state.recordedData->applyOverdubInfo(*track_state.pendingRecordedData);
     }
 }
+
 void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value) {
     bool set = bool(value);
     switch (address) {
@@ -342,20 +343,20 @@ void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value)
             else     _state.track[3].muteEnabled.clear();
             break;
         case ID_REWIND:
-            if (set) _state.rewind.test_and_set();
-            else     _state.rewind.clear();
+            if (set) _state.rewindTrigger.test_and_set();
+            else     _state.rewindTrigger.clear();
             break;
         case ID_PLAY:
-            if (set) _state.play.test_and_set();
-            else     _state.play.clear();
+            if (set) _state.playActive.test_and_set();
+            else     _state.playActive.clear();
             break;
         case ID_RECORD:
-            if (set) _state.record.test_and_set();
-            else     _state.record.clear();
+            if (set) _state.recordArmed.test_and_set();
+            else     _state.recordArmed.clear();
             break;
         case ID_REPEAT:
-            if (set) _state.repeat.test_and_set();
-            else     _state.repeat.clear();
+            if (set) _state.repeatEnabled.test_and_set();
+            else     _state.repeatEnabled.clear();
             break;
         case ID_GRID:
             if (set) _state.grid.test_and_set();
@@ -400,13 +401,13 @@ AUValue MidiRecorderKernel::getParameter(AUParameterAddress address) {
         case ID_MUTE_4:
             return _state.track[3].muteEnabled.test();
         case ID_REWIND:
-            return _state.rewind.test();
+            return _state.rewindTrigger.test();
         case ID_PLAY:
-            return _state.play.test();
+            return _state.playActive.test();
         case ID_RECORD:
-            return _state.record.test();
+            return _state.recordArmed.test();
         case ID_REPEAT:
-            return _state.repeat.test();
+            return _state.repeatEnabled.test();
         case ID_GRID:
             return _state.grid.test();
         case ID_CHASE:
@@ -436,7 +437,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         // transport starting while record is armed or
         // record arming while host transport is already moving
         if (transport_changed || !_state.processedRecordArmed.test_and_set()) {
-            if (_state.record.test()) {
+            if (_state.recordArmed.test()) {
                 for (int t = 0; t < MIDI_TRACKS; ++t) {
                     if (_state.track[t].recordEnabled.test()) {
                         _state.processedBeginRecording[t].clear();
@@ -492,6 +493,14 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         }
     }
     
+    // repeat
+    if (!_state.processedActivateRepeat.test_and_set()) {
+        _state.repeatActive.test_and_set();
+    }
+    if (!_state.processedDeactivateRepeat.test_and_set()) {
+        _state.repeatActive.clear();
+    }
+
     // rewind
     if (!_state.processedRewind.test_and_set()) {
         rewind(timeSampleSeconds);
@@ -571,8 +580,8 @@ void MidiRecorderKernel::processOutput() {
         }
     }
 
-    // we only repeat if there's at least one track playing
-    bool repeat_active = _state.repeat.test() && playing_tracks;
+    // get a consistent repeat active state
+    bool repeat_active = _state.repeatActive.test();
     
     // if the host transport is moving or the position changed, make that take precedence
     double play_position = _state.playPositionBeats;
@@ -676,12 +685,6 @@ void MidiRecorderKernel::processOutput() {
         }
         // if we're playing at least one track and reached the stop position, end playing
         else if (!recording_tracks && playing_tracks && beatrange_end >= _state.stopPositionBeats) {
-            _state.processedReachEnd.clear();
-        }
-
-        // if we're not recording and the duration is totally cleared out,
-        // we've reached the end and stop playing
-        if (!recording_tracks && _state.maxDuration == 0.0) {
             _state.processedReachEnd.clear();
         }
     }

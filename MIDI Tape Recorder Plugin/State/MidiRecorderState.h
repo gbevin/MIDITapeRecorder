@@ -25,11 +25,11 @@ struct MidiRecorderState {
 
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic_flag rewind     { false };
-    std::atomic_flag play       { false };
-    std::atomic_flag record     { false };
-    std::atomic_flag repeat     { false };
-    
+    std::atomic_flag rewindTrigger  { false };
+    std::atomic_flag playActive     { false };
+    std::atomic_flag recordArmed    { false };
+    std::atomic_flag repeatEnabled  { false };
+
     std::atomic_flag grid       { false };
     std::atomic_flag chase      { true };
     std::atomic_flag punchInOut { false };
@@ -43,6 +43,8 @@ struct MidiRecorderState {
     std::atomic<double> secondsToBeats  { 2.0 };
     std::atomic<double> beatsToSeconds  { 0.5 };
     
+    std::atomic_flag repeatActive   { false };
+
     std::atomic<double> maxDuration { 0.0 };
 
     std::atomic_flag startPositionSet               { false };
@@ -61,6 +63,8 @@ struct MidiRecorderState {
     std::atomic_flag processedStop                          { true };
     std::atomic_flag processedStopAndRewind                 { true };
     std::atomic_flag processedRecordArmed                   { true };
+    std::atomic_flag processedActivateRepeat                { true };
+    std::atomic_flag processedDeactivateRepeat              { true };
     std::atomic_flag processedBeginRecording[MIDI_TRACKS]   { true, true, true, true };
     std::atomic_flag processedEndRecording[MIDI_TRACKS]     { true, true, true, true };
     std::atomic_flag processedImport[MIDI_TRACKS]           { true, true, true, true };
