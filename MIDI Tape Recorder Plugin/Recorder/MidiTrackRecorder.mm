@@ -653,6 +653,7 @@
                     }
                 }
             }
+            cropped_data->increaseDuration(stop - start);
 
             track_state.pendingRecordedData = std::move(cropped_data);
             track_state.pendingRecordedPreview = std::move(cropped_preview);
