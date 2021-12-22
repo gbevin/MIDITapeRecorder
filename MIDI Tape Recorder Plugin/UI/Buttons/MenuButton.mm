@@ -15,6 +15,8 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
+    self.backgroundColor = UIColor.clearColor;
+    
     [self setNeedsDisplay];
 }
 
@@ -23,8 +25,6 @@
     
     CGContextSaveGState(context);
     
-    CGContextClearRect(context, self.bounds);
-
     if (self.highlighted) {
         CGContextSetFillColorWithColor(context, [UIColor colorNamed:@"Gray0"].CGColor);
     }

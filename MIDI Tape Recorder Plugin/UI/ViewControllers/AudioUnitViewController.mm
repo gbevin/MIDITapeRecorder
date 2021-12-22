@@ -1635,6 +1635,7 @@
     [_timeline setNeedsLayout];
 
     [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+        [view rebuild];
         [view setNeedsLayout];
     }];
 }
