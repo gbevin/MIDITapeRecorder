@@ -9,11 +9,15 @@ http://uwyn.com/donate
 
 ## Description
 
-MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording. Every message is captured and played back in a sample-accurate way, like you would record audio.
+MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording.
 
-There is no MIDI note editing, no quantization, no individual CC tweaking, nothing that you wouldn't do with audio. Instead, very expressive and ultra-dense MIDI streams are perfectly stored and reproduced exactly as they were played. MIDI Tape Recorder excels at capturing and playing back expressive performances with MPE controllers and MPE MIDI plugins.
+MIDI messages are recorded and played back with the same accuracy and precision as audio recordings. Most modern DAWs, even at their highest resolution, still change the timing of MIDI messages to accommodate for their editing features. These changes impact the playback of your performance as MIDI messages get reordered and delayed, causing changes in how they influence sound, sometimes in very significant ways.
 
-The controls are purposefully simple and intuitive, making it fun to record, play back and loop your MIDI performance.
+MIDI Tape Recorder records your performance exactly as you play it, just like an audio recorder, accurately reproducing every nuance of your performance.
+
+MIDI Tape Recorder purposefully has no MIDI note editing, no quantization, no individual CC tweaking, nothing that you wouldn't do with audio. Instead, very expressive and ultra-dense MIDI streams are perfectly stored and reproduced. MIDI Tape Recorder excels at capturing and playing back expressive performances with MPE controllers and MPE MIDI plugins.
+
+The controls are purposefully simple and intuitive, similar to a traditional four-track audio recorder, making it fun to record, play back and loop your MIDI performance. Even when recording non-MPE MIDI, MIDI Tape Recorder makes it easy to stay in the flow and be creative without being interrupted by the technical nature of most DAWs.
 
 MIDI Tape Recorder makes no sound on its own and requires an AUv3 host to function.
 
