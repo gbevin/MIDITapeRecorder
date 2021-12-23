@@ -646,7 +646,7 @@
     [self updateRepeatState];
     
     if (selected) {
-        if (_state->recordArmed.test()) {
+        if (_state->playActive.test() && _state->recordArmed.test()) {
             [self setRecordState:NO];
         }
     }
