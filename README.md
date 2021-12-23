@@ -9,7 +9,7 @@ http://uwyn.com/donate
 
 ## Description
 
-MIDI Tape Recorder is an open source Audio Unit v3 plugin with an opinionated approach towards MIDI recording. Every message is captured and played back in a sample-accurate way, like you would record audio.
+MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording. Every message is captured and played back in a sample-accurate way, like you would record audio.
 
 There is no MIDI note editing, no quantization, no individual CC tweaking, nothing that you wouldn't do with audio. Instead, very expressive and ultra-dense MIDI streams are perfectly stored and reproduced exactly as they were played. MIDI Tape Recorder excels at capturing and playing back expressive performances with MPE controllers and MPE MIDI plugins.
 
