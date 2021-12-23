@@ -1771,7 +1771,7 @@
 }
 
 - (void)positionViewLocation {
-    if (!_playhead.hidden && _state->chase.test() && !_activePannedMarker) {
+    if (!_playhead.hidden && _state->playActive.test() && _state->chase.test() && !_activePannedMarker) {
         CGFloat play_position = _state->playPositionBeats * PIXELS_PER_BEAT;
         CGFloat content_offset;
         if (play_position < _tracks.frame.size.width / 2.0) {
