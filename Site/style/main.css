@@ -1,0 +1,180 @@
+html {
+  color: #cccccc;
+}
+
+body {
+  background-color: #000000;
+}
+
+div#content {
+  background-color: #222222;
+  margin: 0 auto;
+  line-height: 1.3em;
+  font-size: 12pt;
+  font-family: sans-serif;
+  padding: 0.5em 2em;
+}
+
+@media screen {
+  div#content {
+    width: 40em;
+  }
+}
+
+@media only screen 
+and (min-device-width : 375px) 
+and (max-device-width : 812px)
+and (-webkit-device-pixel-ratio : 3) {
+  div#content {
+    font-size: 13pt;
+    width: auto;
+  }
+}
+
+@media only screen 
+and (device-width : 414px) 
+and (device-height : 896px) 
+and (-webkit-device-pixel-ratio : 3) {
+  div#content {
+    font-size: 13pt;
+    width: auto;
+  }
+}
+
+@media only screen 
+and (min-device-width : 375px) 
+and (max-device-width : 667px) {
+  div#content {
+    width: auto;
+  }
+}
+
+@media only screen 
+and (device-width : 414px) 
+and (device-height : 896px) 
+and (-webkit-device-pixel-ratio : 2) {
+  div#content {
+    width: auto;
+  }
+}
+
+
+h1 {
+  text-align: center;
+  color: #ffffff;
+  clear: both;
+}
+
+a:link, a:visited, a:active, a:hover {
+  color: #cccccc;
+}
+
+.subtitle {
+  text-align: center;
+  font-style: italic;
+  font-size: 16pt;
+  color: #ffffff;
+  clear: both;
+}
+
+h2 {
+  font-size: 14pt;
+  color: #ffffff;
+  clear: both;
+  margin-top: 2em;
+}
+
+h3 {
+  font-size: 12pt;
+  color: #ffffff;
+  clear: both;
+  margin-top: 2em;
+}
+
+h4 {
+  font-size: 12pt;
+  font-weight: normal;
+  color: #ffffff;
+  clear: both;
+}
+
+p img:first-child {
+  display: block;
+  margin: 0 auto;
+}
+
+img.inlined {
+  float: right;
+  padding-left: 1em;
+}
+
+img.inlinedialog {
+  float: right;
+}
+
+img {
+  vertical-align: middle;
+}
+
+hr {
+  border: 1px solid #666;
+  border-width: 1px 0;
+  margin-top: 2em;
+  clear: both;
+}
+
+p.info {
+  font-style: italic;
+  padding: 0 2em 1em 2em;
+  font-size: 11pt;
+  text-align: center;
+}
+
+ul.navigation {
+  border: 1px solid #ccc;
+  border-width: 1px 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+ul.navigation li {
+ display:inline;
+}
+
+ul.navigation a {
+  display: inline-block;
+  padding: 10px;
+  text-decoration: none;
+}
+
+ul.navigation em {
+  display: inline-block;
+  padding: 10px;
+}
+
+ul.navigation a:hover {
+  text-decoration: underline;
+}
+
+h2 a {
+  text-decoration: none;
+}
+
+h2 a:hover {
+  text-decoration: underline;
+}
+
+table.oscpaths {
+  padding: 0 1em;
+}
+
+table.oscpaths tr td:first-child {
+  padding-right: 2em;
+}
+
+table.oscpaths td {
+  font-family: monospace;
+  font-size: 11pt;
+}
