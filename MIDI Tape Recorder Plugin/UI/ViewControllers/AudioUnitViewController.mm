@@ -569,7 +569,14 @@
 
     if (_playButton.selected) {
         if (_state->recordArmed.test()) {
-            [self startRecord];
+            // if repeat is active and we have a zero duration, stop immediately
+            if (_state->repeatActive.test() && _state->stopPositionBeats == 0.0) {
+                [self playChange:NO];
+            }
+            // otherwise start recording
+            else {
+                [self startRecord];
+            }
         }
         else {
             if (![self handleFullyEmpty]) {
