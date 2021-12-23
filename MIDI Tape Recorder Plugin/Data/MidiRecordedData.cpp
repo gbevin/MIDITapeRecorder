@@ -61,16 +61,14 @@ void MidiRecordedData::applyOverdubInfo(const MidiRecordedData& overdub) {
 }
 
 void MidiRecordedData::populateUpToBeat(int beat) {
-    while (beat > _beats.size()) {
+    while (beat >= _beats.size()) {
         _beats.push_back(RecordedDataVector());
     }
 }
 
 void MidiRecordedData::addMessageToBeat(RecordedMidiMessage& message) {
     int beat = std::max(0, (int)message.offsetBeats);
-    while (beat >= _beats.size()) {
-        _beats.push_back(RecordedDataVector());
-    }
+    populateUpToBeat(beat);
     
     _beats[beat].push_back(message);
     
