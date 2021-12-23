@@ -30,7 +30,7 @@
 
 - (IBAction)openWebSite:(id)sender {
     [self closeAboutView:nil];
-    openURL([NSURL URLWithString:@"https://github.com/gbevin/MIDITapeRecorder"]);
+    openURL([NSURL URLWithString:@"http://uwyn.com/mtr"]);
 }
 
 - (IBAction)leaveRating:(id)sender {
