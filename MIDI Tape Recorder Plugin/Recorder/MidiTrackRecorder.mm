@@ -67,22 +67,24 @@
         _record = record;
         
         if (record == NO) {
-            // when recording is stopped, we move the recording data to the recorded data
-            auto recorded_data = std::move(_recordingData);
-            auto recorded_preview = std::move(_recordingPreview);
+            if (_recordingData->getDuration() > 0.0) {
+                // when recording is stopped, we move the recording data to the recorded data
+                auto recorded_data = std::move(_recordingData);
+                auto recorded_preview = std::move(_recordingPreview);
 
-            _recordingData.reset(new MidiRecordedData());
-            _recordingPreview.reset(new MidiRecordedPreview());
-            
-            MidiTrackState& track_state = _state->track[_ordinal];
-            track_state.pendingRecordedData = std::move(recorded_data);
-            track_state.pendingRecordedPreview = std::move(recorded_preview);
-            
-            // reset state
-            _state->processedResetRecording[_ordinal].test_and_set();
-            track_state.hasRecordedEvents.clear();
+                _recordingData.reset(new MidiRecordedData());
+                _recordingPreview.reset(new MidiRecordedPreview());
+                
+                MidiTrackState& track_state = _state->track[_ordinal];
+                track_state.pendingRecordedData = std::move(recorded_data);
+                track_state.pendingRecordedPreview = std::move(recorded_preview);
+                
+                // reset state
+                _state->processedResetRecording[_ordinal].test_and_set();
+                track_state.hasRecordedEvents.clear();
 
-            finish_recording = YES;
+                finish_recording = YES;
+            }
         }
     });
 
