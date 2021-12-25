@@ -26,7 +26,7 @@
 <div id="content">
   <h1><a href="../"><img src="../images/logo.png" width="64" alt="Logo" style="vertical-align: middle"/></a> MIDI Tape Recorder Documentation</h1>
 
-  <div class="subtitle">Perfectly and effortlessly record and play MPE expression</div>
+  <div class="subtitle">Perfectly and effortlessly record and play MIDI</div>
 
   <br/>
 
@@ -110,15 +110,15 @@
 
   <p>By tapping on the <em>1 ▶︎ 4</em> toggle button, you can change it to <em>4 ▶︎ 4</em> and have MIDI Tape Recorder use the four MIDI input ports.</p>
 
-  <p style="text-align: center;"><img src="routing_4_to_4.png" width="271" height="145" alt="MTR Connection 2" /></p>  
+  <p style="text-align: center;"><img src="routing_4_to_4.png" width="271" height="145" alt="Routing 4 To 4 Illustration" /></p>  
 
-  <p style="text-align: center;"><img src="route_4_to_4_active.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="route_4_to_4_active.png" alt="Routing 4 to 4" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <p>Tapping <em>4 ▶︎ 4</em> will change it back to  <em>1 ▶︎ 4</em> and MIDI Tape Recorder will go back to only using one MIDI Input port.</p>
 
-  <p style="text-align: center;"><img src="routing_1_to_4.png" width="271" height="145" alt="MTR Connection 2" /></p>  
+  <p style="text-align: center;"><img src="routing_1_to_4.png" width="271" height="145" alt="Routing 1 To 4 Illustration" /></p>  
 
-  <p style="text-align: center;"><img src="route_1_to_4_active.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="route_1_to_4_active.png" alt="Routing 1 to 4" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <p>By using the four separate inputs you can keep different controllers connected and routed to dedicated synth plugins. However when routing the first input to all four tracks, the same controller can easily be used for all the synths you're recording. It's really up to you to decide which configuration is the most appropriate for what you're trying to achieve, they both are useful.</p>
 
@@ -129,17 +129,17 @@
 
   <p>Now that everything is connected and that you've verified that the input activity lights are working, press Record Enable on a track and press Record Arm in the toolbar.</p>
 
-  <p style="text-align: center;"><img src="record_armed.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="record_armed.png" alt="Record Armed" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <p>As soon as you start playing on your controller or press the Play button in the toolbar, MIDI Tape Recorder will record your performance.</p>
 
   <p><blockquote>Note: you can also press Play in your host and MIDI Tape Recorder will automatically start recording at the same time.</blockquote></p>
 
-  <p style="text-align: center;"><img src="recording.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="recording.png" alt="Recording Active" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <p>When you're done, press the Play button to stop recording and press Play again to hear what you've recorded, or press the Repeat button while recording to immediately start looping in case you want to play or record over it with another synth.</p>
 
-  <p style="text-align: center;"><img src="playback.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="playback.png" alt="Playback After Recording" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <hr />
 
@@ -148,7 +148,7 @@
 
   <p>This section contains a complete reference of the MIDI Tape Recording GUI.</p>
 
-  <p style="text-align: center;"><img src="mtr_gui_1.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mtr_gui_1.png" alt="Annotated Track and Session Controls" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <h3>Track controls</h3>
 
@@ -248,6 +248,125 @@
       When pressed, access additional session-specific tools.<br /><br />
     </li>
   </ul>
+
+  <p style="text-align: center;"><img src="mtr_gui_2.png" alt="Annotated Recording UI" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <h3>Recording UI</h3>
+
+  <ul>
+    <li>
+      <em>Timeline:</em><br / >
+      Shows the duration of the session in beats.<br /><br />
+    </li>
+    <li>
+      <em>MPE Indicator:</em><br / >
+      Indicates that an MPE Configuration Message (MCM) was received for this track. By default the MCM will be output every time this track starts playing. Tapping the MPE indicator will send the MCM immediately<br />
+      <blockquote>Tip: The settings dialog allows disabling the automatic sending of the MCM message, or to enable the display of the MCM details.</blockquote>
+    </li>
+    <li>
+      <em>Playhead:</em><br / >
+      Indicates the beat position at which the playback and recording happens.<br />
+      Tap and drag to reposition, tap on the timeline to set the playhead to that location.<br /><br />
+    </li>
+    <li>
+      <em>Loop Start Marker:</em><br / >
+      Indicates the beat position of where the playback loop starts.<br />
+      Tap and drag to reposition, double-tap to reset to the beginning of the session.<br /><br />
+    </li>
+    <li>
+      <em>Loop Stop Marker:</em><br / >
+      Indicates the beat position of where the playback loop stops.<br />
+      Tap and drag to reposition, double-tap to reset to the end of the session.<br />
+      <blockquote>Tip: tap and drag on the timeline between the loop start and stop marker to reposition them together.</blockquote>
+    </li>
+    <li>
+      <em>Punch In Marker:</em><br / >
+      Indicates the beat position of where the punch in recording starts.<br />
+      Tap and drag to reposition, double-tap to reset to the beginning of the session.<br /><br />
+    </li>
+    <li>
+      <em>Punch Out Marker:</em><br / >
+      Indicates the beat position of where the punch out recording stops.<br />
+      Tap and drag to reposition, double-tap to reset to the end of the session.<br />
+      <blockquote>Tip: tap and drag on the timeline between the punch in and out marker to reposition them together.</blockquote>
+    </li>
+    <li>
+      <em>Note Activity:</em><br / >
+      Visual summary of MIDI note activity and duration.<br />
+      Yellow when playing back, red when recording.<br /><br />
+    </li>
+    <li>
+      <em>Other MIDI Activity:</em><br / >
+      Visual overview of non-note MIDI message activity.<br />
+      Teal when playing back, white when recording.<br /><br />
+    </li>
+  </ul>
+
+  <p style="text-align: center;"><img src="mtr_gui_3.png" alt="Annotated Session Tools" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <h3>Session Tools</h3>
+
+  <ul>
+    <li>
+      <em>Import Multitrack MIDI File:</em><br / >
+      When pressed, shows a file selector to open a MIDI type 1 file that will be imported into the session. Existing tracks will be completely replaced. Up to four MIDI tracks can be imported.<br /><br />
+    </li>
+    <li>
+      <em>Export Multitrack MIDI File:</em><br / >
+      When pressed, shows a file selector to save a MIDI type 1 file with all the tracks that are in the current session. This MIDI file is of the highest possible timing resolution, but is still not as precise as MIDI Tape Recorder's internal format. It also lacks additional settings that MTR stores in its session. Consider saving MTR's state in your host or DAW as presets instead of exporting MIDI files.<br /><br />
+    </li>
+    <li>
+      <em>Crop Session</em><br / >
+      When pressed and confirmed, the loop start and stop markers will be used to crop your session.<br /><br />
+    </li>
+    <li>
+      <em>Clear All Tracks:</em><br / >
+      When pressed and confirmed, all recorded data in all tracks will be cleared.<br /><br />
+    </li>
+  </ul>
+
+  <p style="text-align: center;"><img src="mtr_gui_4.png" alt="Annotated Track Tools" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <h3>Track Tools</h3>
+
+  <ul>
+    <li>
+      <em>Import Single Track MIDI File:</em><br / >
+      When pressed, shows a file selector to open a MIDI type 1 file that will be imported as this track. The recorded data will be completely replaced. Only the first track in the file will be imported.<br /><br />
+    </li>
+    <li>
+      <em>Export Single Track MIDI File:</em><br / >
+      When pressed, shows a file selector to save a MIDI type 1 file with recorded data of this track. This MIDI file is of the highest possible timing resolution, but is still not as precise as MIDI Tape Recorder's internal format. Consider saving MTR's state as presets in your host or DAW instead of exporting MIDI files.<br /><br />
+    </li>
+    <li>
+      <em>Clear Track:</em><br / >
+      When pressed and confirmed, the recorded data in this track will be cleared.<br /><br />
+    </li>
+  </ul>
+
+  <p style="text-align: center;"><img src="settings.png" alt="Settings" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <h3>Settings</h3>
+
+  <ul>
+    <li>
+      <em>Send MPE config on play:</em><br / >
+      When enabled (default), a track with an MPE Configuration Messages (MCM), will output this MCM each time playback is started.<br /><br />
+    </li>
+    <li>
+      <em>Display MPE config details:</em><br / >
+      When enabled, the MPE indicator on a track will show the details of the MPE zone configurations.<br /><br />
+    </li>
+    <li>
+      <em>Auto trim and align recordings:</em><br / >
+      When enabled (default), silence will be trimmed from the end of recordings and their duration will be changed to align with the nearest beat.<br /><br />
+    </li>
+    <li>
+      <em>Show tool tips:</em><br / >
+      When enabled (default), a tool tip will be displayed for each action that is performed.<br /><br />
+    </li>
+  </ul>
+
 
 
   <ul class="navigation">
