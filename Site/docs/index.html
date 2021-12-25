@@ -5,10 +5,12 @@
   <link rel="stylesheet" type="text/css" href="../style/main.css"/>
   <meta name="description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
   <meta name="keywords" content="MIDI, MPE, Synthesizer, LinnStrument, ROLI, Seaboard, Continuum, Sequencer, DAW, Logic" />
-  <meta property="og:url" content="http://uwyn.com/mtr/" />
+  <meta property="og:url" content="http://uwyn.com/mtr/docs/" />
   <meta property="og:title" content="MIDI Tape Recorder - Documentation" />
   <meta property="og:description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
   <meta property="og:image" content="http://uwyn.com/mtr/images/og-screenshot1.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:type" content="website" />
   <title>MIDI Tape Recorder - Documentation</title>
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -62,11 +64,11 @@
 
 
 
-  <h3>Controller to MTR to synth</h3>
+  <h3>Controller to Recorder to Synth</h3>
 
   <p>Typically you will connect a physical MIDI Controller (like LinnStrument) or a MIDI Controller App (like GeoShred) to a MIDI Input and connect a MIDI Synthesizer (like Animoog Z, Model 15, Minimoog Model D) to a MIDI Output.</p>
 
-  <p style="text-align: center;"><img src="mtr_connection_1.png" width="420" height="127" alt="MTR Connection 1" /></p>  
+  <p style="text-align: center;"><img src="mtr_connection_1.png" alt="MTR Connection 1" style="margin: 0 auto; max-width: 73%; height:auto;" /></p>  
 
   <p>In order to hear what you're playing on the Controller, you'll have to enable Input Monitor for the appropriate track in MIDI Tape Recorder. This passes the MIDI that's received immediately through to the output, even when MTR is not playing.</p>
 
@@ -88,7 +90,7 @@
 
   <p>Some plugins can both act as MIDI Controllers and MIDI Synthesizers (like Animoog Z), in that case you can connect the same plugin to both the MTR MIDI Input and Output.</p>
 
-  <p style="text-align: center;"><img src="mtr_connection_2.png" width="296" height="145" alt="MTR Connection 2" /></p>  
+  <p style="text-align: center;"><img src="mtr_connection_2.png" alt="MTR Connection 2" style="margin: 0 auto; max-width: 50%; height:auto;" /></p>  
 
   <p>Now, make sure to disable Input Monitor for the appropriate track in MTR because otherwise similar messages will be used twice by the same synthesizer, which can lead to unexpected results.</p>
 
@@ -110,17 +112,18 @@
 
   <p>By tapping on the <em>1 ▶︎ 4</em> toggle button, you can change it to <em>4 ▶︎ 4</em> and have MIDI Tape Recorder use the four MIDI input ports.</p>
 
-  <p style="text-align: center;"><img src="routing_4_to_4.png" width="271" height="145" alt="Routing 4 To 4 Illustration" /></p>  
+  <p style="text-align: center;"><img src="routing_4_to_4.png" alt="Routing 4 To 4 Illustration" style="margin: 0 auto; max-width: 42%; height:auto;" /></p>  
 
   <p style="text-align: center;"><img src="route_4_to_4_active.png" alt="Routing 4 to 4" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <p>Tapping <em>4 ▶︎ 4</em> will change it back to  <em>1 ▶︎ 4</em> and MIDI Tape Recorder will go back to only using one MIDI Input port.</p>
 
-  <p style="text-align: center;"><img src="routing_1_to_4.png" width="271" height="145" alt="Routing 1 To 4 Illustration" /></p>  
+  <p style="text-align: center;"><img src="routing_1_to_4.png" alt="Routing 1 To 4 Illustration" style="margin: 0 auto; max-width: 42%; height:auto;" /></p>  
 
   <p style="text-align: center;"><img src="route_1_to_4_active.png" alt="Routing 1 to 4" style="margin: 0; max-width: 100%; height:auto;" /></p>
 
   <p>By using the four separate inputs you can keep different controllers connected and routed to dedicated synth plugins. However when routing the first input to all four tracks, the same controller can easily be used for all the synths you're recording. It's really up to you to decide which configuration is the most appropriate for what you're trying to achieve, they both are useful.</p>
+
 
   <hr />
 
@@ -140,6 +143,55 @@
   <p>When you're done, press the Play button to stop recording and press Play again to hear what you've recorded, or press the Repeat button while recording to immediately start looping in case you want to play or record over it with another synth.</p>
 
   <p style="text-align: center;"><img src="playback.png" alt="Playback After Recording" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+
+  <hr />
+
+
+  <h2>MPE Support</h2>
+
+  <p>MIDI Tape Recorder was designed specifically for MPE controllers and MPE synthesizers.</p>
+
+  <p>Not only does MTR preserve the exact timing and order of all the MIDI messages, it also provides support for the standard MPE Configuration Message (MCM) and MIDI RPN 0 Pitch Bend Sensitivity message.</p>
+
+  <p>When a track is set to Record Enable, any MCM and RPN 0 message that's received, will be remembered. When this is the case, MTR will display an MPE Indicator button in the top-left corner of the track.</p>
+
+  <p style="text-align: center;"><img src="mpe_indicator.png" alt="MPE Indicator" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>By default, each time playback starts, the MCM and RPN 0 will be sent to the output, ensuring that the synthesizer receiving the MIDI recorded messages will be configured exactly as it was when you were recorded your performance.</p>
+
+  <p><blockquote>Tip: Tapping the MPE Indicator will immediately send out the MCM and RPN 0 without waiting for playback.</blockquote></p>
+
+  <p><blockquote>Note: MPE zone details can be displayed in the MPE indicator by enabling this in the settings.</blockquote></p>
+
+  <p style="text-align: center;"><img src="mpe_indicator_details.png" alt="MPE Indicator Details" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <h3>Sending the MCM from your controller</h3>
+
+  <p>Every MPE compliant device is required to support the MPE Configuration Message. Each controller has its own way of enabling and sending out the MCM.</p>
+
+  <p>Below are two examples, check the manual of your controller to know how and when the MCM is being sent.</p>
+
+  <h4>Animoog Z</h4>
+
+  <p style="text-align: center;"><img src="animoog_mpe.png" alt="Send MCM in Animoog Z" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <ul>
+    <li>Tap Settings in the toolbar</li>
+    <li>Tap MIDI in the sidebar</li>
+    <li>Tap the button next to the Output Channel</li>
+    <li>Tap MPE in the available MIDI channel options</li>
+  </ul>
+
+  <h4>LinnStrument</h4>
+
+  <p style="text-align: center;"><img src="linnstrument_mpe.png" alt="Send MCM with LinnStrument" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <ul>
+    <li>Press Per-Split Settings</li>
+    <li>Press and hold ChPerNote in the Midi Mode column</li>
+    <li>Wait until it turns blue</li>
+  </ul>
 
   <hr />
 
