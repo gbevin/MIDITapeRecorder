@@ -30,18 +30,228 @@
   <br/>
 
   <ul class="navigation">
-    <li><a href="../">Home</a></li>
+    <li><a href="http://uwyn.com">Home</a></li>
+    <li><a href="../">MTR</a></li>
     <li><em>Documentation</em></li>
     <li><a href="../support">Support</a></li>
     <li><a href="../history">History</a></li>
   </ul>
+  
+  <h2>Welcome</h2>
 
-  <h2>TODO</h2>
+  <p>Thanks for taking the time to read through this documentation.</p>
 
-  <p></p>
+  <p>Once you understand how to connect MIDI Tape Recorder (MTR) to your gear and plugins, and what the buttons do, you should not have to read it again. MTR was designed to be fun, intuitive and unobtrusive.</p>
+
+  <p>MIDI Tape Recorder can record any MIDI channel voice messages that it receives and reproduces those perfectly upon playback.</p>
+
+  <p><blockquote>Note: MTR will not record any MIDI system messages.</blockquote></p>
+
+  <p style="text-align: center;">
+    <img src="../images/screenshot.png" alt="Screenshot" style="margin: 0; max-width: 100%; height:auto;" />
+  </p>
+
+
+  <hr />
+
+
+  <h2>Making Connections</h2>
+
+  <p>Since MTR is an AUv3 plugin, you need to first make a connection to one of the MIDI Inputs, and then another connection from one of the MIDI Outputs.</p>
+
+
+
+  <h3>Controller to MTR to synth</h3>
+
+  <p>Typically you will connect a physical MIDI Controller (like LinnStrument) or a MIDI Controller App (like GeoShred) to a MIDI Input and connect a MIDI Synthesizer (like Animoog Z, Model 15, Minimoog Model D) to a MIDI Output.</p>
+
+  <p style="text-align: center;"><img src="mtr_connection_1.png" width="420" height="127" alt="MTR Connection 1" /></p>  
+
+  <p>In order to hear what you're playing on the Controller, you'll have to enable Input Monitor for the appropriate track in MIDI Tape Recorder. This passes the MIDI that's received immediately through to the output, even when MTR is not playing.</p>
+
+  <p style="text-align: center;"><img src="input_monitor_enabled.png" alt="Input Monitor Enabled" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>To verify that MIDI is being received and sent correctly, you can play your controller and check the activity lights inside MTR on left and right edge of each track. If they flicker green, MIDI is going through correctly.</p>
+
+  <p style="text-align: center;"><img src="activity_lights_in_out.png" alt="Activity Lights Both Sides" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>Each DAW and plugin host has their own way of making MIDI connections, please refer to the manual of your preferred host for details.</p>
+
+  <p>As an example, this is what the MIDI routing could look like inside the AUM host on iOS.</p>
+
+  <p style="text-align: center;"><img src="routing_aum_1.png" alt="Routing AUM 1" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+
+
+  <h3>Synths that are also controllers</h3>
+
+  <p>Some plugins can both act as MIDI Controllers and MIDI Synthesizers (like Animoog Z), in that case you can connect the same plugin to both the MTR MIDI Input and Output.</p>
+
+  <p style="text-align: center;"><img src="mtr_connection_2.png" width="296" height="145" alt="MTR Connection 2" /></p>  
+
+  <p>Now, make sure to disable Input Monitor for the appropriate track in MTR because otherwise similar messages will be used twice by the same synthesizer, which can lead to unexpected results.</p>
+
+  <p style="text-align: center;"><img src="input_monitor_disabled.png" alt="Input Monitor Disabled" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>Each DAW and plugin host has their own way of making MIDI connections, please refer to the manual of your preferred host for details.</p>
+
+  <p>As an example, this is what the MIDI routing could look like inside the AUM host on iOS.</p>
+
+  <p style="text-align: center;"><img src="routing_aum_2.png" alt="Routing AUM 2" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+
+
+  <h3>Multiple MIDI input connections</h3>
+
+  <p>MIDI Tape Recorder supports a newer AUv3 feature where multiple virtual MIDI Input cables can be used for a single plugin. As of this writing the only host that supports this is AUM v1.4.0 beta and later.</p>
+
+  <p>When your host supports multiple input cables, MIDI Tape Recorder has four independent MIDI Input ports available for connection.</p>
+
+  <p>By tapping on the <em>1 ▶︎ 4</em> toggle button, you can change it to <em>4 ▶︎ 4</em> and have MIDI Tape Recorder use the four MIDI input ports.</p>
+
+  <p style="text-align: center;"><img src="routing_4_to_4.png" width="271" height="145" alt="MTR Connection 2" /></p>  
+
+  <p style="text-align: center;"><img src="route_4_to_4_active.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>Tapping <em>4 ▶︎ 4</em> will change it back to  <em>1 ▶︎ 4</em> and MIDI Tape Recorder will go back to only using one MIDI Input port.</p>
+
+  <p style="text-align: center;"><img src="routing_1_to_4.png" width="271" height="145" alt="MTR Connection 2" /></p>  
+
+  <p style="text-align: center;"><img src="route_1_to_4_active.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>By using the four separate inputs you can keep different controllers connected and routed to dedicated synth plugins. However when routing the first input to all four tracks, the same controller can easily be used for all the synths you're recording. It's really up to you to decide which configuration is the most appropriate for what you're trying to achieve, they both are useful.</p>
+
+  <hr />
+
+
+  <h2>Make a Recording</h2>
+
+  <p>Now that everything is connected and that you've verified that the input activity lights are working, press Record Enable on a track and press Record Arm in the toolbar.</p>
+
+  <p style="text-align: center;"><img src="record_armed.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>As soon as you start playing on your controller, MIDI Tape Recorder will record your performance.</p>
+
+  <p><blockquote>Note: you can also press Play in your host and MIDI Tape Recorder will automatically start recording at the same time.</blockquote></p>
+
+  <p style="text-align: center;"><img src="recording.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <p>When you're done, press the Play button to stop recording and press Play again to hear what you've recorded, or press the Repeat button while recording to immediately start looping in case you want to play or record over it with another synth.</p>
+
+  <p style="text-align: center;"><img src="playback.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <hr />
+
+
+  <h2>The MIDI Tape Recorder GUI</h2>
+
+  <p>This section contains a complete reference of the MIDI Tape Recording GUI.</p>
+
+  <p style="text-align: center;"><img src="mtr_gui_1.png" style="margin: 0; max-width: 100%; height:auto;" /></p>
+
+  <h3>Track controls</h3>
+
+  <ul>
+    <li>
+      <em>Input Activity Indicator:</em><br / >
+      Lights green when MTR receives MIDI for the track.<br /><br />
+    </li>
+
+    <li>
+      <em>Record Enable:</em><br / >
+      When enabled (red), record MIDI messages to the track.<br /><br />
+    </li>
+
+    <li>
+      <em>Input Monitor:</em><br / >
+      When enabled (green), pass MIDI messages received for the track straight through to the output.<br /><br />
+    </li>
+
+    <li>
+      <em>Output Mute:</em><br / >
+      When enabled (yellow), don't output any messages for the track.<br /><br />
+    </li>
+
+    <li>
+      <em>Track Tools:</em><br / >
+      When pressed, access additional track-specific tools.<br /><br />
+    </li>
+
+    <li>
+      <em>Output Activity Indicator:</em><br / >
+      Lights green when MTR outputs MIDI for the track.
+    </li>
+  </ul>
+
+  <h3>Session controls</h3>
+
+  <ul>
+    <li>
+      <em>Input Routing:</em><br / >
+      Switches between sending the first input channel to all tracks, or using a dedicated input channel for each track. (only supported on some hosts)<br /><br />
+    </li>
+
+    <li>
+      <em>Rewind:</em><br / >
+      When pressed, returns to the loop start marker, or the beginning of the recording, depending on where the playhead is.<br /><br />
+    </li>
+
+    <li>
+      <em>Play:</em><br / >
+      When pressed, either starts or stops moving the playhead. If record is enabled, this will also start or stop recording. Play will automatically adapt to the transport state of the host.<br /><br />
+    </li>
+
+    <li>
+      <em>Record Arm:</em><br / >
+      When enabled, recording will start when the playhead is moving.<br /><br />
+    </li>
+
+    <li>
+      <em>Repeat:</em><br / >
+      When enabled, playback and recording will loop between the start and stop locators. When Record Arm is enabled, it will stay enabled while repeating until you've recorded at least one MIDI message during the current loop, after that Record Arm will automatically turn off.<br />
+      Repeat can be enabled during recording to immediately end the recording and start looping.<br /><br />
+    </li>
+
+    <li>
+      <em>Snap To Beat:</em><br / >
+      When enabled, snap the loop, punch in/out and playhead markers to the beat after dragging them to a new position.<br /><br />
+    </li>
+
+    <li>
+      <em>Auto Scroll:</em><br / >
+      When enabled, the visible area of your recorder will automatically scroll to keep the playhead visible.<br /><br />
+    </li>
+
+    <li>
+      <em>Punch In/Out:</em><br / >
+      When enabled, only record MIDI messages between the punch in/out locators when Record Arm is enabled.<br /><br />
+    </li>
+
+    <li>
+      <em>Undo:</em><br / >
+      When pressed, undo the last recording change you made.<br /><br />
+    </li>
+
+    <li>
+      <em>Redo:</em><br / >
+      When pressed, redo the last recording change you undid.<br /><br />
+    </li>
+
+    <li>
+      <em>Settings:</em><br / >
+      When pressed, show the global settings dialog.<br /><br />
+    </li>
+
+    <li>
+      <em>Session Tools:</em><br / >
+      When pressed, access additional session-specific tools.<br /><br />
+    </li>
+  </ul>
+
 
   <ul class="navigation">
-    <li><a href="../">Home</a></li>
+    <li><a href="http://uwyn.com">Home</a></li>
+    <li><a href="../">MTR</a></li>
     <li><em>Documentation</em></li>
     <li><a href="../support">Support</a></li>
     <li><a href="../history">History</a></li>

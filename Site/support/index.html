@@ -30,7 +30,8 @@
   <br/>
 
   <ul class="navigation">
-    <li><a href="../">Home</a></li>
+    <li><a href="http://uwyn.com">Home</a></li>
+    <li><a href="../">MTR</a></li>
     <li><a href="../docs">Documentation</a></li>
     <li><em>Support</em></li>
     <li><a href="../history">History</a></li>
@@ -43,18 +44,35 @@
     macOS 11.2 later
   </p>
 
+  <h2>FAQ</h2>
+
+  <ul>
+    <li>
+      <em>Overdub isn't working, it just erases the messages it's recording over</em><br / ><br / >
+      This behavior is intended, contrary to audio samples, MIDI messages carry more meaning. They use specific channels and often the ordering matters. Recording MIDI messages on top of other MIDI messages can create a lot of unwanted problems.<br /><br />
+      MIDI Tape Recorder is smart when overdubbing in that it figures out if there's any MIDI notes that need to be cut off or later notes that need to start again after the overdub. This ensures the least amount of unintended side-effects.<br /><br />
+    </li>
+    <li>
+      <em>It would like to zoom in close to see more details about the recorded messages</em><br / ><br / >
+      I have plans to add support for zooming in and out of the recordings. However, MIDI Tape Recorder doesn't display individual messages on purpose. Instead, it displays a real-time visual summary of activity, similar to a heat map. It helps to you understand where the different parts of your performance are, but because expressive MPE performances contain many thousands of messages in a few bars, these are not represented individually.<br /><br />
+    </li>
+  </ul>
+
   <h2>Get in Touch</h2>
 
-  <p>We really love to hear from our users.</p>
+  <p>I really love to hear from my users, but please be considerate of my time and availability. I'm a single developer working on MIDI Tape Recorder in my spare time for free.</p>
 
-  <p>Don't hesitate to email us with questions or examples of how you use MIDI Tape Recorder.</p>
+  <p>However, if you run into problems, please contact me before leaving a bad review on the App Store or posting about it on social media. I will do my best to try to make time for you.</p>
+
+  <p>If you have any cool demos or examples to share, please don't hesitate, I very much enjoy watching those!</p>
 
   <h3><a href="mailto:mtr-support@uwyn.com">mtr-support@uwyn.com</a></h3>
 
   <br/>
 
   <ul class="navigation">
-    <li><a href="../">Home</a></li>
+    <li><a href="http://uwyn.com">Home</a></li>
+    <li><a href="../">MTR</a></li>
     <li><a href="../docs">Documentation</a></li>
     <li><em>Support</em></li>
     <li><a href="../history">History</a></li>

@@ -178,3 +178,7 @@ table.oscpaths td {
   font-family: monospace;
   font-size: 11pt;
 }
+
+blockquote {
+  font-style: italic;
+}
