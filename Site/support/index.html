@@ -57,6 +57,15 @@
       MIDI Tape Recorder is smart when overdubbing in that it figures out if there's any MIDI notes that need to be cut off or later notes that need to start again after the overdub. This ensures the least amount of unintended side-effects.<br /><br />
     </li>
     <li>
+      <em>MIDI Tape Recorder doesn't appear as a plugin in my host</em><br / ><br / >
+      There might be various reasons, some of these might apply to you:<br /><br />
+      <ul>
+        <li>Make sure your host supports AUv3 MIDI processor plugins, only some do.</li>
+        <li>You might have to explicitly create a MIDI or a MIDI FX track to be able to see MIDI Tape Recorder.</li>
+        <li>AUv3 plugins are automatically registered by iOS and macOS when the standalone app is launched the first time. Try launching the standalone app manually, and if that doesn't work, try restarting your device.</li>
+      </ul><br />
+    </li>
+    <li>
       <em>It would like to zoom in closer to see more details about the recorded messages</em><br / ><br / >
       I have plans to add support for zooming in and out of the recordings. However, MIDI Tape Recorder doesn't display individual messages on purpose. Instead, it displays a real-time visual summary of activity, similar to a heat map. It helps to you understand where the different parts of your performance are, but because expressive MPE performances contain many thousands of messages in a few bars, these are not represented individually.<br /><br />
     </li>
