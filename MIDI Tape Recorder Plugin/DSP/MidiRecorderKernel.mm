@@ -502,6 +502,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         if (!_state.processedInvalidate[t].test_and_set()) {
             track_state.recordedData.reset();
             track_state.recordedPreview.reset();
+            _state.processedUIRebuildPreview[t].clear();
         }
 
         // send MCM

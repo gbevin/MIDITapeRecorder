@@ -761,8 +761,6 @@
             [self withMidiTrackViews:^(int t, MidiTrackView* view) {
                 [self registerRecordedForUndo:t];
                 [[self->_midiQueueProcessor recorder:t] clear];
-                [view rebuild];
-                [view setNeedsLayout];
             }];
             
             [self registerSettingsForUndo];
@@ -1064,11 +1062,6 @@
         [_mainUndoManager withUndoGroup:^{
             [self registerRecordedForUndo:t];
             [[self->_midiQueueProcessor recorder:t] clear];
-        }];
-        
-        [self withMidiTrack:t view:^(MidiTrackView *view) {
-            [view rebuild];
-            [view setNeedsLayout];
         }];
         
         [self handleFullyEmpty];
