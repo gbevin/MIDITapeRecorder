@@ -15,6 +15,8 @@ MIDI messages are recorded and played back with the same accuracy and precision 
 
 MIDI Tape Recorder records your performance exactly as you play it, just like an audio recorder, accurately reproducing every nuance of your performance.
 
+<a href="https://www.youtube.com/watch?v=UfpEnpGqwn0" target="_blank"><img src="https://i.ytimg.com/vi/UfpEnpGqwn0/maxresdefault.jpg" alt="Intro and Tutorial Video" width="640" height="276" border="0" /></a>
+
 MIDI Tape Recorder purposefully has no MIDI note editing, no quantization, no individual CC tweaking, nothing that you wouldn't do with audio. Instead, very expressive and ultra-dense MIDI streams are perfectly stored and reproduced. MIDI Tape Recorder excels at capturing and playing back expressive performances with MPE controllers and MPE MIDI plugins.
 
 The controls are purposefully simple and intuitive, similar to a traditional four-track audio recorder, making it fun to record, play back and loop your MIDI performance. Even when recording non-MPE MIDI, MIDI Tape Recorder makes it easy to stay in the flow and be creative without being interrupted by the technical nature of most DAWs.
