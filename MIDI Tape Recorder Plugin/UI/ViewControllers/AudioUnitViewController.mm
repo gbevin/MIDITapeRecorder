@@ -698,7 +698,7 @@
     [self hideMenuPopups];
 
     NSFileManager* fm = [NSFileManager defaultManager];
-    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:@"tracks.midi"];
+    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:@"tracks.mid"];
     NSData* recorded = [_midiQueueProcessor recordedTracksAsMidiFile];
     [recorded writeToURL:file_url atomically:YES];
     
@@ -1009,7 +1009,7 @@
     }
 
     NSFileManager* fm = [NSFileManager defaultManager];
-    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"track%d.midi", (int)index+1]];
+    NSURL* file_url = [[fm temporaryDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"track%d.mid", (int)index+1]];
     NSData* recorded = [_midiQueueProcessor recordedTrackAsMidiFile:(int)index];
     [recorded writeToURL:file_url atomically:YES];
     
