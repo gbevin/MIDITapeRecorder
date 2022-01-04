@@ -520,6 +520,41 @@
                     s.punchInOutButton.selected = s->_state->punchInOut.test();
                     break;
                 }
+                case ID_CLEAR_ALL: {
+                    if (s->_state->clearAllTrigger.test()) {
+                        [s clearAllPressed:s->_clearButtonAll];
+                        s->_state->hostParamChange(ID_CLEAR_ALL, NO);
+                    }
+                    break;
+                }
+                case ID_CLEAR_1: {
+                    if (s->_state->track[0].clearTrigger.test()) {
+                        [s clearPressed:s->_clearButton1];
+                        s->_state->hostParamChange(ID_CLEAR_1, NO);
+                    }
+                    break;
+                }
+                case ID_CLEAR_2: {
+                    if (s->_state->track[1].clearTrigger.test()) {
+                        [s clearPressed:s->_clearButton2];
+                        s->_state->hostParamChange(ID_CLEAR_2, NO);
+                    }
+                    break;
+                }
+                case ID_CLEAR_3: {
+                    if (s->_state->track[2].clearTrigger.test()) {
+                        [s clearPressed:s->_clearButton3];
+                        s->_state->hostParamChange(ID_CLEAR_3, NO);
+                    }
+                    break;
+                }
+                case ID_CLEAR_4: {
+                    if (s->_state->track[3].clearTrigger.test()) {
+                        [s clearPressed:s->_clearButton4];
+                        s->_state->hostParamChange(ID_CLEAR_4, NO);
+                    }
+                    break;
+                }
             }
         });
     }];

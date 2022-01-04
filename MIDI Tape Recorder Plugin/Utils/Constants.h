@@ -35,12 +35,16 @@ enum PluginParameters {
     ID_MUTE_2,
     ID_MUTE_3,
     ID_MUTE_4,
-    // All non-track specific parameter follow below
     ID_REWIND,
     ID_PLAY,
     ID_RECORD,
     ID_REPEAT,
     ID_GRID,
     ID_CHASE,
-    ID_PUNCH_INOUT
+    ID_PUNCH_INOUT,
+    ID_CLEAR_ALL,
+    ID_CLEAR_1,
+    ID_CLEAR_2,
+    ID_CLEAR_3,
+    ID_CLEAR_4
 };

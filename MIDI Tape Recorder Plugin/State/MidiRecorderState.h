@@ -25,10 +25,11 @@ struct MidiRecorderState {
 
     MidiTrackState track[MIDI_TRACKS];
 
-    std::atomic_flag rewindTrigger  { false };
-    std::atomic_flag playActive     { false };
-    std::atomic_flag recordArmed    { false };
-    std::atomic_flag repeatEnabled  { false };
+    std::atomic_flag rewindTrigger      { false };
+    std::atomic_flag playActive         { false };
+    std::atomic_flag recordArmed        { false };
+    std::atomic_flag repeatEnabled      { false };
+    std::atomic_flag clearAllTrigger    { false };
 
     std::atomic_flag grid       { false };
     std::atomic_flag chase      { true };

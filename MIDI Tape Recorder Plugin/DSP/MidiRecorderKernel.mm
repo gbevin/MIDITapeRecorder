@@ -370,6 +370,26 @@ void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value)
             if (set) _state.punchInOut.test_and_set();
             else     _state.punchInOut.clear();
             break;
+        case ID_CLEAR_ALL:
+            if (set) _state.clearAllTrigger.test_and_set();
+            else     _state.clearAllTrigger.clear();
+            break;
+        case ID_CLEAR_1:
+            if (set) _state.track[0].clearTrigger.test_and_set();
+            else     _state.track[0].clearTrigger.clear();
+            break;
+        case ID_CLEAR_2:
+            if (set) _state.track[1].clearTrigger.test_and_set();
+            else     _state.track[1].clearTrigger.clear();
+            break;
+        case ID_CLEAR_3:
+            if (set) _state.track[2].clearTrigger.test_and_set();
+            else     _state.track[2].clearTrigger.clear();
+            break;
+        case ID_CLEAR_4:
+            if (set) _state.track[3].clearTrigger.test_and_set();
+            else     _state.track[3].clearTrigger.clear();
+            break;
     }
 }
 
@@ -414,6 +434,16 @@ AUValue MidiRecorderKernel::getParameter(AUParameterAddress address) {
             return _state.chase.test();
         case ID_PUNCH_INOUT:
             return _state.punchInOut.test();
+        case ID_CLEAR_ALL:
+            return _state.clearAllTrigger.test();
+        case ID_CLEAR_1:
+            return _state.track[0].clearTrigger.test();
+        case ID_CLEAR_2:
+            return _state.track[1].clearTrigger.test();
+        case ID_CLEAR_3:
+            return _state.track[2].clearTrigger.test();
+        case ID_CLEAR_4:
+            return _state.track[3].clearTrigger.test();
         default:
             return 0.f;
     }

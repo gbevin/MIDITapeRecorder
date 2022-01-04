@@ -269,6 +269,61 @@
                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
+    
+    AUParameter* clearAllParam = [AUParameterTree createParameterWithIdentifier:@"clearAll"
+                                                                           name:@"Clear All"
+                                                                        address:ID_CLEAR_ALL
+                                                                            min:0
+                                                                            max:1
+                                                                           unit:kAudioUnitParameterUnit_Boolean
+                                                                       unitName:nil
+                                                                          flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                   valueStrings:nil
+                                                            dependentParameters:nil];
+    
+    AUParameter* clear1Param = [AUParameterTree createParameterWithIdentifier:@"clear1"
+                                                                         name:@"Clear 1"
+                                                                      address:ID_CLEAR_1
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+    
+    AUParameter* clear2Param = [AUParameterTree createParameterWithIdentifier:@"clear2"
+                                                                         name:@"Clear 2"
+                                                                      address:ID_CLEAR_2
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+    
+    AUParameter* clear3Param = [AUParameterTree createParameterWithIdentifier:@"clear3"
+                                                                         name:@"Clear 3"
+                                                                      address:ID_CLEAR_3
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
+    
+    AUParameter* clear4Param = [AUParameterTree createParameterWithIdentifier:@"clear4"
+                                                                         name:@"Clear 4"
+                                                                      address:ID_CLEAR_4
+                                                                          min:0
+                                                                          max:1
+                                                                         unit:kAudioUnitParameterUnit_Boolean
+                                                                     unitName:nil
+                                                                        flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                 valueStrings:nil
+                                                          dependentParameters:nil];
 
     // Initialize the parameter values.
     playParam.value = 0.0;
@@ -290,6 +345,11 @@
     mute2Param.value = 0.0;
     mute3Param.value = 0.0;
     mute4Param.value = 0.0;
+    clearAllParam.value = 0.0;
+    clear1Param.value = 0.0;
+    clear2Param.value = 0.0;
+    clear3Param.value = 0.0;
+    clear4Param.value = 0.0;
 
     // Create the parameter tree.
     _parameterTree = [AUParameterTree createTreeWithChildren:@[
@@ -311,7 +371,12 @@
         mute1Param,
         mute2Param,
         mute3Param,
-        mute4Param
+        mute4Param,
+        clearAllParam,
+        clear1Param,
+        clear2Param,
+        clear3Param,
+        clear4Param
     ]];
 }
 

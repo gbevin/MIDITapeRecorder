@@ -29,6 +29,7 @@ struct MidiTrackState {
     std::atomic_flag muteEnabled        { false };
     std::atomic_flag recording          { false };
     std::atomic_flag hasRecordedEvents  { false };
+    std::atomic_flag clearTrigger       { false };
 
     MPEState mpeState;
     
