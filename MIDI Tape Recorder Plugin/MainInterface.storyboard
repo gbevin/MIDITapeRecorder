@@ -214,7 +214,7 @@ RECORDER</string>
                                                     <action selector="chasePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4fV-Fp-xz3"/>
                                                 </connections>
                                             </button>
-                                            <button toolTip="Punch In/Out" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="81j-AC-XX3" userLabel="Punch In out" customClass="ToolBarButton">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="81j-AC-XX3" userLabel="Punch In out" customClass="ToolBarButton">
                                                 <rect key="frame" x="69.5" y="0.0" width="30" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                                 <color key="tintColor" name="Red"/>
