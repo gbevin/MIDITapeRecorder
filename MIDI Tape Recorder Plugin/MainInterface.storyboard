@@ -1513,9 +1513,9 @@ RECORDER</string>
                                 </connections>
                             </containerView>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kxe-e6-6XJ" userLabel="Settings">
-                                <rect key="frame" x="187.5" y="99" width="240" height="160"/>
+                                <rect key="frame" x="187.5" y="84" width="240" height="190"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="160" id="MdR-QT-emE"/>
+                                    <constraint firstAttribute="height" constant="190" id="MdR-QT-emE"/>
                                     <constraint firstAttribute="width" constant="240" id="rO7-ma-pqN"/>
                                 </constraints>
                                 <connections>
@@ -1970,7 +1970,7 @@ under the CC BY 4.0 License.</string>
             <objects>
                 <viewController id="bAn-F3-ZuP" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aNF-LS-zQT" customClass="PopupView">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="160"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="190"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gpR-DS-ezG">
@@ -2124,21 +2124,58 @@ under the CC BY 4.0 License.</string>
                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 </variation>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Follow host transport" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6eE-oY-bA5" userLabel="Follow Host Transport Label">
+                                <rect key="frame" x="40" y="159.5" width="124" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IOV-xA-JFa" userLabel="Follow Host Transport Button">
+                                <rect key="frame" x="10" y="152.5" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Y8b-Hv-EDt"/>
+                                    <constraint firstAttribute="width" constant="30" id="kJ7-Wc-xmH">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="followHostTransportPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="JgO-zI-rCl"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fPN-a7-mCW"/>
                         <constraints>
                             <constraint firstItem="9mg-oM-Xmt" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="1hz-Gu-UOI"/>
+                            <constraint firstItem="6eE-oY-bA5" firstAttribute="leading" secondItem="IOV-xA-JFa" secondAttribute="trailing" id="20L-PG-JMa"/>
                             <constraint firstItem="PqM-3K-ReO" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="2lK-um-lXY"/>
                             <constraint firstItem="kKp-TH-wjH" firstAttribute="centerY" secondItem="9mg-oM-Xmt" secondAttribute="centerY" id="3dM-mM-FU3"/>
+                            <constraint firstItem="IOV-xA-JFa" firstAttribute="top" secondItem="IRk-kc-8Wh" secondAttribute="bottom" id="9Cf-di-JBF"/>
                             <constraint firstItem="gpR-DS-ezG" firstAttribute="centerX" secondItem="aNF-LS-zQT" secondAttribute="centerX" id="A1M-i4-ItL"/>
                             <constraint firstItem="u3L-HS-sVk" firstAttribute="trailing" secondItem="aNF-LS-zQT" secondAttribute="trailing" constant="-5" id="Ahu-Vi-5Vf"/>
                             <constraint firstItem="PqM-3K-ReO" firstAttribute="top" secondItem="9mg-oM-Xmt" secondAttribute="bottom" id="Dhd-PW-7TL"/>
                             <constraint firstItem="IRk-kc-8Wh" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="F8L-0e-QmH"/>
                             <constraint firstItem="lC9-9N-7G1" firstAttribute="leading" secondItem="PqM-3K-ReO" secondAttribute="trailing" id="GkT-Yx-Ovm"/>
                             <constraint firstItem="lC9-9N-7G1" firstAttribute="centerY" secondItem="PqM-3K-ReO" secondAttribute="centerY" id="HJB-vJ-bEs"/>
+                            <constraint firstItem="IOV-xA-JFa" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="Iu7-YK-jNj"/>
                             <constraint firstItem="Mow-FE-isl" firstAttribute="centerY" secondItem="mPE-iT-uDI" secondAttribute="centerY" id="JF3-a2-YBD"/>
                             <constraint firstItem="NNI-li-OpN" firstAttribute="centerY" secondItem="IRk-kc-8Wh" secondAttribute="centerY" id="KEU-9j-D0r"/>
                             <constraint firstItem="u3L-HS-sVk" firstAttribute="top" secondItem="aNF-LS-zQT" secondAttribute="top" constant="5" id="TPR-65-bh7"/>
+                            <constraint firstItem="6eE-oY-bA5" firstAttribute="centerY" secondItem="IOV-xA-JFa" secondAttribute="centerY" id="W9g-ZD-N6p"/>
                             <constraint firstItem="NNI-li-OpN" firstAttribute="leading" secondItem="IRk-kc-8Wh" secondAttribute="trailing" id="ZbW-Sn-pJx"/>
                             <constraint firstItem="mPE-iT-uDI" firstAttribute="top" secondItem="gpR-DS-ezG" secondAttribute="bottom" constant="10" id="bzS-CY-BDf"/>
                             <constraint firstItem="mPE-iT-uDI" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="leading" constant="10" id="f0A-YB-SZH"/>
@@ -2152,6 +2189,7 @@ under the CC BY 4.0 License.</string>
                     <connections>
                         <outlet property="autoTrimRecordingsButton" destination="PqM-3K-ReO" id="Fkj-pc-y90"/>
                         <outlet property="displayMpeConfigDetailsButton" destination="9mg-oM-Xmt" id="8AI-Ur-v6Z"/>
+                        <outlet property="followHostTransportButton" destination="IOV-xA-JFa" id="oiT-2O-iEi"/>
                         <outlet property="sendMpeConfigOnPlayButton" destination="mPE-iT-uDI" id="7U7-tU-HaX"/>
                         <outlet property="showToolTipsButton" destination="IRk-kc-8Wh" id="RXm-Hm-QWO"/>
                     </connections>

@@ -101,7 +101,7 @@
             return kAudioUnitErr_TooManyFramesToProcess;
         }
 
-        if (kernel->_ioState.transportStateBlock) {
+        if (kernel->_ioState.transportStateBlock && kernel->_state.followHostTransport.test()) {
             AUHostTransportStateFlags transport_state_flags;
             
             // transport position
@@ -128,6 +128,13 @@
             else {
                 kernel->_ioState.transportMoving.clear();
             }
+        }
+        // when there's no transport state blocl or the host transport shouldn't be followed,
+        // set all transport state to neutral values
+        else {
+            kernel->_ioState.transportPositionProcessed.test_and_set();
+            kernel->_ioState.transportChangeProcessed.test_and_set();
+            kernel->_ioState.transportMoving.clear();
         }
         
         if (kernel->_ioState.musicalContext) {

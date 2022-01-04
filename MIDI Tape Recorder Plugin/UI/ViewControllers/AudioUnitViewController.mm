@@ -1408,6 +1408,7 @@
     id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
     id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
     id show_tool_tips = [dict objectForKey:@"ShowToolTips"];
+    id follow_host_transport = [dict objectForKey:@"FollowHostTransport"];
 
     if (start_position_set) {
         if ([start_position_set boolValue]) _state->startPositionSet.test_and_set();
@@ -1516,6 +1517,10 @@
         if ([show_tool_tips boolValue]) _state->showToolTips.test_and_set();
         else                            _state->showToolTips.clear();
     }
+    if (follow_host_transport) {
+        if ([follow_host_transport boolValue]) _state->followHostTransport.test_and_set();
+        else                                   _state->followHostTransport.clear();
+    }
 
     [self updateRoutingState];
     [self updateRecordState];
@@ -1578,7 +1583,8 @@
         @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.test()),
         @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.test()),
         @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
-        @"ShowToolTips" : @(_state->showToolTips.test())
+        @"ShowToolTips" : @(_state->showToolTips.test()),
+        @"FollowHostTransport" : @(_state->followHostTransport.test())
     }];
     return dict;
 }

@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* displayMpeConfigDetailsButton;
 @property (weak, nonatomic) IBOutlet UIButton* autoTrimRecordingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* showToolTipsButton;
+@property (weak, nonatomic) IBOutlet UIButton* followHostTransportButton;
 
 @end
 
@@ -46,6 +47,12 @@
     else                 _mainViewController.state->showToolTips.clear();
 }
 
+- (IBAction)followHostTransportPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (sender.selected) _mainViewController.state->followHostTransport.test_and_set();
+    else                 _mainViewController.state->followHostTransport.clear();
+}
+
 - (IBAction)closeSettingsView:(id)sender {
     [_mainViewController closeSettingsView];
 }
@@ -57,6 +64,7 @@
     _displayMpeConfigDetailsButton.selected = _mainViewController.state->displayMpeConfigDetails.test();
     _autoTrimRecordingsButton.selected = _mainViewController.state->autoTrimRecordings.test();
     _showToolTipsButton.selected = _mainViewController.state->showToolTips.test();
+    _followHostTransportButton.selected = _mainViewController.state->followHostTransport.test();
 }
 
 @end
