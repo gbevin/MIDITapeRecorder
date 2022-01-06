@@ -31,7 +31,7 @@ class MidiRecorderState;
 - (void)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division;
 
 - (void)setState:(MidiRecorderState*)state;
-- (void)ping:(double)timeSampleSeconds;
+- (void)ping:(QueuedMidiMessage&)message;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 - (void)clear;
 - (void)crop;

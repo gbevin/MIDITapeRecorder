@@ -404,7 +404,7 @@
 
 #pragma mark Recording
 
-- (void)ping:(double)timeSampleSeconds {
+- (void)ping:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
         // don't record if record enable isn't active
         if (!_record || !_recordingData) {
@@ -431,7 +431,12 @@
         _recordingData->setStartIfNeeded(_state->playPositionBeats);
         
         // update the recording duration even when there's no incoming messages
-        _recordingData->increaseDuration((timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats);
+        if (message.hasBeatTime) {
+            _recordingData->increaseDuration(message.offsetBeats);
+        }
+        else {
+            _recordingData->increaseDuration((message.timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats);
+        }
         
         _recordingData->populateUpToBeat(_recordingData->getDuration());
         
@@ -593,8 +598,14 @@
         }
 
         // calculate timing offsets
-        double offset_seconds = message.timeSampleSeconds - _state->transportStartSampleSeconds;
-        double offset_beats = offset_seconds * _state->secondsToBeats;
+        double offset_beats;
+        if (message.hasBeatTime) {
+            offset_beats = message.offsetBeats;
+        }
+        else {
+            double offset_seconds = message.timeSampleSeconds - _state->transportStartSampleSeconds;
+            offset_beats = offset_seconds * _state->secondsToBeats;
+        }
 
         // add message to the recording
         RecordedMidiMessage recorded_message;

@@ -129,7 +129,7 @@
                 kernel->_ioState.transportMoving.clear();
             }
         }
-        // when there's no transport state blocl or the host transport shouldn't be followed,
+        // when there's no transport state block or the host transport shouldn't be followed,
         // set all transport state to neutral values
         else {
             kernel->_ioState.transportPositionProcessed.test_and_set();

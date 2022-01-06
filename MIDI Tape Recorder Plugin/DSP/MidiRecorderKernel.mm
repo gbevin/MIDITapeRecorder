@@ -452,6 +452,10 @@ AUValue MidiRecorderKernel::getParameter(AUParameterAddress address) {
 void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = timeSampleSeconds;
+    if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
+        message.offsetBeats = _ioState.currentBeatPosition;
+        message.hasBeatTime = true;
+    }
     
     TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }
@@ -845,6 +849,11 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
 void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
+    if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
+        double offset_seconds = double(midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime) / _ioState.sampleRate;
+        message.offsetBeats = _ioState.currentBeatPosition + offset_seconds * _state.secondsToBeats;
+        message.hasBeatTime = true;
+    }
     message.cable = midiEvent.cable;
     message.length = midiEvent.length;
     message.data[0] = midiEvent.data[0];

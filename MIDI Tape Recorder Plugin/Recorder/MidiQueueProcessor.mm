@@ -60,7 +60,7 @@
         if (_state) {
             for (int t = 0; t < MIDI_TRACKS; ++t) {
                 if (message.length == 0) {
-                    [_recorder[t] ping:message.timeSampleSeconds];
+                    [_recorder[t] ping:message];
                 }
                 else if (_state->track[t].sourceCable == message.cable) {
                     _state->track[t].processedActivityInput.clear();

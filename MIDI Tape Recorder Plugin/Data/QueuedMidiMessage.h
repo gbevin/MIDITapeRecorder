@@ -17,6 +17,8 @@ struct QueuedMidiMessage {
     QueuedMidiMessage& operator= (const QueuedMidiMessage&) = delete;
     
     double timeSampleSeconds    { 0.0 };
+    double offsetBeats          { 0.0 };
+    bool hasBeatTime            { false };
     uint8_t data[3]             { 0, 0, 0 };
     
     uint8_t cable:4;
