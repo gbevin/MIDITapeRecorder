@@ -549,6 +549,12 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         }
     }
     
+    // we're waiting for all track invalidations to have been processed
+    // reset all the other session parameters for clear all
+    if (!_state.processedClearAllPostInvalidate.test_and_set()) {
+        _state.processedUIClearAllPostInvalidate.clear();
+    }
+    
     // repeat
     if (!_state.processedActivateRepeat.test_and_set()) {
         _state.repeatActive.test_and_set();
