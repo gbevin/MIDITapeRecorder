@@ -701,6 +701,10 @@ void MidiRecorderKernel::processOutput() {
                     }
                 }
                 
+                // start over from the start position for the next process call
+                _state.playPositionBeats = _state.startPositionBeats.load();
+                _state.transportStartSampleSeconds = _state.transportStartSampleSeconds + (_state.stopPositionBeats - _state.startPositionBeats) * _state.beatsToSeconds;
+
                 // check if we should finish the recording or reset it since no events were recorded
                 if (end_recording) {
                     _state.processedUIEndRecord.clear();
@@ -712,10 +716,6 @@ void MidiRecorderKernel::processOutput() {
                         _state.processedUIRebuildPreview[t].clear();
                     }
                 }
-                
-                // start over from the start position for the next process call
-                _state.playPositionBeats = _state.startPositionBeats.load();
-                _state.transportStartSampleSeconds = _state.transportStartSampleSeconds + (_state.stopPositionBeats - _state.startPositionBeats) * _state.beatsToSeconds;
             }
 
             // handle the possible in-buffer wrap around

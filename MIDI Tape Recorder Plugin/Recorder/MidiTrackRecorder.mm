@@ -27,6 +27,7 @@
     int16_t _lastDataMsb[MIDI_CHANNELS];
     int16_t _lastDataLsb[MIDI_CHANNELS];
 
+    double _recordingStartSampleSeconds;
     std::unique_ptr<MidiRecordedData> _recordingData;
     std::unique_ptr<MidiRecordedPreview> _recordingPreview;
 }
@@ -47,6 +48,7 @@
             _lastDataLsb[ch] = 0;
         }
         
+        _recordingStartSampleSeconds = 0.0;
         _recordingData.reset(new MidiRecordedData());
         _recordingPreview.reset(new MidiRecordedPreview());
     }
@@ -72,6 +74,7 @@
                 auto recorded_data = std::move(_recordingData);
                 auto recorded_preview = std::move(_recordingPreview);
 
+                _recordingStartSampleSeconds = 0.0;
                 _recordingData.reset(new MidiRecordedData());
                 _recordingPreview.reset(new MidiRecordedPreview());
                 
@@ -416,8 +419,14 @@
             return;
         }
         
+        // remember the recording start time
+        if (_recordingStartSampleSeconds == 0.0) {
+            _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
+        }
+        
         // we might have to reset the recording if no events were recorded and it wasn't manually stopped
         if (!_state->processedResetRecording[_ordinal].test_and_set()) {
+            _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
             _recordingData.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
         }
@@ -435,7 +444,7 @@
             _recordingData->increaseDuration(message.offsetBeats);
         }
         else {
-            _recordingData->increaseDuration((message.timeSampleSeconds - _state->transportStartSampleSeconds) * _state->secondsToBeats);
+            _recordingData->increaseDuration((message.timeSampleSeconds - _recordingStartSampleSeconds) * _state->secondsToBeats);
         }
         
         _recordingData->populateUpToBeat(_recordingData->getDuration());
@@ -590,11 +599,18 @@
 
         // auto start the recording on the first received message
         // if the recording hasn't started yet
-        if (_recordingData->empty() && _state->transportStartSampleSeconds == 0.0) {
-            if (_delegate) {
-                _state->transportStartSampleSeconds = message.timeSampleSeconds - _state->playPositionBeats * _state->beatsToSeconds;
-                [_delegate startRecord];
+        if (_state->transportStartSampleSeconds == 0.0) {
+            if (_recordingData->empty()) {
+                if (_delegate) {
+                    _recordingStartSampleSeconds = message.timeSampleSeconds - _state->playPositionBeats * _state->beatsToSeconds;
+                    _state->transportStartSampleSeconds = _recordingStartSampleSeconds;
+                    [_delegate startRecord];
+                }
             }
+        }
+        // remember the recording start time
+        else if (_recordingStartSampleSeconds == 0.0) {
+            _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
         }
 
         // calculate timing offsets
@@ -603,7 +619,7 @@
             offset_beats = message.offsetBeats;
         }
         else {
-            double offset_seconds = message.timeSampleSeconds - _state->transportStartSampleSeconds;
+            double offset_seconds = message.timeSampleSeconds - _recordingStartSampleSeconds;
             offset_beats = offset_seconds * _state->secondsToBeats;
         }
 
@@ -633,6 +649,7 @@
             [_delegate invalidateRecording:_ordinal];
         }
 
+        _recordingStartSampleSeconds = 0.0;
         _recordingData.reset(new MidiRecordedData());
         _recordingPreview.reset(new MidiRecordedPreview());
     });
