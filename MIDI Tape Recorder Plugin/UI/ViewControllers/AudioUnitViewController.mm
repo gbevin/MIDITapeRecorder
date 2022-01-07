@@ -28,6 +28,7 @@
 #import "PunchOutView.h"
 #import "RecorderUndoManager.h"
 #import "SettingsViewController.h"
+#import "ThreadHelper.h"
 #import "TimelineView.h"
 #import "ToolBarButton.h"
 #import "TrackButton.h"
@@ -801,9 +802,34 @@
             [self registerSettingsForUndo];
         }];
         
-        [self clearAllMarkerPositions];
-        [self handleFullyEmpty];
+        [self clearAllWaitForFullInvalidation];
     }
+}
+
+- (void)clearAllWaitForFullInvalidation {
+    // ensure that all tracks are fully invalidated before performing the rest
+    // of the clearing logic
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if (!_state->processedInvalidate->test()) {
+            AudioUnitViewController* __weak weak_self = self;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0) , ^{
+                AudioUnitViewController* s = weak_self;
+                if (!s) return;
+                [s clearAllWaitForFullInvalidation];
+            });
+            return;
+        }
+    }
+
+    AudioUnitViewController* __weak weak_self = self;
+    dispatchOnMainThreadIfNecessary(^{
+        AudioUnitViewController* s = weak_self;
+        if (!s) return;
+
+        // clear the rest of the session
+        [s clearAllMarkerPositions];
+        [s handleFullyEmpty];
+    });
 }
 
 - (BOOL)handleFullyEmpty {

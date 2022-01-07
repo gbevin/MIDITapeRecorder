@@ -56,6 +56,7 @@
 		26C7DA2B275343CF00170CB2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2A275343CF00170CB2 /* CoreAudio.framework */; };
 		26C7DA2D275343DB00170CB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA2C275343DB00170CB2 /* UIKit.framework */; };
 		26C7DA31275343F800170CB2 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26C7DA30275343F800170CB2 /* CoreAudioKit.framework */; };
+		26D4EA812787DF3F00E0BE1C /* ThreadHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26D4EA802787DF3F00E0BE1C /* ThreadHelper.mm */; };
 		26DA48B42772264D0068DEBB /* ToolTipButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26DA48B22772264D0068DEBB /* ToolTipButton.mm */; };
 		26E06B8F2759427300D7257E /* MenuButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26E06B8D2759427300D7257E /* MenuButton.mm */; };
 		26EE71D227534E11006C6B73 /* MidiRecorderKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderKernel.mm */; };
@@ -187,6 +188,8 @@
 		26C7DA30275343F800170CB2 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/iOSSupport/System/Library/Frameworks/CoreAudioKit.framework; sourceTree = DEVELOPER_DIR; };
 		26C7DA322753485300170CB2 /* MidiRecorderState.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderState.h; sourceTree = "<group>"; };
 		26C7DA3327534BE300170CB2 /* MidiRecorderKernel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecorderKernel.mm; sourceTree = "<group>"; };
+		26D4EA7F2787DF3F00E0BE1C /* ThreadHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadHelper.h; sourceTree = "<group>"; };
+		26D4EA802787DF3F00E0BE1C /* ThreadHelper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ThreadHelper.mm; sourceTree = "<group>"; };
 		26DA48AE2771A3B10068DEBB /* RecorderToolTipDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecorderToolTipDelegate.h; sourceTree = "<group>"; };
 		26DA48AF2771B0A30068DEBB /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.1.sdk/System/Library/Frameworks/CoreImage.framework; sourceTree = DEVELOPER_DIR; };
 		26DA48B22772264D0068DEBB /* ToolTipButton.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ToolTipButton.mm; sourceTree = "<group>"; };
@@ -445,6 +448,8 @@
 				26F36161276B0BDB00077518 /* Preferences.mm */,
 				2682D463276D4A270076D20B /* RecorderUndoManager.h */,
 				2682D464276D4A270076D20B /* RecorderUndoManager.mm */,
+				26D4EA7F2787DF3F00E0BE1C /* ThreadHelper.h */,
+				26D4EA802787DF3F00E0BE1C /* ThreadHelper.mm */,
 				26F36163276B0D0200077518 /* URLHelper.h */,
 				26F36164276B0D0200077518 /* URLHelper.mm */,
 				26B140822754590300748F00 /* TPCircularBuffer */,
@@ -627,6 +632,7 @@
 				26855186276EC6C90082909E /* MidiRecorderState.cpp in Sources */,
 				26F3616E276CA0DD00077518 /* PunchInView.mm in Sources */,
 				26C540C42757C11B004E4813 /* MidiTrackRecorder.mm in Sources */,
+				26D4EA812787DF3F00E0BE1C /* ThreadHelper.mm in Sources */,
 				2682D465276D4A270076D20B /* RecorderUndoManager.mm in Sources */,
 				26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */,
 				26BE25DF2767604D00A6BAB7 /* MidiRecordedPreview.cpp in Sources */,
