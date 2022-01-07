@@ -807,21 +807,22 @@
 }
 
 - (void)clearAllWaitForFullInvalidation {
+    AudioUnitViewController* __weak weak_self = self;
+
     // ensure that all tracks are fully invalidated before performing the rest
     // of the clearing logic
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (!_state->processedInvalidate->test()) {
-            AudioUnitViewController* __weak weak_self = self;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0) , ^{
                 AudioUnitViewController* s = weak_self;
                 if (!s) return;
+                
                 [s clearAllWaitForFullInvalidation];
             });
             return;
         }
     }
 
-    AudioUnitViewController* __weak weak_self = self;
     dispatchOnMainThreadIfNecessary(^{
         AudioUnitViewController* s = weak_self;
         if (!s) return;
