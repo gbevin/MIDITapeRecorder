@@ -453,7 +453,11 @@ void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = timeSampleSeconds;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
-        message.offsetBeats = _ioState.currentBeatPosition;
+        double offset_beats = _ioState.currentBeatPosition;
+        // apply looping length and start position offset
+        offset_beats = fmod(offset_beats, (_state.stopPositionBeats.load() - _state.startPositionBeats.load()));
+        offset_beats += _state.startPositionBeats.load();
+        message.offsetBeats = offset_beats;
         message.hasBeatTime = true;
     }
     
@@ -851,7 +855,11 @@ void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
         double offset_seconds = double(midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime) / _ioState.sampleRate;
-        message.offsetBeats = _ioState.currentBeatPosition + offset_seconds * _state.secondsToBeats;
+        double offset_beats = _ioState.currentBeatPosition + offset_seconds * _state.secondsToBeats;
+        // apply looping length and start position offset
+        offset_beats = fmod(offset_beats, (_state.stopPositionBeats.load() - _state.startPositionBeats.load()));
+        offset_beats += _state.startPositionBeats.load();
+        message.offsetBeats = offset_beats;
         message.hasBeatTime = true;
     }
     message.cable = midiEvent.cable;
