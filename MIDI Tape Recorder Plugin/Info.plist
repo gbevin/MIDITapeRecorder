@@ -32,7 +32,7 @@
 					<key>type</key>
 					<string>aumi</string>
 					<key>version</key>
-					<real>67072</real>
+					<integer>67328</integer>
 				</dict>
 				<dict>
 					<key>description</key>
@@ -58,7 +58,7 @@
 					<key>type</key>
 					<string>aumf</string>
 					<key>version</key>
-					<real>67072</real>
+					<integer>67328</integer>
 				</dict>
 			</array>
 		</dict>
