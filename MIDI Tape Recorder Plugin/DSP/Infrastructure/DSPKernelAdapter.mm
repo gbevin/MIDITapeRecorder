@@ -21,6 +21,7 @@
 @implementation DSPKernelAdapter {
     // C++ members need to be ivars; they would be copied on access if they were properties.
     MidiRecorderKernel _kernel;
+    BufferedInputBus _inputBus;
 }
 
 - (instancetype)init {
@@ -31,11 +32,16 @@
         _kernel._ioState.channelCount = format.channelCount;
         _kernel._ioState.sampleRate = format.sampleRate;
 
-        // Create the output bus.
+        // Create the input and output busses.
+        _inputBus.init(format, 2);
         _outputBus = [[AUAudioUnitBus alloc] initWithFormat:format error:nil];
         _outputBus.maximumChannelCount = 2;
     }
     return self;
+}
+
+- (AUAudioUnitBus*)inputBus {
+    return _inputBus.bus;
 }
 
 - (MidiRecorderState*)state {
@@ -71,12 +77,14 @@
 }
 
 - (void)allocateRenderResources {
+    _inputBus.allocateRenderResources(self.maximumFramesToRender);
     _kernel._ioState.channelCount = self.outputBus.format.channelCount;
     _kernel._ioState.sampleRate = self.outputBus.format.sampleRate;
 }
 
 - (void)deallocateRenderResources {
     _kernel.cleanup();
+    _inputBus.deallocateRenderResources();
 }
 
 // MARK: -  AUAudioUnit (AUAudioUnitImplementation)
@@ -89,6 +97,7 @@
      */
     // Specify captured objects are mutable.
     __block MidiRecorderKernel* kernel = &_kernel;
+    __block BufferedInputBus* input = &_inputBus;
 
     return ^AUAudioUnitStatus(AudioUnitRenderActionFlags*                actionFlags,
                               const AudioTimeStamp*                      timestamp,
@@ -97,8 +106,39 @@
                               AudioBufferList*                           outputData,
                               const AURenderEvent*                       realtimeEventListHead,
                               AURenderPullInputBlock __unsafe_unretained pullInputBlock) {
+        AudioUnitRenderActionFlags pullFlags = 0;
+
         if (frameCount > kernel->maximumFramesToRender()) {
             return kAudioUnitErr_TooManyFramesToProcess;
+        }
+
+        AUAudioUnitStatus err = input->pullInput(&pullFlags, timestamp, frameCount, 0, pullInputBlock);
+
+        if (err != noErr) { return err; }
+
+        AudioBufferList* inAudioBufferList = input->mutableAudioBufferList;
+
+        /*
+         Important:
+         If the caller passed non-null output pointers (outputData->mBuffers[x].mData), use those.
+
+         If the caller passed null output buffer pointers, process in memory owned by the Audio Unit
+         and modify the (outputData->mBuffers[x].mData) pointers to point to this owned memory.
+         The Audio Unit is responsible for preserving the validity of this memory until the next call to render,
+         or deallocateRenderResources is called.
+
+         If your algorithm cannot process in-place, you will need to preallocate an output buffer
+         and use it here.
+
+         See the description of the canProcessInPlace property.
+         */
+
+        // If passed null output buffer pointers, process in-place in the input buffer.
+        AudioBufferList* outAudioBufferList = outputData;
+        if (outAudioBufferList->mBuffers[0].mData == nullptr) {
+            for (UInt32 i = 0; i < outAudioBufferList->mNumberBuffers; ++i) {
+                outAudioBufferList->mBuffers[i].mData = inAudioBufferList->mBuffers[i].mData;
+            }
         }
 
         if (kernel->_ioState.transportStateBlock && kernel->_state.followHostTransport.test()) {
@@ -151,9 +191,10 @@
         kernel->_ioState.timestamp = timestamp;
         
         double time_sample_seconds = double(timestamp->mSampleTime - frameCount) / kernel->_ioState.sampleRate;
+        kernel->setBuffers(inAudioBufferList, outAudioBufferList);
         kernel->handleBufferStart(time_sample_seconds);
         kernel->handleScheduledTransitions(time_sample_seconds);
-        kernel->performAllSimultaneousEvents(timestamp->mSampleTime + frameCount, realtimeEventListHead);
+        kernel->processWithEvents(timestamp, frameCount, realtimeEventListHead);
         kernel->processOutput();
 
         return noErr;

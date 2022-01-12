@@ -449,6 +449,11 @@ AUValue MidiRecorderKernel::getParameter(AUParameterAddress address) {
     }
 }
 
+void MidiRecorderKernel::setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList) {
+    _inBufferList = inBufferList;
+    _outBufferList = outBufferList;
+}
+
 void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = timeSampleSeconds;
@@ -589,6 +594,21 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     if (!_state.processedReachEnd.test_and_set()) {
         _isPlaying = NO;
         _state.processedUIStopAndRewind.clear();
+    }
+}
+
+void MidiRecorderKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) {
+    for (int channel = 0; channel < _ioState.channelCount; ++channel) {
+        if (_inBufferList->mBuffers[channel].mData == _outBufferList->mBuffers[channel].mData) {
+            continue;
+        }
+        
+        for (int frameIndex = 0; frameIndex < frameCount; ++frameIndex) {
+            const int frameOffset = int(frameIndex + bufferOffset);
+            const float* in = (float*)_inBufferList->mBuffers[channel].mData + frameOffset;
+            float* out = (float*)_outBufferList->mBuffers[channel].mData + frameOffset;
+            *out = *in;
+        }
     }
 }
 

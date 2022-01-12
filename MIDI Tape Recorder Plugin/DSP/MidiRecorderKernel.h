@@ -26,8 +26,11 @@ public:
     void setParameter(AUParameterAddress address, AUValue value);
     AUValue getParameter(AUParameterAddress address);
 
+    void setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList);
+    
     void handleBufferStart(double timeSampleSeconds) override;
     void handleScheduledTransitions(double timeSampleSeconds) override;
+    void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
     void handleParameterEvent(AUParameterEvent const& parameterEvent) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
     void processOutput() override;
@@ -54,4 +57,7 @@ private:
     bool _isPlaying { false };
     
     NoteState _noteStates[MIDI_TRACKS];
+
+    AudioBufferList* _inBufferList  { nullptr };
+    AudioBufferList* _outBufferList { nullptr };
 };
