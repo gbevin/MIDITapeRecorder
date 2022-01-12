@@ -610,12 +610,14 @@ void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
         }
     }
     else {
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            MidiTrackState& track_state = _state.track[t];
-            
-            if (track_state.monitorEnabled.test() && !track_state.muteEnabled.test() && track_state.sourceCable == midiEvent.cable) {
-                _state.track[t].processedActivityOutput.clear();
-                passThroughMIDIEvent(midiEvent, t);
+        if (_ioState.midiOutputEventBlock) {
+            for (int t = 0; t < MIDI_TRACKS; ++t) {
+                MidiTrackState& track_state = _state.track[t];
+                
+                if (track_state.monitorEnabled.test() && !track_state.muteEnabled.test() && track_state.sourceCable == midiEvent.cable) {
+                    _state.track[t].processedActivityOutput.clear();
+                    passThroughMIDIEvent(midiEvent, t);
+                }
             }
         }
         
@@ -748,10 +750,8 @@ void MidiRecorderKernel::processOutput() {
 }
 
 void MidiRecorderKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable) {
-    if (_ioState.midiOutputEventBlock) {
-        Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
-        _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
-    }
+    Float64 frame_offset = midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime;
+    _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
 }
 
 void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRangeEnd) {
