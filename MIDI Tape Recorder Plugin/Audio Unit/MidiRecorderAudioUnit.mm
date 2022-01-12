@@ -536,6 +536,10 @@
     return @[@2,@2];
 }
 
+- (BOOL)isMusicDeviceOrEffect {
+    return YES;
+}
+
 #pragma mark - AUAudioUnit fullState
 - (void)setFullState:(NSDictionary<NSString *,id>*)fullState {
     @try {
