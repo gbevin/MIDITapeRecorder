@@ -419,6 +419,11 @@
             return;
         }
         
+        // if recording hasn't started on the kernel side, don't update recording
+        if (!_state->track[_ordinal].recording.test()) {
+            return;
+        }
+        
         // remember the recording start time
         if (_recordingStartSampleSeconds == 0.0) {
             _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();

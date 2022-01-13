@@ -469,8 +469,11 @@ void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
     message.timeSampleSeconds = timeSampleSeconds;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
         double offset_beats = _ioState.currentBeatPosition;
-        // apply looping length and start position offset
-        offset_beats = fmod(offset_beats, (_state.stopPositionBeats.load() - _state.startPositionBeats.load()));
+        double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
+        if (session_duration != 0.0 && _state.repeatActive.test()) {
+            // apply looping length and start position offset
+            offset_beats = fmod(offset_beats, session_duration);
+        }
         offset_beats += _state.startPositionBeats.load();
         message.offsetBeats = offset_beats;
         message.hasBeatTime = true;
@@ -493,7 +496,8 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
             _state.processedUIStop.test_and_set();
             _state.processedStop.test_and_set();
             
-            if (_state.recordArmed.test()) {
+            if (_state.recordArmed.test() &&
+                !(_state.repeatActive.test() && _state.stopPositionBeats == 0.0)) {
                 for (int t = 0; t < MIDI_TRACKS; ++t) {
                     if (_state.track[t].recordEnabled.test()) {
                         _state.processedBeginRecording[t].clear();
@@ -892,8 +896,11 @@ void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
         double offset_seconds = double(midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime) / _ioState.sampleRate;
         double offset_beats = _ioState.currentBeatPosition + offset_seconds * _state.secondsToBeats;
-        // apply looping length and start position offset
-        offset_beats = fmod(offset_beats, (_state.stopPositionBeats.load() - _state.startPositionBeats.load()));
+        double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
+        if (session_duration != 0.0 && _state.repeatActive.test()) {
+            // apply looping length and start position offset
+            offset_beats = fmod(offset_beats, session_duration);
+        }
         offset_beats += _state.startPositionBeats.load();
         message.offsetBeats = offset_beats;
         message.hasBeatTime = true;
