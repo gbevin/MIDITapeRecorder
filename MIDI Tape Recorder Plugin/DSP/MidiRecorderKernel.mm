@@ -133,6 +133,9 @@ void MidiRecorderKernel::play() {
 void MidiRecorderKernel::stop() {
     _state.transportStartSampleSeconds = 0.0;
     _isPlaying = NO;
+    
+    // turn off recording
+    _state.processedUIEndRecord.clear();
 }
 
 void MidiRecorderKernel::endRecording(int track) {
@@ -145,13 +148,15 @@ void MidiRecorderKernel::endRecording(int track) {
         track_state.recordedData = std::move(track_state.pendingRecordedData);
         track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
 
-        // we auto-trim new recordings when this is an active preference
+        // we auto-trim recordings when this is an active preference
         if (_state.autoTrimRecordings.test() && track_state.recordedData) {
             track_state.recordedData->trimDuration();
         }
     }
     // if this is an overdub, replace the new sections
     else {
+        bool longer_recording = (track_state.pendingRecordedData->getDuration() > track_state.recordedData->getDuration());
+
         // ensure that the recorded preview has the same length as the pending preview
         // anyting that's longer can just be moved over
         RecordedPreviewVector& pending_pixels = track_state.pendingRecordedPreview->getPixels();
@@ -288,6 +293,11 @@ void MidiRecorderKernel::endRecording(int track) {
         // update the other state values
         track_state.recordedPreview->applyOverdubInfo(*track_state.pendingRecordedPreview);
         track_state.recordedData->applyOverdubInfo(*track_state.pendingRecordedData);
+
+        // we auto-trim recordings when this is an active preference and the overdub was longer than the original
+        if (_state.autoTrimRecordings.test() && longer_recording) {
+            track_state.recordedData->trimDuration();
+        }
     }
 }
 

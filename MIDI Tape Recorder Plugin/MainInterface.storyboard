@@ -1513,10 +1513,10 @@ RECORDER</string>
                                 </connections>
                             </containerView>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kxe-e6-6XJ" userLabel="Settings">
-                                <rect key="frame" x="187.5" y="84" width="240" height="190"/>
+                                <rect key="frame" x="67.5" y="81" width="480" height="196"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="190" id="MdR-QT-emE"/>
-                                    <constraint firstAttribute="width" constant="240" id="rO7-ma-pqN"/>
+                                    <constraint firstAttribute="height" constant="196" id="MdR-QT-emE"/>
+                                    <constraint firstAttribute="width" constant="480" id="rO7-ma-pqN"/>
                                 </constraints>
                                 <connections>
                                     <segue destination="bAn-F3-ZuP" kind="embed" identifier="EmbedSettings" id="2HD-ck-1Pu"/>
@@ -1970,17 +1970,11 @@ under the CC BY 4.0 License.</string>
             <objects>
                 <viewController id="bAn-F3-ZuP" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aNF-LS-zQT" customClass="PopupView">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="190"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="196"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gpR-DS-ezG">
-                                <rect key="frame" x="96" y="7.5" width="48" height="15"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u3L-HS-sVk" userLabel="Close Settings">
-                                <rect key="frame" x="215" y="5" width="20" height="20"/>
+                                <rect key="frame" x="455" y="5" width="20" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="20" id="Grg-hN-JHf"/>
                                     <constraint firstAttribute="height" constant="20" id="seh-zb-P7b"/>
@@ -1992,41 +1986,14 @@ under the CC BY 4.0 License.</string>
                                     <action selector="closeSettingsView:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="FmC-G5-V0k"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mPE-iT-uDI" userLabel="Send MPE Config On Play Button">
-                                <rect key="frame" x="10" y="32.5" width="30" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="cDF-rM-B4q"/>
-                                    <constraint firstAttribute="width" constant="30" id="i9q-aS-O2a">
-                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
-                                    </constraint>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="◎">
-                                    <color key="titleColor" name="Gray0"/>
-                                </state>
-                                <state key="selected" title="◉">
-                                    <color key="titleColor" name="Green"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                </variation>
-                                <connections>
-                                    <action selector="sendMpeConfigOnPlayPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="Idl-Ly-ars"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send MPE config on play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mow-FE-isl" userLabel="Send MPE Config On Play Label">
-                                <rect key="frame" x="40" y="39.5" width="147.5" height="16"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User Interface Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cGv-JE-gAH" userLabel="User Interface">
+                                <rect key="frame" x="16" y="17" width="133" height="16"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
-                                <color key="textColor" name="Gray0"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9mg-oM-Xmt" userLabel="Display MPE Config Details Button">
-                                <rect key="frame" x="10" y="62.5" width="30" height="30"/>
+                                <rect key="frame" x="10" y="37" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="bsQ-fs-IHE"/>
                                     <constraint firstAttribute="width" constant="30" id="yac-GT-fzz">
@@ -2050,40 +2017,7 @@ under the CC BY 4.0 License.</string>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Display MPE config details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kKp-TH-wjH" userLabel="Display MPE Config Details Label">
-                                <rect key="frame" x="40" y="69.5" width="155.5" height="16"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
-                                <color key="textColor" name="Gray0"/>
-                                <nil key="highlightedColor"/>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
-                                </variation>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PqM-3K-ReO" userLabel="Auto Trim Recordings Button">
-                                <rect key="frame" x="10" y="92.5" width="30" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="30" id="Iaf-4W-T65">
-                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
-                                    </constraint>
-                                    <constraint firstAttribute="height" constant="30" id="XOV-9k-DqV"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="tintColor" name="ActivityOff"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="◎">
-                                    <color key="titleColor" name="Gray0"/>
-                                </state>
-                                <state key="selected" title="◉">
-                                    <color key="titleColor" name="Green"/>
-                                </state>
-                                <variation key="heightClass=compact-widthClass=compact">
-                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                </variation>
-                                <connections>
-                                    <action selector="autoTrimRecordingsPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="hJa-QB-ED3"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto trim and align recordings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lC9-9N-7G1" userLabel="Auto Trim Recordings Label">
-                                <rect key="frame" x="40" y="99.5" width="175" height="16"/>
+                                <rect key="frame" x="40" y="44" width="155.5" height="16"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" name="Gray0"/>
                                 <nil key="highlightedColor"/>
@@ -2092,7 +2026,7 @@ under the CC BY 4.0 License.</string>
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IRk-kc-8Wh" userLabel="Show ToolTips Button">
-                                <rect key="frame" x="10" y="122.5" width="30" height="30"/>
+                                <rect key="frame" x="10" y="67" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="UzG-sF-pYW">
                                         <variation key="heightClass=compact-widthClass=compact" constant="26"/>
@@ -2116,7 +2050,7 @@ under the CC BY 4.0 License.</string>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show tool tips" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NNI-li-OpN" userLabel="Show ToolTips Label">
-                                <rect key="frame" x="40" y="129.5" width="83.5" height="16"/>
+                                <rect key="frame" x="40" y="74" width="83.5" height="16"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" name="Gray0"/>
                                 <nil key="highlightedColor"/>
@@ -2124,8 +2058,38 @@ under the CC BY 4.0 License.</string>
                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 </variation>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Follow host transport" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6eE-oY-bA5" userLabel="Follow Host Transport Label">
-                                <rect key="frame" x="40" y="159.5" width="124" height="16"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transport Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YJB-b6-Xrj" userLabel="Transport">
+                                <rect key="frame" x="256" y="17" width="106.5" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mPE-iT-uDI" userLabel="Send MPE Config On Play Button">
+                                <rect key="frame" x="250" y="37" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="cDF-rM-B4q"/>
+                                    <constraint firstAttribute="width" constant="30" id="i9q-aS-O2a">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="sendMpeConfigOnPlayPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="Idl-Ly-ars"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Send MPE config on play" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mow-FE-isl" userLabel="Send MPE Config On Play Label">
+                                <rect key="frame" x="280" y="44" width="147.5" height="16"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" name="Gray0"/>
                                 <nil key="highlightedColor"/>
@@ -2134,7 +2098,7 @@ under the CC BY 4.0 License.</string>
                                 </variation>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IOV-xA-JFa" userLabel="Follow Host Transport Button">
-                                <rect key="frame" x="10" y="152.5" width="30" height="30"/>
+                                <rect key="frame" x="250" y="67" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="Y8b-Hv-EDt"/>
                                     <constraint firstAttribute="width" constant="30" id="kJ7-Wc-xmH">
@@ -2157,36 +2121,126 @@ under the CC BY 4.0 License.</string>
                                     <action selector="followHostTransportPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="JgO-zI-rCl"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Follow host transport" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6eE-oY-bA5" userLabel="Follow Host Transport Label">
+                                <rect key="frame" x="280" y="74" width="124" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Recording Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pie-pH-o2j" userLabel="Recording">
+                                <rect key="frame" x="16" y="107" width="111" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PqM-3K-ReO" userLabel="Auto Trim Recordings Button">
+                                <rect key="frame" x="10" y="127" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="Iaf-4W-T65">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                    <constraint firstAttribute="height" constant="30" id="XOV-9k-DqV"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="autoTrimRecordingsPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="hJa-QB-ED3"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto trim and align recordings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lC9-9N-7G1" userLabel="Auto Trim Recordings Label">
+                                <rect key="frame" x="40" y="134" width="175" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="v1y-q7-Bif" userLabel="Auto Rewind After Recording Button">
+                                <rect key="frame" x="10" y="157" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="09k-K8-PnD"/>
+                                    <constraint firstAttribute="width" constant="30" id="dt7-BB-U8u">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="autoRewindAfterRecordingPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="REL-Qn-9Y3"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Auto rewind after recording" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cMf-Mk-i6a" userLabel="Auto Rewind After Recording Label">
+                                <rect key="frame" x="40" y="164" width="158" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fPN-a7-mCW"/>
                         <constraints>
-                            <constraint firstItem="9mg-oM-Xmt" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="1hz-Gu-UOI"/>
+                            <constraint firstItem="v1y-q7-Bif" firstAttribute="top" secondItem="PqM-3K-ReO" secondAttribute="bottom" id="1KB-xh-yaK"/>
+                            <constraint firstItem="9mg-oM-Xmt" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="leading" constant="10" id="1hz-Gu-UOI"/>
                             <constraint firstItem="6eE-oY-bA5" firstAttribute="leading" secondItem="IOV-xA-JFa" secondAttribute="trailing" id="20L-PG-JMa"/>
-                            <constraint firstItem="PqM-3K-ReO" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="2lK-um-lXY"/>
+                            <constraint firstItem="PqM-3K-ReO" firstAttribute="centerX" secondItem="9mg-oM-Xmt" secondAttribute="centerX" id="2lK-um-lXY"/>
                             <constraint firstItem="kKp-TH-wjH" firstAttribute="centerY" secondItem="9mg-oM-Xmt" secondAttribute="centerY" id="3dM-mM-FU3"/>
-                            <constraint firstItem="IOV-xA-JFa" firstAttribute="top" secondItem="IRk-kc-8Wh" secondAttribute="bottom" id="9Cf-di-JBF"/>
-                            <constraint firstItem="gpR-DS-ezG" firstAttribute="centerX" secondItem="aNF-LS-zQT" secondAttribute="centerX" id="A1M-i4-ItL"/>
+                            <constraint firstItem="YJB-b6-Xrj" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="centerX" constant="16" id="8IH-0R-Ova"/>
+                            <constraint firstItem="IOV-xA-JFa" firstAttribute="top" secondItem="mPE-iT-uDI" secondAttribute="bottom" id="9Cf-di-JBF"/>
                             <constraint firstItem="u3L-HS-sVk" firstAttribute="trailing" secondItem="aNF-LS-zQT" secondAttribute="trailing" constant="-5" id="Ahu-Vi-5Vf"/>
-                            <constraint firstItem="PqM-3K-ReO" firstAttribute="top" secondItem="9mg-oM-Xmt" secondAttribute="bottom" id="Dhd-PW-7TL"/>
-                            <constraint firstItem="IRk-kc-8Wh" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="F8L-0e-QmH"/>
+                            <constraint firstItem="PqM-3K-ReO" firstAttribute="top" secondItem="pie-pH-o2j" secondAttribute="bottom" constant="4" id="Dhd-PW-7TL"/>
+                            <constraint firstItem="IRk-kc-8Wh" firstAttribute="centerX" secondItem="9mg-oM-Xmt" secondAttribute="centerX" id="F8L-0e-QmH"/>
                             <constraint firstItem="lC9-9N-7G1" firstAttribute="leading" secondItem="PqM-3K-ReO" secondAttribute="trailing" id="GkT-Yx-Ovm"/>
                             <constraint firstItem="lC9-9N-7G1" firstAttribute="centerY" secondItem="PqM-3K-ReO" secondAttribute="centerY" id="HJB-vJ-bEs"/>
+                            <constraint firstItem="cMf-Mk-i6a" firstAttribute="leading" secondItem="v1y-q7-Bif" secondAttribute="trailing" id="Idi-Yw-BQt"/>
                             <constraint firstItem="IOV-xA-JFa" firstAttribute="centerX" secondItem="mPE-iT-uDI" secondAttribute="centerX" id="Iu7-YK-jNj"/>
                             <constraint firstItem="Mow-FE-isl" firstAttribute="centerY" secondItem="mPE-iT-uDI" secondAttribute="centerY" id="JF3-a2-YBD"/>
                             <constraint firstItem="NNI-li-OpN" firstAttribute="centerY" secondItem="IRk-kc-8Wh" secondAttribute="centerY" id="KEU-9j-D0r"/>
+                            <constraint firstItem="cGv-JE-gAH" firstAttribute="centerY" secondItem="u3L-HS-sVk" secondAttribute="centerY" constant="10" id="KW7-vR-Wn6"/>
+                            <constraint firstItem="pie-pH-o2j" firstAttribute="top" secondItem="IRk-kc-8Wh" secondAttribute="bottom" constant="10" id="QaE-sT-3i8"/>
                             <constraint firstItem="u3L-HS-sVk" firstAttribute="top" secondItem="aNF-LS-zQT" secondAttribute="top" constant="5" id="TPR-65-bh7"/>
                             <constraint firstItem="6eE-oY-bA5" firstAttribute="centerY" secondItem="IOV-xA-JFa" secondAttribute="centerY" id="W9g-ZD-N6p"/>
+                            <constraint firstItem="pie-pH-o2j" firstAttribute="leading" secondItem="cGv-JE-gAH" secondAttribute="leading" id="YKl-gh-nk4"/>
                             <constraint firstItem="NNI-li-OpN" firstAttribute="leading" secondItem="IRk-kc-8Wh" secondAttribute="trailing" id="ZbW-Sn-pJx"/>
-                            <constraint firstItem="mPE-iT-uDI" firstAttribute="top" secondItem="gpR-DS-ezG" secondAttribute="bottom" constant="10" id="bzS-CY-BDf"/>
-                            <constraint firstItem="mPE-iT-uDI" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="leading" constant="10" id="f0A-YB-SZH"/>
+                            <constraint firstItem="mPE-iT-uDI" firstAttribute="top" secondItem="YJB-b6-Xrj" secondAttribute="bottom" constant="4" id="bzS-CY-BDf"/>
+                            <constraint firstItem="mPE-iT-uDI" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="centerX" constant="10" id="f0A-YB-SZH"/>
+                            <constraint firstItem="cGv-JE-gAH" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="leading" constant="16" id="gSO-o6-e9R"/>
                             <constraint firstItem="kKp-TH-wjH" firstAttribute="leading" secondItem="9mg-oM-Xmt" secondAttribute="trailing" id="jqc-bZ-k2R"/>
-                            <constraint firstItem="IRk-kc-8Wh" firstAttribute="top" secondItem="PqM-3K-ReO" secondAttribute="bottom" id="n8S-Xd-LKP"/>
+                            <constraint firstItem="IRk-kc-8Wh" firstAttribute="top" secondItem="9mg-oM-Xmt" secondAttribute="bottom" id="n8S-Xd-LKP"/>
+                            <constraint firstItem="cMf-Mk-i6a" firstAttribute="centerY" secondItem="v1y-q7-Bif" secondAttribute="centerY" id="phn-dc-2nt"/>
                             <constraint firstItem="Mow-FE-isl" firstAttribute="leading" secondItem="mPE-iT-uDI" secondAttribute="trailing" id="qDc-CN-0Df"/>
-                            <constraint firstItem="9mg-oM-Xmt" firstAttribute="top" secondItem="mPE-iT-uDI" secondAttribute="bottom" id="rhc-4m-5Pl"/>
-                            <constraint firstItem="gpR-DS-ezG" firstAttribute="centerY" secondItem="u3L-HS-sVk" secondAttribute="centerY" id="uF9-7C-Fu9"/>
+                            <constraint firstItem="9mg-oM-Xmt" firstAttribute="top" secondItem="cGv-JE-gAH" secondAttribute="bottom" constant="4" id="rhc-4m-5Pl"/>
+                            <constraint firstItem="v1y-q7-Bif" firstAttribute="centerX" secondItem="PqM-3K-ReO" secondAttribute="centerX" id="vty-1p-4pf"/>
+                            <constraint firstItem="YJB-b6-Xrj" firstAttribute="centerY" secondItem="cGv-JE-gAH" secondAttribute="centerY" id="vyM-O9-wac"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="autoRewindAfterRecordingButton" destination="v1y-q7-Bif" id="kpr-Wi-Ent"/>
                         <outlet property="autoTrimRecordingsButton" destination="PqM-3K-ReO" id="Fkj-pc-y90"/>
                         <outlet property="displayMpeConfigDetailsButton" destination="9mg-oM-Xmt" id="8AI-Ur-v6Z"/>
                         <outlet property="followHostTransportButton" destination="IOV-xA-JFa" id="oiT-2O-iEi"/>

@@ -622,7 +622,9 @@
     else {
         if (_state->recordArmed.test()) {
             [self setRecordState:NO];
-            _state->processedRewind.clear();
+            if (_state->autoRewindAfterRecording.test()) {
+                _state->processedRewind.clear();
+            }
         }
         _state->processedStop.clear();
         
@@ -652,7 +654,12 @@
     else {
         if (_autoPlayFromRecord && !_state->repeatEnabled.test()) {
             [self setPlayState:NO];
-            _state->processedStopAndRewind.clear();
+            if (_state->autoRewindAfterRecording.test()) {
+                _state->processedStopAndRewind.clear();
+            }
+            else {
+                _state->processedStop.clear();
+            }
         }
     }
     
@@ -1409,11 +1416,12 @@
     id mute3 = [dict objectForKey:@"Mute3"];
     id mute4 = [dict objectForKey:@"Mute4"];
     
-    id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
     id mpe_details = [dict objectForKey:@"DisplayMpeConfigDetails"];
-    id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
     id show_tool_tips = [dict objectForKey:@"ShowToolTips"];
+    id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
     id follow_host_transport = [dict objectForKey:@"FollowHostTransport"];
+    id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
+    id auto_rewind = [dict objectForKey:@"AutoRewindAfterRecording"];
 
     if (start_position_set) {
         if ([start_position_set boolValue]) _state->startPositionSet.test_and_set();
@@ -1506,25 +1514,29 @@
         _muteButton4.selected = [mute4 boolValue];
     }
     
-    if (send_mpe) {
-        if ([send_mpe boolValue]) _state->sendMpeConfigOnPlay.test_and_set();
-        else                      _state->sendMpeConfigOnPlay.clear();
-    }
     if (mpe_details) {
         if ([mpe_details boolValue]) _state->displayMpeConfigDetails.test_and_set();
         else                         _state->displayMpeConfigDetails.clear();
-    }
-    if (auto_trim) {
-        if ([auto_trim boolValue]) _state->autoTrimRecordings.test_and_set();
-        else                       _state->autoTrimRecordings.clear();
     }
     if (show_tool_tips) {
         if ([show_tool_tips boolValue]) _state->showToolTips.test_and_set();
         else                            _state->showToolTips.clear();
     }
+    if (send_mpe) {
+        if ([send_mpe boolValue]) _state->sendMpeConfigOnPlay.test_and_set();
+        else                      _state->sendMpeConfigOnPlay.clear();
+    }
     if (follow_host_transport) {
         if ([follow_host_transport boolValue]) _state->followHostTransport.test_and_set();
         else                                   _state->followHostTransport.clear();
+    }
+    if (auto_trim) {
+        if ([auto_trim boolValue]) _state->autoTrimRecordings.test_and_set();
+        else                       _state->autoTrimRecordings.clear();
+    }
+    if (auto_rewind) {
+        if ([auto_rewind boolValue]) _state->autoRewindAfterRecording.test_and_set();
+        else                         _state->autoRewindAfterRecording.clear();
     }
 
     [self updateRoutingState];
@@ -1585,11 +1597,12 @@
         @"Mute2" : @(_muteButton2.selected),
         @"Mute3" : @(_muteButton3.selected),
         @"Mute4" : @(_muteButton4.selected),
-        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.test()),
         @"DisplayMpeConfigDetails" : @(_state->displayMpeConfigDetails.test()),
-        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
         @"ShowToolTips" : @(_state->showToolTips.test()),
-        @"FollowHostTransport" : @(_state->followHostTransport.test())
+        @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.test()),
+        @"FollowHostTransport" : @(_state->followHostTransport.test()),
+        @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
+        @"AutoRewindAfterRecording" : @(_state->autoRewindAfterRecording.test())
     }];
     return dict;
 }
@@ -1764,17 +1777,24 @@
 
     // end recording UI
     if (!_state->processedUIEndRecord.test_and_set()) {
-        [self setRecordState:NO];
+        if (self.recordButton.selected) {
+            [self setRecordState:NO];
+        }
     }
     
     // rebuild track UI
+    __block bool preview_changes = NO;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (!_state->processedUIRebuildPreview[t].test_and_set()) {
             [self withMidiTrack:t view:^(MidiTrackView *view) {
                 [view rebuild];
                 [view setNeedsLayout];
+                preview_changes = YES;
             }];
         }
+    }
+    if (preview_changes) {
+        [self renderPreviews];
     }
     
     // process clear all post invalidation
