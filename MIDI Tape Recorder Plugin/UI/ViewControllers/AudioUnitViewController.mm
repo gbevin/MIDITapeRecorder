@@ -824,8 +824,12 @@
         [self clearAllMarkerPositions];
         
         // schedule stopping and rewinding the transport
-        [self setPlayState:NO];
-        _state->processedRewind.clear();
+        if (_playButton.selected) {
+            [self setPlayState:NO];
+        }
+        if (_state->playPositionBeats.load() != 0.0) {
+            _state->processedRewind.clear();
+        }
         
         return YES;
     }
@@ -1777,7 +1781,7 @@
 
     // end recording UI
     if (!_state->processedUIEndRecord.test_and_set()) {
-        if (self.recordButton.selected) {
+        if (_recordButton.selected) {
             [self setRecordState:NO];
         }
     }
