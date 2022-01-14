@@ -1424,6 +1424,7 @@
     id show_tool_tips = [dict objectForKey:@"ShowToolTips"];
     id send_mpe = [dict objectForKey:@"SendMpeConfigOnPlay"];
     id follow_host_transport = [dict objectForKey:@"FollowHostTransport"];
+    id wait_for_next_host_beat = [dict objectForKey:@"WaitForNextHostBeatToPlay"];
     id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
     id auto_rewind = [dict objectForKey:@"AutoRewindAfterRecording"];
 
@@ -1534,6 +1535,10 @@
         if ([follow_host_transport boolValue]) _state->followHostTransport.test_and_set();
         else                                   _state->followHostTransport.clear();
     }
+    if (wait_for_next_host_beat) {
+        if ([wait_for_next_host_beat boolValue]) _state->waitForNextHostBeatToPlay.test_and_set();
+        else                                     _state->waitForNextHostBeatToPlay.clear();
+    }
     if (auto_trim) {
         if ([auto_trim boolValue]) _state->autoTrimRecordings.test_and_set();
         else                       _state->autoTrimRecordings.clear();
@@ -1605,6 +1610,7 @@
         @"ShowToolTips" : @(_state->showToolTips.test()),
         @"SendMpeConfigOnPlay" : @(_state->sendMpeConfigOnPlay.test()),
         @"FollowHostTransport" : @(_state->followHostTransport.test()),
+        @"WaitForNextHostBeatToPlay" : @(_state->waitForNextHostBeatToPlay.test()),
         @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
         @"AutoRewindAfterRecording" : @(_state->autoRewindAfterRecording.test())
     }];

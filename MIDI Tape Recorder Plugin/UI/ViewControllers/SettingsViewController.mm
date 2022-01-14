@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UIButton* showToolTipsButton;
 @property (weak, nonatomic) IBOutlet UIButton* sendMpeConfigOnPlayButton;
 @property (weak, nonatomic) IBOutlet UIButton* followHostTransportButton;
+@property (weak, nonatomic) IBOutlet UIButton* waitForNextHostBeatToPlayButton;
 @property (weak, nonatomic) IBOutlet UIButton* autoTrimRecordingsButton;
 @property (weak, nonatomic) IBOutlet UIButton* autoRewindAfterRecordingButton;
 
@@ -48,6 +49,12 @@
     else                 _mainViewController.state->followHostTransport.clear();
 }
 
+- (IBAction)waitForNextHostBeatToPlayPressed:(UIButton*)sender {
+    sender.selected = !sender.selected;
+    if (sender.selected) _mainViewController.state->waitForNextHostBeatToPlay.test_and_set();
+    else                 _mainViewController.state->waitForNextHostBeatToPlay.clear();
+}
+
 - (IBAction)autoTrimRecordingsPressed:(UIButton*)sender {
     sender.selected = !sender.selected;
     if (sender.selected) _mainViewController.state->autoTrimRecordings.test_and_set();
@@ -71,6 +78,7 @@
     _showToolTipsButton.selected = _mainViewController.state->showToolTips.test();
     _sendMpeConfigOnPlayButton.selected = _mainViewController.state->sendMpeConfigOnPlay.test();
     _followHostTransportButton.selected = _mainViewController.state->followHostTransport.test();
+    _waitForNextHostBeatToPlayButton.selected = _mainViewController.state->waitForNextHostBeatToPlay.test();
     _autoTrimRecordingsButton.selected = _mainViewController.state->autoTrimRecordings.test();
     _autoRewindAfterRecordingButton.selected = _mainViewController.state->autoRewindAfterRecording.test();
 }

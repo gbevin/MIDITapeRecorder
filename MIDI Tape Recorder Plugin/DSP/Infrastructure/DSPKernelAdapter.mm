@@ -141,7 +141,7 @@
             }
         }
 
-        if (kernel->_ioState.transportStateBlock && kernel->_state.followHostTransport.test()) {
+        if (kernel->_ioState.transportStateBlock) {
             AUHostTransportStateFlags transport_state_flags;
             
             // transport position

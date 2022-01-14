@@ -53,9 +53,10 @@ private:
     void turnOffAllNotesForTrack(int track);
     void outputMidiMessages(double beatRrangeBegin, double beatRangeEnd);
 
-    bool _bypassed  { false };
-    bool _isPlaying { false };
-    
+    bool _bypassed          { false };
+    bool _isPlaying         { false };
+    bool _isWaitingForBeat  { false };
+
     NoteState _noteStates[MIDI_TRACKS];
 
     AudioBufferList* _inBufferList  { nullptr };

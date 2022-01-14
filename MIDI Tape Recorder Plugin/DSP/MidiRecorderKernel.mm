@@ -47,7 +47,13 @@ void MidiRecorderKernel::rewind(double timeSampleSeconds) {
     }
     
     if (_isPlaying) {
-        _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+        if (_state.waitForNextHostBeatToPlay.test()) {
+            _state.transportStartSampleSeconds = 0.0;
+            _isWaitingForBeat = YES;
+        }
+        else {
+            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+        }
     }
     else {
         _state.processedUIRewind.clear();
@@ -127,12 +133,14 @@ void MidiRecorderKernel::play() {
         }
 
         _isPlaying = YES;
+        _isWaitingForBeat = _state.waitForNextHostBeatToPlay.test();
     }
 }
 
 void MidiRecorderKernel::stop() {
     _state.transportStartSampleSeconds = 0.0;
     _isPlaying = NO;
+    _isWaitingForBeat = NO;
     
     // turn off recording
     _state.processedUIEndRecord.clear();
@@ -488,31 +496,33 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // this prevents split-state conditions to change semantics in the middle of processing
 
     // host transport sync
-    bool transport_changed = !_ioState.transportChangeProcessed.test_and_set();
-    if (_ioState.transportMoving.test()) {
-        // transport starting while record is armed or
-        // record arming while host transport is already moving
-        if (transport_changed || !_state.processedRecordArmed.test_and_set()) {
-            _state.processedUIStop.test_and_set();
-            _state.processedStop.test_and_set();
-            
-            if (_state.recordArmed.test() &&
-                !(_state.repeatActive.test() && _state.stopPositionBeats == 0.0)) {
-                for (int t = 0; t < MIDI_TRACKS; ++t) {
-                    if (_state.track[t].recordEnabled.test()) {
-                        _state.processedBeginRecording[t].clear();
+    if (_state.followHostTransport.test()) {
+        bool transport_changed = !_ioState.transportChangeProcessed.test_and_set();
+        if (_ioState.transportMoving.test()) {
+            // transport starting while record is armed or
+            // record arming while host transport is already moving
+            if (transport_changed || !_state.processedRecordArmed.test_and_set()) {
+                _state.processedUIStop.test_and_set();
+                _state.processedStop.test_and_set();
+                
+                if (_state.recordArmed.test() &&
+                    !(_state.repeatActive.test() && _state.stopPositionBeats == 0.0)) {
+                    for (int t = 0; t < MIDI_TRACKS; ++t) {
+                        if (_state.track[t].recordEnabled.test()) {
+                            _state.processedBeginRecording[t].clear();
+                        }
                     }
                 }
+                
+                _state.processedPlay.clear();
+                _state.processedUIPlay.clear();
             }
-            
-            _state.processedPlay.clear();
-            _state.processedUIPlay.clear();
         }
-    }
-    // stop transport when host stopped moving
-    else if (transport_changed) {
-        _state.processedStop.clear();
-        _state.processedUIStop.clear();
+        // stop transport when host stopped moving
+        else if (transport_changed) {
+            _state.processedStop.clear();
+            _state.processedUIStop.clear();
+        }
     }
 
     // crop all
@@ -607,6 +617,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // reach end
     if (!_state.processedReachEnd.test_and_set()) {
         _isPlaying = NO;
+        _isWaitingForBeat = NO;
         _state.processedUIStopAndRewind.clear();
     }
 }
@@ -676,22 +687,45 @@ void MidiRecorderKernel::processOutput() {
     // get a consistent repeat active state
     bool repeat_active = _state.repeatActive.test();
     
+    // calculate frame count constants
+    const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
+    const double frames_beats = frames_seconds * _state.secondsToBeats;
+
     // if the host transport is moving or the position changed, make that take precedence
     double play_position = _state.playPositionBeats;
     bool play_position_changed = false;
-    if (_ioState.transportMoving.test() || !_ioState.transportPositionProcessed.test_and_set()) {
-        if (repeat_active) {
-            double effective_max_duration = _state.stopPositionBeats - _state.startPositionBeats;
-            play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
+    if (_ioState.transportMoving.test()) {
+        // check if we're waiting for the next host beat
+        if (_isWaitingForBeat) {
+            // if we're right on the beat boundary, start in sync
+            if (double(int(_ioState.currentBeatPosition)) == _ioState.currentBeatPosition.load()) {
+                _isWaitingForBeat = NO;
+                _state.playPositionBeats = ceil(_state.playPositionBeats);
+                play_position = _state.playPositionBeats;
+            }
+            // if this buffer crosses the beat boundary, start and calculate the offset to remain in sync
+            else if (int(_ioState.currentBeatPosition) != int(_ioState.currentBeatPosition + frames_beats)) {
+                _isWaitingForBeat = NO;
+                _state.playPositionBeats = ceil(_state.playPositionBeats) - (double(int(_ioState.currentBeatPosition) + 1.0) - _ioState.currentBeatPosition);
+                play_position = _state.playPositionBeats;
+            }
         }
-        else {
-            play_position = _ioState.currentBeatPosition;
+        
+        // process the transport position if we're following the host transport
+        if (_state.followHostTransport.test() && !_ioState.transportPositionProcessed.test_and_set()) {
+            if (repeat_active) {
+                double effective_max_duration = _state.stopPositionBeats - _state.startPositionBeats;
+                play_position = fmod(_ioState.currentBeatPosition, effective_max_duration);
+            }
+            else {
+                play_position = _ioState.currentBeatPosition;
+            }
+            play_position += _state.startPositionBeats;
+            play_position_changed = true;
         }
-        play_position += _state.startPositionBeats;
-        play_position_changed = true;
     }
     
-    if (!_isPlaying) {
+    if (!_isPlaying || _isWaitingForBeat) {
         // we update the play position if the host changed it
         if (play_position_changed) {
             _state.playPositionBeats = play_position;
@@ -701,10 +735,6 @@ void MidiRecorderKernel::processOutput() {
         turnOffAllNotes();
     }
     else {
-        // determine the beat position of the playhead
-        const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
-        const double frames_beats = frames_seconds * _state.secondsToBeats;
-
         // calculate the range of beat positions between which the recorded messages
         // should be played
         double beatrange_begin = play_position;

@@ -39,6 +39,7 @@ struct MidiRecorderState {
     std::atomic_flag showToolTips               { true };
     std::atomic_flag sendMpeConfigOnPlay        { true };
     std::atomic_flag followHostTransport        { true };
+    std::atomic_flag waitForNextHostBeatToPlay  { false };
     std::atomic_flag autoTrimRecordings         { true };
     std::atomic_flag autoRewindAfterRecording   { true };
 
