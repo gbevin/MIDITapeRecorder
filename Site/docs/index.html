@@ -405,25 +405,39 @@
 
   <ul>
     <li>
-      <em>Send MPE config on play:</em><br / >
-      When enabled (default), a track with an MPE Configuration Messages (MCM), will output this MCM each time playback is started.<br /><br />
-    </li>
-    <li>
       <em>Display MPE config details:</em><br / >
-      When enabled, the MPE indicator on a track will show the details of the MPE zone configurations.<br /><br />
-    </li>
-    <li>
-      <em>Auto trim and align recordings:</em><br / >
-      When enabled (default), silence will be trimmed from the end of recordings and their duration will be changed to align with the nearest beat.<br /><br />
+      When enabled, the MPE indicator on a track will show the details of the MPE zone configurations.<br />
+      When disabled (default), the MPE indicator doesn't display any configuration details.<br /><br />
     </li>
     <li>
       <em>Show tool tips:</em><br / >
-      When enabled (default), a tool tip will be displayed for each action that is performed.<br /><br />
+      When enabled (default), a tool tip will be displayed for each action that is performed.<br />
+      When disabled, tool tips will not be displayed.<br /><br />
+    </li>
+    <li>
+      <em>Send MPE config on play:</em><br / >
+      When enabled (default), a track with an MPE Configuration Messages (MCM), will output this MCM each time playback is started.<br />
+      When disabled, an MCM will not be sent automatically, an MCM can still be sent by tapping the MPE Indicator.<br /><br />
     </li>
     <li>
       <em>Follow host transport:</em><br / >
       When enabled (default), changes to the host transport will influence MTR.<br />
-      When disabled, MIDI Tape Recorder will run completely independently of the host's transport.<br /><br />
+      When disabled, MIDI Tape Recorder's transport will run independently of the host's transport.<br /><br />
+    </li>
+    <li>
+      <em>Wait for next host beat to play:</em><br / >
+      When enabled, MIDI Tape Recorder will only start playing at the next beat of the host transport, this is useful when using MTR as a clip launcher.<br />
+      When disabled (default), MTR will start playing immediately.<br /><br />
+    </li>
+    <li>
+      <em>Auto trim and align recordings:</em><br / >
+      When enabled (default), silence will be trimmed from the end of recordings and their duration will be changed to align with the nearest beat.<br />
+      When disabled, recordings will remain exactly as they were when the recording ended.<br /><br />
+    </li>
+    <li>
+      <em>Auto rewind after recording:</em><br / >
+      When enabled (default), MIDI Tape Recorder will automatically rewind when recording is ended.<br />
+      When disabled, MTR's play head will remain where it was when the recording ended.<br /><br />
     </li>
   </ul>
 
