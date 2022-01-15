@@ -48,8 +48,8 @@ void MidiRecorderKernel::rewind(double timeSampleSeconds) {
     
     if (_isPlaying) {
         if (_state.waitForNextHostBeatToPlay.test()) {
-            _state.transportStartSampleSeconds = 0.0;
             _isWaitingForBeat = YES;
+            _state.transportStartSampleSeconds = 0.0;
         }
         else {
             _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
@@ -132,15 +132,14 @@ void MidiRecorderKernel::play() {
             }
         }
 
-        _isPlaying = YES;
         _isWaitingForBeat = _state.waitForNextHostBeatToPlay.test();
+        _isPlaying = YES;
     }
 }
 
 void MidiRecorderKernel::stop() {
     _state.transportStartSampleSeconds = 0.0;
     _isPlaying = NO;
-    _isWaitingForBeat = NO;
     
     // turn off recording
     _state.processedUIEndRecord.clear();
@@ -524,6 +523,27 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
             _state.processedUIStop.clear();
         }
     }
+    
+    // if necessary, wait for beat before any of the other logic
+    if (!_state.processedPlay.test()) {
+        _isWaitingForBeat = _state.waitForNextHostBeatToPlay.test();
+    }
+    
+    // check if we're waiting for the next host beat
+    if (_ioState.transportMoving.test() && _isWaitingForBeat) {
+        // if we're right on the beat boundary, start in sync
+        if (double(int(_ioState.currentBeatPosition)) == _ioState.currentBeatPosition.load()) {
+            _state.playPositionBeats = ceil(_state.playPositionBeats);
+            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+            _isWaitingForBeat = NO;
+        }
+        // if this buffer crosses the beat boundary, start and calculate the offset to remain in sync
+        else if (int(_ioState.currentBeatPosition) != int(_ioState.currentBeatPosition + _ioState.framesBeats.load())) {
+            _state.playPositionBeats = ceil(_state.playPositionBeats) - (double(int(_ioState.currentBeatPosition) + 1.0) - _ioState.currentBeatPosition);
+            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+            _isWaitingForBeat = NO;
+        }
+    }
 
     // crop all
     if (!_state.processedCropAll.test_and_set()) {
@@ -544,9 +564,11 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         MidiTrackState& track_state = _state.track[t];
         
         // begin recording
-        if (!_state.processedBeginRecording[t].test_and_set()) {
-            turnOffAllNotesForTrack(t);
-            track_state.recording.test_and_set();
+        if (!_isWaitingForBeat) {
+            if (!_state.processedBeginRecording[t].test_and_set()) {
+                turnOffAllNotesForTrack(t);
+                track_state.recording.test_and_set();
+            }
         }
 
         // end recording
@@ -569,6 +591,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         if (!_state.processedInvalidate[t].test_and_set()) {
             track_state.recordedData.reset();
             track_state.recordedPreview.reset();
+            track_state.recording.clear();
             _state.processedUIRebuildPreview[t].clear();
         }
 
@@ -617,7 +640,6 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // reach end
     if (!_state.processedReachEnd.test_and_set()) {
         _isPlaying = NO;
-        _isWaitingForBeat = NO;
         _state.processedUIStopAndRewind.clear();
     }
 }
@@ -673,7 +695,7 @@ void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     }
 }
 
-void MidiRecorderKernel::processOutput() {
+void MidiRecorderKernel::processOutput(double timeSampleSeconds) {
     // determine if we're recording and/or playing
     bool recording_tracks = false;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -686,31 +708,11 @@ void MidiRecorderKernel::processOutput() {
 
     // get a consistent repeat active state
     bool repeat_active = _state.repeatActive.test();
-    
-    // calculate frame count constants
-    const double frames_seconds = double(_ioState.frameCount) / _ioState.sampleRate;
-    const double frames_beats = frames_seconds * _state.secondsToBeats;
 
     // if the host transport is moving or the position changed, make that take precedence
     double play_position = _state.playPositionBeats;
     bool play_position_changed = false;
     if (_ioState.transportMoving.test()) {
-        // check if we're waiting for the next host beat
-        if (_isWaitingForBeat) {
-            // if we're right on the beat boundary, start in sync
-            if (double(int(_ioState.currentBeatPosition)) == _ioState.currentBeatPosition.load()) {
-                _isWaitingForBeat = NO;
-                _state.playPositionBeats = ceil(_state.playPositionBeats);
-                play_position = _state.playPositionBeats;
-            }
-            // if this buffer crosses the beat boundary, start and calculate the offset to remain in sync
-            else if (int(_ioState.currentBeatPosition) != int(_ioState.currentBeatPosition + frames_beats)) {
-                _isWaitingForBeat = NO;
-                _state.playPositionBeats = ceil(_state.playPositionBeats) - (double(int(_ioState.currentBeatPosition) + 1.0) - _ioState.currentBeatPosition);
-                play_position = _state.playPositionBeats;
-            }
-        }
-        
         // process the transport position if we're following the host transport
         if (_state.followHostTransport.test() && !_ioState.transportPositionProcessed.test_and_set()) {
             if (repeat_active) {
@@ -738,11 +740,11 @@ void MidiRecorderKernel::processOutput() {
         // calculate the range of beat positions between which the recorded messages
         // should be played
         double beatrange_begin = play_position;
-        double beatrange_end = beatrange_begin + frames_beats;
+        double beatrange_end = beatrange_begin + _ioState.framesBeats.load();
 
         // if there's a significant discontinuity between the output processing calls,
         // forcible ensure that all notes are turned off
-        if (ABS(play_position - _state.playPositionBeats) >= frames_beats) {
+        if (ABS(play_position - _state.playPositionBeats) >= _ioState.framesBeats.load()) {
             turnOffAllNotes();
         }
 

@@ -21,7 +21,7 @@ public:
     virtual void handleScheduledTransitions(double timeSampleSeconds) {}
     virtual void handleMIDIEvent(AUMIDIEvent const& midiEvent) {}
     virtual void handleParameterEvent(AUParameterEvent const& parameterEvent) {}
-    virtual void processOutput() {};
+    virtual void processOutput(double timeSampleSeconds) {};
 
     void processWithEvents(AudioTimeStamp const* timestamp, AUAudioFrameCount frameCount, AURenderEvent const* events);
 

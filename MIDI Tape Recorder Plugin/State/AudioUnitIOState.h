@@ -17,7 +17,8 @@ struct AudioUnitIOState {
     std::atomic<int32_t> channelCount   { 0 };
     std::atomic<float> sampleRate       { 44100.f };
     std::atomic<uint32_t> frameCount    { 0 };
-    
+    std::atomic<double> framesBeats     { 0.0 };
+
     std::atomic_flag transportMoving            { false };
     std::atomic<double> transportSamplePosition { 0.0 };
     std::atomic_flag transportChangeProcessed   { true };

@@ -33,7 +33,7 @@ public:
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
     void handleParameterEvent(AUParameterEvent const& parameterEvent) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
-    void processOutput() override;
+    void processOutput(double timeSampleSeconds) override;
 
     MidiRecorderState _state;
     AudioUnitIOState _ioState;

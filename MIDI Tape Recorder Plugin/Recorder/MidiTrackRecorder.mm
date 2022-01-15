@@ -604,18 +604,26 @@
 
         // auto start the recording on the first received message
         // if the recording hasn't started yet
+        BOOL auto_started_record = NO;
         if (_state->transportStartSampleSeconds == 0.0) {
             if (_recordingData->empty()) {
                 if (_delegate) {
                     _recordingStartSampleSeconds = message.timeSampleSeconds - _state->playPositionBeats * _state->beatsToSeconds;
                     _state->transportStartSampleSeconds = _recordingStartSampleSeconds;
                     [_delegate startRecord];
+                    auto_started_record = YES;
                 }
             }
         }
-        // remember the recording start time
-        else if (_recordingStartSampleSeconds == 0.0) {
-            _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
+        if (!auto_started_record) {
+            // if recording hasn't started on the kernel side, don't record the messages
+            if (!_state->track[_ordinal].recording.test()) {
+                return;
+            }
+            // remember the recording start time
+            else if (_recordingStartSampleSeconds == 0.0) {
+                _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
+            }
         }
 
         // calculate timing offsets
