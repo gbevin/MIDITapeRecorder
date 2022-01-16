@@ -611,6 +611,7 @@
                     _recordingStartSampleSeconds = message.timeSampleSeconds - _state->playPositionBeats * _state->beatsToSeconds;
                     _state->transportStartSampleSeconds = _recordingStartSampleSeconds;
                     [_delegate startRecord];
+                    _state->track[_ordinal].recording.test_and_set();
                     auto_started_record = YES;
                 }
             }
@@ -650,7 +651,10 @@
         _state->track[_ordinal].hasRecordedEvents.test_and_set();
         
         // update the preview
-        _recordingPreview->updateWithMessage(recorded_message);
+        if (_recordingPreview) {
+            _recordingPreview->setStartIfNeeded(_recordingData->getStart());
+            _recordingPreview->updateWithMessage(recorded_message);
+        }
     });
 }
 

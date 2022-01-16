@@ -483,31 +483,26 @@ bool MidiRecorderKernel::isRecording() {
     return false;
 }
 
-void MidiRecorderKernel::queueBufferPingIfNeeded() {
-    if (!_sentBufferPing && isRecording()) {
-        _sentBufferPing = true;
-        
-        QueuedMidiMessage message;
-        message.timeSampleSeconds = _ioState.timeSampleSeconds;
-        if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
-            double offset_beats = _ioState.currentBeatPosition;
-            double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
-            if (session_duration != 0.0 && _state.repeatActive.test()) {
-                // apply looping length and start position offset
-                offset_beats = fmod(offset_beats, session_duration);
-            }
-            offset_beats += _state.startPositionBeats.load();
-            message.offsetBeats = offset_beats;
-            message.hasBeatTime = true;
-        }
-        
-        TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
-    }
-}
-
 void MidiRecorderKernel::handleBufferStart() {
-    _sentBufferPing = false;
-    queueBufferPingIfNeeded();
+    if (!isRecording()) {
+        return;
+    }
+    
+    QueuedMidiMessage message;
+    message.timeSampleSeconds = _ioState.timeSampleSeconds;
+    if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
+        double offset_beats = _ioState.currentBeatPosition;
+        double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
+        if (session_duration != 0.0 && _state.repeatActive.test()) {
+            // apply looping length and start position offset
+            offset_beats = fmod(offset_beats, session_duration);
+        }
+        offset_beats += _state.startPositionBeats.load();
+        message.offsetBeats = offset_beats;
+        message.hasBeatTime = true;
+    }
+    
+    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }
 
 void MidiRecorderKernel::handleScheduledTransitions() {
@@ -941,8 +936,6 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
 }
 
 void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
-    queueBufferPingIfNeeded();
-    
     QueuedMidiMessage message;
     message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {

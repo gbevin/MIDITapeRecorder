@@ -40,7 +40,6 @@ public:
 
 private:
     bool isRecording();
-    void queueBufferPingIfNeeded();
 
     void sendRpnMessage(uint8_t cable, uint8_t channel, uint16_t number, uint16_t value);
     void sendMCM(int track);
@@ -59,7 +58,6 @@ private:
     bool _bypassed          { false };
     bool _isPlaying         { false };
     bool _isWaitingForBeat  { false };
-    bool _sentBufferPing    { false };
 
     NoteState _noteStates[MIDI_TRACKS];
 
