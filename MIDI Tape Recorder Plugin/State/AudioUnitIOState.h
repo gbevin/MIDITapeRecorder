@@ -14,6 +14,7 @@
 #import <CoreAudio/CoreAudioTypes.h>
 
 struct AudioUnitIOState {
+    std::atomic_flag instrument         { false };
     std::atomic<int32_t> channelCount   { 0 };
     std::atomic<float> sampleRate       { 44100.f };
     std::atomic<uint32_t> frameCount    { 0 };

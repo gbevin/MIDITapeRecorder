@@ -37,7 +37,7 @@
     
     if (self == nil) { return nil; }
     
-    _kernelAdapter = [[DSPKernelAdapter alloc] init];
+    _kernelAdapter = [[DSPKernelAdapter alloc] initWithComponentDescription:componentDescription];
     
     [self setupAudioBuses];
     [self setupParameterTree];
@@ -55,9 +55,11 @@
 
 - (void)setupAudioBuses {
     // Create the input and output bus arrays.
-    _inputBusArray  = [[AUAudioUnitBusArray alloc] initWithAudioUnit:self
-                                                             busType:AUAudioUnitBusTypeInput
-                                                              busses: @[_kernelAdapter.inputBus]];
+    if (!_kernelAdapter.isInstrument) {
+        _inputBusArray  = [[AUAudioUnitBusArray alloc] initWithAudioUnit:self
+                                                                 busType:AUAudioUnitBusTypeInput
+                                                                  busses: @[_kernelAdapter.inputBus]];
+    }
     _outputBusArray = [[AUAudioUnitBusArray alloc] initWithAudioUnit:self
                                                              busType:AUAudioUnitBusTypeOutput
                                                               busses: @[_kernelAdapter.outputBus]];
@@ -463,7 +465,10 @@
 // Subclassers must override this property getter and should return the same object every time.
 // See sample code.
 - (AUAudioUnitBusArray*)inputBusses {
-    return _inputBusArray;
+    if (!_kernelAdapter.isInstrument) {
+        return _inputBusArray;
+    }
+    return [super inputBusses];
 }
 
 // An audio unit's audio output connection points.
@@ -485,7 +490,8 @@
     }
 
     // Validate that the bus formats are compatible.
-    if (!(_kernelAdapter.outputBus.format.channelCount == 2 && _kernelAdapter.inputBus.format.channelCount == 2)) {
+    int input_channel_count = _kernelAdapter.isInstrument ? 0 : 2;
+    if (!(_kernelAdapter.outputBus.format.channelCount == 2 && _kernelAdapter.inputBus.format.channelCount == input_channel_count)) {
         if (outError) {
             *outError = [NSError errorWithDomain:NSOSStatusErrorDomain code:kAudioUnitErr_FailedInitialization userInfo:nil];
         }
@@ -533,7 +539,12 @@
 }
 
 - (NSArray<NSNumber*>*)channelCapabilities {
-    return @[@2,@2];
+    if (!_kernelAdapter.isInstrument) {
+        return @[@2,@2];
+    }
+    else {
+        return @[@0,@2];
+    }
 }
 
 - (BOOL)isMusicDeviceOrEffect {

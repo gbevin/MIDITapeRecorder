@@ -60,6 +60,32 @@
 					<key>version</key>
 					<integer>67328</integer>
 				</dict>
+				<dict>
+					<key>description</key>
+					<string>MIDI Tape Recorder</string>
+					<key>factoryFunction</key>
+					<string>AudioUnitViewController</string>
+					<key>manufacturer</key>
+					<string>Uwyn</string>
+					<key>name</key>
+					<string>Uwyn: MIDI Tape Recorder</string>
+					<key>sandboxSafe</key>
+					<true/>
+					<key>subtype</key>
+					<string>miri</string>
+					<key>tags</key>
+					<array>
+						<string>Effects</string>
+						<string>_size:{768,315}</string>
+						<string>_size:{686,315}</string>
+						<string>_size:{620,315}</string>
+						<string>_size:{568,260}</string>
+					</array>
+					<key>type</key>
+					<string>aumu</string>
+					<key>version</key>
+					<integer>67328</integer>
+				</dict>
 			</array>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>

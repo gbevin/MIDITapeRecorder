@@ -24,8 +24,12 @@
     BufferedInputBus _inputBus;
 }
 
-- (instancetype)init {
+- (instancetype)initWithComponentDescription:(AudioComponentDescription)componentDescription {
     if (self = [super init]) {
+        if (componentDescription.componentType == kAudioUnitType_MusicDevice) {
+            _kernel._ioState.instrument.test_and_set();
+        }
+        
         AVAudioFormat* format = [[AVAudioFormat alloc] initStandardFormatWithSampleRate:44100 channels:2];
         
         // Create a DSP kernel to handle the signal processing.
@@ -33,7 +37,9 @@
         _kernel._ioState.sampleRate = format.sampleRate;
 
         // Create the input and output busses.
-        _inputBus.init(format, 2);
+        if (!self.isInstrument) {
+            _inputBus.init(format, 2);
+        }
         _outputBus = [[AUAudioUnitBus alloc] initWithFormat:format error:nil];
         _outputBus.maximumChannelCount = 2;
     }
@@ -42,6 +48,10 @@
 
 - (AUAudioUnitBus*)inputBus {
     return _inputBus.bus;
+}
+
+- (BOOL)isInstrument {
+    return _kernel._ioState.instrument.test();
 }
 
 - (MidiRecorderState*)state {
@@ -77,14 +87,18 @@
 }
 
 - (void)allocateRenderResources {
-    _inputBus.allocateRenderResources(self.maximumFramesToRender);
+    if (!self.isInstrument) {
+        _inputBus.allocateRenderResources(self.maximumFramesToRender);
+    }
     _kernel._ioState.channelCount = self.outputBus.format.channelCount;
     _kernel._ioState.sampleRate = self.outputBus.format.sampleRate;
 }
 
 - (void)deallocateRenderResources {
     _kernel.cleanup();
-    _inputBus.deallocateRenderResources();
+    if (!self.isInstrument) {
+        _inputBus.deallocateRenderResources();
+    }
 }
 
 // MARK: -  AUAudioUnit (AUAudioUnitImplementation)
@@ -112,32 +126,36 @@
             return kAudioUnitErr_TooManyFramesToProcess;
         }
 
-        AUAudioUnitStatus err = input->pullInput(&pullFlags, timestamp, frameCount, 0, pullInputBlock);
-
-        if (err != noErr) { return err; }
-
-        AudioBufferList* inAudioBufferList = input->mutableAudioBufferList;
-
-        /*
-         Important:
-         If the caller passed non-null output pointers (outputData->mBuffers[x].mData), use those.
-
-         If the caller passed null output buffer pointers, process in memory owned by the Audio Unit
-         and modify the (outputData->mBuffers[x].mData) pointers to point to this owned memory.
-         The Audio Unit is responsible for preserving the validity of this memory until the next call to render,
-         or deallocateRenderResources is called.
-
-         If your algorithm cannot process in-place, you will need to preallocate an output buffer
-         and use it here.
-
-         See the description of the canProcessInPlace property.
-         */
-
-        // If passed null output buffer pointers, process in-place in the input buffer.
+        AudioBufferList* inAudioBufferList = nullptr;
         AudioBufferList* outAudioBufferList = outputData;
-        if (outAudioBufferList->mBuffers[0].mData == nullptr) {
-            for (UInt32 i = 0; i < outAudioBufferList->mNumberBuffers; ++i) {
-                outAudioBufferList->mBuffers[i].mData = inAudioBufferList->mBuffers[i].mData;
+        
+        if (!kernel->_ioState.instrument.test()) {
+            AUAudioUnitStatus err = input->pullInput(&pullFlags, timestamp, frameCount, 0, pullInputBlock);
+
+            if (err != noErr) { return err; }
+
+            inAudioBufferList = input->mutableAudioBufferList;
+
+            /*
+             Important:
+             If the caller passed non-null output pointers (outputData->mBuffers[x].mData), use those.
+
+             If the caller passed null output buffer pointers, process in memory owned by the Audio Unit
+             and modify the (outputData->mBuffers[x].mData) pointers to point to this owned memory.
+             The Audio Unit is responsible for preserving the validity of this memory until the next call to render,
+             or deallocateRenderResources is called.
+
+             If your algorithm cannot process in-place, you will need to preallocate an output buffer
+             and use it here.
+
+             See the description of the canProcessInPlace property.
+             */
+
+            // If passed null output buffer pointers, process in-place in the input buffer.
+            if (outAudioBufferList->mBuffers[0].mData == nullptr) {
+                for (UInt32 i = 0; i < outAudioBufferList->mNumberBuffers; ++i) {
+                    outAudioBufferList->mBuffers[i].mData = inAudioBufferList->mBuffers[i].mData;
+                }
             }
         }
 

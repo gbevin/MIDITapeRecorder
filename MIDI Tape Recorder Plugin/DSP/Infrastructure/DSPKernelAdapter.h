@@ -17,6 +17,11 @@
 @property(nonatomic, readonly) AUAudioUnitBus* inputBus;
 @property(nonatomic, readonly) AUAudioUnitBus* outputBus;
 
+- (instancetype)init  __attribute__((unavailable("init not available")));
+- (instancetype)initWithComponentDescription:(AudioComponentDescription)componentDescription;
+
+- (BOOL)isInstrument;
+
 - (MidiRecorderState*)state;
 - (AudioUnitIOState*)ioState;
 

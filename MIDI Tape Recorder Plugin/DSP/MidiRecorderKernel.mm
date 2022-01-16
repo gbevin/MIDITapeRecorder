@@ -645,6 +645,10 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
 }
 
 void MidiRecorderKernel::process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) {
+    if (_inBufferList == nullptr) {
+        return;
+    }
+    
     for (int channel = 0; channel < _ioState.channelCount; ++channel) {
         if (_inBufferList->mBuffers[channel].mData == _outBufferList->mBuffers[channel].mData) {
             continue;
