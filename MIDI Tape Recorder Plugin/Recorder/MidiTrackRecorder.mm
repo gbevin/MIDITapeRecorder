@@ -262,8 +262,8 @@
     }
     
     // add end of track meta event
-    int64_t offset_ticks = int64_t(recorded_data->getDuration() * MIDI_BEAT_TICKS);
-    uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
+    int64_t offset_ticks = int64_t(ceil(MAX(recorded_data->getDuration(), 0.0) * MIDI_BEAT_TICKS));
+    uint32_t delta_ticks = uint32_t(MAX(offset_ticks - last_offset_ticks, 0));
     writeMidiVarLen(track, delta_ticks);
     uint8_t meta_end_of_track[] = { 0xff, 0x2f, 0x00 };
     [track appendBytes:&meta_end_of_track[0] length:3];
