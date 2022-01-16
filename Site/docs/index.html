@@ -65,7 +65,19 @@
 
   <p>Since MTR is an AUv3 plugin, you need to first make a connection to one of the MIDI Inputs, and then another connection from one of the MIDI Outputs.</p>
 
+  <p>MTR comes in three AUv3 plugins types:</p>
 
+  <ul>
+    <li>a MIDI processor</li>
+    <li>a MIDI effect</li>
+    <li>a MIDI instrument</li>
+  </ul>
+
+  <p>MTR was designed to operate as a MIDI processor, but only few hosts and DAWs support this plugin type and allow input and output connections to be made freely.</p>
+
+  <p>Therefore, MIDI effect and MIDI instrument plugin types are also available but they usually prevent full recorder use because hosts either don't handle the MIDI output from these plugins or don't allow other instruments to be placed on the same channel or track. However, using MTR as a MIDI effect or MIDI instrument can be useful to record and/or play MIDI files in certain situations.</p>
+
+  <p>The rest of this documentation assumes that MIDI Tape Recorder is being used as a MIDI processor plugin.</p>
 
   <h3>Controller to Recorder to Synth</h3>
 

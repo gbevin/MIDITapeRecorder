@@ -40,6 +40,23 @@
     <li><em>History</em></li>
   </ul>
 
+  <h2>v1.0.4</h2>
+
+  <ul>
+    <li>Added setting to allow disabling auto rewind after record.</li>
+    <li>Added setting to only start playing at the next host beat, even when not following the host transport. This is useful when using MTR as a clip launcher.</li>
+    <li>Record arm is now preserved in the AUv3 saved state.</li>
+    <li>Added Music Effect AUv3 alongside the MIDI Processor AUv3, note that the majority of hosts don't support MIDI output from  Music Effect AUv3s but recording is possible.</li>
+    <li>Added Instrument AUv3 alongside the MIDI Processor AUv3, note that while this will allow recording any MIDI in a host's track, it usually prevents having another instrument on the same track so it might be impossible to hear sound.</li>
+    <li>Workaround for Logic Pro X issue that prevented MIDI Tape Recording from working. MTR now fully works on macOS Intel and Apple Silicon in Logic Pro X.</li>
+    <li>MIDI passthrough LED indicator in now disabled when the host doesn't support AUv3 MIDI output.</li>
+    <li>Reworked settings UI dialog.</li>
+    <li>Fixed auto-trim recording when overdub duration is longer than original recording.</li>
+    <li>Fixed UI max duration calculation when auto-trim changes length.</li>
+    <li>Fixes to recording with host transport from a blank session.</li>
+    <li>Fix that properly clears recording state when invalidating or clearing a recording.</li>
+  </ul>
+
   <h2>v1.0.3</h2>
 
   <ul>
