@@ -531,7 +531,7 @@
 }
 
 - (NSArray<NSString*>*)MIDIOutputNames {
-    return @[@"Out 1", @"Out 2", @"Out 3", @"Out 4"];
+    return @[@"MIDI Out 1", @"MIDI Out 2", @"MIDI Out 3", @"MIDI Out 4"];
 }
 
 - (BOOL)supportsMPE {
