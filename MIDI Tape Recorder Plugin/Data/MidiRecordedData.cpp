@@ -50,7 +50,7 @@ void MidiRecordedData::setStartIfNeeded(double beats) {
 }
 
 void MidiRecordedData::increaseDuration(double duration) {
-    _duration  = std::max(_duration, duration);
+    _duration = std::max(_duration, duration);
 }
 
 void MidiRecordedData::applyOverdubInfo(const MidiRecordedData& overdub) {
