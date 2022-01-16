@@ -471,22 +471,36 @@ void MidiRecorderKernel::setBuffers(AudioBufferList* inBufferList, AudioBufferLi
     _outBufferList = outBufferList;
 }
 
-void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
-    QueuedMidiMessage message;
-    message.timeSampleSeconds = timeSampleSeconds;
-    if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
-        double offset_beats = _ioState.currentBeatPosition;
-        double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
-        if (session_duration != 0.0 && _state.repeatActive.test()) {
-            // apply looping length and start position offset
-            offset_beats = fmod(offset_beats, session_duration);
+bool MidiRecorderKernel::isRecording() {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        MidiTrackState& track_state = _state.track[t];
+        if (track_state.recording.test() &&
+            (!_state.punchInOut.test() || _state.activePunchInOut())) {
+            return true;
         }
-        offset_beats += _state.startPositionBeats.load();
-        message.offsetBeats = offset_beats;
-        message.hasBeatTime = true;
     }
     
-    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+    return false;
+}
+
+void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
+    if (isRecording()) {
+        QueuedMidiMessage message;
+        message.timeSampleSeconds = timeSampleSeconds;
+        if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
+            double offset_beats = _ioState.currentBeatPosition;
+            double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
+            if (session_duration != 0.0 && _state.repeatActive.test()) {
+                // apply looping length and start position offset
+                offset_beats = fmod(offset_beats, session_duration);
+            }
+            offset_beats += _state.startPositionBeats.load();
+            message.offsetBeats = offset_beats;
+            message.hasBeatTime = true;
+        }
+        
+        TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+    }
 }
 
 void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
@@ -700,15 +714,8 @@ void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
 }
 
 void MidiRecorderKernel::processOutput(double timeSampleSeconds) {
-    // determine if we're recording and/or playing
-    bool recording_tracks = false;
-    for (int t = 0; t < MIDI_TRACKS; ++t) {
-        MidiTrackState& track_state = _state.track[t];
-        if (track_state.recording.test() &&
-            (!_state.punchInOut.test() || _state.activePunchInOut())) {
-            recording_tracks = true;
-        }
-    }
+    // determine if we're recording tracks
+    bool recording_tracks = isRecording();
 
     // get a consistent repeat active state
     bool repeat_active = _state.repeatActive.test();
