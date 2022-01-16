@@ -27,7 +27,8 @@ struct AudioUnitIOState {
     
     std::atomic<double> currentBeatPosition     { 0.0 };
 
-    const AudioTimeStamp* timestamp    { nullptr };
+    const AudioTimeStamp* timestamp         { nullptr };
+    std::atomic<double> timeSampleSeconds   { 0.0 };
 
     AUMIDIOutputEventBlock midiOutputEventBlock     { nullptr };
     AUHostTransportStateBlock transportStateBlock   { nullptr };

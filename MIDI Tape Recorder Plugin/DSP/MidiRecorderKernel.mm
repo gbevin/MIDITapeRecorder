@@ -33,7 +33,7 @@ void MidiRecorderKernel::setBypass(bool shouldBypass) {
     _bypassed = shouldBypass;
 }
 
-void MidiRecorderKernel::rewind(double timeSampleSeconds) {
+void MidiRecorderKernel::rewind() {
     // turn off recording
     _state.processedUIEndRecord.clear();
 
@@ -52,7 +52,7 @@ void MidiRecorderKernel::rewind(double timeSampleSeconds) {
             _state.transportStartSampleSeconds = 0.0;
         }
         else {
-            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+            _state.transportStartSampleSeconds = _ioState.timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
         }
     }
     else {
@@ -483,10 +483,12 @@ bool MidiRecorderKernel::isRecording() {
     return false;
 }
 
-void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
-    if (isRecording()) {
+void MidiRecorderKernel::queueBufferPingIfNeeded() {
+    if (!_sentBufferPing && isRecording()) {
+        _sentBufferPing = true;
+        
         QueuedMidiMessage message;
-        message.timeSampleSeconds = timeSampleSeconds;
+        message.timeSampleSeconds = _ioState.timeSampleSeconds;
         if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
             double offset_beats = _ioState.currentBeatPosition;
             double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
@@ -503,7 +505,12 @@ void MidiRecorderKernel::handleBufferStart(double timeSampleSeconds) {
     }
 }
 
-void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
+void MidiRecorderKernel::handleBufferStart() {
+    _sentBufferPing = false;
+    queueBufferPingIfNeeded();
+}
+
+void MidiRecorderKernel::handleScheduledTransitions() {
     // we rely on the single-threaded nature of the audio callback thread to coordinate
     // important state transitions at the beginning of the callback, before anything else
     // this prevents split-state conditions to change semantics in the middle of processing
@@ -548,13 +555,13 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
         // if we're right on the beat boundary, start in sync
         if (double(int(_ioState.currentBeatPosition)) == _ioState.currentBeatPosition.load()) {
             _state.playPositionBeats = ceil(_state.playPositionBeats);
-            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+            _state.transportStartSampleSeconds = _ioState.timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
             _isWaitingForBeat = NO;
         }
         // if this buffer crosses the beat boundary, start and calculate the offset to remain in sync
         else if (int(_ioState.currentBeatPosition) != int(_ioState.currentBeatPosition + _ioState.framesBeats.load())) {
             _state.playPositionBeats = ceil(_state.playPositionBeats) - (double(int(_ioState.currentBeatPosition) + 1.0) - _ioState.currentBeatPosition);
-            _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+            _state.transportStartSampleSeconds = _ioState.timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
             _isWaitingForBeat = NO;
         }
     }
@@ -631,12 +638,12 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
 
     // rewind
     if (!_state.processedRewind.test_and_set()) {
-        rewind(timeSampleSeconds);
+        rewind();
     }
 
     // play
     if (!_state.processedPlay.test_and_set()) {
-        _state.transportStartSampleSeconds = timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+        _state.transportStartSampleSeconds = _ioState.timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
         play();
     }
 
@@ -648,7 +655,7 @@ void MidiRecorderKernel::handleScheduledTransitions(double timeSampleSeconds) {
     // stop and rewind
     if (!_state.processedStopAndRewind.test_and_set()) {
         stop();
-        rewind(timeSampleSeconds);
+        rewind();
     }
 
     // reach end
@@ -713,7 +720,7 @@ void MidiRecorderKernel::handleMIDIEvent(AUMIDIEvent const& midiEvent) {
     }
 }
 
-void MidiRecorderKernel::processOutput(double timeSampleSeconds) {
+void MidiRecorderKernel::processOutput() {
     // determine if we're recording tracks
     bool recording_tracks = isRecording();
 
@@ -934,6 +941,8 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
 }
 
 void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
+    queueBufferPingIfNeeded();
+    
     QueuedMidiMessage message;
     message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {

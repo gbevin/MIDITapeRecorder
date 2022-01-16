@@ -28,23 +28,24 @@ public:
 
     void setBuffers(AudioBufferList* inBufferList, AudioBufferList* outBufferList);
     
-    void handleBufferStart(double timeSampleSeconds) override;
-    void handleScheduledTransitions(double timeSampleSeconds) override;
+    void handleBufferStart() override;
+    void handleScheduledTransitions() override;
     void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) override;
     void handleParameterEvent(AUParameterEvent const& parameterEvent) override;
     void handleMIDIEvent(AUMIDIEvent const& midiEvent) override;
-    void processOutput(double timeSampleSeconds) override;
+    void processOutput() override;
 
     MidiRecorderState _state;
     AudioUnitIOState _ioState;
 
 private:
     bool isRecording();
-    
+    void queueBufferPingIfNeeded();
+
     void sendRpnMessage(uint8_t cable, uint8_t channel, uint16_t number, uint16_t value);
     void sendMCM(int track);
 
-    void rewind(double timeSampleSeconds);
+    void rewind();
     void play();
     void stop();
     void endRecording(int track);
@@ -58,6 +59,7 @@ private:
     bool _bypassed          { false };
     bool _isPlaying         { false };
     bool _isWaitingForBeat  { false };
+    bool _sentBufferPing    { false };
 
     NoteState _noteStates[MIDI_TRACKS];
 

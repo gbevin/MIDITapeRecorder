@@ -209,14 +209,14 @@
         kernel->_ioState.timestamp = timestamp;
         const double frames_seconds = double(frameCount) / kernel->_ioState.sampleRate;
         kernel->_ioState.framesBeats = frames_seconds * kernel->_state.secondsToBeats;
+        kernel->_ioState.timeSampleSeconds = double(timestamp->mSampleTime - frameCount) / kernel->_ioState.sampleRate;
 
         // call into the kernel functions
-        double time_sample_seconds = double(timestamp->mSampleTime - frameCount) / kernel->_ioState.sampleRate;
         kernel->setBuffers(inAudioBufferList, outAudioBufferList);
-        kernel->handleBufferStart(time_sample_seconds);
-        kernel->handleScheduledTransitions(time_sample_seconds);
+        kernel->handleBufferStart();
+        kernel->handleScheduledTransitions();
         kernel->processWithEvents(timestamp, frameCount, realtimeEventListHead);
-        kernel->processOutput(time_sample_seconds);
+        kernel->processOutput();
 
         return noErr;
     };

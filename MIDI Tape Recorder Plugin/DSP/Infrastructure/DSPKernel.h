@@ -17,11 +17,11 @@ class DSPKernel {
 public:
     virtual void process(AUAudioFrameCount frameCount, AUAudioFrameCount bufferOffset) = 0;
 
-    virtual void handleBufferStart(double timeSampleSeconds) {}
-    virtual void handleScheduledTransitions(double timeSampleSeconds) {}
+    virtual void handleBufferStart() {}
+    virtual void handleScheduledTransitions() {}
     virtual void handleMIDIEvent(AUMIDIEvent const& midiEvent) {}
     virtual void handleParameterEvent(AUParameterEvent const& parameterEvent) {}
-    virtual void processOutput(double timeSampleSeconds) {};
+    virtual void processOutput() {};
 
     void processWithEvents(AudioTimeStamp const* timestamp, AUAudioFrameCount frameCount, AURenderEvent const* events);
 
