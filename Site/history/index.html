@@ -49,6 +49,7 @@
     <li>Added Music Effect AUv3 alongside the MIDI Processor AUv3, note that the majority of hosts don't support MIDI output from  Music Effect AUv3s but recording is possible.</li>
     <li>Added Instrument AUv3 alongside the MIDI Processor AUv3, note that while this will allow recording any MIDI in a host's track, it usually prevents having another instrument on the same track so it might be impossible to hear sound.</li>
     <li>Workaround for Logic Pro X issue that prevented MIDI Tape Recording from working. MTR now fully works on macOS Intel and Apple Silicon in Logic Pro X.</li>
+    <li>Workaround for Logic Pro X sending an out of range beat position at the start of transport, resulting into the MTR recording duration being too long until the recording catches up.</li>
     <li>MIDI passthrough LED indicator in now disabled when the host doesn't support AUv3 MIDI output.</li>
     <li>Reworked settings UI dialog.</li>
     <li>Fixed auto-trim recording when overdub duration is longer than original recording.</li>
