@@ -250,8 +250,8 @@
                 continue;
             }
             
-            int64_t offset_ticks = int64_t(MAX(message.offsetBeats, 0.0) * MIDI_BEAT_TICKS);
-            uint32_t delta_ticks = uint32_t(offset_ticks - last_offset_ticks);
+            int64_t offset_ticks = int64_t(ceil(MAX(message.offsetBeats, 0.0) * MIDI_BEAT_TICKS));
+            uint32_t delta_ticks = uint32_t(MAX(offset_ticks - last_offset_ticks, 0));
             writeMidiVarLen(track, delta_ticks);
             for (int d = 0; d < message.length; ++d) {
                 [track appendBytes:&message.data[d] length:1];
