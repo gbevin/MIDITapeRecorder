@@ -7,6 +7,11 @@ This work is freely distributed under the Creative Commons Attribution 4.0 Inter
 If you want to support my efforts, please consider donating through:
 http://uwyn.com/donate
 
+## Community
+
+Facebook Group: https://www.facebook.com/groups/miditaperecorder
+Discord: https://discord.gg/g5nddMbx2H
+
 ## Description
 
 MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording.
