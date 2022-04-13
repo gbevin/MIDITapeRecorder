@@ -53,7 +53,7 @@ private:
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);
     void turnOffAllNotes();
     void turnOffAllNotesForTrack(int track);
-    void outputMidiMessages(double beatRrangeBegin, double beatRangeEnd);
+    void outputMidiMessages(double beatRangeBegin, double beatRangeEnd, double beatOffset);
 
     bool _bypassed          { false };
     bool _isPlaying         { false };

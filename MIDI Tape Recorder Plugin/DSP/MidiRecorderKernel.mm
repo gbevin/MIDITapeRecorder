@@ -774,7 +774,7 @@ void MidiRecorderKernel::processOutput() {
         }
 
         // output the MIDI messages
-        outputMidiMessages(beatrange_begin, beatrange_end);
+        outputMidiMessages(beatrange_begin, beatrange_end, 0.0);
 
         // handle repeat
         if (repeat_active) {
@@ -810,12 +810,13 @@ void MidiRecorderKernel::processOutput() {
             }
 
             // handle the possible in-buffer wrap around
-            if (beatrange_wraparound > 0.0) {
+            if (beatrange_wraparound > 0.0 && int(beatrange_wraparound * _state.beatsToSeconds * _ioState.sampleRate) > 0) {
+                const double beat_offset = beatrange_end - beatrange_begin;
                 beatrange_begin = _state.startPositionBeats;
                 beatrange_end = beatrange_begin + beatrange_wraparound;
                 
                 // output MIDI messages for the wrap-around section
-                outputMidiMessages(beatrange_begin, beatrange_end);
+                outputMidiMessages(beatrange_begin, beatrange_end, beat_offset);
 
                 // store the advanced play position for the next process call
                 _state.playPositionBeats = beatrange_end;
@@ -833,7 +834,7 @@ void MidiRecorderKernel::passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int 
     _ioState.midiOutputEventBlock(_ioState.timestamp->mSampleTime + frame_offset, cable, midiEvent.length, midiEvent.data);
 }
 
-void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRangeEnd) {
+void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRangeEnd, double beatOffset) {
     // process all the messages on all the tracks
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         MidiTrackState& track_state = _state.track[t];
@@ -859,7 +860,7 @@ void MidiRecorderKernel::outputMidiMessages(double beatRangeBegin, double beatRa
                         // if the track is not muted and a MIDI output block exists,
                         // send the message
                         if (!track_state.muteEnabled.test() && _ioState.midiOutputEventBlock) {
-                            const double offset_seconds = (message.offsetBeats - beatRangeEnd) * _state.beatsToSeconds;
+                            const double offset_seconds = (message.offsetBeats + beatOffset - beatRangeBegin) * _state.beatsToSeconds;
                             const double offset_samples = offset_seconds * _ioState.sampleRate;
                             
                             // handle internal messages
