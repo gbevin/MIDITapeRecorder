@@ -246,6 +246,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+#if TARGET_OS_MACCATALYST
+    self.preferredContentSize = CGSizeMake(720, 315);
+#endif
+
     [self autoShowDonateButton];
 
     _tracks.delegate = self;
