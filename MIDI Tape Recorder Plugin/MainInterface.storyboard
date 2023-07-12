@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="ipad12_9rounded" orientation="landscape" layout="fullscreen" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -1896,7 +1896,7 @@ under the CC BY 4.0 License.</string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZaP-U7-IXL" userLabel="Rate on App Store">
-                                <rect key="frame" x="25" y="146" width="120" height="26"/>
+                                <rect key="frame" x="100" y="146" width="120" height="26"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 <color key="tintColor" name="Orange"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -1944,7 +1944,7 @@ under the CC BY 4.0 License.</string>
                             <constraint firstItem="ZaP-U7-IXL" firstAttribute="top" secondItem="4x1-6I-ezK" secondAttribute="bottom" constant="10" id="TDh-lM-c8d">
                                 <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                             </constraint>
-                            <constraint firstItem="ZaP-U7-IXL" firstAttribute="trailing" secondItem="mKK-gH-GS8" secondAttribute="centerX" constant="-15" id="WIL-hI-rnd"/>
+                            <constraint firstItem="ZaP-U7-IXL" firstAttribute="centerX" secondItem="mKK-gH-GS8" secondAttribute="centerX" id="WIL-hI-rnd"/>
                             <constraint firstItem="K3q-TW-Y3D" firstAttribute="top" secondItem="mKK-gH-GS8" secondAttribute="bottom" constant="10" id="XRp-AC-wBz">
                                 <variation key="heightClass=compact-widthClass=compact" constant="8"/>
                             </constraint>
@@ -1956,6 +1956,11 @@ under the CC BY 4.0 License.</string>
                             </constraint>
                             <constraint firstItem="mKK-gH-GS8" firstAttribute="centerX" secondItem="KkM-rA-HLA" secondAttribute="centerX" id="wzo-XT-aCJ"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="0r7-eV-ygL"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="versionLabel" destination="K3q-TW-Y3D" id="i99-Z9-uUa"/>

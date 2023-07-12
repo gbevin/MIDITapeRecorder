@@ -431,10 +431,11 @@
 }
 
 - (void)autoShowDonateButton {
-    NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
-    if (![prefs objectForKey:PREF_DONATE_VIEW_SHOWN] && [prefs boolForKey:PREF_DONATE_CONDITION_MET]) {
-        _donateButton.hidden = NO;
-    }
+//    NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
+//    if (![prefs objectForKey:PREF_DONATE_VIEW_SHOWN] && [prefs boolForKey:PREF_DONATE_CONDITION_MET]) {
+//        _donateButton.hidden = NO;
+//    }
+    _donateButton.hidden = YES;
 }
 
 #pragma mark - Create AudioUnit
