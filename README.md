@@ -9,9 +9,9 @@ http://uwyn.com/donate
 
 ## Community
 
-Facebook Group: https://www.facebook.com/groups/miditaperecorder
+Join the Forums: https://forum.uwyn.com
 
-Discord: https://discord.gg/g5nddMbx2H
+Chat on Discord: https://discord.gg/g5nddMbx2H
 
 ## Description
 
