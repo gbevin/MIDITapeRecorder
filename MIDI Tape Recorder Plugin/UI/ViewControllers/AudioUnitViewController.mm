@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "AudioUnitViewController.h"
@@ -196,8 +196,14 @@
     BOOL _restoringState;
 
     MidiQueueProcessor* _midiQueueProcessor;
-    
+
     BOOL _autoPlayFromRecord;
+
+    // Each armed track's recorded state captured when recording starts, keyed by
+    // track ordinal. Registered for undo when the take finishes, so a whole take
+    // (including a multi-cycle loop-record take whose intermediate passes were
+    // already blended) undoes as a single step.
+    NSMutableDictionary<NSNumber*, NSDictionary*>* _recordingUndoSnapshots;
     
     UIView* _activePannedMarker;
     CGPoint _autoPan;
@@ -527,36 +533,65 @@
                 }
                 case ID_CLEAR_ALL: {
                     if (s->_state->clearAllTrigger.test()) {
-                        [s clearAllPressed:s->_clearButtonAll];
+                        // host/DAW trigger clears directly (no on-screen confirm);
+                        // make sure the button isn't left in its armed state
+                        s->_clearButtonAll.selected = NO;
+                        [s performClearAll];
                         s->_state->hostParamChange(ID_CLEAR_ALL, NO);
                     }
                     break;
                 }
                 case ID_CLEAR_1: {
                     if (s->_state->track[0].clearTrigger.test()) {
-                        [s clearPressed:s->_clearButton1];
+                        s->_clearButton1.selected = NO;
+                        [s performClearTrack:0];
                         s->_state->hostParamChange(ID_CLEAR_1, NO);
                     }
                     break;
                 }
                 case ID_CLEAR_2: {
                     if (s->_state->track[1].clearTrigger.test()) {
-                        [s clearPressed:s->_clearButton2];
+                        s->_clearButton2.selected = NO;
+                        [s performClearTrack:1];
                         s->_state->hostParamChange(ID_CLEAR_2, NO);
                     }
                     break;
                 }
                 case ID_CLEAR_3: {
                     if (s->_state->track[2].clearTrigger.test()) {
-                        [s clearPressed:s->_clearButton3];
+                        s->_clearButton3.selected = NO;
+                        [s performClearTrack:2];
                         s->_state->hostParamChange(ID_CLEAR_3, NO);
                     }
                     break;
                 }
                 case ID_CLEAR_4: {
                     if (s->_state->track[3].clearTrigger.test()) {
-                        [s clearPressed:s->_clearButton4];
+                        s->_clearButton4.selected = NO;
+                        [s performClearTrack:3];
                         s->_state->hostParamChange(ID_CLEAR_4, NO);
+                    }
+                    break;
+                }
+                case ID_UNDO: {
+                    if (s->_state->undoTrigger.test()) {
+                        [s undoPressed:nil];
+                        s->_state->hostParamChange(ID_UNDO, NO);
+                    }
+                    break;
+                }
+                case ID_REDO: {
+                    if (s->_state->redoTrigger.test()) {
+                        [s redoPressed:nil];
+                        s->_state->hostParamChange(ID_REDO, NO);
+                    }
+                    break;
+                }
+                case ID_CLEAR_UNDO_HISTORY: {
+                    if (s->_state->clearUndoHistoryTrigger.test()) {
+                        [s->_mainUndoManager removeAllActions];
+                        [s undoManagerUpdated];
+                        s->_state->hostParamChange(ID_CLEAR_UNDO_HISTORY, NO);
                     }
                     break;
                 }
@@ -674,11 +709,24 @@
 - (void)setRecordState:(BOOL)state {
     [_mainUndoManager withUndoGroup:^{
         self->_recordButton.selected = state;
-        
+
+        // capture each armed track's pre-take state; finishRecording registers it
+        // for undo when the take ends
+        if (state) {
+            self->_recordingUndoSnapshots = [NSMutableDictionary dictionary];
+            for (int t = 0; t < MIDI_TRACKS; ++t) {
+                if (self->_state->track[t].recordEnabled.test()) {
+                    self->_recordingUndoSnapshots[@(t)] = [[self->_midiQueueProcessor recorder:t] recordedAsDict];
+                }
+            }
+        }
+
         [self updateRecordState];
         [self updateRecordEnableState];
-        
+
         if (!state) {
+            self->_recordingUndoSnapshots = nil;
+
             AudioUnitViewController* __weak weak_self = self;
             dispatch_async(dispatch_get_main_queue(), ^{
                 AudioUnitViewController* s = weak_self;
@@ -800,21 +848,29 @@
 }
 
 - (IBAction)clearAllPressed:(UIButton*)sender {
+    // The on-screen button confirms with two taps; the actual clear happens here.
     sender.selected = !sender.selected;
     if (!sender.selected) {
-        [self hideMenuPopups];
-
-        [_mainUndoManager withUndoGroup:^{
-            [self withMidiTrackViews:^(int t, MidiTrackView* view) {
-                [self registerRecordedForUndo:t];
-                [[self->_midiQueueProcessor recorder:t] clear];
-            }];
-            
-            [self registerSettingsForUndo];
-        }];
-        
-        _state->processedClearAllPostInvalidate.clear();
+        [self performClearAll];
     }
+}
+
+// Clears every track. Used both by the confirmed button tap and by the clearAll
+// parameter trigger (from the standalone host or a DAW), which clears directly
+// since the host already confirmed.
+- (void)performClearAll {
+    [self hideMenuPopups];
+
+    [_mainUndoManager withUndoGroup:^{
+        [self withMidiTrackViews:^(int t, MidiTrackView* view) {
+            [self registerRecordedForUndo:t];
+            [[self->_midiQueueProcessor recorder:t] clear];
+        }];
+
+        [self registerSettingsForUndo];
+    }];
+
+    _state->processedClearAllPostInvalidate.clear();
 }
 
 - (void)clearAllPostInvalidate {
@@ -1105,23 +1161,28 @@
 #pragma mark IBAction - Clear
 
 - (IBAction)clearPressed:(UIButton*)sender {
+    // The on-screen button confirms with two taps; the actual clear happens here.
     sender.selected = !sender.selected;
     if (!sender.selected) {
-        [self hideMenuPopups];
-
         NSUInteger index = [@[_clearButton1, _clearButton2, _clearButton3, _clearButton4] indexOfObject:sender];
         if (index == NSNotFound) {
             return;
         }
-        
-        int t = (int)index;
-        [_mainUndoManager withUndoGroup:^{
-            [self registerRecordedForUndo:t];
-            [[self->_midiQueueProcessor recorder:t] clear];
-        }];
-        
-        [self handleFullyEmpty];
+        [self performClearTrack:(int)index];
     }
+}
+
+// Clears a single track. Used both by the confirmed button tap and by the per-track
+// clear parameter trigger (from the standalone host or a DAW).
+- (void)performClearTrack:(int)t {
+    [self hideMenuPopups];
+
+    [_mainUndoManager withUndoGroup:^{
+        [self registerRecordedForUndo:t];
+        [[self->_midiQueueProcessor recorder:t] clear];
+    }];
+
+    [self handleFullyEmpty];
 }
 
 #pragma mark IBAction - Undo / Redo
@@ -1432,6 +1493,7 @@
     id wait_for_next_host_beat = [dict objectForKey:@"WaitForNextHostBeatToPlay"];
     id auto_trim = [dict objectForKey:@"AutoTrimRecordings"];
     id auto_rewind = [dict objectForKey:@"AutoRewindAfterRecording"];
+    id loop_record = [dict objectForKey:@"LoopRecord"];
 
     if (start_position_set) {
         if ([start_position_set boolValue]) _state->startPositionSet.test_and_set();
@@ -1552,6 +1614,10 @@
         if ([auto_rewind boolValue]) _state->autoRewindAfterRecording.test_and_set();
         else                         _state->autoRewindAfterRecording.clear();
     }
+    if (loop_record) {
+        if ([loop_record boolValue]) _state->loopRecord.test_and_set();
+        else                         _state->loopRecord.clear();
+    }
 
     [self updateRoutingState];
     [self updateRecordState];
@@ -1617,7 +1683,8 @@
         @"FollowHostTransport" : @(_state->followHostTransport.test()),
         @"WaitForNextHostBeatToPlay" : @(_state->waitForNextHostBeatToPlay.test()),
         @"AutoTrimRecordings" : @(_state->autoTrimRecordings.test()),
-        @"AutoRewindAfterRecording" : @(_state->autoRewindAfterRecording.test())
+        @"AutoRewindAfterRecording" : @(_state->autoRewindAfterRecording.test()),
+        @"LoopRecord" : @(_state->loopRecord.test())
     }];
     return dict;
 }
@@ -1632,6 +1699,13 @@
 
 - (MidiRecorderState*)state {
     return _state;
+}
+
+// Whether the host provides a transport (e.g. a DAW). The standalone app hosts
+// the unit without a transport state block, so transport-dependent settings can
+// be hidden when this is NO.
+- (BOOL)hostProvidesTransport {
+    return _audioUnit.transportStateBlock != nil;
 }
 
 #pragma mark Update State
@@ -1661,7 +1735,13 @@
 
 - (void)applyRecordEnableState {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [_midiQueueProcessor recorder:t].record = (_recordButton.selected && _state->track[t].recordEnabled.test());
+        BOOL record = (_recordButton.selected && _state->track[t].recordEnabled.test());
+        // a track that starts recording mid-take still needs its pre-take state
+        // captured for the take's undo step
+        if (record && _recordingUndoSnapshots != nil && _recordingUndoSnapshots[@(t)] == nil) {
+            _recordingUndoSnapshots[@(t)] = [[_midiQueueProcessor recorder:t] recordedAsDict];
+        }
+        [_midiQueueProcessor recorder:t].record = record;
     }
 }
 
@@ -1796,7 +1876,7 @@
             [self setRecordState:NO];
         }
     }
-    
+
     // rebuild track UI
     __block bool preview_changes = NO;
     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -1983,6 +2063,11 @@
 
         [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
 
+        // hand off any final pass that had to wait for a racing loop-pass blend
+        for (int t = 0; t < MIDI_TRACKS; ++t) {
+            [[_midiQueueProcessor recorder:t] flushDeferredFinish];
+        }
+
         @synchronized(self) {
             if (!_restoringState) {
                 [self renderPreviews];
@@ -2016,8 +2101,18 @@
 }
 
 - (void)finishRecording:(int)ordinal {
-    [self registerRecordedForUndo:ordinal];
-    
+    // a take undoes as a whole: restore the state captured when recording started
+    // (a multi-cycle loop-record take has already blended its intermediate passes,
+    // so the state at stop time isn't the pre-take state)
+    NSDictionary* snapshot = _recordingUndoSnapshots[@(ordinal)];
+    if (snapshot != nil) {
+        [self registerRestoreForUndo:ordinal withData:snapshot];
+        [_recordingUndoSnapshots removeObjectForKey:@(ordinal)];
+    }
+    else {
+        [self registerRecordedForUndo:ordinal];
+    }
+
     _state->processedEndRecording[ordinal].clear();
 }
 
@@ -2036,6 +2131,10 @@
 }
 
 - (void)invalidateRecording:(int)ordinal {
+    // a track being cleared drops its pre-take snapshot, so a later record stop
+    // can't restore content that was explicitly discarded
+    [_recordingUndoSnapshots removeObjectForKey:@(ordinal)];
+
     _state->processedNotesOff[ordinal].clear();
     _state->processedInvalidate[ordinal].clear();
 }
@@ -2093,8 +2192,18 @@
 #pragma mark - Undo / redo
 
 - (void)undoManagerUpdated {
-    _undoButton.enabled = _mainUndoManager.canUndo;
-    _redoButton.enabled = _mainUndoManager.canRedo;
+    BOOL can_undo = _mainUndoManager.canUndo;
+    BOOL can_redo = _mainUndoManager.canRedo;
+
+    _undoButton.enabled = can_undo;
+    _redoButton.enabled = can_redo;
+
+    // Mirror availability to the host (e.g. the standalone app's Edit menu items),
+    // since the undo manager itself can't be reached across the AUv3 boundary.
+    if (_state && _state->hostParamChange) {
+        _state->hostParamChange(ID_CAN_UNDO, can_undo ? 1.0f : 0.0f);
+        _state->hostParamChange(ID_CAN_REDO, can_redo ? 1.0f : 0.0f);
+    }
 }
 
 - (void)restoreSettings:(NSDictionary*)data {
@@ -2121,10 +2230,18 @@
     if (!_renderReady) {
         return;
     }
-    
+
     MidiTrackRecorder* recorder = [_midiQueueProcessor recorder:ordinal];
+    [self registerRestoreForUndo:ordinal withData:[recorder recordedAsDict]];
+}
+
+- (void)registerRestoreForUndo:(int)ordinal withData:(NSDictionary*)data {
+    if (!_renderReady) {
+        return;
+    }
+
     [[_mainUndoManager prepareWithInvocationTarget:self] restoreRecorded:ordinal
-                                                                withData:[recorder recordedAsDict]];
+                                                                withData:data];
 }
 
 #pragma mark - UIScrollViewDelegate

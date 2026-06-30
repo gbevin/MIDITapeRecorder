@@ -6,5 +6,51 @@
 	<false/>
 	<key>UIFileSharingEnabled</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	<!-- iOS/iPadOS only (Mac Catalyst uses Info-Catalyst.plist, which omits this).
+	     Register as a handler for .mtrec so Files "Open in…" routes session files
+	     into the app (handled by -application:openURL:options:). We declare a
+	     document *type* but intentionally do NOT set LSSupportsOpeningDocumentsInPlace
+	     / become a full document-based app. On Mac Catalyst this declaration injects
+	     standard File-menu commands whose Open… (⌘O) collides with our Open Session,
+	     so it's left out of the Catalyst plist; session open/save stays in-app. -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>MIDI Tape Recorder Session</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.uwyn.MidiTapeRecorder.session</string>
+			</array>
+		</dict>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.uwyn.MidiTapeRecorder.session</string>
+			<key>UTTypeDescription</key>
+			<string>MIDI Tape Recorder Session</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mtrec</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

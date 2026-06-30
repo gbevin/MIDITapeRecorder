@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/28/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "MidiQueueProcessor.h"
@@ -12,6 +12,7 @@
 
 #include "Constants.h"
 #include "Logging.h"
+#include "MidiFileConverter.h"
 #include "MidiHelper.h"
 
 #import "MidiTrackRecorder.h"
@@ -126,127 +127,34 @@
 }
 
 - (NSData*)recordedAsMidiFileChunk:(int)ntrks {
-    NSMutableData* data = [NSMutableData new];
-
-    BOOL needs_byte_swap = needsMidiByteSwap();
-    
-    // we know we're using ASCII character, so UTF-8 will only use those characters
-    [data appendBytes:[@"MThd" UTF8String] length:4];
-    
-    uint32_t file_header_length = 6;
-    if (needs_byte_swap) file_header_length = CFSwapInt32(file_header_length);
-    [data appendBytes:&file_header_length length:4];
-    
-    uint16_t file_header_format = 1;
-    if (needs_byte_swap) file_header_format = CFSwapInt16(file_header_format);
-    [data appendBytes:&file_header_format length:2];
-    
-    uint16_t file_header_ntrks = ntrks;
-    if (needs_byte_swap) file_header_ntrks = CFSwapInt16(file_header_ntrks);
-    [data appendBytes:&file_header_ntrks length:2];
-    
-    // number of ticks per quarter note
-    int32_t beat_ticks = MIDI_BEAT_TICKS;
-    uint16_t file_header_division = needs_byte_swap ? CFSwapInt16(beat_ticks) : beat_ticks;
-    [data appendBytes:&file_header_division length:2];
-
-    return data;
+    return midifile::writeFileHeader(ntrks);
 }
 
 - (void)midiFileToRecordedTrack:(NSData*)data ordinal:(int)ordinal {
-    if (data == nil || data.length == 0 ||
-        ordinal < -1 || ordinal >= MIDI_TRACKS) {
+    if (data == nil || ordinal < -1 || ordinal >= MIDI_TRACKS) {
         return;
     }
 
-    BOOL needs_byte_swap = needsMidiByteSwap();
-
-    // validate the file header and MIDI file type,
-    // also obtain the division to evaluate the track event deltas
-    if (data.length < 14) {
-        return;
-    }
-    char file_type_bytes[5] = { 0, 0, 0, 0, 0 };
-    [data getBytes:(void*)file_type_bytes range:NSMakeRange(0, 4)];
-    if (![[NSString stringWithUTF8String:file_type_bytes] isEqualToString:@"MThd"]) {
-        return;
-    }
-    
-    uint32_t file_header_length;
-    [data getBytes:(void*)&file_header_length range:NSMakeRange(4, 4)];
-    if (needs_byte_swap) file_header_length = CFSwapInt32(file_header_length);
-    if (file_header_length != 6) {
+    // validate the header and split the file into track chunk bodies
+    uint16_t division = 0;
+    NSArray<NSData*>* chunks = midifile::trackChunks(data, division);
+    if (chunks.count == 0) {
         return;
     }
 
-    uint16_t file_header_format;
-    [data getBytes:(void*)&file_header_format range:NSMakeRange(8, 2)];
-    if (needs_byte_swap) file_header_format = CFSwapInt16(file_header_format);
-    if (file_header_format != 0 && file_header_format != 1) {
-        return;
-    }
+    // For a single-track import we fill the requested ordinal; for a full import
+    // we fill recorder tracks 0..MIDI_TRACKS-1. Empty/meta-only chunks (such as a
+    // format-1 conductor track) are skipped so that note content lands in order.
+    int imported_ordinal = (ordinal != -1) ? ordinal : 0;
+    int max_ordinal = (ordinal != -1) ? (ordinal + 1) : MIDI_TRACKS;
 
-    uint16_t file_header_ntrks;
-    [data getBytes:(void*)&file_header_ntrks range:NSMakeRange(10, 2)];
-    if (needs_byte_swap) file_header_ntrks = CFSwapInt16(file_header_ntrks);
-    if (file_header_ntrks < 1) {
-        return;
-    }
-
-    uint16_t file_header_division;
-    [data getBytes:(void*)&file_header_division range:NSMakeRange(12, 2)];
-    if (needs_byte_swap) file_header_division = CFSwapInt16(file_header_division);
-    if ((file_header_division & 0x8000) != 0) {
-        return;
-    }
-    
-    // validate at least one track header
-    
-    if (data.length < 22) {
-        return;
-    }
-
-    int data_index = 14;
-
-    int imported_ordinal = 0;
-    int imported_tracks = 0;
-    if (ordinal != -1) {
-        file_header_ntrks = 1;
-        imported_ordinal = ordinal;
-    }
-    
-    while (imported_ordinal < 4 && imported_tracks < file_header_ntrks) {
-        char track_type_bytes[5] = { 0, 0, 0, 0, 0 };
-        [data getBytes:(void*)track_type_bytes range:NSMakeRange(data_index, 4)];
-        data_index += 4;
-        if (![[NSString stringWithUTF8String:track_type_bytes] isEqualToString:@"MTrk"]) {
-            return;
+    for (NSData* chunk in chunks) {
+        if (imported_ordinal >= max_ordinal) {
+            break;
         }
-        
-        uint32_t track_header_length;
-        [data getBytes:(void*)&track_header_length range:NSMakeRange(data_index, 4)];
-        data_index += 4;
-        if (needs_byte_swap) track_header_length = CFSwapInt32(track_header_length);
-        if (track_header_length == 0) {
-            return;
+        if ([_recorder[imported_ordinal] midiTrackChunkToRecorded:chunk division:division]) {
+            imported_ordinal += 1;
         }
-
-        // process the track events
-        
-        NSData* track = nil;
-        @try {
-            track = [data subdataWithRange:NSMakeRange(data_index, track_header_length)];
-        }
-        @catch (id e) {
-            return;
-        }
-        
-        [_recorder[imported_ordinal] midiTrackChunkToRecorded:track division:file_header_division];
-        
-        imported_ordinal += 1;
-        imported_tracks += 1;
-        
-        data_index += track_header_length;
     }
 }
 

@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder
 //
 //  Created by Geert Bevin on 11/30/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #pragma once
@@ -46,5 +46,13 @@ enum PluginParameters {
     ID_CLEAR_1,
     ID_CLEAR_2,
     ID_CLEAR_3,
-    ID_CLEAR_4
+    ID_CLEAR_4,
+    // Appended at the end so existing parameter addresses stay stable.
+    ID_UNDO,
+    ID_REDO,
+    // Read-only: reflect undo/redo availability so a host can mirror it.
+    ID_CAN_UNDO,
+    ID_CAN_REDO,
+    // Trigger: discard the undo/redo history (e.g. on a host's New/Open session).
+    ID_CLEAR_UNDO_HISTORY
 };

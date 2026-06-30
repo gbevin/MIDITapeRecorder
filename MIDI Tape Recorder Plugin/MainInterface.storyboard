@@ -1513,9 +1513,9 @@ RECORDER</string>
                                 </connections>
                             </containerView>
                             <containerView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kxe-e6-6XJ" userLabel="Settings">
-                                <rect key="frame" x="67.5" y="81" width="480" height="196"/>
+                                <rect key="frame" x="67.5" y="81" width="480" height="226"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="196" id="MdR-QT-emE"/>
+                                    <constraint firstAttribute="height" constant="226" id="MdR-QT-emE"/>
                                     <constraint firstAttribute="width" constant="480" id="rO7-ma-pqN"/>
                                 </constraints>
                                 <connections>
@@ -1975,7 +1975,7 @@ under the CC BY 4.0 License.</string>
             <objects>
                 <viewController id="bAn-F3-ZuP" customClass="SettingsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aNF-LS-zQT" customClass="PopupView">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="196"/>
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="226"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u3L-HS-sVk" userLabel="Close Settings">
@@ -2240,10 +2240,47 @@ under the CC BY 4.0 License.</string>
                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                 </variation>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lrc-B0-rec" userLabel="Loop Record Button">
+                                <rect key="frame" x="10" y="187" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Lrc-H0-rec"/>
+                                    <constraint firstAttribute="width" constant="30" id="Lrc-W0-rec">
+                                        <variation key="heightClass=compact-widthClass=compact" constant="26"/>
+                                    </constraint>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="tintColor" name="ActivityOff"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="◎">
+                                    <color key="titleColor" name="Gray0"/>
+                                </state>
+                                <state key="selected" title="◉">
+                                    <color key="titleColor" name="Green"/>
+                                </state>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                </variation>
+                                <connections>
+                                    <action selector="loopRecordPressed:" destination="bAn-F3-ZuP" eventType="touchUpInside" id="Lrc-A0-rec"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loop record continuously" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lrc-L0-rec" userLabel="Loop Record Label">
+                                <rect key="frame" x="40" y="194" width="158" height="16"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" name="Gray0"/>
+                                <nil key="highlightedColor"/>
+                                <variation key="heightClass=compact-widthClass=compact">
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                </variation>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fPN-a7-mCW"/>
                         <constraints>
                             <constraint firstItem="v1y-q7-Bif" firstAttribute="top" secondItem="PqM-3K-ReO" secondAttribute="bottom" id="1KB-xh-yaK"/>
+                            <constraint firstItem="Lrc-B0-rec" firstAttribute="top" secondItem="v1y-q7-Bif" secondAttribute="bottom" id="Lrc-C0-top"/>
+                            <constraint firstItem="Lrc-B0-rec" firstAttribute="centerX" secondItem="v1y-q7-Bif" secondAttribute="centerX" id="Lrc-C1-ctx"/>
+                            <constraint firstItem="Lrc-L0-rec" firstAttribute="leading" secondItem="Lrc-B0-rec" secondAttribute="trailing" id="Lrc-C2-lea"/>
+                            <constraint firstItem="Lrc-L0-rec" firstAttribute="centerY" secondItem="Lrc-B0-rec" secondAttribute="centerY" id="Lrc-C3-cty"/>
                             <constraint firstItem="9mg-oM-Xmt" firstAttribute="leading" secondItem="aNF-LS-zQT" secondAttribute="leading" constant="10" id="1hz-Gu-UOI"/>
                             <constraint firstItem="6eE-oY-bA5" firstAttribute="leading" secondItem="IOV-xA-JFa" secondAttribute="trailing" id="20L-PG-JMa"/>
                             <constraint firstItem="PqM-3K-ReO" firstAttribute="centerX" secondItem="9mg-oM-Xmt" secondAttribute="centerX" id="2lK-um-lXY"/>
@@ -2283,12 +2320,21 @@ under the CC BY 4.0 License.</string>
                     </view>
                     <connections>
                         <outlet property="autoRewindAfterRecordingButton" destination="v1y-q7-Bif" id="kpr-Wi-Ent"/>
+                        <outlet property="autoRewindAfterRecordingLabel" destination="cMf-Mk-i6a" id="arw-lb-l05"/>
                         <outlet property="autoTrimRecordingsButton" destination="PqM-3K-ReO" id="Fkj-pc-y90"/>
+                        <outlet property="autoTrimRecordingsLabel" destination="lC9-9N-7G1" id="atr-lb-l04"/>
+                        <outlet property="loopRecordButton" destination="Lrc-B0-rec" id="Lrc-O0-rec"/>
+                        <outlet property="loopRecordLabel" destination="Lrc-L0-rec" id="lrc-lb-l06"/>
                         <outlet property="displayMpeConfigDetailsButton" destination="9mg-oM-Xmt" id="8AI-Ur-v6Z"/>
+                        <outlet property="displayMpeConfigDetailsLabel" destination="kKp-TH-wjH" id="dmd-lb-l01"/>
                         <outlet property="followHostTransportButton" destination="IOV-xA-JFa" id="oiT-2O-iEi"/>
+                        <outlet property="followHostTransportLabel" destination="6eE-oY-bA5" id="aA1-bB-cC1"/>
                         <outlet property="sendMpeConfigOnPlayButton" destination="mPE-iT-uDI" id="7U7-tU-HaX"/>
+                        <outlet property="sendMpeConfigOnPlayLabel" destination="Mow-FE-isl" id="smp-lb-l03"/>
                         <outlet property="showToolTipsButton" destination="IRk-kc-8Wh" id="RXm-Hm-QWO"/>
+                        <outlet property="showToolTipsLabel" destination="NNI-li-OpN" id="stt-lb-l02"/>
                         <outlet property="waitForNextHostBeatToPlayButton" destination="gzB-O0-EvU" id="K2B-iQ-vWJ"/>
+                        <outlet property="waitForNextHostBeatToPlayLabel" destination="4hf-E5-fr1" id="aA2-bB-cC2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sH0-q9-KFO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

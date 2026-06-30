@@ -7,6 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF0000000000000000000062 /* HostSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000060 /* HostSession.mm */; };
+		AF0000000000000000000063 /* HostSession.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000060 /* HostSession.mm */; };
+		AF0000000000000000000052 /* TransportCommands.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000050 /* TransportCommands.m */; };
+		AF0000000000000000000045 /* RecordedMidiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */; };
+		AF0000000000000000000046 /* MidiHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */; };
+		AF0000000000000000000047 /* HostTrackFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000048 /* HostTrackFile.mm */; };
+		AF000000000000000000004A /* HostTrackFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000048 /* HostTrackFile.mm */; };
+		AF0000000000000000000042 /* MidiFileConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000040 /* MidiFileConverter.mm */; };
+		AF0000000000000000000043 /* MidiFileConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000040 /* MidiFileConverter.mm */; };
+		AF0000000000000000000044 /* MidiFileConverter.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000040 /* MidiFileConverter.mm */; };
+		AF0000000000000000000030 /* MidiClockTempoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000031 /* MidiClockTempoTracker.m */; };
+		AF0000000000000000000032 /* MidiClockTempoTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000031 /* MidiClockTempoTracker.m */; };
+		AF000000000000000000000B /* RecorderTests.mm in Sources */ = {isa = PBXBuildFile; fileRef = AF000000000000000000000A /* RecorderTests.mm */; };
+		AF0000000000000000000010 /* MidiRecorderKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C7DA3327534BE300170CB2 /* MidiRecorderKernel.mm */; };
+		AF0000000000000000000011 /* DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3857275338EE00342496 /* DSPKernel.mm */; };
+		AF0000000000000000000012 /* MidiTrackRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */; };
+		AF0000000000000000000013 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
+		AF0000000000000000000014 /* MidiRecordedData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */; };
+		AF0000000000000000000015 /* MidiRecordedPreview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */; };
+		AF0000000000000000000016 /* RecordedMidiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */; };
+		AF0000000000000000000017 /* MidiRecorderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26855185276EC6980082909E /* MidiRecorderState.cpp */; };
+		AF0000000000000000000018 /* NoteState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26F36167276B954400077518 /* NoteState.cpp */; };
+		AF0000000000000000000019 /* NoteTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 265BB623276EA3CA00471388 /* NoteTracker.cpp */; };
+		AF000000000000000000001A /* MidiHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */; };
+		AF000000000000000000001B /* Logging.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C578C5277151140046D75B /* Logging.mm */; };
+		AF000000000000000000001C /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
+		AF000000000000000000001D /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
+		AF0000000000000000000020 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000021 /* XCTest.framework */; };
 		261342792753D869001FF0BB /* ActivityIndicatorView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 261342782753D869001FF0BB /* ActivityIndicatorView.mm */; };
 		2613427B2753D995001FF0BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2613427A2753D995001FF0BB /* Assets.xcassets */; };
 		2613427D2753DA69001FF0BB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2613427C2753DA69001FF0BB /* CoreGraphics.framework */; };
@@ -29,9 +57,12 @@
 		26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */; };
 		26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
-		26BB3837275338B200342496 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3836275338B200342496 /* ViewController.m */; };
-		26BB383A275338B200342496 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB3838275338B200342496 /* Main.storyboard */; };
 		26BB383C275338B200342496 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26BB383B275338B200342496 /* Assets.xcassets */; };
+		AE2000000000000000000002 /* AudioEngineHost.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1000000000000000000002 /* AudioEngineHost.m */; };
+		AE2000000000000000000004 /* MidiPortManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1000000000000000000004 /* MidiPortManager.m */; };
+		AE2000000000000000000006 /* MidiSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1000000000000000000006 /* MidiSettingsViewController.m */; };
+		AE2000000000000000000008 /* HostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE1000000000000000000008 /* HostViewController.m */; };
+		AE200000000000000000000A /* WelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE100000000000000000000A /* WelcomeViewController.m */; };
 		26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26BB383D275338B200342496 /* LaunchScreen.storyboard */; };
 		26BB3842275338B200342496 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3841275338B200342496 /* main.m */; };
 		26BB3852275338EE00342496 /* MidiRecorderAudioUnit.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3851275338EE00342496 /* MidiRecorderAudioUnit.mm */; };
@@ -93,6 +124,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AF0000000000000000000060 /* HostSession.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HostSession.mm; sourceTree = "<group>"; };
+		AF0000000000000000000061 /* HostSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostSession.h; sourceTree = "<group>"; };
+		AF0000000000000000000050 /* TransportCommands.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TransportCommands.m; sourceTree = "<group>"; };
+		AF0000000000000000000051 /* TransportCommands.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TransportCommands.h; sourceTree = "<group>"; };
+		AF0000000000000000000048 /* HostTrackFile.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HostTrackFile.mm; sourceTree = "<group>"; };
+		AF0000000000000000000049 /* HostTrackFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostTrackFile.h; sourceTree = "<group>"; };
+		AF0000000000000000000040 /* MidiFileConverter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiFileConverter.mm; sourceTree = "<group>"; };
+		AF0000000000000000000041 /* MidiFileConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiFileConverter.h; sourceTree = "<group>"; };
+		AF0000000000000000000031 /* MidiClockTempoTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MidiClockTempoTracker.m; sourceTree = "<group>"; };
+		AF0000000000000000000033 /* MidiClockTempoTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiClockTempoTracker.h; sourceTree = "<group>"; };
+		AF000000000000000000000A /* RecorderTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RecorderTests.mm; path = Tests/RecorderTests.mm; sourceTree = "<group>"; };
+		AF0000000000000000000008 /* RecorderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RecorderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF0000000000000000000021 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		2603D5A1276389C700247A18 /* PreviewPixelData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PreviewPixelData.h; sourceTree = "<group>"; };
 		260EF237276A285E00FC6C65 /* MidiPreviewProvider.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiPreviewProvider.h; sourceTree = "<group>"; };
 		261342772753D855001FF0BB /* ActivityIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorView.h; sourceTree = "<group>"; };
@@ -134,10 +178,17 @@
 		26BB382C275338B200342496 /* MIDI Tape Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MIDI Tape Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		26BB382F275338B200342496 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		26BB3830275338B200342496 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		26BB3835275338B200342496 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		26BB3836275338B200342496 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		26BB3839275338B200342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		26BB383B275338B200342496 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		AE1000000000000000000001 /* AudioEngineHost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioEngineHost.h; sourceTree = "<group>"; };
+		AE1000000000000000000002 /* AudioEngineHost.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioEngineHost.m; sourceTree = "<group>"; };
+		AE1000000000000000000003 /* MidiPortManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiPortManager.h; sourceTree = "<group>"; };
+		AE1000000000000000000004 /* MidiPortManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MidiPortManager.m; sourceTree = "<group>"; };
+		AE1000000000000000000005 /* MidiSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiSettingsViewController.h; sourceTree = "<group>"; };
+		AE1000000000000000000006 /* MidiSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MidiSettingsViewController.m; sourceTree = "<group>"; };
+		AE1000000000000000000007 /* HostViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostViewController.h; sourceTree = "<group>"; };
+		AE1000000000000000000008 /* HostViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HostViewController.m; sourceTree = "<group>"; };
+		AE1000000000000000000009 /* WelcomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WelcomeViewController.h; sourceTree = "<group>"; };
+		AE100000000000000000000A /* WelcomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WelcomeViewController.m; sourceTree = "<group>"; };
 		26BB383E275338B200342496 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		26BB3840275338B200342496 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26BB3841275338B200342496 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -232,6 +283,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AF0000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF0000000000000000000020 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -316,6 +375,8 @@
 				26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */,
 				26BE25DD27675FD800A6BAB7 /* MidiRecordedPreview.h */,
 				26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */,
+				AF0000000000000000000041 /* MidiFileConverter.h */,
+				AF0000000000000000000040 /* MidiFileConverter.mm */,
 				26C540C82757E801004E4813 /* QueuedMidiMessage.h */,
 				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
 				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
@@ -353,9 +414,18 @@
 			children = (
 				26BB382E275338B200342496 /* MIDI Tape Recorder */,
 				26BB384E275338EE00342496 /* MIDI Tape Recorder Plugin */,
+				AF0000000000000000000009 /* Tests */,
 				26BB382D275338B200342496 /* Products */,
 				26C7DA252753415D00170CB2 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		AF0000000000000000000009 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				AF000000000000000000000A /* RecorderTests.mm */,
+			);
+			name = Tests;
 			sourceTree = "<group>";
 		};
 		26BB382D275338B200342496 /* Products */ = {
@@ -363,6 +433,7 @@
 			children = (
 				26BB382C275338B200342496 /* MIDI Tape Recorder.app */,
 				26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */,
+				AF0000000000000000000008 /* RecorderTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -373,10 +444,25 @@
 				26BB3848275338C700342496 /* MIDI Tape Recorder.entitlements */,
 				26BB382F275338B200342496 /* AppDelegate.h */,
 				26BB3830275338B200342496 /* AppDelegate.m */,
-				26BB3835275338B200342496 /* ViewController.h */,
-				26BB3836275338B200342496 /* ViewController.m */,
+				AE1000000000000000000007 /* HostViewController.h */,
+				AE1000000000000000000008 /* HostViewController.m */,
+				AE1000000000000000000009 /* WelcomeViewController.h */,
+				AE100000000000000000000A /* WelcomeViewController.m */,
+				AE1000000000000000000001 /* AudioEngineHost.h */,
+				AE1000000000000000000002 /* AudioEngineHost.m */,
+				AE1000000000000000000003 /* MidiPortManager.h */,
+				AE1000000000000000000004 /* MidiPortManager.m */,
+				AE1000000000000000000005 /* MidiSettingsViewController.h */,
+				AE1000000000000000000006 /* MidiSettingsViewController.m */,
+				AF0000000000000000000033 /* MidiClockTempoTracker.h */,
+				AF0000000000000000000031 /* MidiClockTempoTracker.m */,
+				AF0000000000000000000049 /* HostTrackFile.h */,
+				AF0000000000000000000048 /* HostTrackFile.mm */,
+				AF0000000000000000000051 /* TransportCommands.h */,
+				AF0000000000000000000050 /* TransportCommands.m */,
+				AF0000000000000000000061 /* HostSession.h */,
+				AF0000000000000000000060 /* HostSession.mm */,
 				26BB383D275338B200342496 /* LaunchScreen.storyboard */,
-				26BB3838275338B200342496 /* Main.storyboard */,
 				26BB383B275338B200342496 /* Assets.xcassets */,
 				26BB3840275338B200342496 /* Info.plist */,
 				26BB3841275338B200342496 /* main.m */,
@@ -521,6 +607,23 @@
 			productReference = 26BB384D275338EE00342496 /* MIDI Tape Recorder Plugin.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		AF0000000000000000000001 /* RecorderTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AF0000000000000000000002 /* Build configuration list for PBXNativeTarget "RecorderTests" */;
+			buildPhases = (
+				AF0000000000000000000005 /* Sources */,
+				AF0000000000000000000006 /* Frameworks */,
+				AF0000000000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RecorderTests;
+			productName = RecorderTests;
+			productReference = AF0000000000000000000008 /* RecorderTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -534,6 +637,9 @@
 						CreatedOnToolsVersion = 13.1;
 					};
 					26BB384C275338EE00342496 = {
+						CreatedOnToolsVersion = 13.1;
+					};
+					AF0000000000000000000001 = {
 						CreatedOnToolsVersion = 13.1;
 					};
 				};
@@ -553,6 +659,7 @@
 			targets = (
 				26BB382B275338B200342496 /* MIDI Tape Recorder */,
 				26BB384C275338EE00342496 /* MIDI Tape Recorder Plugin */,
+				AF0000000000000000000001 /* RecorderTests */,
 			);
 		};
 /* End PBXProject section */
@@ -564,7 +671,6 @@
 			files = (
 				26BB383F275338B200342496 /* LaunchScreen.storyboard in Resources */,
 				26BB383C275338B200342496 /* Assets.xcassets in Resources */,
-				26BB383A275338B200342496 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,6 +686,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AF0000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -587,8 +700,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26BB3837275338B200342496 /* ViewController.m in Sources */,
 				26BB3831275338B200342496 /* AppDelegate.m in Sources */,
+				AE2000000000000000000008 /* HostViewController.m in Sources */,
+				AE200000000000000000000A /* WelcomeViewController.m in Sources */,
+				AE2000000000000000000002 /* AudioEngineHost.m in Sources */,
+				AE2000000000000000000004 /* MidiPortManager.m in Sources */,
+				AE2000000000000000000006 /* MidiSettingsViewController.m in Sources */,
+				AF0000000000000000000030 /* MidiClockTempoTracker.m in Sources */,
+				AF0000000000000000000044 /* MidiFileConverter.mm in Sources */,
+				AF0000000000000000000045 /* RecordedMidiMessage.cpp in Sources */,
+				AF0000000000000000000046 /* MidiHelper.mm in Sources */,
+				AF0000000000000000000047 /* HostTrackFile.mm in Sources */,
+				AF0000000000000000000052 /* TransportCommands.m in Sources */,
+				AF0000000000000000000062 /* HostSession.mm in Sources */,
 				26BB3842275338B200342496 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -597,6 +721,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF0000000000000000000042 /* MidiFileConverter.mm in Sources */,
 				26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */,
 				26F36162276B0BDC00077518 /* Preferences.mm in Sources */,
 				26EE71D227534E11006C6B73 /* MidiRecorderKernel.mm in Sources */,
@@ -638,6 +763,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AF0000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF000000000000000000000B /* RecorderTests.mm in Sources */,
+				AF0000000000000000000043 /* MidiFileConverter.mm in Sources */,
+				AF000000000000000000004A /* HostTrackFile.mm in Sources */,
+				AF0000000000000000000063 /* HostSession.mm in Sources */,
+				AF0000000000000000000032 /* MidiClockTempoTracker.m in Sources */,
+				AF0000000000000000000010 /* MidiRecorderKernel.mm in Sources */,
+				AF0000000000000000000011 /* DSPKernel.mm in Sources */,
+				AF0000000000000000000012 /* MidiTrackRecorder.mm in Sources */,
+				AF0000000000000000000013 /* MidiQueueProcessor.mm in Sources */,
+				AF0000000000000000000014 /* MidiRecordedData.cpp in Sources */,
+				AF0000000000000000000015 /* MidiRecordedPreview.cpp in Sources */,
+				AF0000000000000000000016 /* RecordedMidiMessage.cpp in Sources */,
+				AF0000000000000000000017 /* MidiRecorderState.cpp in Sources */,
+				AF0000000000000000000018 /* NoteState.cpp in Sources */,
+				AF0000000000000000000019 /* NoteTracker.cpp in Sources */,
+				AF000000000000000000001A /* MidiHelper.mm in Sources */,
+				AF000000000000000000001B /* Logging.mm in Sources */,
+				AF000000000000000000001C /* TPCircularBuffer.c in Sources */,
+				AF000000000000000000001D /* TPCircularBuffer+AudioBufferList.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -649,14 +800,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		26BB3838275338B200342496 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				26BB3839275338B200342496 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		26BB383D275338B200342496 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -790,26 +933,27 @@
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder/MIDI Tape Recorder.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/MIDI Tape Recorder Plugin/**";
 				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
+				"INFOPLIST_FILE[sdk=macosx*]" = "MIDI Tape Recorder/Info-Catalyst.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations ="UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -828,26 +972,27 @@
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder/MIDI Tape Recorder.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/MIDI Tape Recorder Plugin/**";
 				INFOPLIST_FILE = "MIDI Tape Recorder/Info.plist";
+				"INFOPLIST_FILE[sdk=macosx*]" = "MIDI Tape Recorder/Info-Catalyst.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "MIDI Tape Rec";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations ="UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -864,7 +1009,7 @@
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder Plugin/MIDI Tape Recorder Plugin.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
@@ -877,7 +1022,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -895,7 +1040,7 @@
 				CODE_SIGN_ENTITLEMENTS = "MIDI Tape Recorder Plugin/MIDI Tape Recorder Plugin.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = AGZT8GVS7G;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "MIDI Tape Recorder Plugin/Info.plist";
@@ -908,7 +1053,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.8;
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -917,6 +1062,80 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
+			};
+			name = Release;
+		};
+		AF0000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AGZT8GVS7G;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/MIDI Tape Recorder Plugin/**",
+					"$(SRCROOT)/MIDI Tape Recorder",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/Frameworks",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudioKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder.RecorderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
+			};
+			name = Debug;
+		};
+		AF0000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AGZT8GVS7G;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/MIDI Tape Recorder Plugin/**",
+					"$(SRCROOT)/MIDI Tape Recorder",
+				);
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@loader_path/Frameworks",
+					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					CoreAudioKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.uwyn.MidiTapeRecorder.RecorderTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = NO;
 			};
 			name = Release;
 		};
@@ -946,6 +1165,15 @@
 			buildConfigurations = (
 				26BB386C275338EE00342496 /* Debug */,
 				26BB386D275338EE00342496 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AF0000000000000000000002 /* Build configuration list for PBXNativeTarget "RecorderTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AF0000000000000000000003 /* Debug */,
+				AF0000000000000000000004 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

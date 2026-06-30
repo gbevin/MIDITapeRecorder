@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder
 //
 //  Created by Geert Bevin on 12/1/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #pragma once
@@ -18,6 +18,10 @@ struct QueuedMidiMessage {
     
     double timeSampleSeconds    { 0.0 };
     double offsetBeats          { 0.0 };
+    // The render-thread playhead position captured when this message was queued,
+    // so the consumer thread doesn't have to read live (later, possibly
+    // different-tempo) state to anchor a recording.
+    double playPositionBeats    { 0.0 };
     bool hasBeatTime            { false };
     uint8_t data[3]             { 0, 0, 0 };
     

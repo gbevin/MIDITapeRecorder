@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 12/1/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "MidiTrackRecorder.h"
@@ -12,6 +12,7 @@
 
 #include "Constants.h"
 #include "Logging.h"
+#include "MidiFileConverter.h"
 #include "MidiHelper.h"
 #include "MidiRecorderState.h"
 
@@ -30,6 +31,22 @@
     double _recordingStartSampleSeconds;
     std::unique_ptr<MidiRecordedData> _recordingData;
     std::unique_ptr<MidiRecordedPreview> _recordingPreview;
+
+    // last playhead offset we've seen in the record stream (pings and messages).
+    // when it jumps backwards we've hit the loop wrap, which is where we capture
+    // a pending loop-record pass so each message ends up in the right pass.
+    double _lastPassOffsetBeats;
+
+    // set when a take ends while the previous loop pass is still waiting to be
+    // blended: we keep the final partial pass in the recording buffers until
+    // flushDeferredFinish can hand it off. atomic so the UI render loop can
+    // check it cheaply without going through the dispatch queue.
+    std::atomic<bool> _finishAwaitingBlend;
+
+    // set once a continuous loop-record take has captured at least one full
+    // pass. after that every new pass covers the whole loop, so we pin its
+    // start to the loop start for the overdub blend.
+    BOOL _takeHasCapturedPass;
 }
 
 - (instancetype)initWithOrdinal:(int)ordinal {
@@ -51,8 +68,11 @@
         _recordingStartSampleSeconds = 0.0;
         _recordingData.reset(new MidiRecordedData());
         _recordingPreview.reset(new MidiRecordedPreview());
+        _lastPassOffsetBeats = 0.0;
+        _finishAwaitingBlend = false;
+        _takeHasCapturedPass = NO;
     }
-    
+
     return self;
 }
 
@@ -60,28 +80,59 @@
 
 - (void)setRecord:(BOOL)record {
     __block BOOL finish_recording = NO;
-    
+
     dispatch_barrier_sync(_dispatchQueue, ^{
         if (_record == record) {
             return;
         }
         
         _record = record;
-        
+
+        // changing the record state cancels any pending loop-record cycle capture
+        _state->processedCaptureRecording[_ordinal].test_and_set();
+        _lastPassOffsetBeats = 0.0;
+        _takeHasCapturedPass = NO;
+
+        // hand off (or drop) a final pass that was still deferred when the
+        // previous take ended, before this new take starts using the buffers
+        if (record == YES && _finishAwaitingBlend.load()) {
+            _finishAwaitingBlend = false;
+
+            MidiTrackState& track_state = _state->track[_ordinal];
+            if (track_state.pendingRecordedData == nullptr && _recordingData->getDuration() > 0.0) {
+                track_state.pendingRecordedData = std::move(_recordingData);
+                track_state.pendingRecordedPreview = std::move(_recordingPreview);
+                _state->processedBlendRecording[_ordinal].clear();
+            }
+
+            _recordingStartSampleSeconds = 0.0;
+            _recordingData.reset(new MidiRecordedData());
+            _recordingPreview.reset(new MidiRecordedPreview());
+        }
+
         if (record == NO) {
             if (_recordingData->getDuration() > 0.0) {
-                // when recording is stopped, we move the recording data to the recorded data
-                auto recorded_data = std::move(_recordingData);
-                auto recorded_preview = std::move(_recordingPreview);
-
-                _recordingStartSampleSeconds = 0.0;
-                _recordingData.reset(new MidiRecordedData());
-                _recordingPreview.reset(new MidiRecordedPreview());
-                
                 MidiTrackState& track_state = _state->track[_ordinal];
-                track_state.pendingRecordedData = std::move(recorded_data);
-                track_state.pendingRecordedPreview = std::move(recorded_preview);
-                
+
+                // when recording is stopped, we move the recording data to the recorded data
+                if (track_state.pendingRecordedData == nullptr) {
+                    auto recorded_data = std::move(_recordingData);
+                    auto recorded_preview = std::move(_recordingPreview);
+
+                    _recordingStartSampleSeconds = 0.0;
+                    _recordingData.reset(new MidiRecordedData());
+                    _recordingPreview.reset(new MidiRecordedPreview());
+
+                    track_state.pendingRecordedData = std::move(recorded_data);
+                    track_state.pendingRecordedPreview = std::move(recorded_preview);
+                }
+                // if the stop raced a loop-record cycle capture whose full pass
+                // hasn't been blended yet, hold on to this partial pass and hand
+                // it off once the kernel has taken the previous one (flushDeferredFinish)
+                else {
+                    _finishAwaitingBlend = true;
+                }
+
                 // reset state
                 _state->processedResetRecording[_ordinal].test_and_set();
                 track_state.hasRecordedEvents.clear();
@@ -135,6 +186,9 @@
 
 - (void)dictToRecorded:(NSDictionary*)dict {
     dispatch_barrier_sync(_dispatchQueue, ^{
+        // restored content replaces whatever a deferred finish would blend into
+        [self dropDeferredFinishLocked];
+
         std::unique_ptr<MidiRecordedData> recorded_data(new MidiRecordedData());
         double recorded_duration = 0.0;
 
@@ -225,187 +279,197 @@
         return nil;
     }
 
-    // accumulate the track data in a seperate object so that
-    // we can provide the length before adding its data
-    NSMutableData* track = [NSMutableData new];
-
-    // add tempo to track
-    writeMidiVarLen(track, 0);
-    // we can't have more than 0xffffff microseconds per beat
-    int32_t beat_micros = MIN(1000000.0 * 60.0 / _state->tempo, 0xffffff);
-    uint8_t meta_tempo[] = { 0xff, 0x51, 0x03 };
-    [track appendBytes:&meta_tempo[0] length:3];
-    uint8_t bm1 = (beat_micros >> 16) & 0xff;
-    [track appendBytes:&bm1 length:1];
-    uint8_t bm2 = (beat_micros >> 8) & 0xff;
-    [track appendBytes:&bm2 length:1];
-    uint8_t bm3 = beat_micros & 0xff;
-    [track appendBytes:&bm3 length:1];
-
-    // add midi events to track
-    int64_t last_offset_ticks = 0;
+    // gather the recorded messages and hand the SMF encoding to the shared converter
+    midifile::Track track;
     for (RecordedDataVector& beat : recorded_data->getBeats()) {
         for (RecordedMidiMessage& message : beat) {
-            if (message.type == INTERNAL) {
-                continue;
-            }
-            
-            int64_t offset_ticks = int64_t(ceil(MAX(message.offsetBeats, 0.0) * MIDI_BEAT_TICKS));
-            uint32_t delta_ticks = uint32_t(MAX(offset_ticks - last_offset_ticks, 0));
-            writeMidiVarLen(track, delta_ticks);
-            for (int d = 0; d < message.length; ++d) {
-                [track appendBytes:&message.data[d] length:1];
-            }
-            
-            last_offset_ticks = offset_ticks;
+            track.messages.push_back(message);
         }
     }
-    
-    // add end of track meta event
-    int64_t offset_ticks = int64_t(ceil(MAX(recorded_data->getDuration(), 0.0) * MIDI_BEAT_TICKS));
-    uint32_t delta_ticks = uint32_t(MAX(offset_ticks - last_offset_ticks, 0));
-    writeMidiVarLen(track, delta_ticks);
-    uint8_t meta_end_of_track[] = { 0xff, 0x2f, 0x00 };
-    [track appendBytes:&meta_end_of_track[0] length:3];
-    
-    // create the full track chunk, including the header
-    NSMutableData* data = [NSMutableData new];
+    track.durationBeats = recorded_data->getDuration();
 
-    // we know we're using ASCII character, so UTF-8 will only use those characters
-    [data appendBytes:[@"MTrk" UTF8String] length:4];
-
-    // track chunk length
-    uint32_t track_header_length = needsMidiByteSwap() ? CFSwapInt32((uint32_t)track.length) : (uint32_t)track.length;
-    [data appendBytes:&track_header_length length:4];
-    
-    // add the previously accumulated track events
-    [data appendData:track];
-
-    return data;
+    return midifile::writeTrackChunk(track, _state->tempo);
 }
 
-- (void)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division{
-    if (track == nil || track.length == 0) {
-        return;
+- (BOOL)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division{
+    if (track == nil || track.length == 0 || division == 0) {
+        return NO;
     }
 
+    // parse the SMF track bytes into messages with the shared converter
+    __block midifile::Track parsed;
+    if (!midifile::parseTrackChunk(track, division, parsed)) {
+        // chunks that produced no note content (e.g. a conductor track) are skipped
+        return NO;
+    }
+
+    __block BOOL imported = NO;
     dispatch_barrier_sync(_dispatchQueue, ^{
-        // prepare local data to accumulate into
+        // imported content replaces whatever a deferred finish would blend into
+        [self dropDeferredFinishLocked];
+
+        // build the recorded data and preview from the parsed messages
         std::unique_ptr<MidiRecordedData> recorded_data(new MidiRecordedData());
         std::unique_ptr<MidiRecordedPreview> recorded_preview(new MidiRecordedPreview());
-        double recorded_duration = 0.0;
 
-        // process the track events
-        int64_t last_offset_ticks = 0;
-        uint8_t running_status = 0;
-        uint32_t i = 0;
-        uint8_t* track_bytes = (uint8_t*)track.bytes;
-        while (i < track.length) {
-            // read variable length delta time
-            uint32_t delta_ticks;
-            i += readMidiVarLen(&track_bytes[i], delta_ticks);
-            
-            int64_t offset_ticks = last_offset_ticks + delta_ticks;
-            // sanitize the ticks in case they were generated from negative values
-            if (offset_ticks > 0xfffffff) {
-                offset_ticks = 0;
-            }
-            double duration_beats = double(offset_ticks) / division;
-            last_offset_ticks = offset_ticks;
-            
-            // handle event
-            uint8_t event_identifier = track_bytes[i];
-            i += 1;
-            switch (event_identifier) {
-                // sysex event
-                case 0xf0:
-                case 0xf7: {
-                    // capture the event length
-                    uint32_t length;
-                    i += readMidiVarLen(&track_bytes[i], length);
-                    // skip over the event data
-                    i += length;
-                    break;
-                }
-                // meta event
-                case 0xff: {
-                    // skip over the event type
-                    i += 1;
-                    // capture the event length
-                    uint32_t length;
-                    i += readMidiVarLen(&track_bytes[i], length);
-                    // skip over the event data
-                    i += length;
-                    break;
-                }
-                // midi event
-                default: {
-                    uint8_t d0 = event_identifier;
-                    // check for status byte
-                    if ((d0 & 0x80) != 0) {
-                        running_status = d0;
-                    }
-                    // not a status byte, we'll reuse the previous one as running status
-                    else {
-                        d0 = running_status;
-                    }
-                    
-                    RecordedMidiMessage msg;
-                    msg.offsetBeats = duration_beats;
-
-                    // get the data bytes based on the active state
-                    // one data byte
-                    if ((d0 & 0xf0) == 0xc0 || (d0 & 0xf0) == 0xd0) {
-                        uint8_t d1 = track_bytes[i];
-                        i += 1;
-                        
-                        msg.length = 2;
-                        msg.data[0] = d0;
-                        msg.data[1] = d1;
-                        msg.data[2] = 0;
-                    }
-                    // two data bytes
-                    else {
-                        uint8_t d1 = track_bytes[i];
-                        i += 1;
-                        uint8_t d2 = track_bytes[i];
-                        i += 1;
-                        
-                        msg.length = 3;
-                        msg.data[0] = d0;
-                        msg.data[1] = d1;
-                        msg.data[2] = d2;
-                    }
-
-                    // add the recorded message
-                    recorded_data->addMessageToBeat(msg);
-                    
-                    // update the preview
-                    recorded_preview->updateWithMessage(msg);
-
-                    break;
-                }
-            }
+        for (RecordedMidiMessage& msg : parsed.messages) {
+            recorded_data->addMessageToBeat(msg);
+            recorded_preview->updateWithMessage(msg);
         }
-        
-        recorded_duration = double(last_offset_ticks) / division;
+
         if (_state->autoTrimRecordings.test()) {
-            recorded_duration = ceil(recorded_duration);
+            double recorded_duration = ceil(parsed.durationBeats);
             recorded_data->increaseDuration(recorded_duration);
         }
-        
+
         // transfer all the accumulated data to the active recorded data
         MidiTrackState& track_state = _state->track[_ordinal];
         track_state.pendingRecordedData = std::move(recorded_data);
         track_state.pendingRecordedPreview = std::move(recorded_preview);
+        imported = YES;
     });
-    
-    if (_delegate) {
+
+    if (imported && _delegate) {
         [_delegate finishImport:_ordinal];
     }
+    return imported;
 }
 
 #pragma mark Recording
+
+// hands off a final pass that had to wait for a racing loop-record blend to be
+// taken by the kernel. driven from the UI render loop, since no more MIDI
+// messages come through the recorder once recording has ended.
+- (void)flushDeferredFinish {
+    // fast path: nothing deferred (checked without entering the queue)
+    if (!_finishAwaitingBlend.load()) {
+        return;
+    }
+
+    dispatch_barrier_sync(_dispatchQueue, ^{
+        if (!_finishAwaitingBlend.load()) {
+            return;
+        }
+
+        MidiTrackState& track_state = _state->track[_ordinal];
+
+        // the previous pass hasn't been blended yet; try again on the next tick
+        if (track_state.pendingRecordedData != nullptr) {
+            return;
+        }
+
+        _finishAwaitingBlend = false;
+
+        if (_recordingData->getDuration() > 0.0) {
+            auto recorded_data = std::move(_recordingData);
+            auto recorded_preview = std::move(_recordingPreview);
+
+            _recordingStartSampleSeconds = 0.0;
+            _recordingData.reset(new MidiRecordedData());
+            _recordingPreview.reset(new MidiRecordedPreview());
+
+            track_state.pendingRecordedData = std::move(recorded_data);
+            track_state.pendingRecordedPreview = std::move(recorded_preview);
+
+            _state->processedBlendRecording[_ordinal].clear();
+        }
+    });
+}
+
+// drops a deferred final pass when the content it would blend into is being
+// replaced anyway (clear, crop, state restore, import).
+// must be called on _dispatchQueue.
+- (void)dropDeferredFinishLocked {
+    if (!_finishAwaitingBlend.load()) {
+        return;
+    }
+
+    _finishAwaitingBlend = false;
+    _recordingStartSampleSeconds = 0.0;
+    _recordingData.reset(new MidiRecordedData());
+    _recordingPreview.reset(new MidiRecordedPreview());
+}
+
+// captures a pending loop-record pass when the message stream crosses the loop
+// wrap. the kernel flags the capture at the wrap, and the first message that jumps
+// back before the last one we saw belongs to the new cycle. the finished pass
+// moves to the track's pending data for the kernel to blend as an overdub, and
+// recording carries on into a fresh pass.
+// must be called on _dispatchQueue.
+- (void)captureLoopPassAtOffset:(double)offsetBeats {
+    // nothing to do without a pending capture request
+    if (_state->processedCaptureRecording[_ordinal].test()) {
+        return;
+    }
+
+    // wait for the first message that belongs to the new cycle
+    if (_lastPassOffsetBeats <= 0.0 || offsetBeats >= _lastPassOffsetBeats) {
+        return;
+    }
+
+    MidiTrackState& track_state = _state->track[_ordinal];
+
+    // an earlier pass hasn't been blended yet; retry on the next message
+    if (track_state.pendingRecordedData != nullptr) {
+        return;
+    }
+
+    _state->processedCaptureRecording[_ordinal].test_and_set();
+    _lastPassOffsetBeats = 0.0;
+
+    if (_recordingData->getDuration() > 0.0) {
+        // the pass ran past the loop end, but its duration only reaches the last
+        // queued message; stretch it to the end of the loop window (like a final
+        // ping at the boundary would have) so the overdub blend replaces the whole
+        // span instead of leaving an old tail behind
+        double capture_stop = _state->stopPositionBeats;
+        if (_state->punchInOut.test()) {
+            capture_stop = MIN(capture_stop, _state->punchOutPositionBeats.load());
+        }
+        if (capture_stop > 0.0) {
+            _recordingData->increaseDuration(capture_stop);
+            _recordingData->populateUpToBeat(_recordingData->getDuration());
+            if (_recordingPreview) {
+                _recordingPreview->setStartIfNeeded(_recordingData->getStart());
+                _recordingPreview->updateWithOffsetBeats(capture_stop);
+            }
+        }
+
+        auto recorded_data = std::move(_recordingData);
+        auto recorded_preview = std::move(_recordingPreview);
+
+        _recordingStartSampleSeconds = 0.0;
+        _recordingData.reset(new MidiRecordedData());
+        _recordingPreview.reset(new MidiRecordedPreview());
+
+        track_state.pendingRecordedData = std::move(recorded_data);
+        track_state.pendingRecordedPreview = std::move(recorded_preview);
+
+        // the next pass starts right at the loop wrap (or punch-in); pin its start
+        // so its own blend covers the head of the loop instead of starting at the
+        // first message after the wrap
+        [self pinPassStartLocked];
+        _takeHasCapturedPass = YES;
+
+        // cancel any pending no-events reset and clear the per-cycle event marker
+        _state->processedResetRecording[_ordinal].test_and_set();
+        track_state.hasRecordedEvents.clear();
+
+        _state->processedBlendRecording[_ordinal].clear();
+    }
+}
+
+// pins a fresh pass's start to the loop start (or punch-in), so its overdub
+// blend covers the head of the loop instead of starting at the first message
+// or ping after the wrap. must be called on _dispatchQueue.
+- (void)pinPassStartLocked {
+    double pass_start = _state->startPositionBeats;
+    if (_state->punchInOut.test()) {
+        pass_start = MAX(pass_start, _state->punchInPositionBeats.load());
+    }
+    _recordingData->setStartIfNeeded(pass_start);
+    _recordingPreview->setStartIfNeeded(pass_start);
+}
 
 - (void)ping:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
@@ -428,12 +492,25 @@
         if (_recordingStartSampleSeconds == 0.0) {
             _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
         }
-        
+
+        // capture a pending loop-record pass at the wrap point
+        if (message.hasBeatTime) {
+            [self captureLoopPassAtOffset:message.offsetBeats];
+            _lastPassOffsetBeats = message.offsetBeats;
+        }
+
         // we might have to reset the recording if no events were recorded and it wasn't manually stopped
         if (!_state->processedResetRecording[_ordinal].test_and_set()) {
             _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
             _recordingData.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
+            _lastPassOffsetBeats = 0.0;
+            // mid-take, after we've captured a loop pass, the fresh pass still
+            // covers the whole loop; keep its start pinned so old material can't
+            // survive at the head of the next blend
+            if (_takeHasCapturedPass) {
+                [self pinPassStartLocked];
+            }
         }
 
         // if punch in/out is enabled, only record during the punch in/out positions
@@ -441,8 +518,9 @@
             return;
         }
 
-        // mark the first time the recording had processing
-        _recordingData->setStartIfNeeded(_state->playPositionBeats);
+        // mark the first time the recording had processing, using the playhead
+        // captured when this message was queued rather than the live value
+        _recordingData->setStartIfNeeded(message.playPositionBeats);
         
         // update the recording duration even when there's no incoming messages
         if (message.hasBeatTime) {
@@ -596,7 +674,7 @@
         if (!_record || !_recordingData) {
             return;
         }
-        
+
         // if punch in/out is enabled, only record during the punch in/out positions
         if (_state->inactivePunchInOut()) {
             return;
@@ -608,7 +686,7 @@
         if (_state->transportStartSampleSeconds == 0.0) {
             if (_recordingData->empty()) {
                 if (_delegate) {
-                    _recordingStartSampleSeconds = message.timeSampleSeconds - _state->playPositionBeats * _state->beatsToSeconds;
+                    _recordingStartSampleSeconds = message.timeSampleSeconds - message.playPositionBeats * _state->beatsToSeconds;
                     _state->transportStartSampleSeconds = _recordingStartSampleSeconds;
                     [_delegate startRecord];
                     _state->track[_ordinal].recording.test_and_set();
@@ -625,6 +703,13 @@
             else if (_recordingStartSampleSeconds == 0.0) {
                 _recordingStartSampleSeconds = _state->transportStartSampleSeconds.load();
             }
+        }
+
+        // capture a pending loop-record pass at the wrap point, so this message
+        // lands in the new cycle's pass
+        if (message.hasBeatTime) {
+            [self captureLoopPassAtOffset:message.offsetBeats];
+            _lastPassOffsetBeats = message.offsetBeats;
         }
 
         // calculate timing offsets
@@ -662,6 +747,13 @@
     dispatch_barrier_sync(_dispatchQueue, ^{
         _record = NO;
 
+        // discarding the recording cancels any pending loop-record cycle capture
+        // or deferred finish
+        _state->processedCaptureRecording[_ordinal].test_and_set();
+        _lastPassOffsetBeats = 0.0;
+        _takeHasCapturedPass = NO;
+        [self dropDeferredFinishLocked];
+
         if (_delegate) {
             [_delegate invalidateRecording:_ordinal];
         }
@@ -669,12 +761,31 @@
         _recordingStartSampleSeconds = 0.0;
         _recordingData.reset(new MidiRecordedData());
         _recordingPreview.reset(new MidiRecordedPreview());
+
+        // the MPE configuration is detected from the recorded content, so reset it
+        // along with the content it was derived from
+        MPEState& mpe = _state->track[_ordinal].mpeState;
+        mpe.enabled = false;
+        mpe.zone1Active = false;
+        mpe.zone1Members = 0;
+        mpe.zone1ManagerPitchSens = 0.f;
+        mpe.zone1MemberPitchSens = 0.f;
+        mpe.zone2Active = false;
+        mpe.zone2Members = 0;
+        mpe.zone2ManagerPitchSens = 0.f;
+        mpe.zone2MemberPitchSens = 0.f;
     });
 }
 
 - (void)crop {
     dispatch_barrier_sync(_dispatchQueue, ^{
         _record = NO;
+
+        // cropping cancels any pending loop-record cycle capture or deferred finish
+        _state->processedCaptureRecording[_ordinal].test_and_set();
+        _lastPassOffsetBeats = 0.0;
+        _takeHasCapturedPass = NO;
+        [self dropDeferredFinishLocked];
 
         std::unique_ptr<MidiRecordedData> cropped_data(new MidiRecordedData());
         std::unique_ptr<MidiRecordedPreview> cropped_preview(new MidiRecordedPreview());

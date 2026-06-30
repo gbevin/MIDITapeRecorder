@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #pragma once
@@ -48,6 +48,7 @@ private:
     void play();
     void stop();
     void endRecording(int track);
+    void blendRecording(int track);
 
     void passThroughMIDIEvent(AUMIDIEvent const& midiEvent, int cable);
     void queueMIDIEvent(AUMIDIEvent const& midiEvent);

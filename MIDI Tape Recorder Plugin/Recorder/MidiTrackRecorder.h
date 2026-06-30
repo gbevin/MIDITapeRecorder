@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 12/1/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import <Foundation/Foundation.h>
@@ -28,13 +28,21 @@ class MidiRecorderState;
 - (NSMutableDictionary*)recordedAsDict;
 - (void)dictToRecorded:(NSDictionary*)dict;
 - (NSData*)recordedAsMidiTrackChunk;
-- (void)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division;
+// Parses a Standard MIDI File track chunk into this track's recorded data.
+// Returns YES if the chunk contained note/channel content that was imported, or
+// NO for empty/meta-only chunks (e.g. a format-1 conductor track).
+- (BOOL)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division;
 
 - (void)setState:(MidiRecorderState*)state;
 - (void)ping:(QueuedMidiMessage&)message;
 - (void)recordMidiMessage:(QueuedMidiMessage&)message;
 - (void)clear;
 - (void)crop;
+
+// hands off a final pass that had to wait for a racing loop-record blend to
+// finish. call this regularly from the UI render loop, since no more MIDI
+// messages come through the recorder once recording has stopped.
+- (void)flushDeferredFinish;
 
 - (double)activeDuration;
 

@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/27/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "MidiRecorderAudioUnit.h"
@@ -331,6 +331,62 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
 
+    AUParameter* undoParam = [AUParameterTree createParameterWithIdentifier:@"undo"
+                                                                       name:@"Undo"
+                                                                    address:ID_UNDO
+                                                                        min:0
+                                                                        max:1
+                                                                       unit:kAudioUnitParameterUnit_Boolean
+                                                                   unitName:nil
+                                                                      flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                               valueStrings:nil
+                                                        dependentParameters:nil];
+
+    AUParameter* redoParam = [AUParameterTree createParameterWithIdentifier:@"redo"
+                                                                       name:@"Redo"
+                                                                    address:ID_REDO
+                                                                        min:0
+                                                                        max:1
+                                                                       unit:kAudioUnitParameterUnit_Boolean
+                                                                   unitName:nil
+                                                                      flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                               valueStrings:nil
+                                                        dependentParameters:nil];
+
+    // Read-only availability of undo/redo, so a host can mirror their state.
+    AUParameter* canUndoParam = [AUParameterTree createParameterWithIdentifier:@"canUndo"
+                                                                          name:@"Can Undo"
+                                                                       address:ID_CAN_UNDO
+                                                                           min:0
+                                                                           max:1
+                                                                          unit:kAudioUnitParameterUnit_Boolean
+                                                                      unitName:nil
+                                                                         flags:kAudioUnitParameterFlag_IsReadable
+                                                                  valueStrings:nil
+                                                           dependentParameters:nil];
+
+    AUParameter* canRedoParam = [AUParameterTree createParameterWithIdentifier:@"canRedo"
+                                                                          name:@"Can Redo"
+                                                                       address:ID_CAN_REDO
+                                                                           min:0
+                                                                           max:1
+                                                                          unit:kAudioUnitParameterUnit_Boolean
+                                                                      unitName:nil
+                                                                         flags:kAudioUnitParameterFlag_IsReadable
+                                                                  valueStrings:nil
+                                                           dependentParameters:nil];
+
+    AUParameter* clearUndoHistoryParam = [AUParameterTree createParameterWithIdentifier:@"clearUndoHistory"
+                                                                                  name:@"Clear Undo History"
+                                                                               address:ID_CLEAR_UNDO_HISTORY
+                                                                                   min:0
+                                                                                   max:1
+                                                                                  unit:kAudioUnitParameterUnit_Boolean
+                                                                              unitName:nil
+                                                                                 flags:kAudioUnitParameterFlag_IsWritable | kAudioUnitParameterFlag_IsReadable
+                                                                          valueStrings:nil
+                                                                   dependentParameters:nil];
+
     // Initialize the parameter values.
     playParam.value = 0.0;
     recordParam.value = 0.0;
@@ -356,6 +412,11 @@
     clear2Param.value = 0.0;
     clear3Param.value = 0.0;
     clear4Param.value = 0.0;
+    undoParam.value = 0.0;
+    redoParam.value = 0.0;
+    canUndoParam.value = 0.0;
+    canRedoParam.value = 0.0;
+    clearUndoHistoryParam.value = 0.0;
 
     // Create the parameter tree.
     _parameterTree = [AUParameterTree createTreeWithChildren:@[
@@ -382,7 +443,12 @@
         clear1Param,
         clear2Param,
         clear3Param,
-        clear4Param
+        clear4Param,
+        undoParam,
+        redoParam,
+        canUndoParam,
+        canRedoParam,
+        clearUndoHistoryParam
     ]];
 }
 

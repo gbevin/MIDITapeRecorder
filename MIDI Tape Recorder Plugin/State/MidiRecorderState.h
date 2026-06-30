@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder
 //
 //  Created by Geert Bevin on 11/28/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #pragma once
@@ -30,6 +30,11 @@ struct MidiRecorderState {
     std::atomic_flag recordArmed        { false };
     std::atomic_flag repeatEnabled      { false };
     std::atomic_flag clearAllTrigger    { false };
+    std::atomic_flag undoTrigger        { false };
+    std::atomic_flag redoTrigger        { false };
+    std::atomic_flag undoAvailable      { false };
+    std::atomic_flag redoAvailable      { false };
+    std::atomic_flag clearUndoHistoryTrigger { false };
 
     std::atomic_flag grid       { false };
     std::atomic_flag chase      { true };
@@ -42,6 +47,9 @@ struct MidiRecorderState {
     std::atomic_flag waitForNextHostBeatToPlay  { false };
     std::atomic_flag autoTrimRecordings         { true };
     std::atomic_flag autoRewindAfterRecording   { true };
+    // when set, we keep looping and overdubbing each pass instead of punching
+    // out at the end of the loop (opt-in, off by default)
+    std::atomic_flag loopRecord                 { false };
 
     std::atomic<double> tempo           { 120.0 };
     std::atomic<double> secondsToBeats  { 2.0 };
@@ -71,6 +79,11 @@ struct MidiRecorderState {
     std::atomic_flag processedDeactivateRepeat              { true };
     std::atomic_flag processedBeginRecording[MIDI_TRACKS]   { true, true, true, true };
     std::atomic_flag processedEndRecording[MIDI_TRACKS]     { true, true, true, true };
+    std::atomic_flag processedBlendRecording[MIDI_TRACKS]   { true, true, true, true };
+    // loop-record cycle capture: the kernel sets this at the loop wrap, and the
+    // recorder acts on it at the wrap point in its message stream (the first
+    // message that jumps back to the loop start begins the new pass)
+    std::atomic_flag processedCaptureRecording[MIDI_TRACKS]  { true, true, true, true };
     std::atomic_flag processedImport[MIDI_TRACKS]           { true, true, true, true };
     std::atomic_flag processedCropAll                       { true };
     std::atomic_flag processedNotesOff[MIDI_TRACKS]         { true, true, true, true };

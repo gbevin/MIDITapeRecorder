@@ -3,7 +3,7 @@
 //  MIDI Tape Recorder Plugin
 //
 //  Created by Geert Bevin on 11/28/21.
-//  MIDI Tape Recorder ©2021 by Geert Bevin is licensed under CC BY 4.0
+//  MIDI Tape Recorder ©2026 by Geert Bevin is licensed under CC BY 4.0
 //
 
 #import "MidiRecorderKernel.h"
@@ -146,10 +146,16 @@ void MidiRecorderKernel::stop() {
 }
 
 void MidiRecorderKernel::endRecording(int track) {
+    _state.track[track].recording.clear();
+    blendRecording(track);
+}
+
+// blends the pending recording into the recorded data (either a fresh recording
+// or an overdub), without stopping recording. endRecording() clears the recording
+// flag first; loop-record cycle captures call this directly to keep recording.
+void MidiRecorderKernel::blendRecording(int track) {
     MidiTrackState& track_state = _state.track[track];
-    
-    track_state.recording.clear();
-    
+
     // if this is a direct recording, just move all the data over
     if (!track_state.recordedData || track_state.recordedData->empty()) {
         track_state.recordedData = std::move(track_state.pendingRecordedData);
@@ -306,6 +312,11 @@ void MidiRecorderKernel::endRecording(int track) {
             track_state.recordedData->trimDuration();
         }
     }
+
+    // we've consumed the pending data either way; release it so a leftover blend
+    // transition can't run against emptied-out data
+    track_state.pendingRecordedData.reset();
+    track_state.pendingRecordedPreview.reset();
 }
 
 void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value) {
@@ -407,6 +418,26 @@ void MidiRecorderKernel::setParameter(AUParameterAddress address, AUValue value)
             if (set) _state.track[3].clearTrigger.test_and_set();
             else     _state.track[3].clearTrigger.clear();
             break;
+        case ID_UNDO:
+            if (set) _state.undoTrigger.test_and_set();
+            else     _state.undoTrigger.clear();
+            break;
+        case ID_REDO:
+            if (set) _state.redoTrigger.test_and_set();
+            else     _state.redoTrigger.clear();
+            break;
+        case ID_CAN_UNDO:
+            if (set) _state.undoAvailable.test_and_set();
+            else     _state.undoAvailable.clear();
+            break;
+        case ID_CAN_REDO:
+            if (set) _state.redoAvailable.test_and_set();
+            else     _state.redoAvailable.clear();
+            break;
+        case ID_CLEAR_UNDO_HISTORY:
+            if (set) _state.clearUndoHistoryTrigger.test_and_set();
+            else     _state.clearUndoHistoryTrigger.clear();
+            break;
     }
 }
 
@@ -461,6 +492,16 @@ AUValue MidiRecorderKernel::getParameter(AUParameterAddress address) {
             return _state.track[2].clearTrigger.test();
         case ID_CLEAR_4:
             return _state.track[3].clearTrigger.test();
+        case ID_UNDO:
+            return _state.undoTrigger.test();
+        case ID_REDO:
+            return _state.redoTrigger.test();
+        case ID_CAN_UNDO:
+            return _state.undoAvailable.test();
+        case ID_CAN_REDO:
+            return _state.redoAvailable.test();
+        case ID_CLEAR_UNDO_HISTORY:
+            return _state.clearUndoHistoryTrigger.test();
         default:
             return 0.f;
     }
@@ -490,6 +531,7 @@ void MidiRecorderKernel::handleBufferStart() {
     
     QueuedMidiMessage message;
     message.timeSampleSeconds = _ioState.timeSampleSeconds;
+    message.playPositionBeats = _state.playPositionBeats;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
         double offset_beats = _ioState.currentBeatPosition;
         double session_duration = _state.stopPositionBeats.load() - _state.startPositionBeats.load();
@@ -501,7 +543,13 @@ void MidiRecorderKernel::handleBufferStart() {
         message.offsetBeats = offset_beats;
         message.hasBeatTime = true;
     }
-    
+    // without a host beat clock, drive the recorded duration from the
+    // tempo-integrated playhead instead of reconstructing it on the consumer
+    else if (_isPlaying) {
+        message.offsetBeats = _state.playPositionBeats;
+        message.hasBeatTime = true;
+    }
+
     TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
 }
 
@@ -591,6 +639,17 @@ void MidiRecorderKernel::handleScheduledTransitions() {
         if (!_state.processedEndRecording[t].test_and_set()) {
             endRecording(t);
             _state.processedUIRebuildPreview[t].clear();
+        }
+
+        // blend recording (loop-record cycle capture: blend the pass as an overdub
+        // but keep recording into the next loop); a manual stop can race this and
+        // already consume the pending data, so guard against a second blend running
+        // on emptied-out data
+        if (!_state.processedBlendRecording[t].test_and_set()) {
+            if (track_state.pendingRecordedData) {
+                blendRecording(t);
+                _state.processedUIRebuildPreview[t].clear();
+            }
         }
 
         // import
@@ -798,8 +857,29 @@ void MidiRecorderKernel::processOutput() {
 
                 // check if we should finish the recording or reset it since no events were recorded
                 if (end_recording) {
-                    _state.processedUIEndRecord.clear();
-                    recording_tracks = false;
+                    // in loop-record mode we keep recording: capture each track that
+                    // actually recorded something this cycle as an overdub (the
+                    // recorder does the capture at the wrap point in its message
+                    // stream), and reset a track that stayed silent so we leave its
+                    // existing content alone instead of overwriting it with silence
+                    if (_state.loopRecord.test()) {
+                        for (int t = 0; t < MIDI_TRACKS; ++t) {
+                            if (!_state.track[t].recording.test()) {
+                                continue;
+                            }
+                            if (_state.track[t].hasRecordedEvents.test()) {
+                                _state.processedCaptureRecording[t].clear();
+                            }
+                            else {
+                                _state.processedResetRecording[t].clear();
+                                _state.processedUIRebuildPreview[t].clear();
+                            }
+                        }
+                    }
+                    else {
+                        _state.processedUIEndRecord.clear();
+                        recording_tracks = false;
+                    }
                 }
                 else {
                     for (int t = 0; t < MIDI_TRACKS; ++t) {
@@ -939,6 +1019,7 @@ void MidiRecorderKernel::turnOffAllNotesForTrack(int track) {
 void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     QueuedMidiMessage message;
     message.timeSampleSeconds = double(midiEvent.eventSampleTime) / _ioState.sampleRate;
+    message.playPositionBeats = _state.playPositionBeats;
     if (_state.followHostTransport.test() && _ioState.transportMoving.test()) {
         double offset_seconds = double(midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime) / _ioState.sampleRate;
         double offset_beats = _ioState.currentBeatPosition + offset_seconds * _state.secondsToBeats;
@@ -949,6 +1030,14 @@ void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
         }
         offset_beats += _state.startPositionBeats.load();
         message.offsetBeats = offset_beats;
+        message.hasBeatTime = true;
+    }
+    // without a host beat clock, stamp the tempo-integrated playhead position
+    // (which already advances per buffer and wraps on repeat) plus the in-buffer
+    // sample offset, so the recorded beat is accurate under a changing tempo
+    else if (_isPlaying) {
+        double offset_seconds = double(midiEvent.eventSampleTime - _ioState.timestamp->mSampleTime) / _ioState.sampleRate;
+        message.offsetBeats = _state.playPositionBeats + offset_seconds * _state.secondsToBeats;
         message.hasBeatTime = true;
     }
     message.cable = midiEvent.cable;

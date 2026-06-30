@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UIFileSharingEnabled</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	<!-- Mac Catalyst variant of Info.plist. It intentionally omits the
+	     CFBundleDocumentTypes registration present in the iOS Info.plist: on Mac
+	     Catalyst, declaring a handled document type makes UIKit inject standard
+	     File-menu commands (Open… ⌘O, Close ⌘W) whose ⌘O silently collides with —
+	     and drops — our own Session submenu (New/Open/Save/Save As/Rename). On the
+	     Mac the menu's Open Session command covers opening files, so we keep the
+	     menu clean here; "Open in…" file handling stays an iOS/iPadOS feature. -->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.uwyn.MidiTapeRecorder.session</string>
+			<key>UTTypeDescription</key>
+			<string>MIDI Tape Recorder Session</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>mtrec</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
