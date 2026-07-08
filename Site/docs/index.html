@@ -1,51 +1,56 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="../style/main.css"/>
-  <meta name="description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
-  <meta name="keywords" content="MIDI, MPE, Synthesizer, LinnStrument, ROLI, Seaboard, Continuum, Sequencer, DAW, Logic" />
-  <meta property="og:url" content="https://uwyn.com/mtr/docs/" />
-  <meta property="og:title" content="MIDI Tape Recorder - Documentation" />
-  <meta property="og:description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
-  <meta property="og:image" content="https://uwyn.com/mtr/images/og-screenshot1.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:type" content="website" />
-  <title>MIDI Tape Recorder - Documentation</title>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-90390-4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-90390-4');
-</script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Uwyn" />
+	<meta property="og:url" content="https://uwyn.com/mtr/docs/" />
+	<meta property="og:title" content="MIDI Tape Recorder - Documentation" />
+	<meta property="og:description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
+	<meta property="og:image" content="https://uwyn.com/mtr/images/og-screenshot1.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="MIDI Tape Recorder plugin interface" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="theme-color" content="#181818" />
+	<title>MIDI Tape Recorder - Documentation</title>
+	<link rel="canonical" href="https://uwyn.com/mtr/docs/" />
+	<link rel="stylesheet" type="text/css" href="../style/main.css" />
+	<link rel="icon" href="../images/logo.png" type="image/png" />
+	<link rel="apple-touch-icon" href="../images/apple-touch-icon.png" />
 </head>
 
 <body>
-<div id="content">
-  <h1><a href="../"><img src="../images/logo.png" width="64" alt="Logo" style="vertical-align: middle"/></a> MIDI Tape Recorder Documentation</h1>
-
-  <div class="subtitle">Perfectly and effortlessly record and play MIDI</div>
-
-  <br/>
-
-  <ul class="navigation">
-    <li><a href="https://uwyn.com">Home</a></li>
-    <li><a href="../">MTR</a></li>
-    <li><em>Documentation</em></li>
-    <li><a href="../support">Support</a></li>
-    <li><a href="../history">History</a></li>
-  </ul>
+	<header class="band">
+		<div class="container">
+			<div class="logo-title">
+				<a href="../"><img src="../images/logo_og.png" alt="MIDI Tape Recorder logo" width="512" height="512" /></a>
+				<div class="titles">
+					<span class="product">MIDI Tape Recorder</span>
+					<h1 class="page">Documentation</h1>
+				</div>
+			</div>
+			<p class="subtitle">Perfectly and effortlessly record and play MIDI</p>
+		</div>
+	</header>
+	<nav class="site-nav" aria-label="MIDI Tape Recorder sections">
+		<a href="https://uwyn.com">Home</a>
+		<a href="../">MTR</a>
+		<span class="current">Docs</span>
+		<a href="../support/">Support</a>
+		<a href="../history/">History</a>
+	</nav>
+	<div class="container">
+		<main class="prose">
   
   <h2>Welcome</h2>
 
   <p>Thanks for taking the time to read through this documentation.</p>
 
   <p style="text-align: center;">
-    <img src="../images/screenshot.png" alt="Screenshot" style="margin: 0; max-width: 100%; height:auto;" />
+    <img src="../images/screenshot.png" alt="Screenshot" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" />
   </p>
 
   <p>Once you understand how to connect MIDI Tape Recorder (MTR) to your gear and plugins, and what the buttons do, you should not have to read it again. MTR was designed to be fun, intuitive and unobtrusive.</p>
@@ -54,9 +59,7 @@
 
   <p><blockquote>Note: MTR will not record any MIDI system messages.</blockquote></p>
 
-  <p style="text-align: center;">
-    <iframe width="560" height="360" src="https://www.youtube.com/embed/UfpEnpGqwn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </p>
+  <div class="video video43"><iframe src="https://www.youtube.com/embed/UfpEnpGqwn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
   <hr />
 
@@ -83,21 +86,21 @@
 
   <p>Typically you will connect a physical MIDI Controller (like LinnStrument) or a MIDI Controller App (like GeoShred) to a MIDI Input and connect a MIDI Synthesizer (like Animoog Z, Model 15, Minimoog Model D) to a MIDI Output.</p>
 
-  <p style="text-align: center;"><img src="mtr_connection_1.png" alt="MTR Connection 1" style="margin: 0 auto; max-width: 73%; height:auto;" /></p>  
+  <p style="text-align: center;"><img src="mtr_connection_1.png" alt="MTR Connection 1" style="margin: 0 auto; max-width: 73%; height:auto;" width="1687" height="511" loading="lazy" /></p>  
 
   <p>In order to hear what you're playing on the Controller, you'll have to enable Input Monitor for the appropriate track in MIDI Tape Recorder. This passes the MIDI that's received immediately through to the output, even when MTR is not playing.</p>
 
-  <p style="text-align: center;"><img src="input_monitor_enabled.png" alt="Input Monitor Enabled" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="input_monitor_enabled.png" alt="Input Monitor Enabled" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>To verify that MIDI is being received and sent correctly, you can play your controller and check the activity lights inside MTR on left and right edge of each track. If they flicker green, MIDI is going through correctly.</p>
 
-  <p style="text-align: center;"><img src="activity_lights_in_out.png" alt="Activity Lights Both Sides" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="activity_lights_in_out.png" alt="Activity Lights Both Sides" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>Each DAW and plugin host has their own way of making MIDI connections, please refer to the manual of your preferred host for details.</p>
 
   <p>As an example, this is what the MIDI routing could look like inside the AUM host on iOS.</p>
 
-  <p style="text-align: center;"><img src="routing_aum_1.png" alt="Routing AUM 1" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="routing_aum_1.png" alt="Routing AUM 1" style="margin: 0; max-width: 100%; height:auto;" width="1096" height="811" loading="lazy" /></p>
 
 
 
@@ -105,17 +108,17 @@
 
   <p>Some plugins can both act as MIDI Controllers and MIDI Synthesizers (like Animoog Z), in that case you can connect the same plugin to both the MTR MIDI Input and Output.</p>
 
-  <p style="text-align: center;"><img src="mtr_connection_2.png" alt="MTR Connection 2" style="margin: 0 auto; max-width: 50%; height:auto;" /></p>  
+  <p style="text-align: center;"><img src="mtr_connection_2.png" alt="MTR Connection 2" style="margin: 0 auto; max-width: 50%; height:auto;" width="1190" height="581" loading="lazy" /></p>  
 
   <p>Now, make sure to disable Input Monitor for the appropriate track in MTR because otherwise similar messages will be used twice by the same synthesizer, which can lead to unexpected results.</p>
 
-  <p style="text-align: center;"><img src="input_monitor_disabled.png" alt="Input Monitor Disabled" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="input_monitor_disabled.png" alt="Input Monitor Disabled" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>Each DAW and plugin host has their own way of making MIDI connections, please refer to the manual of your preferred host for details.</p>
 
   <p>As an example, this is what the MIDI routing could look like inside the AUM host on iOS.</p>
 
-  <p style="text-align: center;"><img src="routing_aum_2.png" alt="Routing AUM 2" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="routing_aum_2.png" alt="Routing AUM 2" style="margin: 0; max-width: 100%; height:auto;" width="1029" height="741" loading="lazy" /></p>
 
 
 
@@ -127,15 +130,15 @@
 
   <p>By tapping on the <em>1 ▶︎ 4</em> toggle button, you can change it to <em>4 ▶︎ 4</em> and have MIDI Tape Recorder use the four MIDI input ports.</p>
 
-  <p style="text-align: center;"><img src="routing_4_to_4.png" alt="Routing 4 To 4 Illustration" style="margin: 0 auto; max-width: 42%; height:auto;" /></p>  
+  <p style="text-align: center;"><img src="routing_4_to_4.png" alt="Routing 4 To 4 Illustration" style="margin: 0 auto; max-width: 42%; height:auto;" width="916" height="490" loading="lazy" /></p>  
 
-  <p style="text-align: center;"><img src="route_4_to_4_active.png" alt="Routing 4 to 4" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="route_4_to_4_active.png" alt="Routing 4 to 4" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>Tapping <em>4 ▶︎ 4</em> will change it back to  <em>1 ▶︎ 4</em> and MIDI Tape Recorder will go back to only using one MIDI Input port.</p>
 
-  <p style="text-align: center;"><img src="routing_1_to_4.png" alt="Routing 1 To 4 Illustration" style="margin: 0 auto; max-width: 42%; height:auto;" /></p>  
+  <p style="text-align: center;"><img src="routing_1_to_4.png" alt="Routing 1 To 4 Illustration" style="margin: 0 auto; max-width: 42%; height:auto;" width="916" height="490" loading="lazy" /></p>  
 
-  <p style="text-align: center;"><img src="route_1_to_4_active.png" alt="Routing 1 to 4" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="route_1_to_4_active.png" alt="Routing 1 to 4" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>By using the four separate inputs you can keep different controllers connected and routed to dedicated synth plugins. However when routing the first input to all four tracks, the same controller can easily be used for all the synths you're recording. It's really up to you to decide which configuration is the most appropriate for what you're trying to achieve, they both are useful.</p>
 
@@ -147,17 +150,17 @@
 
   <p>Now that everything is connected and that you've verified that the input activity lights are working, press Record Enable on a track and press Record Arm in the toolbar.</p>
 
-  <p style="text-align: center;"><img src="record_armed.png" alt="Record Armed" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="record_armed.png" alt="Record Armed" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>As soon as you start playing on your controller or press the Play button in the toolbar, MIDI Tape Recorder will record your performance.</p>
 
   <p><blockquote>Note: you can also press Play in your host and MIDI Tape Recorder will automatically start recording at the same time.</blockquote></p>
 
-  <p style="text-align: center;"><img src="recording.png" alt="Recording Active" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="recording.png" alt="Recording Active" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>When you're done, press the Play button to stop recording and press Play again to hear what you've recorded, or press the Repeat button while recording to immediately start looping in case you want to play or record over it with another synth.</p>
 
-  <p style="text-align: center;"><img src="playback.png" alt="Playback After Recording" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="playback.png" alt="Playback After Recording" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
 
   <hr />
@@ -171,7 +174,7 @@
 
   <p>When a track is set to Record Enable, any MCM and RPN 0 message that's received, will be remembered. When this is the case, MTR will display an MPE Indicator button in the top-left corner of the track.</p>
 
-  <p style="text-align: center;"><img src="mpe_indicator.png" alt="MPE Indicator" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mpe_indicator.png" alt="MPE Indicator" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>By default, each time playback starts, the MCM and RPN 0 will be sent to the output, ensuring that the synthesizer receiving the MIDI recorded messages will be configured exactly as it was when you were recorded your performance.</p>
 
@@ -179,7 +182,7 @@
 
   <p><blockquote>Note: MPE zone details can be displayed in the MPE indicator by enabling this in the settings.</blockquote></p>
 
-  <p style="text-align: center;"><img src="mpe_indicator_details.png" alt="MPE Indicator Details" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mpe_indicator_details.png" alt="MPE Indicator Details" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <h3>Sending the MCM from your controller</h3>
 
@@ -189,7 +192,7 @@
 
   <h4>Animoog Z</h4>
 
-  <p style="text-align: center;"><img src="animoog_mpe.png" alt="Send MCM in Animoog Z" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="animoog_mpe.png" alt="Send MCM in Animoog Z" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="1152" loading="lazy" /></p>
 
   <ul>
     <li>Tap Settings in the toolbar</li>
@@ -200,7 +203,7 @@
 
   <h4>LinnStrument</h4>
 
-  <p style="text-align: center;"><img src="linnstrument_mpe.png" alt="Send MCM with LinnStrument" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="linnstrument_mpe.png" alt="Send MCM with LinnStrument" style="margin: 0; max-width: 100%; height:auto;" width="2000" height="1095" loading="lazy" /></p>
 
   <ul>
     <li>Press Per-Split Settings</li>
@@ -215,7 +218,7 @@
 
   <p>This section contains a complete reference of the MIDI Tape Recording GUI.</p>
 
-  <p style="text-align: center;"><img src="mtr_gui_1.png" alt="Annotated Track and Session Controls" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mtr_gui_1.png" alt="Annotated Track and Session Controls" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <h3>Track controls</h3>
 
@@ -316,7 +319,7 @@
     </li>
   </ul>
 
-  <p style="text-align: center;"><img src="mtr_gui_2.png" alt="Annotated Recording UI" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mtr_gui_2.png" alt="Annotated Recording UI" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <h3>Recording UI</h3>
 
@@ -369,7 +372,7 @@
     </li>
   </ul>
 
-  <p style="text-align: center;"><img src="mtr_gui_3.png" alt="Annotated Session Tools" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mtr_gui_3.png" alt="Annotated Session Tools" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <h3>Session Tools</h3>
 
@@ -392,7 +395,7 @@
     </li>
   </ul>
 
-  <p style="text-align: center;"><img src="mtr_gui_4.png" alt="Annotated Track Tools" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="mtr_gui_4.png" alt="Annotated Track Tools" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <h3>Track Tools</h3>
 
@@ -411,7 +414,7 @@
     </li>
   </ul>
 
-  <p style="text-align: center;"><img src="settings.png" alt="Settings" style="margin: 0; max-width: 100%; height:auto;" /></p>
+  <p style="text-align: center;"><img src="settings.png" alt="Settings" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <h3>Settings</h3>
 
@@ -455,15 +458,11 @@
 
 
 
-  <ul class="navigation">
-    <li><a href="https://uwyn.com">Home</a></li>
-    <li><a href="../">MTR</a></li>
-    <li><em>Documentation</em></li>
-    <li><a href="../support">Support</a></li>
-    <li><a href="../history">History</a></li>
-  </ul>
-
-</div>
+  
+		</main>
+		<footer class="site-footer">
+			MIDI Tape Recorder is a product of <a href="https://uwyn.com">Uwyn</a> &mdash; &copy;2001-2026 Uwyn LLC - <a href="https://uwyn.com/privacy.html">Privacy policy</a> - <a href="https://uwyn.com/contact.html">Contact</a>
+		</footer>
+	</div>
 </body>
-    
 </html>

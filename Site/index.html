@@ -1,118 +1,129 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" href="style/main.css"/>
-  <meta name="description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
-  <meta name="keywords" content="MIDI, MPE, Synthesizer, LinnStrument, ROLI, Seaboard, Continuum, Sequencer, DAW, Logic" />
-  <meta property="og:url" content="https://uwyn.com/mtr/" />
-  <meta property="og:title" content="MIDI Tape Recorder - Perfectly and effortlessly record and play MIDI" />
-  <meta property="og:description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
-  <meta property="og:image" content="https://uwyn.com/mtr/images/og-screenshot1.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:type" content="website" />
-  <title>MIDI Tape Recorder - Perfectly and effortlessly record and play MIDI</title>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-90390-4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-90390-4');
-</script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
+	<meta name="keywords" content="MIDI, MPE, Synthesizer, LinnStrument, ROLI, Seaboard, Continuum, Sequencer, DAW, Logic" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Uwyn" />
+	<meta property="og:url" content="https://uwyn.com/mtr/" />
+	<meta property="og:title" content="MIDI Tape Recorder - Perfectly and effortlessly record and play MIDI" />
+	<meta property="og:description" content="MIDI Tape Recorder captures expressive MIDI perfectly so that you can be creative." />
+	<meta property="og:image" content="https://uwyn.com/mtr/images/og-screenshot1.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="MIDI Tape Recorder plugin interface" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="theme-color" content="#181818" />
+	<title>MIDI Tape Recorder - Perfectly and effortlessly record and play MIDI</title>
+	<link rel="canonical" href="https://uwyn.com/mtr/" />
+	<link rel="stylesheet" type="text/css" href="style/main.css" />
+	<link rel="icon" href="images/logo.png" type="image/png" />
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "MIDI Tape Recorder",
+		"url": "https://uwyn.com/mtr/",
+		"image": "https://uwyn.com/mtr/images/og-screenshot1.png",
+		"description": "Open source Audio Unit v3 plugin that records and plays back MIDI with the same accuracy and precision as audio recordings.",
+		"applicationCategory": "MultimediaApplication",
+		"operatingSystem": "iOS, iPadOS, macOS",
+		"license": "https://creativecommons.org/licenses/by/4.0/",
+		"publisher": {
+			"@type": "Organization",
+			"name": "Uwyn LLC",
+			"url": "https://uwyn.com/"
+		}
+	}
+	</script>
 </head>
 
 <body>
-<div id="content">
-  <h1><img src="images/logo.png" width="64" height="64" alt="Logo" style="vertical-align: middle"/> MIDI Tape Recorder</h1>
+	<header class="band">
+		<div class="container">
+			<div class="logo-title">
+				<img src="images/logo_og.png" alt="MIDI Tape Recorder logo" width="512" height="512" />
+				<div class="titles">
+					<h1 class="product">MIDI Tape Recorder</h1>
+				</div>
+			</div>
+			<p class="subtitle">Perfectly and effortlessly record and play MIDI</p>
+		</div>
+	</header>
+	<nav class="site-nav" aria-label="MIDI Tape Recorder sections">
+		<a href="https://uwyn.com">Home</a>
+		<span class="current">MTR</span>
+		<a href="docs/">Docs</a>
+		<a href="support/">Support</a>
+		<a href="history/">History</a>
+	</nav>
+	<div class="container">
+		<main class="prose">
+			<p><a href="https://github.com/gbevin/MIDITapeRecorder"><img class="inlined" src="images/Approved-for-free-cultural-works.png" width="100" height="100" alt="Approved for Free Cultural Works" loading="lazy" /></a>MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording.</p>
 
-  <div class="subtitle">Perfectly and effortlessly record and play MIDI</div>
+			<p>MIDI messages are recorded and played back with the same accuracy and precision as audio recordings. Most modern DAWs, even at their highest resolution, still change the timing of MIDI messages to accommodate for their editing features. These changes impact the playback of your performance as MIDI messages get reordered and delayed, causing changes in how they influence sound, sometimes in very significant ways.</p>
 
-  <br/>
+			<p>MIDI Tape Recorder records your performance exactly as you play it, just like an audio recorder, accurately reproducing every nuance of your performance.</p>
 
-  <ul class="navigation">
-    <li><a href="https://uwyn.com">Home</a></li>
-    <li><em>MTR</em></li>
-    <li><a href="docs">Documentation</a></li>
-    <li><a href="support">Support</a></li>
-    <li><a href="history">History</a></li>
-  </ul>
+			<p><img src="images/screenshot.png" alt="MIDI Tape Recorder screenshot" width="1536" height="603" loading="lazy" /></p>
 
-  <p><a href="https://github.com/gbevin/MIDITapeRecorder"><img src="images/Approved-for-free-cultural-works.png" width="100" height="100" style="float: right;"/></a>MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording.</p>
-  
-  <p>MIDI messages are recorded and played back with the same accuracy and precision as audio recordings. Most modern DAWs, even at their highest resolution, still change the timing of MIDI messages to accommodate for their editing features. These changes impact the playback of your performance as MIDI messages get reordered and delayed, causing changes in how they influence sound, sometimes in very significant ways.</p>
+			<div class="availability">
+				<h2>Available now!</h2>
+				<p><a href="https://apps.apple.com/us/app/midi-tape-recorder/id1598618004"><img src="images/download.png" width="150" height="50" alt="Download on the App Store" loading="lazy" /></a></p>
+			</div>
 
-  <p>MIDI Tape Recorder records your performance exactly as you play it, just like an audio recorder, accurately reproducing every nuance of your performance.</p>
+			<p>MIDI Tape Recorder purposefully has no MIDI note editing, no quantization, no individual CC tweaking, nothing that you wouldn't do with audio. Instead, very expressive and ultra-dense MIDI streams are perfectly stored and reproduced. MIDI Tape Recorder excels at capturing and playing back expressive performances with MPE controllers and MPE MIDI plugins.</p>
 
-  <p style="text-align: center;">
-    <img src="images/screenshot.png" alt="Screenshot" style="margin: 0; max-width: 100%; height:auto;" />
-  </p>
+			<p>The controls are purposefully simple and intuitive, similar to a traditional four-track audio recorder, making it fun to record, play back and loop your MIDI performance. Even when recording non-MPE MIDI, MIDI Tape Recorder makes it easy to stay in the flow and be creative without being interrupted by the technical nature of most DAWs.</p>
 
-  <p style="text-align: center;"><em>Available Now</em><br /><a href="https://apps.apple.com/us/app/midi-tape-recorder/id1598618004"><img src="images/download.png" width="150" height="50" alt="Download" style="vertical-align: middle"/></a></p>
+			<p>MIDI Tape Recorder makes no sound on its own and requires an AUv3 host to function.</p>
 
-  <p>MIDI Tape Recorder purposefully has no MIDI note editing, no quantization, no individual CC tweaking, nothing that you wouldn't do with audio. Instead, very expressive and ultra-dense MIDI streams are perfectly stored and reproduced. MIDI Tape Recorder excels at capturing and playing back expressive performances with MPE controllers and MPE MIDI plugins.</p>
+			<div class="video video43"><iframe src="https://www.youtube.com/embed/1Hzge7YtT5A" title="MIDI Tape Recorder introduction video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
-  <p>The controls are purposefully simple and intuitive, similar to a traditional four-track audio recorder, making it fun to record, play back and loop your MIDI performance. Even when recording non-MPE MIDI, MIDI Tape Recorder makes it easy to stay in the flow and be creative without being interrupted by the technical nature of most DAWs.</p>
-  
-  <p>MIDI Tape Recorder makes no sound on its own and requires an AUv3 host to function.</p>
+			<h2>Features</h2>
 
-  <p style="text-align: center;">
-	  <iframe width="640" height="480" src="https://www.youtube.com/embed/1Hzge7YtT5A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-	</p>
+			<ul>
+				<li>Four independent tracks for recording MIDI channel voice messages</li>
+				<li>Sample accurate MIDI recording and playback</li>
+				<li>Real-time display of active recorded notes and other received messages</li>
+				<li>MPE support</li>
+				<li>Multi-level undo and redo</li>
+				<li>Overdub recording</li>
+				<li>Punch in and punch out recording for automated regional overdubbing</li>
+				<li>Automated storage and recall of all recordings inside the AUv3 host project</li>
+				<li>MIDI file import and export for the project or each individual track</li>
+				<li>Repeated playback with start and stop locators</li>
+				<li>AUv3 parameters for all controls</li>
+				<li>Snap to beat option for positioning playhead and start/stop locators</li>
+				<li>Detection of MPE configuration message (MCM) reception for each track</li>
+				<li>Envoy of MCM at start of play or when pressing the track's MPE button</li>
+				<li>Host transport and host tempo sync</li>
+				<li>Clear all recordings or clear a single track</li>
+				<li>Crop session to new duration</li>
+				<li>Fully resizable UI</li>
+				<li>Activity indicators for MIDI input and output on each track</li>
+				<li>Optional tool tips for every operation</li>
+				<li>Optional per-track record enable, input monitoring, and mute</li>
+				<li>Four virtual MIDI cable inputs if the AUv3 host supports it</li>
+				<li>Support for AUv3 user presets if the host supports it</li>
+				<li>Optional routing of first virtual MIDI cable to all tracks</li>
+				<li>Fully open-sourced under Creative Commons Attribution 4.0 International, an approved Free Culture License</li>
+			</ul>
 
-  <h2>Features</h2>
-  
-  <ul>
-    <li>Four independent tracks for recording MIDI channel voice messages</li>
-    <li>Sample accurate MIDI recording and playback</li>
-    <li>Real-time display of active recorded notes and other received messages</li>
-    <li>MPE support</li>
-    <li>Multi-level undo and redo</li>
-    <li>Overdub recording</li>
-    <li>Punch in and punch out recording for automated regional overdubbing</li>
-    <li>Automated storage and recall of all recordings inside the AUv3 host project</li>
-    <li>MIDI file import and export for the project or each individual track</li>
-    <li>Repeated playback with start and stop locators</li>
-    <li>AUv3 parameters for all controls</li>
-    <li>Snap to beat option for positioning playhead and start/stop locators</li>
-    <li>Detection of MPE configuration message (MCM) reception for each track</li>
-    <li>Envoy of MCM at start of play or when pressing the track's MPE button</li>
-    <li>Host transport and host tempo sync</li>
-    <li>Clear all recordings or clear a single track</li>
-    <li>Crop session to new duration</li>
-    <li>Fully resizable UI</li>
-    <li>Activity indicators for MIDI input and output on each track</li>
-    <li>Optional tool tips for every operation</li>
-    <li>Optional per-track record enable, input monitoring, and mute</li>
-    <li>Four virtual MIDI cable inputs if the AUv3 host supports it</li>
-    <li>Support for AUv3 user presets if the host supports it</li>
-    <li>Optional routing of first virtual MIDI cable to all tracks</li>
-    <li>Fully open-sourced under Creative Commons Attribution 4.0 International, an approved Free Culture License</li>
-  </ul>
+			<div class="video video43"><iframe src="https://www.youtube.com/embed/UfpEnpGqwn0" title="MIDI Tape Recorder walkthrough video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
-  <p style="text-align: center;">
-    <iframe width="640" height="480" src="https://www.youtube.com/embed/UfpEnpGqwn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </p>
+			<h2>Source Code</h2>
 
-  <h2>Source Code</h2>
+			<p>This work is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
 
-  <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
-
-  <p>The source code of MIDI Tape Recorder can be found on <a href="https://github.com/gbevin/MIDITapeRecorder">GitHub</a>.</p>
-
-  <br/>
-
-  <ul class="navigation">
-    <li><a href="https://uwyn.com">Home</a></li>
-    <li><em>MTR</em></li>
-    <li><a href="docs">Documentation</a></li>
-    <li><a href="support">Support</a></li>
-    <li><a href="history">History</a></li>
-  </ul>
-
-</div>
+			<p>The source code of MIDI Tape Recorder can be found on <a href="https://github.com/gbevin/MIDITapeRecorder">GitHub</a>.</p>
+		</main>
+		<footer class="site-footer">
+			MIDI Tape Recorder is a product of <a href="https://uwyn.com">Uwyn</a> &mdash; &copy;2001-2026 Uwyn LLC - <a href="https://uwyn.com/privacy.html">Privacy policy</a> - <a href="https://uwyn.com/contact.html">Contact</a>
+		</footer>
+	</div>
 </body>
-    
 </html>
