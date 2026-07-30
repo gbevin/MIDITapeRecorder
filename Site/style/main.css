@@ -152,6 +152,17 @@ main.prose {
 	margin: 0 0 8px;
 }
 
+/* The docs float section screenshots to the side of their text, so headings,
+   rules and back-links have to clear them or the image bleeds into the next
+   section and its text wraps around it */
+.prose h2,
+.prose h3,
+.prose h4,
+.prose hr,
+.prose p.toc-back {
+	clear: both;
+}
+
 .prose h2 {
 	color: var(--heading);
 	font-size: 1.25rem;
@@ -198,7 +209,9 @@ main.prose {
 	border-radius: 8px;
 }
 
-.prose p img:first-child {
+/* Every image in an image-only paragraph stacks the same way, so siblings
+   line up instead of the first one centering and the rest sitting left */
+.prose p > img {
 	display: block;
 	margin: 0 auto;
 }
