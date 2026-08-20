@@ -32,6 +32,9 @@ class MidiRecorderState;
 // Returns YES if the chunk contained note/channel content that was imported, or
 // NO for empty/meta-only chunks (e.g. a format-1 conductor track).
 - (BOOL)midiTrackChunkToRecorded:(NSData*)track division:(uint16_t)division;
+// clears the track's content through the regular import path, for imports whose
+// source has no note content for this destination
+- (void)importEmptyTrack;
 
 - (void)setState:(MidiRecorderState*)state;
 - (void)ping:(QueuedMidiMessage&)message;

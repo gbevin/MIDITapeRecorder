@@ -156,6 +156,13 @@
             imported_ordinal += 1;
         }
     }
+
+    // a valid file with no note content for the destination still counts as an
+    // import: the destination gets cleared rather than silently left alone, and
+    // a full import likewise clears the tracks the file didn't fill
+    for (int t = imported_ordinal; t < max_ordinal; ++t) {
+        [_recorder[t] importEmptyTrack];
+    }
 }
 
 #pragma mark Getters and Setter

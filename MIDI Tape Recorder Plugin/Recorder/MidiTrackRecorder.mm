@@ -299,11 +299,25 @@
     // parse the SMF track bytes into messages with the shared converter
     __block midifile::Track parsed;
     if (!midifile::parseTrackChunk(track, division, parsed)) {
-        // chunks that produced no note content (e.g. a conductor track) are skipped
+        // chunks without note content (e.g. a conductor track) don't take up a
+        // destination track; the import driver decides whether the destination
+        // is cleared instead (see importEmptyTrack)
         return NO;
     }
 
-    __block BOOL imported = NO;
+    [self importParsedTrack:parsed];
+    return YES;
+}
+
+// replaces the track's content with emptiness through the regular import path,
+// so importing a track that carries no note content clears the destination
+// rather than silently doing nothing
+- (void)importEmptyTrack {
+    __block midifile::Track parsed;
+    [self importParsedTrack:parsed];
+}
+
+- (void)importParsedTrack:(midifile::Track&)parsed {
     dispatch_barrier_sync(_dispatchQueue, ^{
         // imported content replaces whatever a deferred finish would blend into
         [self dropDeferredFinishLocked];
@@ -326,13 +340,11 @@
         MidiTrackState& track_state = _state->track[_ordinal];
         track_state.pendingRecordedData = std::move(recorded_data);
         track_state.pendingRecordedPreview = std::move(recorded_preview);
-        imported = YES;
     });
 
-    if (imported && _delegate) {
+    if (_delegate) {
         [_delegate finishImport:_ordinal];
     }
-    return imported;
 }
 
 #pragma mark Recording

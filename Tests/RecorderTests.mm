@@ -1690,6 +1690,35 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
     }
 }
 
+// importing a valid track that carries no note content clears the destination
+// track, the same way importing notes replaces its content.
+- (void)testImportOfEmptyTrackClearsDestination {
+    RecorderHarness h;
+    recordAndCapture(h, 0, { noteOn(kChannel1, kNoteC4, kVelocityOn),
+                             noteOff(kChannel1, kNoteC4, kVelocityOff) });
+    XCTAssertFalse(channelOnly(h.recordedMessages(0)).empty(), @"the destination starts with content");
+
+    // a valid file whose only chunk is meta-only (tempo + end of track)
+    NSMutableData* file = [makeFileHeader(6, 1, 1, (uint16_t)MIDI_BEAT_TICKS) mutableCopy];
+    const uint8_t body[] = {
+        0x00, kMetaPrefix, kMetaSetTempo, 0x03, 0x07, 0xA1, 0x20,
+        0x00, kMetaPrefix, kMetaEndOfTrack, 0x00,
+    };
+    uint8_t trackHeader[8] = { 'M', 'T', 'r', 'k', 0, 0, 0, (uint8_t)sizeof(body) };
+    [file appendBytes:trackHeader length:8];
+    [file appendBytes:body length:sizeof(body)];
+
+    [h.qp midiFileToRecordedTrack:file ordinal:0];
+
+    XCTAssertTrue(h.kernel._state.track[0].pendingRecordedData != nullptr,
+                  @"the import produces an empty replacement rather than doing nothing");
+    XCTAssertTrue(h.pendingMessages(0).empty(), @"the replacement carries no messages");
+
+    // apply the replacement the way the app's import-finish does
+    h.kernel._state.track[0].recordedData = std::move(h.kernel._state.track[0].pendingRecordedData);
+    XCTAssertTrue(channelOnly(h.recordedMessages(0)).empty(), @"the destination track is cleared");
+}
+
 @end
 
 #pragma mark - Host fullState <-> .mid bridge
