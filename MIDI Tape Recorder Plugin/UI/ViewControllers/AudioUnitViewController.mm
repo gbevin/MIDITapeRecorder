@@ -190,6 +190,7 @@
     MidiRecorderAudioUnit* _audioUnit;
     MidiRecorderState* _state;
     CADisplayLink* _timer;
+    dispatch_source_t _recordingPump;
     BOOL _renderReady;
     
     RecorderUndoManager* _mainUndoManager;
@@ -225,6 +226,7 @@
         _state = nil;
         _audioUnit = nil;
         _timer = nil;
+        _recordingPump = nil;
         _renderReady = NO;
         
         _mainUndoManager = [RecorderUndoManager new];
@@ -276,12 +278,30 @@
         mpe_button[t].hidden = YES;
     }
     
+    // the display link drives on-screen UI only (previews, playhead, indicators);
+    // it's tied to screen vsync and correctly pauses when nothing is visible
     _timer = [[UIScreen mainScreen] displayLinkWithTarget:self
                                                  selector:@selector(renderloop)];
     _timer.preferredFramesPerSecond = 30;
     _timer.paused = NO;
     [_timer addToRunLoop:[NSRunLoop mainRunLoop]
                  forMode:NSDefaultRunLoopMode];
+
+    // The recording pipeline (draining incoming MIDI into the recorders, handing
+    // off deferred loop passes, and consuming the kernel's scheduled UI actions)
+    // must keep running even when the screen is off — e.g. hosted in AUM with the
+    // screen locked, where the host keeps rendering audio and sending MIDI. A
+    // display link would pause there and silently stop recording, so this runs on
+    // its own wall-clock timer on the main queue instead. It stays on the main
+    // thread because draining can trigger UI work (auto-play on the first event).
+    _recordingPump = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(_recordingPump, DISPATCH_TIME_NOW,
+                              (uint64_t)(NSEC_PER_SEC / 60), (uint64_t)(NSEC_PER_SEC / 600));
+    __weak AudioUnitViewController* weakSelf = self;
+    dispatch_source_set_event_handler(_recordingPump, ^{
+        [weakSelf pumpRecording];
+    });
+    dispatch_resume(_recordingPump);
 
     _lastForegroundMoment = [NSDate date];
     
@@ -2056,29 +2076,46 @@
     _autoPan = CGPointZero;
 }
 
+// Recording-critical work, driven by the always-running _recordingPump so it
+// keeps going while the screen is locked (see viewDidLoad). Runs on the main
+// thread. Draining and handleScheduledActions can trigger UIKit (auto-play on
+// first event, punch-out finalization), which is why this is main-thread bound.
+- (void)pumpRecording {
+    if (!_audioUnit || !_state) {
+        return;
+    }
+    _renderReady = YES;
+
+    [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
+
+    // hand off any final pass that had to wait for a racing loop-pass blend
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        [[_midiQueueProcessor recorder:t] flushDeferredFinish];
+    }
+
+    @synchronized(self) {
+        if (!_restoringState) {
+            [self handleScheduledActions];
+        }
+    }
+}
+
+// On-screen UI only, driven by the display link so it pauses when nothing is
+// visible. The recording pipeline lives in pumpRecording, not here.
 - (void)renderloop {
     if (_audioUnit) {
         _renderReady = YES;
-        
+
         [self checkActivityIndicators];
-
-        [_midiQueueProcessor processMidiQueue:&_state->midiBuffer];
-
-        // hand off any final pass that had to wait for a racing loop-pass blend
-        for (int t = 0; t < MIDI_TRACKS; ++t) {
-            [[_midiQueueProcessor recorder:t] flushDeferredFinish];
-        }
 
         @synchronized(self) {
             if (!_restoringState) {
                 [self renderPreviews];
                 [self renderMpeIndicators];
                 [self renderPlayhead];
-
-                [self handleScheduledActions];
             }
         }
-        
+
         [self applyAutoPan];
     }
 }
