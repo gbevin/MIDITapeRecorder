@@ -100,6 +100,10 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
 
 #pragma mark - MidiPortManager
 
+// number of sources we track running status for; a handful is plenty since it
+// only needs to cover simultaneously-sending devices
+enum { kRunningStatusSlots = 16 };
+
 @implementation MidiPortManager {
     MIDIClientRef _client;
     MIDIPortRef _inputPort;
@@ -111,12 +115,24 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
     MIDIUniqueID _virtualSourceUID;
     MIDIUniqueID _virtualDestinationUID;
 
-    MIDIUniqueID _inputUID[4];
-    MIDIUniqueID _outputUID[4];
+    // routing tables are written from the main thread (settings) and read from
+    // the CoreMIDI and AU output threads, so keep the elements atomic
+    _Atomic(MIDIUniqueID) _inputUID[4];
+    _Atomic(MIDIUniqueID) _outputUID[4];
+    // resolved endpoint per cable, so the per-message output path doesn't have
+    // to scan the destination list; refreshed on selection and setup changes
+    _Atomic(MIDIEndpointRef) _outputEndpoint[4];
 
     NSMutableArray<NSNumber*>* _connectedSources;
 
-    // MIDI clock tempo tracking.
+    // per-source running status, so a status byte carries across CoreMIDI
+    // packet boundaries the way it does on a wire stream. only touched on the
+    // CoreMIDI delivery thread.
+    MIDIUniqueID _runningStatusUID[kRunningStatusSlots];
+    uint8_t _runningStatusValue[kRunningStatusSlots];
+    int _runningStatusCount;
+
+    // MIDI clock tempo tracking; all mutations run on the main queue.
     BOOL _followClock;
     MidiClockTempoTracker* _clockTracker;
     CFTimeInterval _lastTempoPost;
@@ -162,14 +178,17 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
     MIDIOutputPortCreate(_client, CFSTR("Output"), &_outputPort);
 
     MIDIInputPortCreateWithBlock(_client, CFSTR("Input"), &_inputPort, ^(const MIDIPacketList* pktlist, void* srcConnRefCon) {
-        MIDIEndpointRef source = (MIDIEndpointRef)(uintptr_t)srcConnRefCon;
-        [weakSelf dispatchPacketList:pktlist fromUniqueID:UniqueIDForEndpoint(source)];
+        // the refCon carries the source's unique ID (stored at connect time),
+        // avoiding a CoreMIDI property query per delivered packet list
+        MIDIUniqueID uid = (MIDIUniqueID)(uint32_t)(uintptr_t)srcConnRefCon;
+        [weakSelf dispatchPacketList:pktlist fromUniqueID:uid];
     });
 
     [self setupVirtualEndpoints];
     [self applyDefaultRoutingIfNeeded];
 
     [self rebindInputs];
+    [self refreshOutputEndpoints];
     [self startClockTimer];
     [self postEndpointsChanged];
 }
@@ -351,6 +370,7 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
     }
     _outputUID[cable] = uniqueID;
     [[NSUserDefaults standardUserDefaults] setInteger:uniqueID forKey:OutputKey(cable)];
+    [self refreshOutputEndpoints];
 }
 
 #pragma mark - Input binding
@@ -377,14 +397,32 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
         if ([_connectedSources containsObject:key]) {
             continue;
         }
-        if (MIDIPortConnectSource(_inputPort, source, (void*)(uintptr_t)source) == noErr) {
+        // store the unique ID in the refCon so the read block doesn't have to
+        // resolve it per packet list
+        MIDIUniqueID uid = UniqueIDForEndpoint(source);
+        if (MIDIPortConnectSource(_inputPort, source, (void*)(uintptr_t)(uint32_t)uid) == noErr) {
             [_connectedSources addObject:key];
+        }
+    }
+}
+
+// re-resolves the cached destination endpoint for every cable; the virtual
+// output doesn't need one since it goes out through MIDIReceived.
+- (void)refreshOutputEndpoints {
+    for (int c = 0; c < kCableCount; ++c) {
+        MIDIUniqueID uid = _outputUID[c];
+        if (uid == 0 || uid == _virtualSourceUID) {
+            _outputEndpoint[c] = 0;
+        }
+        else {
+            _outputEndpoint[c] = [self destinationEndpointForUniqueID:uid];
         }
     }
 }
 
 - (void)handleSetupChanged {
     [self rebindInputs];
+    [self refreshOutputEndpoints];
     [self postEndpointsChanged];
 }
 
@@ -394,6 +432,28 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
 }
 
 #pragma mark - Incoming MIDI
+
+// the running status a source's byte stream is currently in, so it carries
+// across packet and packet-list boundaries like it does on a wire stream.
+// only called on the CoreMIDI delivery thread.
+- (uint8_t*)runningStatusForUniqueID:(MIDIUniqueID)uid {
+    for (int s = 0; s < _runningStatusCount; ++s) {
+        if (_runningStatusUID[s] == uid) {
+            return &_runningStatusValue[s];
+        }
+    }
+    // the table is full: reuse the last slot for this source
+    int slot = _runningStatusCount;
+    if (slot >= kRunningStatusSlots) {
+        slot = kRunningStatusSlots - 1;
+    }
+    else {
+        _runningStatusCount += 1;
+    }
+    _runningStatusUID[slot] = uid;
+    _runningStatusValue[slot] = 0;
+    return &_runningStatusValue[slot];
+}
 
 - (void)dispatchPacketList:(const MIDIPacketList*)pktlist fromUniqueID:(MIDIUniqueID)uid {
     // which tracks should receive note data from this source (may be none, in
@@ -407,6 +467,7 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
     }
 
     AudioEngineHost* host = self.host;
+    uint8_t* runningStatus = [self runningStatusForUniqueID:uid];
 
     const MIDIPacket* packet = &pktlist->packet[0];
     for (UInt32 i = 0; i < pktlist->numPackets; ++i) {
@@ -415,7 +476,8 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
                  timestamp:HostTimeToSeconds(packet->timeStamp)
                     cables:cables
                      count:cableCount
-                      host:host];
+                      host:host
+             runningStatus:runningStatus];
         packet = MIDIPacketNext(packet);
     }
 }
@@ -429,17 +491,15 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
            timestamp:(double)timestamp
               cables:(const uint8_t*)cables
                count:(int)cableCount
-                host:(AudioEngineHost*)host {
+                host:(AudioEngineHost*)host
+       runningStatus:(uint8_t*)runningStatus {
     NSInteger i = 0;
-    uint8_t runningStatus = 0;
     while (i < length) {
         uint8_t b = data[i];
 
         // system realtime, single byte
         if (b >= 0xF8) {
-            if (b == 0xF8) {
-                [self handleClockPulseAtSeconds:timestamp];
-            }
+            [self handleRealtimeByte:b atSeconds:timestamp];
             i += 1;
             continue;
         }
@@ -449,6 +509,11 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
             NSInteger start = i;
             i += 1;
             while (i < length && data[i] != 0xF7) {
+                // realtime bytes can be interleaved inside SysEx too; keep the
+                // clock detection going while scanning past them
+                if (data[i] >= 0xF8) {
+                    [self handleRealtimeByte:data[i] atSeconds:timestamp];
+                }
                 i += 1;
             }
             // include the terminating 0xF7
@@ -461,7 +526,7 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
                     [host scheduleMIDIOnCable:cables[c] length:len data:&data[start]];
                 }
             }
-            runningStatus = 0;
+            *runningStatus = 0;
             continue;
         }
 
@@ -469,33 +534,60 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
         if (b & 0x80) {
             status = b;
             i += 1;
-            runningStatus = (b < 0xF0) ? b : 0;
+            *runningStatus = (b < 0xF0) ? b : 0;
         }
         else {
             // stray data byte
-            if (runningStatus == 0) {
+            if (*runningStatus == 0) {
                 i += 1;
                 continue;
             }
-            status = runningStatus;
+            status = *runningStatus;
         }
 
         NSInteger dataBytes = MidiMessageDataLength(status);
-        // truncated message
-        if (i + dataBytes > length) {
-            break;
-        }
         uint8_t msg[3];
         msg[0] = status;
-        for (NSInteger k = 0; k < dataBytes; ++k) {
-            msg[1 + k] = data[i + k];
+        // collect the data bytes, letting single-byte system realtime messages
+        // pass through mid-message (the MIDI spec allows them to interleave
+        // anywhere, even between another message's data bytes)
+        NSInteger collected = 0;
+        while (collected < dataBytes && i < length) {
+            uint8_t d = data[i];
+            if (d >= 0xF8) {
+                [self handleRealtimeByte:d atSeconds:timestamp];
+                i += 1;
+                continue;
+            }
+            // a status byte here means the message was cut short; drop the
+            // partial message and reprocess the new status
+            if (d & 0x80) {
+                break;
+            }
+            msg[1 + collected] = d;
+            collected += 1;
+            i += 1;
+        }
+        // truncated message (end of packet, or cut short by a new status)
+        if (collected < dataBytes) {
+            continue;
         }
         if (host != nil) {
             for (int c = 0; c < cableCount; ++c) {
                 [host scheduleMIDIOnCable:cables[c] length:(1 + dataBytes) data:msg];
             }
         }
-        i += dataBytes;
+    }
+}
+
+// a single-byte system realtime message can appear anywhere in the stream.
+// clock pulses drive the tempo detection, which lives on the main queue
+// together with the expiry timer and the UI reads.
+- (void)handleRealtimeByte:(uint8_t)byte atSeconds:(double)timestamp {
+    if (byte == 0xF8) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self handleClockPulseAtSeconds:timestamp];
+        });
     }
 }
 
@@ -515,9 +607,11 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
     return _clockTracker.active;
 }
 
-// called from the CoreMIDI thread for each MIDI clock pulse (24 per quarter
-// note). derives a smoothed tempo and pushes it to the host while clock is
-// being followed.
+// runs on the main queue for each MIDI clock pulse (24 per quarter note), with
+// the pulse timestamp captured on the CoreMIDI thread. derives a smoothed tempo
+// and pushes it to the host while clock is being followed. keeping all tempo
+// tracking on the main queue means the tracker, the expiry timer and the UI
+// reads never race each other.
 - (void)handleClockPulseAtSeconds:(double)now {
     BOOL wasActive = _clockTracker.active;
     BOOL tempoUpdated = [_clockTracker pulseAtSeconds:now];
@@ -554,10 +648,7 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
     if (uid == 0) {
         return;
     }
-    [self sendBytes:data length:length toUniqueID:uid];
-}
 
-- (void)sendBytes:(const uint8_t*)data length:(NSInteger)length toUniqueID:(MIDIUniqueID)uid {
     NSInteger bufferSize = sizeof(MIDIPacketList) + length + 64;
     Byte stackBuffer[512];
     Byte* buffer = (NSInteger)sizeof(stackBuffer) >= bufferSize ? stackBuffer : (Byte*)malloc(bufferSize);
@@ -571,7 +662,9 @@ static NSString* NameForEndpoint(MIDIEndpointRef endpoint) {
             MIDIReceived(_virtualSource, pktList);
         }
         else {
-            MIDIEndpointRef dest = [self destinationEndpointForUniqueID:uid];
+            // use the cable's cached endpoint; this runs for every played-back
+            // message, so it shouldn't scan the destination list each time
+            MIDIEndpointRef dest = _outputEndpoint[cable];
             if (dest != 0) {
                 MIDISend(_outputPort, dest, pktList);
             }

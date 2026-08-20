@@ -27,8 +27,10 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
     AUAudioUnit* _audioUnit;
     AUScheduleMIDIEventBlock _scheduleBlock;
     // heap-allocated so the render-thread musical context block can read the
-    // current tempo without capturing self.
-    double* _tempoPtr;
+    // current tempo without capturing self. atomic because it's written from
+    // the main thread and the CoreMIDI clock path while the render thread
+    // reads it every buffer.
+    _Atomic double* _tempoPtr;
     BOOL _backgroundAudioEnabled;
     // YES while we've deliberately paused the engine for the background (so the
     // foreground handler knows to resume).
@@ -46,7 +48,7 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
 
         [self configureAudioSession];
         _engine = [[AVAudioEngine alloc] init];
-        _tempoPtr = malloc(sizeof(double));
+        _tempoPtr = malloc(sizeof(_Atomic double));
         *_tempoPtr = 120.0;
 
 #if !TARGET_OS_MACCATALYST
@@ -217,7 +219,7 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
     // provide an internal musical context (tempo) before render resources are
     // allocated, so the kernel picks it up. the block reads the live tempo and
     // a free-running beat position derived from the render timestamp.
-    double* tempoPtr = _tempoPtr;
+    _Atomic double* tempoPtr = _tempoPtr;
     _audioUnit.musicalContextBlock = ^BOOL(double* _Nullable currentTempo,
                                            double* _Nullable timeSignatureNumerator,
                                            NSInteger* _Nullable timeSignatureDenominator,
