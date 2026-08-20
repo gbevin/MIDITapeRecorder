@@ -69,9 +69,7 @@ NSData* writeTrackChunk(const Track& track, double bpm) {
         int64_t offset_ticks = int64_t(ceil(MAX(message.offsetBeats, 0.0) * MIDI_BEAT_TICKS));
         uint32_t delta_ticks = uint32_t(MAX(offset_ticks - last_offset_ticks, (int64_t)0));
         writeMidiVarLen(body, delta_ticks);
-        for (int d = 0; d < message.length; ++d) {
-            [body appendBytes:&message.data[d] length:1];
-        }
+        [body appendBytes:message.data length:message.length];
 
         last_offset_ticks = offset_ticks;
     }
@@ -219,7 +217,7 @@ BOOL parseTrackChunk(NSData* chunkBody, uint16_t division, Track& outTrack) {
     while (i < length) {
         // read variable length delta time
         uint32_t delta_ticks = 0;
-        i += readMidiVarLen(&track_bytes[i], delta_ticks);
+        i += readMidiVarLen(&track_bytes[i], length - i, delta_ticks);
         if (i >= length) {
             break;
         }
@@ -244,7 +242,7 @@ BOOL parseTrackChunk(NSData* chunkBody, uint16_t division, Track& outTrack) {
                 // running_status untouched for maximum compatibility.
                 if (i >= length) { break; }
                 uint32_t event_length = 0;
-                i += readMidiVarLen(&track_bytes[i], event_length);
+                i += readMidiVarLen(&track_bytes[i], length - i, event_length);
                 i += event_length;
                 break;
             }
@@ -254,7 +252,7 @@ BOOL parseTrackChunk(NSData* chunkBody, uint16_t division, Track& outTrack) {
                 // skip over the meta event type
                 i += 1;
                 uint32_t event_length = 0;
-                i += readMidiVarLen(&track_bytes[i], event_length);
+                i += readMidiVarLen(&track_bytes[i], length - i, event_length);
                 i += event_length;
                 break;
             }
@@ -264,8 +262,20 @@ BOOL parseTrackChunk(NSData* chunkBody, uint16_t division, Track& outTrack) {
                 uint8_t d1;
                 if ((event_identifier & 0x80) != 0) {
                     // an explicit status byte; only channel voice messages
-                    // (0x80-0xEF) carry running status and data we record
+                    // (0x80-0xEF) carry running status and data we record.
+                    // system common messages are skipped together with their
+                    // data bytes (0xF1/0xF3 carry one, 0xF2 carries two), so
+                    // the stream stays in sync for the events that follow
                     if (event_identifier >= 0xf0) {
+                        if (event_identifier == 0xf1 || event_identifier == 0xf3) {
+                            i += 1;
+                        }
+                        else if (event_identifier == 0xf2) {
+                            i += 2;
+                        }
+                        if (i > length) {
+                            i = length;
+                        }
                         running_status = 0;
                         break;
                     }

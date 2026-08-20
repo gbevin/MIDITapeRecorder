@@ -1643,6 +1643,53 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
     }
 }
 
+// a track body that ends in the middle of a variable-length quantity (a dangling
+// continuation byte) stays within the chunk's bounds: the complete events before
+// the truncation are imported and the parse terminates cleanly.
+- (void)testImportSurvivesTruncatedVarLen {
+    uint16_t division = (uint16_t)MIDI_BEAT_TICKS;
+    NSMutableData* file = [makeFileHeader(6, 1, 1, division) mutableCopy];
+    const uint8_t body[] = {
+        0x00, 0x90, kNoteC4, kVelocityOn,    // note on
+        0x00, 0x80, kNoteC4, kVelocityOff,   // note off
+        0x81,                                // delta time cut off mid-quantity
+    };
+    uint8_t trackHeader[8] = { 'M', 'T', 'r', 'k', 0, 0, 0, (uint8_t)sizeof(body) };
+    [file appendBytes:trackHeader length:8];
+    [file appendBytes:body length:sizeof(body)];
+
+    RecorderHarness dst;
+    [dst.qp midiFileToRecordedTrack:file ordinal:0];
+    auto msgs = channelOnly(dst.pendingMessages(0));
+    XCTAssertEqual(msgs.size(), 2u, @"the complete events before the truncation are imported");
+}
+
+// system common events (0xF1-0xF3) carry data bytes; the importer skips them
+// together with their data so the events that follow keep parsing in sync.
+- (void)testImportSkipsSystemCommonDataBytes {
+    uint16_t division = (uint16_t)MIDI_BEAT_TICKS;
+    NSMutableData* file = [makeFileHeader(6, 1, 1, division) mutableCopy];
+    const uint8_t body[] = {
+        0x00, 0xF3, 0x05,                    // song select + its data byte
+        0x00, 0xF2, 0x10, 0x20,              // song position + its two data bytes
+        0x00, 0x90, kNoteC4, kVelocityOn,    // note on
+        0x00, 0x80, kNoteC4, kVelocityOff,   // note off
+        0x00, kMetaPrefix, kMetaEndOfTrack, 0x00,
+    };
+    uint8_t trackHeader[8] = { 'M', 'T', 'r', 'k', 0, 0, 0, (uint8_t)sizeof(body) };
+    [file appendBytes:trackHeader length:8];
+    [file appendBytes:body length:sizeof(body)];
+
+    RecorderHarness dst;
+    [dst.qp midiFileToRecordedTrack:file ordinal:0];
+    auto msgs = channelOnly(dst.pendingMessages(0));
+    XCTAssertEqual(msgs.size(), 2u, @"the note events after the system common data are imported");
+    if (msgs.size() == 2) {
+        XCTAssertEqual(msgs[0].data[0] & 0xF0, 0x90, @"the note-on parses with its own status");
+        XCTAssertEqual(msgs[0].data[1], kNoteC4);
+    }
+}
+
 @end
 
 #pragma mark - Host fullState <-> .mid bridge

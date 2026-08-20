@@ -12,4 +12,6 @@
 
 BOOL needsMidiByteSwap();
 void writeMidiVarLen(NSMutableData* data, uint32_t value);
-uint32_t readMidiVarLen(uint8_t* data, uint32_t& value);
+// reads a variable-length quantity of at most `available` bytes; returns the
+// number of bytes consumed (0 when nothing is available)
+uint32_t readMidiVarLen(const uint8_t* data, uint32_t available, uint32_t& value);

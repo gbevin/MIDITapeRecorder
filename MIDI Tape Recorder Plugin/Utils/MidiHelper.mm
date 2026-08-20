@@ -40,18 +40,27 @@ void writeMidiVarLen(NSMutableData* data, uint32_t value) {
 }
 
 
-uint32_t readMidiVarLen(uint8_t* data, uint32_t& value) {
+uint32_t readMidiVarLen(const uint8_t* data, uint32_t available, uint32_t& value) {
     value = 0;
-    
+
+    // a variable-length quantity is at most 4 bytes; also never read past the
+    // end of the provided data, so a truncated quantity consumes what's there
+    // and leaves the caller's index at the boundary
     uint32_t count = 0;
     uint8_t c;
+    if (available == 0) {
+        return 0;
+    }
     if ((value = data[count++]) & 0x80) {
         value &= 0x7f;
         do {
+            if (count >= available || count >= 4) {
+                break;
+            }
             value = (value << 7) + ((c = data[count++]) & 0x7f);
         }
         while (c & 0x80);
     }
-    
+
     return count;
 }
