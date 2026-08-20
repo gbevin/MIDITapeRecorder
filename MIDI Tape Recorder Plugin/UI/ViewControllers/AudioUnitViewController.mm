@@ -27,6 +27,7 @@
 #import "PunchInView.h"
 #import "PunchOutView.h"
 #import "RecorderUndoManager.h"
+#include "RecordedTrackDict.h"
 #import "SettingsViewController.h"
 #import "TimelineView.h"
 #import "ToolBarButton.h"
@@ -1634,7 +1635,7 @@
 
 - (void)readRecordingsFromDict:(NSDictionary*)dict {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        NSString* key = [NSString stringWithFormat:@"Recorder%d", t];
+        NSString* key = recordedTrackStateKey(t);
         id recorded = [dict objectForKey:key];
         if (recorded) {
             [[_midiQueueProcessor recorder:t] dictToRecorded:recorded];
@@ -1692,7 +1693,7 @@
 - (NSMutableDictionary*)currentRecordingsToDict {
     NSMutableDictionary* result = [NSMutableDictionary new];
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        [result setObject:[[_midiQueueProcessor recorder:t] recordedAsDict] forKey:[NSString stringWithFormat:@"Recorder%d", t]];
+        [result setObject:[[_midiQueueProcessor recorder:t] recordedAsDict] forKey:recordedTrackStateKey(t)];
     }
     return result;
 }

@@ -11,14 +11,11 @@
 
 #include "Constants.h"
 #include "MidiFileConverter.h"
-#include "RecordedMidiMessage.h"
+#include "RecordedTrackDict.h"
 
-// the plugin serializes each track in fullState under "Recorder<n>" as a raw blob
-// of RecordedMidiMessage structs ("Recorded") plus its "Duration" in beats. we read
-// and write that exact representation so the plugin restores it natively.
-static NSString* RecorderKey(int track) {
-    return [NSString stringWithFormat:@"Recorder%d", track];
-}
+// the plugin serializes each track in fullState as a dictionary whose keys and
+// blob layout are defined in RecordedTrackDict.h. we read and write that exact
+// representation so the plugin restores it natively.
 
 @implementation HostTrackFile
 
@@ -26,21 +23,20 @@ static NSString* RecorderKey(int track) {
     std::vector<midifile::Track> tracks;
 
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        NSDictionary* recorder = [fullState objectForKey:RecorderKey(t)];
-        if (![recorder isKindOfClass:[NSDictionary class]]) {
+        NSDictionary* recorder = [fullState objectForKey:recordedTrackStateKey(t)];
+        if (![recorder isKindOfClass:[NSDictionary class]] || !recordedTrackDictIsCompatible(recorder)) {
             continue;
         }
-        NSData* blob = [recorder objectForKey:@"Recorded"];
-        if (![blob isKindOfClass:[NSData class]] || blob.length < sizeof(RecordedMidiMessage)) {
+        const RecordedMidiMessage* messages = nullptr;
+        NSUInteger count = 0;
+        if (!recordedTrackBlobGetMessages([recorder objectForKey:kRecordedTrackKeyRecorded], messages, count)) {
             continue;
         }
 
         midifile::Track track;
-        const RecordedMidiMessage* messages = (const RecordedMidiMessage*)blob.bytes;
-        NSUInteger count = blob.length / sizeof(RecordedMidiMessage);
         track.messages.assign(messages, messages + count);
 
-        id duration = [recorder objectForKey:@"Duration"];
+        id duration = [recorder objectForKey:kRecordedTrackKeyDuration];
         track.durationBeats = [duration isKindOfClass:[NSNumber class]] ? [duration doubleValue] : 0.0;
 
         tracks.push_back(std::move(track));
@@ -69,22 +65,23 @@ static NSString* RecorderKey(int track) {
         if (!midifile::parseTrackChunk(chunk, division, track)) {
             continue;
         }
-        NSData* blob = [NSData dataWithBytes:track.messages.data()
-                                     length:track.messages.size() * sizeof(RecordedMidiMessage)];
-        [imported addObject:@{ @"Recorded": blob, @"Duration": @(track.durationBeats) }];
-    }
-    if (imported.count == 0) {
-        return nil;
+        NSMutableData* blob = [NSMutableData new];
+        recordedTrackBlobAppendMessages(blob, track.messages.data(), track.messages.size());
+        [imported addObject:@{ kRecordedTrackKeyRecorded: blob,
+                               kRecordedTrackKeyDuration: @(track.durationBeats),
+                               kRecordedTrackKeyFormat: @(kRecordedTrackFormatVersion) }];
     }
 
+    // a valid file with no note content still imports: it clears every track,
+    // consistent with the plugin's own import behavior
     NSMutableDictionary* newState = fullState ? [fullState mutableCopy] : [NSMutableDictionary new];
     for (int t = 0; t < MIDI_TRACKS; ++t) {
         if (t < (int)imported.count) {
-            newState[RecorderKey(t)] = imported[t];
+            newState[recordedTrackStateKey(t)] = imported[t];
         }
         else {
             // replacing "all tracks" means clearing the ones the file didn't fill
-            newState[RecorderKey(t)] = @{};
+            newState[recordedTrackStateKey(t)] = @{};
         }
     }
     return newState;

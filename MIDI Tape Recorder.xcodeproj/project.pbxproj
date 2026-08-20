@@ -132,6 +132,8 @@
 		AF0000000000000000000049 /* HostTrackFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HostTrackFile.h; sourceTree = "<group>"; };
 		AF0000000000000000000040 /* MidiFileConverter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiFileConverter.mm; sourceTree = "<group>"; };
 		AF0000000000000000000041 /* MidiFileConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiFileConverter.h; sourceTree = "<group>"; };
+		AF0000000000000000000070 /* RecordedTrackDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordedTrackDict.h; sourceTree = "<group>"; };
+		AF0000000000000000000071 /* MidiRecorderParamIds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderParamIds.h; sourceTree = "<group>"; };
 		AF0000000000000000000031 /* MidiClockTempoTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MidiClockTempoTracker.m; sourceTree = "<group>"; };
 		AF0000000000000000000033 /* MidiClockTempoTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiClockTempoTracker.h; sourceTree = "<group>"; };
 		AF000000000000000000000A /* RecorderTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RecorderTests.mm; path = Tests/RecorderTests.mm; sourceTree = "<group>"; };
@@ -381,6 +383,7 @@
 				2603D5A1276389C700247A18 /* PreviewPixelData.h */,
 				26C540CB275823F0004E4813 /* RecordedMidiMessage.h */,
 				262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */,
+				AF0000000000000000000070 /* RecordedTrackDict.h */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -527,6 +530,7 @@
 				26C578C5277151140046D75B /* Logging.mm */,
 				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
 				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
+				AF0000000000000000000071 /* MidiRecorderParamIds.h */,
 				26F36160276B0BDB00077518 /* Preferences.h */,
 				26F36161276B0BDB00077518 /* Preferences.mm */,
 				2682D463276D4A270076D20B /* RecorderUndoManager.h */,

@@ -15,6 +15,7 @@
 #include "MidiFileConverter.h"
 #include "MidiHelper.h"
 #include "MidiRecorderState.h"
+#include "RecordedTrackDict.h"
 
 #define DEBUG_MIDI_RECORD 0
 
@@ -166,18 +167,19 @@
         auto recorded_data = track_state.recordedData.get();
         if (recorded_data == nullptr) {
             [result addEntriesFromDictionary:@{
-                @"MPE" : mpe_dict
+                kRecordedTrackKeyMPE : mpe_dict
             }];
         }
         else {
             NSMutableData* recorded_object = [NSMutableData new];
             for (RecordedDataVector& beat : recorded_data->getBeats()) {
-                [recorded_object appendBytes:beat.data() length:beat.size()*sizeof(RecordedMidiMessage)];
+                recordedTrackBlobAppendMessages(recorded_object, beat.data(), beat.size());
             }
             [result addEntriesFromDictionary:@{
-                @"Recorded" : recorded_object,
-                @"Duration" : @(recorded_data->getDuration()),
-                @"MPE" : mpe_dict
+                kRecordedTrackKeyRecorded : recorded_object,
+                kRecordedTrackKeyDuration : @(recorded_data->getDuration()),
+                kRecordedTrackKeyMPE : mpe_dict,
+                kRecordedTrackKeyFormat : @(kRecordedTrackFormatVersion)
             }];
         }
     });
@@ -185,6 +187,12 @@
 }
 
 - (void)dictToRecorded:(NSDictionary*)dict {
+    // content written by a newer wire format than this build understands is
+    // left alone rather than misread
+    if (!recordedTrackDictIsCompatible(dict)) {
+        return;
+    }
+
     dispatch_barrier_sync(_dispatchQueue, ^{
         // restored content replaces whatever a deferred finish would blend into
         [self dropDeferredFinishLocked];
@@ -192,16 +200,16 @@
         std::unique_ptr<MidiRecordedData> recorded_data(new MidiRecordedData());
         double recorded_duration = 0.0;
 
-        NSData* recorded_object = [dict objectForKey:@"Recorded"];
-        if (recorded_object) {
-            RecordedMidiMessage* data = (RecordedMidiMessage*)recorded_object.bytes;
-            unsigned long count = recorded_object.length / sizeof(RecordedMidiMessage);
-            for (int i = 0; i < count; ++i) {
-                recorded_data->addMessageToBeat(data[i]);
+        const RecordedMidiMessage* messages = nullptr;
+        NSUInteger count = 0;
+        if (recordedTrackBlobGetMessages([dict objectForKey:kRecordedTrackKeyRecorded], messages, count)) {
+            for (NSUInteger i = 0; i < count; ++i) {
+                RecordedMidiMessage message = messages[i];
+                recorded_data->addMessageToBeat(message);
             }
         }
-        
-        id duration = [dict objectForKey:@"Duration"];
+
+        id duration = [dict objectForKey:kRecordedTrackKeyDuration];
         if (duration) {
             recorded_duration = [duration doubleValue];
             if (_state->autoTrimRecordings.test()) {
@@ -210,7 +218,7 @@
             recorded_data->increaseDuration(recorded_duration);
         }
         
-        NSDictionary* mpe = [dict objectForKey:@"MPE"];
+        NSDictionary* mpe = [dict objectForKey:kRecordedTrackKeyMPE];
         if (mpe) {
             MPEState& mpe_state = _state->track[_ordinal].mpeState;
             
