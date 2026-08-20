@@ -90,9 +90,7 @@
         _record = record;
 
         // changing the record state cancels any pending loop-record cycle capture
-        _state->processedCaptureRecording[_ordinal].test_and_set();
-        _lastPassOffsetBeats = 0.0;
-        _takeHasCapturedPass = NO;
+        [self cancelLoopCaptureLocked];
 
         // hand off (or drop) a final pass that was still deferred when the
         // previous take ended, before this new take starts using the buffers
@@ -194,7 +192,9 @@
     }
 
     dispatch_barrier_sync(_dispatchQueue, ^{
-        // restored content replaces whatever a deferred finish would blend into
+        // restored content replaces whatever a pending loop capture or deferred
+        // finish would act on
+        [self cancelLoopCaptureLocked];
         [self dropDeferredFinishLocked];
 
         std::unique_ptr<MidiRecordedData> recorded_data(new MidiRecordedData());
@@ -327,7 +327,9 @@
 
 - (void)importParsedTrack:(midifile::Track&)parsed {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        // imported content replaces whatever a deferred finish would blend into
+        // imported content replaces whatever a pending loop capture or deferred
+        // finish would act on
+        [self cancelLoopCaptureLocked];
         [self dropDeferredFinishLocked];
 
         // build the recorded data and preview from the parsed messages
@@ -408,6 +410,17 @@
     _recordingStartSampleSeconds = 0.0;
     _recordingData.reset(new MidiRecordedData());
     _recordingPreview.reset(new MidiRecordedPreview());
+}
+
+// cancels all pending loop-record capture bookkeeping. every operation that
+// invalidates the current take (record state change, clear, crop, state
+// restore, import) needs this, so the wrap detection can't act on state that
+// belongs to content that no longer exists.
+// must be called on _dispatchQueue.
+- (void)cancelLoopCaptureLocked {
+    _state->processedCaptureRecording[_ordinal].test_and_set();
+    _lastPassOffsetBeats = 0.0;
+    _takeHasCapturedPass = NO;
 }
 
 // captures a pending loop-record pass when the message stream crosses the loop
@@ -769,9 +782,7 @@
 
         // discarding the recording cancels any pending loop-record cycle capture
         // or deferred finish
-        _state->processedCaptureRecording[_ordinal].test_and_set();
-        _lastPassOffsetBeats = 0.0;
-        _takeHasCapturedPass = NO;
+        [self cancelLoopCaptureLocked];
         [self dropDeferredFinishLocked];
 
         if (_delegate) {
@@ -802,9 +813,7 @@
         _record = NO;
 
         // cropping cancels any pending loop-record cycle capture or deferred finish
-        _state->processedCaptureRecording[_ordinal].test_and_set();
-        _lastPassOffsetBeats = 0.0;
-        _takeHasCapturedPass = NO;
+        [self cancelLoopCaptureLocked];
         [self dropDeferredFinishLocked];
 
         std::unique_ptr<MidiRecordedData> cropped_data(new MidiRecordedData());
