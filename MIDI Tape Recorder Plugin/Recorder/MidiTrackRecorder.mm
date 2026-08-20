@@ -795,16 +795,7 @@
 
         // the MPE configuration is detected from the recorded content, so reset it
         // along with the content it was derived from
-        MPEState& mpe = _state->track[_ordinal].mpeState;
-        mpe.enabled = false;
-        mpe.zone1Active = false;
-        mpe.zone1Members = 0;
-        mpe.zone1ManagerPitchSens = 0.f;
-        mpe.zone1MemberPitchSens = 0.f;
-        mpe.zone2Active = false;
-        mpe.zone2Members = 0;
-        mpe.zone2ManagerPitchSens = 0.f;
-        mpe.zone2MemberPitchSens = 0.f;
+        _state->track[_ordinal].mpeState.reset();
     });
 }
 
