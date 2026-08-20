@@ -13,6 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 #include "Constants.h"
+#include "MidiRecorderParamIds.h"
 
 #import "AudioUnitViewController.h"
 
@@ -67,7 +68,7 @@
 
 - (void)setupParameterTree {
     // Create parameter objects.
-    AUParameter* playParam = [AUParameterTree createParameterWithIdentifier:@"play"
+    AUParameter* playParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdPlay
                                                                        name:@"Play"
                                                                     address:ID_PLAY
                                                                         min:0
@@ -78,7 +79,7 @@
                                                                valueStrings:nil
                                                         dependentParameters:nil];
     
-    AUParameter* recordParam = [AUParameterTree createParameterWithIdentifier:@"record"
+    AUParameter* recordParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdRecord
                                                                          name:@"Record"
                                                                       address:ID_RECORD
                                                                           min:0
@@ -89,7 +90,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
     
-    AUParameter* repeatParam = [AUParameterTree createParameterWithIdentifier:@"repeat"
+    AUParameter* repeatParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdRepeat
                                                                          name:@"Repeat"
                                                                       address:ID_REPEAT
                                                                           min:0
@@ -100,7 +101,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
     
-    AUParameter* rewindParam = [AUParameterTree createParameterWithIdentifier:@"rewind"
+    AUParameter* rewindParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdRewind
                                                                          name:@"Rewind"
                                                                       address:ID_REWIND
                                                                           min:0
@@ -111,7 +112,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
     
-    AUParameter* gridParam = [AUParameterTree createParameterWithIdentifier:@"grid"
+    AUParameter* gridParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdGrid
                                                                        name:@"Grid"
                                                                     address:ID_GRID
                                                                         min:0
@@ -122,7 +123,7 @@
                                                                valueStrings:nil
                                                         dependentParameters:nil];
     
-    AUParameter* chaseParam = [AUParameterTree createParameterWithIdentifier:@"chase"
+    AUParameter* chaseParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdChase
                                                                         name:@"Chase"
                                                                      address:ID_CHASE
                                                                          min:0
@@ -133,7 +134,7 @@
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
     
-    AUParameter* punchInOutParam = [AUParameterTree createParameterWithIdentifier:@"punchInOut"
+    AUParameter* punchInOutParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdPunchInOut
                                                                              name:@"Punch In/Out"
                                                                           address:ID_PUNCH_INOUT
                                                                               min:0
@@ -144,7 +145,7 @@
                                                                      valueStrings:nil
                                                               dependentParameters:nil];
     
-    AUParameter* record1Param = [AUParameterTree createParameterWithIdentifier:@"record1"
+    AUParameter* record1Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdRecordTrack(1)
                                                                           name:@"Rec 1"
                                                                        address:ID_RECORD_1
                                                                            min:0
@@ -155,7 +156,7 @@
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
     
-    AUParameter* record2Param = [AUParameterTree createParameterWithIdentifier:@"record2"
+    AUParameter* record2Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdRecordTrack(2)
                                                                           name:@"Rec 2"
                                                                        address:ID_RECORD_2
                                                                            min:0
@@ -166,7 +167,7 @@
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
     
-    AUParameter* record3Param = [AUParameterTree createParameterWithIdentifier:@"record3"
+    AUParameter* record3Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdRecordTrack(3)
                                                                           name:@"Rec 3"
                                                                        address:ID_RECORD_3
                                                                            min:0
@@ -177,7 +178,7 @@
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
     
-    AUParameter* record4Param = [AUParameterTree createParameterWithIdentifier:@"record4"
+    AUParameter* record4Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdRecordTrack(4)
                                                                           name:@"Rec 4"
                                                                        address:ID_RECORD_4
                                                                            min:0
@@ -188,7 +189,7 @@
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
     
-    AUParameter* monitor1Param = [AUParameterTree createParameterWithIdentifier:@"monitor1"
+    AUParameter* monitor1Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMonitorTrack(1)
                                                                            name:@"Mon 1"
                                                                         address:ID_MONITOR_1
                                                                             min:0
@@ -199,7 +200,7 @@
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
     
-    AUParameter* monitor2Param = [AUParameterTree createParameterWithIdentifier:@"monitor2"
+    AUParameter* monitor2Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMonitorTrack(2)
                                                                            name:@"Mon 2"
                                                                         address:ID_MONITOR_2
                                                                             min:0
@@ -210,7 +211,7 @@
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
     
-    AUParameter* monitor3Param = [AUParameterTree createParameterWithIdentifier:@"monitor3"
+    AUParameter* monitor3Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMonitorTrack(3)
                                                                            name:@"Mon 3"
                                                                         address:ID_MONITOR_3
                                                                             min:0
@@ -221,7 +222,7 @@
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
     
-    AUParameter* monitor4Param = [AUParameterTree createParameterWithIdentifier:@"monitor4"
+    AUParameter* monitor4Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMonitorTrack(4)
                                                                            name:@"Mon 4"
                                                                         address:ID_MONITOR_4
                                                                             min:0
@@ -232,7 +233,7 @@
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
     
-    AUParameter* mute1Param = [AUParameterTree createParameterWithIdentifier:@"mute1"
+    AUParameter* mute1Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMuteTrack(1)
                                                                         name:@"Mute 1"
                                                                      address:ID_MUTE_1
                                                                          min:0
@@ -243,7 +244,7 @@
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
     
-    AUParameter* mute2Param = [AUParameterTree createParameterWithIdentifier:@"mute2"
+    AUParameter* mute2Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMuteTrack(2)
                                                                         name:@"Mute 2"
                                                                      address:ID_MUTE_2
                                                                          min:0
@@ -254,7 +255,7 @@
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
     
-    AUParameter* mute3Param = [AUParameterTree createParameterWithIdentifier:@"mute3"
+    AUParameter* mute3Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMuteTrack(3)
                                                                         name:@"Mute 3"
                                                                      address:ID_MUTE_3
                                                                          min:0
@@ -265,7 +266,7 @@
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
     
-    AUParameter* mute4Param = [AUParameterTree createParameterWithIdentifier:@"mute4"
+    AUParameter* mute4Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdMuteTrack(4)
                                                                         name:@"Mute 4"
                                                                      address:ID_MUTE_4
                                                                          min:0
@@ -276,7 +277,7 @@
                                                                 valueStrings:nil
                                                          dependentParameters:nil];
     
-    AUParameter* clearAllParam = [AUParameterTree createParameterWithIdentifier:@"clearAll"
+    AUParameter* clearAllParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdClearAll
                                                                            name:@"Clear All"
                                                                         address:ID_CLEAR_ALL
                                                                             min:0
@@ -287,7 +288,7 @@
                                                                    valueStrings:nil
                                                             dependentParameters:nil];
     
-    AUParameter* clear1Param = [AUParameterTree createParameterWithIdentifier:@"clear1"
+    AUParameter* clear1Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdClearTrack(1)
                                                                          name:@"Clear 1"
                                                                       address:ID_CLEAR_1
                                                                           min:0
@@ -298,7 +299,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
     
-    AUParameter* clear2Param = [AUParameterTree createParameterWithIdentifier:@"clear2"
+    AUParameter* clear2Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdClearTrack(2)
                                                                          name:@"Clear 2"
                                                                       address:ID_CLEAR_2
                                                                           min:0
@@ -309,7 +310,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
     
-    AUParameter* clear3Param = [AUParameterTree createParameterWithIdentifier:@"clear3"
+    AUParameter* clear3Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdClearTrack(3)
                                                                          name:@"Clear 3"
                                                                       address:ID_CLEAR_3
                                                                           min:0
@@ -320,7 +321,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
     
-    AUParameter* clear4Param = [AUParameterTree createParameterWithIdentifier:@"clear4"
+    AUParameter* clear4Param = [AUParameterTree createParameterWithIdentifier:MTRParamIdClearTrack(4)
                                                                          name:@"Clear 4"
                                                                       address:ID_CLEAR_4
                                                                           min:0
@@ -331,7 +332,7 @@
                                                                  valueStrings:nil
                                                           dependentParameters:nil];
 
-    AUParameter* undoParam = [AUParameterTree createParameterWithIdentifier:@"undo"
+    AUParameter* undoParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdUndo
                                                                        name:@"Undo"
                                                                     address:ID_UNDO
                                                                         min:0
@@ -342,7 +343,7 @@
                                                                valueStrings:nil
                                                         dependentParameters:nil];
 
-    AUParameter* redoParam = [AUParameterTree createParameterWithIdentifier:@"redo"
+    AUParameter* redoParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdRedo
                                                                        name:@"Redo"
                                                                     address:ID_REDO
                                                                         min:0
@@ -354,7 +355,7 @@
                                                         dependentParameters:nil];
 
     // Read-only availability of undo/redo, so a host can mirror their state.
-    AUParameter* canUndoParam = [AUParameterTree createParameterWithIdentifier:@"canUndo"
+    AUParameter* canUndoParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdCanUndo
                                                                           name:@"Can Undo"
                                                                        address:ID_CAN_UNDO
                                                                            min:0
@@ -365,7 +366,7 @@
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
 
-    AUParameter* canRedoParam = [AUParameterTree createParameterWithIdentifier:@"canRedo"
+    AUParameter* canRedoParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdCanRedo
                                                                           name:@"Can Redo"
                                                                        address:ID_CAN_REDO
                                                                            min:0
@@ -376,7 +377,7 @@
                                                                   valueStrings:nil
                                                            dependentParameters:nil];
 
-    AUParameter* clearUndoHistoryParam = [AUParameterTree createParameterWithIdentifier:@"clearUndoHistory"
+    AUParameter* clearUndoHistoryParam = [AUParameterTree createParameterWithIdentifier:MTRParamIdClearUndoHistory
                                                                                   name:@"Clear Undo History"
                                                                                address:ID_CLEAR_UNDO_HISTORY
                                                                                    min:0

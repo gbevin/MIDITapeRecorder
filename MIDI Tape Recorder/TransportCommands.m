@@ -7,6 +7,8 @@
 
 #import "TransportCommands.h"
 
+#include "MidiRecorderParamIds.h"
+
 // per-command override keys, written by a future shortcut editor. absent for now,
 // so the built-in defaults apply.
 static NSString* InputDefaultsKey(NSString* identifier) {
@@ -67,14 +69,17 @@ static MTRTransportCommand* MakeCommand(NSString* identifier, NSString* title, N
     static NSArray* commands;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
+        // the first argument is the command's own identifier (it keys the stored
+        // shortcut preferences, so it stays stable); the third is the AU
+        // parameter the command drives
         commands = @[
-            MakeCommand(@"play", @"Play / Stop", @"play", MTRCommandKindToggle, @" ", 0),
-            MakeCommand(@"record", @"Record", @"record", MTRCommandKindToggle, @"r", 0),
-            MakeCommand(@"rewind", @"Rewind to Start", @"rewind", MTRCommandKindTrigger, @"\r", 0),
-            MakeCommand(@"repeat", @"Repeat (Loop)", @"repeat", MTRCommandKindToggle, @"l", 0),
-            MakeCommand(@"grid", @"Snap to Grid", @"grid", MTRCommandKindToggle, @"g", 0),
-            MakeCommand(@"chase", @"Chase", @"chase", MTRCommandKindToggle, @"c", 0),
-            MakeCommand(@"punchInOut", @"Punch In / Out", @"punchInOut", MTRCommandKindToggle, @"p", 0),
+            MakeCommand(@"play", @"Play / Stop", MTRParamIdPlay, MTRCommandKindToggle, @" ", 0),
+            MakeCommand(@"record", @"Record", MTRParamIdRecord, MTRCommandKindToggle, @"r", 0),
+            MakeCommand(@"rewind", @"Rewind to Start", MTRParamIdRewind, MTRCommandKindTrigger, @"\r", 0),
+            MakeCommand(@"repeat", @"Repeat (Loop)", MTRParamIdRepeat, MTRCommandKindToggle, @"l", 0),
+            MakeCommand(@"grid", @"Snap to Grid", MTRParamIdGrid, MTRCommandKindToggle, @"g", 0),
+            MakeCommand(@"chase", @"Chase", MTRParamIdChase, MTRCommandKindToggle, @"c", 0),
+            MakeCommand(@"punchInOut", @"Punch In / Out", MTRParamIdPunchInOut, MTRCommandKindToggle, @"p", 0),
         ];
     });
     return commands;
@@ -85,8 +90,8 @@ static MTRTransportCommand* MakeCommand(NSString* identifier, NSString* title, N
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         commands = @[
-            MakeCommand(@"undo", @"Undo", @"undo", MTRCommandKindTrigger, @"z", UIKeyModifierCommand),
-            MakeCommand(@"redo", @"Redo", @"redo", MTRCommandKindTrigger, @"z",
+            MakeCommand(@"undo", @"Undo", MTRParamIdUndo, MTRCommandKindTrigger, @"z", UIKeyModifierCommand),
+            MakeCommand(@"redo", @"Redo", MTRParamIdRedo, MTRCommandKindTrigger, @"z",
                         UIKeyModifierCommand | UIKeyModifierShift),
         ];
     });
@@ -99,17 +104,17 @@ static MTRTransportCommand* MakeCommand(NSString* identifier, NSString* title, N
     return @[
         MakeCommand([NSString stringWithFormat:@"record%d", n],
                     [NSString stringWithFormat:@"Record Enable Track %d", n],
-                    [NSString stringWithFormat:@"record%d", n], MTRCommandKindToggle, num, 0),
+                    MTRParamIdRecordTrack(n), MTRCommandKindToggle, num, 0),
         MakeCommand([NSString stringWithFormat:@"monitor%d", n],
                     [NSString stringWithFormat:@"Monitor Track %d", n],
-                    [NSString stringWithFormat:@"monitor%d", n], MTRCommandKindToggle, num, UIKeyModifierAlternate),
+                    MTRParamIdMonitorTrack(n), MTRCommandKindToggle, num, UIKeyModifierAlternate),
         MakeCommand([NSString stringWithFormat:@"mute%d", n],
                     [NSString stringWithFormat:@"Mute Track %d", n],
-                    [NSString stringWithFormat:@"mute%d", n], MTRCommandKindToggle, num, UIKeyModifierShift),
+                    MTRParamIdMuteTrack(n), MTRCommandKindToggle, num, UIKeyModifierShift),
         // clearing a track is destructive, so it ships without a default shortcut.
         MakeCommand([NSString stringWithFormat:@"clear%d", n],
                     [NSString stringWithFormat:@"Clear Track %d", n],
-                    [NSString stringWithFormat:@"clear%d", n], MTRCommandKindTrigger, @"", 0),
+                    MTRParamIdClearTrack(n), MTRCommandKindTrigger, @"", 0),
     ];
 }
 

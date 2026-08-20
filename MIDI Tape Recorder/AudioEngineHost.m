@@ -10,6 +10,8 @@
 #import <AVFoundation/AVFoundation.h>
 #import <CoreAudioKit/CoreAudioKit.h>
 
+#include "MidiRecorderParamIds.h"
+
 // MIDI Tape Recorder ships three component variants sharing the same kernel.
 // we host the instrument variant ('aumu'/'miri') because an instrument node
 // attaches cleanly to AVAudioEngine (no audio input chain required) while still
@@ -152,7 +154,7 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
 }
 
 - (void)clearAllTracks {
-    [self triggerParameterWithIdentifier:@"clearAll"];
+    [self triggerParameterWithIdentifier:MTRParamIdClearAll];
 }
 
 - (void)toggleParameterWithIdentifier:(NSString*)identifier {

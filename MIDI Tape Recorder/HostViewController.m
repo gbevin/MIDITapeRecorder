@@ -15,6 +15,8 @@
 #import "TransportCommands.h"
 #import "WelcomeViewController.h"
 
+#include "MidiRecorderParamIds.h"
+
 static NSString* const kWelcomeShownKey = @"welcome.shown";
 static NSString* const kDocumentNameKey = @"document.name";
 static NSString* const kDocumentBookmarkKey = @"document.bookmark";
@@ -146,7 +148,7 @@ typedef NS_ENUM(NSInteger, HostPickerOperation) {
     if ([HostSession readData:data fullState:&fullState tempo:&tempo]) {
         [self applySessionContent:fullState tempo:tempo];
         // restoring the state shouldn't leave an undoable step on launch.
-        [_host triggerParameterWithIdentifier:@"clearUndoHistory"];
+        [_host triggerParameterWithIdentifier:MTRParamIdClearUndoHistory];
         // restore the document's name and file handle saved alongside the autosave,
         // so the working session keeps its identity (and Save/Rename) across launches
         NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
@@ -329,7 +331,7 @@ typedef NS_ENUM(NSInteger, HostPickerOperation) {
         // fire last so the plugin discards the undo steps registered by the
         // clear/reset above instead of letting the user undo back into the
         // previous session.
-        [strongSelf->_host triggerParameterWithIdentifier:@"clearUndoHistory"];
+        [strongSelf->_host triggerParameterWithIdentifier:MTRParamIdClearUndoHistory];
     }]];
     [self presentViewController:alert animated:YES completion:nil];
 }
@@ -349,7 +351,7 @@ typedef NS_ENUM(NSInteger, HostPickerOperation) {
     for (NSString* parameter in turnOff) {
         [_host setParameterWithIdentifier:parameter value:0.0f];
     }
-    [_host setParameterWithIdentifier:@"chase" value:1.0f];  // chase is on by default
+    [_host setParameterWithIdentifier:MTRParamIdChase value:1.0f];  // chase is on by default
 
     // reset the tempo to the default for a new session
     _host.tempo = 120.0;
@@ -648,7 +650,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL*>*)urls {
         return;
     }
     [self applySessionFullState:fullState tempo:tempo name:url.lastPathComponent url:nil];
-    [_host triggerParameterWithIdentifier:@"clearUndoHistory"];
+    [_host triggerParameterWithIdentifier:MTRParamIdClearUndoHistory];
     [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
 }
 
@@ -669,7 +671,7 @@ didPickDocumentsAtURLs:(NSArray<NSURL*>*)urls {
     [self applySessionFullState:fullState tempo:tempo name:url.lastPathComponent url:url];
     // loading a session shouldn't leave undo steps that reach back into the
     // previous document's content.
-    [_host triggerParameterWithIdentifier:@"clearUndoHistory"];
+    [_host triggerParameterWithIdentifier:MTRParamIdClearUndoHistory];
 }
 
 - (void)presentMessage:(NSString*)title body:(NSString*)body {
@@ -733,10 +735,10 @@ didPickDocumentsAtURLs:(NSArray<NSURL*>*)urls {
 
     NSString* availabilityParameter = nil;
     if ([identifier isEqualToString:@"undo"]) {
-        availabilityParameter = @"canUndo";
+        availabilityParameter = MTRParamIdCanUndo;
     }
     else if ([identifier isEqualToString:@"redo"]) {
-        availabilityParameter = @"canRedo";
+        availabilityParameter = MTRParamIdCanRedo;
     }
     if (availabilityParameter == nil) {
         return;  // other commands stay enabled
