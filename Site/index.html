@@ -62,7 +62,7 @@
 	</nav>
 	<div class="container">
 		<main class="prose">
-			<p><a href="https://github.com/gbevin/MIDITapeRecorder"><img class="inlined" src="images/Approved-for-free-cultural-works.png" width="100" height="100" alt="Approved for Free Cultural Works" loading="lazy" /></a>MIDI Tape Recorder is an open source Audio Unit v3 plugin with a radically different approach towards MIDI recording.</p>
+			<p><a href="https://github.com/gbevin/MIDITapeRecorder"><img class="inlined" src="images/Approved-for-free-cultural-works.png" width="100" height="100" alt="Approved for Free Cultural Works" loading="lazy" /></a>MIDI Tape Recorder takes a radically different approach towards MIDI recording. It runs both as an open source Audio Unit v3 plugin inside your favorite host and as a standalone app on iPhone, iPad, and Mac.</p>
 
 			<p>MIDI messages are recorded and played back with the same accuracy and precision as audio recordings. Most modern DAWs, even at their highest resolution, still change the timing of MIDI messages to accommodate for their editing features. These changes impact the playback of your performance as MIDI messages get reordered and delayed, causing changes in how they influence sound, sometimes in very significant ways.</p>
 
@@ -79,37 +79,39 @@
 
 			<p>The controls are purposefully simple and intuitive, similar to a traditional four-track audio recorder, making it fun to record, play back and loop your MIDI performance. Even when recording non-MPE MIDI, MIDI Tape Recorder makes it easy to stay in the flow and be creative without being interrupted by the technical nature of most DAWs.</p>
 
-			<p>MIDI Tape Recorder makes no sound on its own and requires an AUv3 host to function.</p>
+			<p>As a standalone app, MIDI Tape Recorder runs on its own with CoreMIDI input and output, routing your performance to any of your MIDI apps, synths, and hardware. Sessions are autosaved and can be saved, opened, and shared as documents, and recording keeps running in the background and with the screen locked, so you never lose a take.</p>
+
+			<p>MIDI Tape Recorder makes no sound on its own: as a plugin it records inside your host, and as a standalone app it routes MIDI to your instruments.</p>
 
 			<div class="video video43"><iframe src="https://www.youtube.com/embed/1Hzge7YtT5A" title="MIDI Tape Recorder introduction video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 			<h2>Features</h2>
 
 			<ul>
+				<li>Runs as an AUv3 plugin or as a standalone app on iPhone, iPad, and Mac</li>
 				<li>Four independent tracks for recording MIDI channel voice messages</li>
 				<li>Sample accurate MIDI recording and playback</li>
 				<li>Real-time display of active recorded notes and other received messages</li>
 				<li>MPE support</li>
+				<li>Continuous loop recording to overdub across every loop cycle</li>
 				<li>Multi-level undo and redo</li>
-				<li>Overdub recording</li>
-				<li>Punch in and punch out recording for automated regional overdubbing</li>
+				<li>Overdub recording, with punch in and punch out for automated regional overdubbing</li>
+				<li>CoreMIDI input and output routing in the standalone app</li>
+				<li>Autosaved, shareable session documents in the standalone app</li>
+				<li>Background and screen-locked recording in the standalone app</li>
 				<li>Automated storage and recall of all recordings inside the AUv3 host project</li>
 				<li>MIDI file import and export for the project or each individual track</li>
 				<li>Repeated playback with start and stop locators</li>
 				<li>AUv3 parameters for all controls</li>
 				<li>Snap to beat option for positioning playhead and start/stop locators</li>
-				<li>Detection of MPE configuration message (MCM) reception for each track</li>
-				<li>Envoy of MCM at start of play or when pressing the track's MPE button</li>
+				<li>Per-track MPE configuration message (MCM) detection and envoy at start of play or when pressing the track's MPE button</li>
 				<li>Host transport and host tempo sync</li>
-				<li>Clear all recordings or clear a single track</li>
-				<li>Crop session to new duration</li>
-				<li>Fully resizable UI</li>
-				<li>Activity indicators for MIDI input and output on each track</li>
+				<li>Clear all recordings or a single track, and crop the session to a new duration</li>
+				<li>Fully resizable UI with per-track MIDI input and output activity indicators</li>
 				<li>Optional tool tips for every operation</li>
 				<li>Optional per-track record enable, input monitoring, and mute</li>
-				<li>Four virtual MIDI cable inputs if the AUv3 host supports it</li>
+				<li>Four virtual MIDI cable inputs if the AUv3 host supports it, with optional routing of the first cable to all tracks</li>
 				<li>Support for AUv3 user presets if the host supports it</li>
-				<li>Optional routing of first virtual MIDI cable to all tracks</li>
 				<li>Fully open-sourced under Creative Commons Attribution 4.0 International, an approved Free Culture License</li>
 			</ul>
 
