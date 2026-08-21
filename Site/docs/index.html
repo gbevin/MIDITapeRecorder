@@ -57,6 +57,8 @@
 
   <p>MIDI Tape Recorder can record any MIDI channel voice messages that it receives and reproduces those perfectly upon playback.</p>
 
+  <p>MIDI Tape Recorder runs both as an Audio Unit v3 plugin inside a host and as a standalone app on iPhone, iPad, and Mac. As a standalone app it connects to your gear and other apps through CoreMIDI, autosaves your session as a document you can save, open, and share, and keeps recording in the background and while the screen is locked. The rest of this documentation applies to both, with the plugin's host connections replaced by CoreMIDI input and output in the standalone app.</p>
+
   <p><blockquote>Note: MTR will not record any MIDI system messages.</blockquote></p>
 
   <div class="video video43"><iframe src="https://www.youtube.com/embed/UfpEnpGqwn0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
@@ -453,6 +455,11 @@
       <em>Auto rewind after recording:</em><br / >
       When enabled (default), MIDI Tape Recorder will automatically rewind when recording is ended.<br />
       When disabled, MTR's play head will remain where it was when the recording ended.<br /><br />
+    </li>
+    <li>
+      <em>Loop record continuously:</em><br / >
+      When enabled, recording keeps going across every loop cycle, overdubbing pass after pass instead of stopping at the loop's end.<br />
+      When disabled (default), recording punches out when the loop reaches its end.<br /><br />
     </li>
   </ul>
 
