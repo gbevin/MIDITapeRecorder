@@ -188,10 +188,12 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
     desc.componentFlags = 0;
     desc.componentFlagsMask = 0;
 
-    // standard out-of-process hosting (in-process loading is a macOS/AppKit-only
-    // option, unavailable on iOS and Mac Catalyst). the view controller returned
+    // Standard out-of-process hosting (in-process loading is a macOS/AppKit-only
+    // option, unavailable on iOS and Mac Catalyst). The view controller returned
     // by requestViewControllerWithCompletionHandler is still backed by this same
-    // audio unit instance.
+    // audio unit instance. Hosting an out-of-process audio unit on iOS requires
+    // the app's inter-app-audio entitlement; without it instantiation is refused
+    // with -3000 (invalidComponentID).
     AudioComponentInstantiationOptions options = 0;
 
     __weak AudioEngineHost* weakSelf = self;
@@ -204,6 +206,7 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
                 return;
             }
             if (error != nil || avAudioUnit == nil) {
+                NSLog(@"MIDI Tape Recorder: audio unit instantiation failed: %@", error);
                 completion(error ?: [NSError errorWithDomain:@"AudioEngineHost"
                                                         code:-1
                                                     userInfo:@{NSLocalizedDescriptionKey: @"Failed to instantiate audio unit"}]);
@@ -271,6 +274,7 @@ static NSString* const kBackgroundAudioEnabledKey = @"backgroundAudio.enabled";
 
     [_engine prepare];
     if (![_engine startAndReturnError:&error]) {
+        NSLog(@"MIDI Tape Recorder: audio engine start failed: %@", error);
         completion(error);
         return;
     }
