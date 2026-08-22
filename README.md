@@ -38,7 +38,7 @@ Features:
 * Sample accurate MIDI recording and playback
 * Real-time display of active recorded notes and other received messages
 * MPE support
-* Continuous loop recording to overdub across every loop cycle
+* Continuous loop recording that re-records over the loop on each cycle instead of stopping at the loop end
 * Multi-level undo and redo
 * Overdub recording, with punch in and punch out for automated regional overdubbing
 * CoreMIDI input and output routing in the standalone app
