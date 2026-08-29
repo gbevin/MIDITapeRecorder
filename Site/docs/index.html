@@ -12,7 +12,7 @@
 	<meta property="og:image" content="https://uwyn.com/mtr/images/og-screenshot1.png" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
-	<meta property="og:image:alt" content="MIDI Tape Recorder plugin interface" />
+	<meta property="og:image:alt" content="MIDI Tape Recorder interface" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="theme-color" content="#181818" />
 	<title>MIDI Tape Recorder - Documentation</title>
@@ -57,7 +57,7 @@
 
   <p>MIDI Tape Recorder can record any MIDI channel voice messages that it receives and reproduces those perfectly upon playback.</p>
 
-  <p>MIDI Tape Recorder runs both as an Audio Unit v3 plugin inside a host and as a standalone app on iPhone, iPad, and Mac. As a standalone app it connects to your gear and other apps through CoreMIDI, autosaves your session as a document you can save, open, and share, and keeps recording in the background and while the screen is locked. The rest of this documentation applies to both, with the plugin's host connections replaced by CoreMIDI input and output in the standalone app.</p>
+  <p>MIDI Tape Recorder runs both as an Audio Unit v3 plugin inside a host and as a standalone app on iPhone, iPad and Mac. Almost everything here applies to both, have a look at <em>The Standalone App</em> for what's specific to running it on its own.</p>
 
   <p><blockquote>Note: MTR will not record any MIDI system messages.</blockquote></p>
 
@@ -68,7 +68,7 @@
 
   <h2>Making Connections</h2>
 
-  <p>Since MTR is an AUv3 plugin, you need to first make a connection to one of the MIDI Inputs, and then another connection from one of the MIDI Outputs.</p>
+  <p>When you use MTR as an AUv3 plugin, you need to first make a connection to one of the MIDI Inputs, and then another connection from one of the MIDI Outputs.</p>
 
   <p>MTR comes in three AUv3 plugins types:</p>
 
@@ -143,6 +143,97 @@
   <p style="text-align: center;"><img src="route_1_to_4_active.png" alt="Routing 1 to 4" style="margin: 0; max-width: 100%; height:auto;" width="1536" height="603" loading="lazy" /></p>
 
   <p>By using the four separate inputs you can keep different controllers connected and routed to dedicated synth plugins. However when routing the first input to all four tracks, the same controller can easily be used for all the synths you're recording. It's really up to you to decide which configuration is the most appropriate for what you're trying to achieve, they both are useful.</p>
+
+
+  <hr />
+
+
+  <h2>The Standalone App</h2>
+
+  <p>MIDI Tape Recorder also runs as a standalone app on iPhone, iPad and Mac. It's the same four-track recorder with the same controls, but instead of receiving its MIDI from a host, it connects to your gear and your other apps through CoreMIDI.</p>
+
+  <p>Everything else in this documentation applies to the standalone app just as well. The only differences are how MIDI gets in and out, and that your work is kept in session files instead of inside a host project.</p>
+
+  <h3>MIDI Settings</h3>
+
+  <p>Press <em>MIDI Settings</em> in the top bar to choose where each track gets its MIDI from and where its playback is sent. On Mac you'll find it in the application menu instead.</p>
+
+  <p style="text-align: center;"><img src="standalone_midi_settings_1.png" alt="Standalone MIDI Settings" style="margin: 0; max-width: 100%; height:auto;" width="2420" height="1450" loading="lazy" /></p>
+
+  <ul>
+    <li>
+      <em>Inputs:</em><br / >
+      Choose the MIDI source that is recorded onto each track. Each track can listen to a different controller, or several tracks can listen to the same one.<br /><br />
+    </li>
+    <li>
+      <em>Outputs:</em><br / >
+      Choose where each track's playback is sent, for instance to a synth app or to a piece of hardware.<br /><br />
+    </li>
+    <li>
+      <em>Transport:</em><br / >
+      When <em>Follow MIDI Clock</em> is enabled, the tempo tracks the MIDI clock that is received on any input. When it's disabled, the slider sets the tempo, anywhere between 20 and 300 BPM. You can also press the tempo in the top bar to type it in.<br /><br />
+    </li>
+    <li>
+      <em>Virtual Ports:</em><br / >
+      MIDI Tape Recorder always publishes a <em>MIDI Tape Recorder Input</em> and a <em>MIDI Tape Recorder Output</em> port, so that other apps on the same device can exchange MIDI with it without any hardware or cables.<br /><br />
+    </li>
+    <li>
+      <em>Run in Background:</em><br / >
+      When enabled, recording and playback keep going while the app is in the background or the screen is locked, so that you never lose a take. Turn it off to save power when you only use the recorder in the foreground.<br /><br />
+    </li>
+  </ul>
+
+  <p>Scrolling further down shows the tempo, the virtual ports and the background audio setting.</p>
+
+  <p style="text-align: center;"><img src="standalone_midi_settings_2.png" alt="Standalone MIDI Settings continued" style="margin: 0; max-width: 100%; height:auto;" width="2420" height="1450" loading="lazy" /></p>
+
+  <p><blockquote>Note: <em>Run in Background</em> is only available on iPhone and iPad, Mac apps keep running regardless.</blockquote></p>
+
+  <h3>Sessions</h3>
+
+  <p>The standalone app keeps your recordings in a session, which is autosaved as you go. You can leave the app and come back to it exactly as you left it, without having to save anything first.</p>
+
+  <p>Press <em>Sessions</em> in the top bar for the session commands. On Mac they live in the File menu instead.</p>
+
+  <p style="text-align: center;"><img src="standalone_sessions.png" alt="Standalone Sessions menu" style="margin: 0; max-width: 100%; height:auto;" width="2420" height="850" loading="lazy" /></p>
+
+  <ul>
+    <li>
+      <em>New Session:</em><br / >
+      Clears all the tracks and starts over.<br /><br />
+    </li>
+    <li>
+      <em>Open Session:</em><br / >
+      Opens a session that was saved before.<br /><br />
+    </li>
+    <li>
+      <em>Save Session</em> and <em>Save Session As:</em><br / >
+      Save your session to a file that you can keep, move around, or share with someone else.<br /><br />
+    </li>
+    <li>
+      <em>Rename Session:</em><br / >
+      Gives the current session a new name, once it has been saved to a file.<br /><br />
+    </li>
+  </ul>
+
+  <p>MIDI files are imported and exported exactly like in the plugin, through the session tools and the track tools.</p>
+
+  <h3>Keyboard Control</h3>
+
+  <p>The standalone app can be driven from the keyboard, which comes in handy with an iPad keyboard or on Mac. On Mac these commands are also in the <em>Transport</em> and <em>Edit</em> menus.</p>
+
+  <ul>
+    <li><em>Space:</em> Play / Stop</li>
+    <li><em>R:</em> Record</li>
+    <li><em>Return:</em> Rewind to Start</li>
+    <li><em>L:</em> Repeat (Loop)</li>
+    <li><em>G:</em> Snap to Grid</li>
+    <li><em>C:</em> Chase</li>
+    <li><em>P:</em> Punch In / Out</li>
+    <li><em>Cmd Z</em> and <em>Cmd Shift Z:</em> Undo and Redo</li>
+  </ul>
+
+  <p>The <em>Transport</em> menu on Mac also has the record enable, monitor, mute and clear commands for each individual track.</p>
 
 
   <hr />
