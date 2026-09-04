@@ -22,6 +22,7 @@
 #include "Constants.h"
 #include "MidiRecordedData.h"
 #include "RecordedMidiMessage.h"
+#include "PlayheadDisplay.h"
 
 #import "MidiClockTempoTracker.h"
 #import "HostTrackFile.h"
@@ -1264,6 +1265,67 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
         if (mm == t1BaseOn) t1HasBase = true;
     }
     XCTAssertTrue(t1HasBase, @"a silent armed track keeps its content while another track loop-records");
+}
+
+
+#pragma mark - UI playhead display
+
+- (void)testDisplayPlayheadWritesBackOnlyWhenStopped {
+    RecorderHarness h;
+    MidiRecorderState& state = h.kernel._state;
+    state.maxDuration = 4.0;
+    state.playPositionBeats = 5.0;
+
+    state.playActive.clear();
+    XCTAssertEqualWithAccuracy(syncDisplayPlayhead(state), 4.0, 1e-9, @"drawn inside the timeline");
+    XCTAssertEqualWithAccuracy(state.playPositionBeats.load(), 4.0, 1e-9,
+                               @"a stopped transport is clamped to the timeline");
+
+    state.playPositionBeats = 5.0;
+    state.playActive.test_and_set();
+    XCTAssertEqualWithAccuracy(syncDisplayPlayhead(state), 4.0, 1e-9, @"still drawn inside the timeline");
+    XCTAssertEqualWithAccuracy(state.playPositionBeats.load(), 5.0, 1e-9,
+                               @"a running transport keeps the render thread's playhead");
+}
+
+// 2.0.0 recorded at half speed without a host transport: the UI clamped the playhead
+// to a duration one buffer behind it after every render
+- (void)testUIPlayheadClampDoesNotSlowRecording {
+    RecorderHarness h;
+    h.armAndStart(0);
+    h.kernel._state.playActive.test_and_set();
+
+    const int spacing = 40;
+    const int noteCount = 3;
+    std::vector<double> expected;
+    double lastPlayhead = h.kernel._state.playPositionBeats;
+
+    for (int b = 0; b < spacing * (noteCount + 1); ++b) {
+        if (b > 0 && b % spacing == 0) {
+            expected.push_back(h.record(kDefaultTempo, kEventOffset, kChannel1,
+                                        noteOn(kChannel1, kNoteC4, kVelocityOn)));
+        }
+        else {
+            h.advance(kDefaultTempo);
+        }
+
+        // the UI's per-frame work: renderPreviews then renderPlayhead
+        [h.qp processMidiQueue:&h.kernel._state.midiBuffer];
+        h.kernel._state.maxDuration = std::max(h.kernel._state.stopPositionBeats.load(),
+                                               [h.recorder(0) activeDuration]);
+        syncDisplayPlayhead(h.kernel._state);
+
+        double playhead = h.kernel._state.playPositionBeats;
+        XCTAssertGreaterThanOrEqual(playhead, lastPlayhead, @"the UI never moves the playhead backwards while recording");
+        lastPlayhead = playhead;
+    }
+
+    auto recorded = h.finalizeAndGetRecorded(0);
+    XCTAssertEqual(recorded.size(), size_t(noteCount));
+    for (size_t i = 0; i < recorded.size() && i < expected.size(); ++i) {
+        XCTAssertEqualWithAccuracy(recorded[i].offsetBeats, expected[i], 0.01,
+                                   @"recorded beats stay on the wall-clock integration");
+    }
 }
 
 @end

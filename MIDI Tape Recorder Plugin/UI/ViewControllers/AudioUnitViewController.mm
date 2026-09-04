@@ -8,6 +8,8 @@
 
 #import "AudioUnitViewController.h"
 
+#include "PlayheadDisplay.h"
+
 #import <StoreKit/StoreKit.h>
 
 #include "Constants.h"
@@ -1974,8 +1976,8 @@
 
 - (void)renderPlayhead {
     // playhead position
-    _state->playPositionBeats = MIN(_state->playPositionBeats.load(), _state->maxDuration.load());
-    _playheadLeading.constant = _state->playPositionBeats * PIXELS_PER_BEAT;
+    double play_position = syncDisplayPlayhead(*_state);
+    _playheadLeading.constant = play_position * PIXELS_PER_BEAT;
     _playhead.hidden = _state->stopPositionBeats.load() == 0.0;
 
     // scroll view location

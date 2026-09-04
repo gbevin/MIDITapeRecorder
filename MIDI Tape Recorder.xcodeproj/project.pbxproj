@@ -134,6 +134,7 @@
 		AF0000000000000000000041 /* MidiFileConverter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiFileConverter.h; sourceTree = "<group>"; };
 		AF0000000000000000000070 /* RecordedTrackDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RecordedTrackDict.h; sourceTree = "<group>"; };
 		AF0000000000000000000071 /* MidiRecorderParamIds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecorderParamIds.h; sourceTree = "<group>"; };
+		AF0000000000000000000072 /* PlayheadDisplay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayheadDisplay.h; sourceTree = "<group>"; };
 		AF0000000000000000000031 /* MidiClockTempoTracker.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MidiClockTempoTracker.m; sourceTree = "<group>"; };
 		AF0000000000000000000033 /* MidiClockTempoTracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiClockTempoTracker.h; sourceTree = "<group>"; };
 		AF000000000000000000000A /* RecorderTests.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RecorderTests.mm; path = Tests/RecorderTests.mm; sourceTree = "<group>"; };
@@ -301,6 +302,7 @@
 			children = (
 				26BB387027533A3400342496 /* AudioUnitIOState.h */,
 				26C7DA322753485300170CB2 /* MidiRecorderState.h */,
+				AF0000000000000000000072 /* PlayheadDisplay.h */,
 				26855185276EC6980082909E /* MidiRecorderState.cpp */,
 				26C540C92757EC28004E4813 /* MidiTrackState.h */,
 				268A93182762997400B2D74A /* MPEState.h */,
