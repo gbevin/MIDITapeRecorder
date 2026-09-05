@@ -48,6 +48,11 @@
     // pass. after that every new pass covers the whole loop, so we pin its
     // start to the loop start for the overdub blend.
     BOOL _takeHasCapturedPass;
+
+    // set once the take has run through a loop wrap, whether that pass was
+    // captured or reset as silent; from then on a stop partway through a
+    // silent pass keeps the existing content instead of blending the silence
+    BOOL _takeHasWrapped;
 }
 
 - (instancetype)initWithOrdinal:(int)ordinal {
@@ -72,6 +77,7 @@
         _lastPassOffsetBeats = 0.0;
         _finishAwaitingBlend = false;
         _takeHasCapturedPass = NO;
+        _takeHasWrapped = NO;
     }
 
     return self;
@@ -88,6 +94,8 @@
         }
         
         _record = record;
+
+        BOOL take_wrapped = _takeHasWrapped;
 
         // changing the record state cancels any pending loop-record cycle capture
         [self cancelLoopCaptureLocked];
@@ -113,8 +121,16 @@
             if (_recordingData->getDuration() > 0.0) {
                 MidiTrackState& track_state = _state->track[_ordinal];
 
+                // a pass that played nothing keeps the existing content at the loop
+                // wrap; a stop partway through such a pass keeps it too, instead of
+                // blending the silence over the head of the loop
+                if (take_wrapped && !track_state.hasRecordedEvents.test()) {
+                    _recordingStartSampleSeconds = 0.0;
+                    _recordingData.reset(new MidiRecordedData());
+                    _recordingPreview.reset(new MidiRecordedPreview());
+                }
                 // when recording is stopped, we move the recording data to the recorded data
-                if (track_state.pendingRecordedData == nullptr) {
+                else if (track_state.pendingRecordedData == nullptr) {
                     auto recorded_data = std::move(_recordingData);
                     auto recorded_preview = std::move(_recordingPreview);
 
@@ -421,6 +437,7 @@
     _state->processedCaptureRecording[_ordinal].test_and_set();
     _lastPassOffsetBeats = 0.0;
     _takeHasCapturedPass = NO;
+    _takeHasWrapped = NO;
 }
 
 // captures a pending loop-record pass when the message stream crosses the loop
@@ -483,6 +500,7 @@
         // first message after the wrap
         [self pinPassStartLocked];
         _takeHasCapturedPass = YES;
+        _takeHasWrapped = YES;
 
         // cancel any pending no-events reset and clear the per-cycle event marker
         _state->processedResetRecording[_ordinal].test_and_set();
@@ -538,6 +556,7 @@
             _recordingData.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
             _lastPassOffsetBeats = 0.0;
+            _takeHasWrapped = YES;
             // mid-take, after we've captured a loop pass, the fresh pass still
             // covers the whole loop; keep its start pinned so old material can't
             // survive at the head of the next blend
@@ -722,7 +741,13 @@
                     _recordingStartSampleSeconds = message.timeSampleSeconds - message.playPositionBeats * _state->beatsToSeconds;
                     _state->transportStartSampleSeconds = _recordingStartSampleSeconds;
                     [_delegate startRecord];
-                    _state->track[_ordinal].recording.test_and_set();
+                    // the other armed tracks may be handling this same drain, before
+                    // the kernel has begun recording for them; let them keep it
+                    for (int t = 0; t < MIDI_TRACKS; ++t) {
+                        if (_state->track[t].recordEnabled.test()) {
+                            _state->track[t].recording.test_and_set();
+                        }
+                    }
                     auto_started_record = YES;
                 }
             }

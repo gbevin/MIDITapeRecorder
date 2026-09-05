@@ -158,6 +158,11 @@ void MidiRecorderKernel::endRecording(int track) {
 void MidiRecorderKernel::blendRecording(int track) {
     MidiTrackState& track_state = _state.track[track];
 
+    // a take can end with nothing to blend (a silent pass after a loop wrap)
+    if (!track_state.pendingRecordedData) {
+        return;
+    }
+
     // if this is a direct recording, just move all the data over
     if (!track_state.recordedData || track_state.recordedData->empty()) {
         track_state.recordedData = std::move(track_state.pendingRecordedData);

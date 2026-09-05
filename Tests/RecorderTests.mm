@@ -1122,6 +1122,100 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
     XCTAssertTrue(hasFinal, @"the final partial pass's event appears after a stop that lands while the capture blend is pending");
 }
 
+// stopping partway through a pass that played nothing keeps the loop head, the same
+// way a whole silent cycle keeps its content at the wrap
+- (void)testLoopRecordStopInSilentPassKeepsLoopHead {
+    RecorderHarness h;
+    startLoopRecord(h);
+
+    const MidiMessage headCC = controlChange(kChannel1, 0x14, 100);
+
+    std::vector<CapturedPass> captures;
+    driveLoopRecord(h, /*numCaptures*/ 1, [&](int pass, int buffer, MidiMessage& out) {
+        if (pass == 1 && buffer == 0) { out = headCC; return true; }
+        return false;
+    }, captures);
+    XCTAssertEqual(captures.size(), 1u, @"the first pass was captured at the wrap");
+
+    // a few silent buffers into the second pass, then stop and end the take
+    for (int b = 0; b < 3; ++b) {
+        h.loopBuffer(false, kEventOffset, /*cable*/ 0, headCC);
+    }
+    [h.recorder(0) setRecord:NO];
+    h.captureRecording(0);
+
+    bool hasHead = false;
+    for (const auto& m : channelOnly(h.recordedMessages(0))) {
+        if (sameBytes(m, headCC)) hasHead = true;
+    }
+    XCTAssertTrue(hasHead, @"a stop during a silent pass leaves the loop head alone");
+}
+
+// multi-track loop record: track 1 records only in the first pass and then stays
+// silent while track 0 keeps loop-recording. stopping partway through a later pass
+// must not blend either track's silent partial pass over its loop head
+- (void)testLoopRecordStopInSilentPassKeepsEveryTrackContent {
+    RecorderHarness h;
+    h.arm(0);
+    h.arm(1);
+    h.start();
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = kLoopLengthBeats;
+    h.kernel._state.repeatEnabled.test_and_set();
+    h.kernel._state.repeatActive.test_and_set();
+    h.kernel._state.loopRecord.test_and_set();
+
+    const MidiMessage t0Note   = noteOn(kChannel1, kNoteC4, kVelocityOn);
+    const MidiMessage t1BaseOn = noteOn(kChannel1, kNoteE4, kVelocityOn);
+
+    int pass = 1;
+    int bufferInPass = 0;
+    int t0Captures = 0;
+    double prevPlay = h.kernel._state.playPositionBeats;
+
+    for (int step = 0; step < 400 && t0Captures < 2; ++step) {
+        h.beginBuffer(kDefaultTempo);
+        if (bufferInPass == 2) h.inject(kEventOffset, /*cable*/ 0, t0Note);            // track 0, every pass
+        if (pass == 1 && bufferInPass == 0) h.inject(kEventOffset, /*cable*/ 1, t1BaseOn);   // track 1, pass 1 only
+        h.endBuffer();
+        [h.qp processMidiQueue:&h.kernel._state.midiBuffer];
+
+        if (h.kernel._state.track[0].pendingRecordedData != nullptr) {
+            t0Captures += 1;
+            h.applyScheduledTransitions();
+        }
+
+        double nowPlay = h.kernel._state.playPositionBeats;
+        if (nowPlay < prevPlay) { pass += 1; bufferInPass = 0; }
+        else { bufferInPass += 1; }
+        prevPlay = nowPlay;
+    }
+    XCTAssertEqual(t0Captures, 2, @"track 0 overdubs across cycles");
+
+    // a couple of silent buffers into the pass after the second capture, then stop
+    for (int b = 0; b < 2; ++b) {
+        h.beginBuffer(kDefaultTempo);
+        h.endBuffer();
+        [h.qp processMidiQueue:&h.kernel._state.midiBuffer];
+    }
+    [h.recorder(0) setRecord:NO];
+    [h.recorder(1) setRecord:NO];
+    h.captureRecording(0);
+    h.captureRecording(1);
+
+    bool t0HasNote = false;
+    for (const auto& m : channelOnly(h.recordedMessages(0))) {
+        if (sameBytes(m, t0Note)) t0HasNote = true;
+    }
+    XCTAssertTrue(t0HasNote, @"the loop-recording track keeps its last full pass");
+
+    bool t1HasBase = false;
+    for (const auto& m : channelOnly(h.recordedMessages(1))) {
+        if (sameBytes(m, t1BaseOn)) t1HasBase = true;
+    }
+    XCTAssertTrue(t1HasBase, @"the silent track keeps its content through the stop");
+}
+
 // the loopRecord toggle selects what happens at the loop end while recording. with it
 // off (the default), the loop end flags the punch-out signal; with it on, the kernel
 // instead flags each recording track to capture its pass and keep going.
@@ -1386,6 +1480,37 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
     double expectedGap = (secondSample - firstSample) / kSampleRate * (kDefaultTempo / 60.0);
     XCTAssertEqualWithAccuracy(recorded[1].offsetBeats - recorded[0].offsetBeats, expectedGap, 1e-6,
                                @"the gap after the transport-starting message matches the arrival gap");
+}
+
+// two armed tracks fed in the same drain before the transport runs: the first message
+// starts the transport, and the other track's message from that drain must be recorded
+// too, not dropped because the kernel hasn't begun recording for it yet
+- (void)testOtherArmedTracksRecordTheDrainThatStartsTheTransport {
+    RecorderHarness h;
+    h.arm(0);
+    h.arm(1);
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &h.kernel._state;
+    h.recorder(0).delegate = delegate;
+    h.recorder(1).delegate = delegate;
+    h.kernel._state.playPositionBeats = 0.0;
+
+    h.beginBuffer(kDefaultTempo);
+    h.kernel.handleScheduledTransitions();
+    h.inject(kEventOffset, /*cable*/ 0, noteOn(kChannel1, kNoteC4, kVelocityOn));
+    h.inject(kEventOffset, /*cable*/ 1, noteOn(kChannel1, kNoteE4, kVelocityOn));
+    h.endBuffer();
+    [h.qp processMidiQueue:&h.kernel._state.midiBuffer];   // one drain holds both messages
+
+    for (int b = 0; b < 4; ++b) {
+        h.beginBuffer(kDefaultTempo);
+        h.kernel.handleScheduledTransitions();
+        h.endBuffer();
+        [h.qp processMidiQueue:&h.kernel._state.midiBuffer];
+    }
+
+    XCTAssertEqual(h.finalizeAndGetRecorded(0).size(), 1u, @"the track that started the transport recorded its message");
+    XCTAssertEqual(h.finalizeAndGetRecorded(1).size(), 1u, @"the other armed track recorded the message from the same drain");
 }
 
 // a burst that lands in a single render must not overflow the queue to the recorder
