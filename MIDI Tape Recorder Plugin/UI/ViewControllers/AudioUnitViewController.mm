@@ -704,14 +704,18 @@
 
 - (void)recordChange:(BOOL)selected {
     if (selected) {
-        _autoPlayFromRecord = NO;
-        
-        if (_state->playActive.test()) {
-            [self startRecord];
-        }
-        else {
-            _state->transportStartSampleSeconds = 0.0;
-            _state->processedRecordArmed.clear();
+        // the record parameter reaches the recorders before this observer runs;
+        // when a message has already started the take, leave it alone
+        if (![self recordersArmedAhead]) {
+            _autoPlayFromRecord = NO;
+            
+            if (_state->playActive.test()) {
+                [self startRecord];
+            }
+            else {
+                _state->transportStartSampleSeconds = 0.0;
+                _state->processedRecordArmed.clear();
+            }
         }
     }
     else {
@@ -727,6 +731,20 @@
     }
     
     [self setRecordState:selected];
+}
+
+// a recorder that is recording while the record button is still off armed
+// itself from the kernel state ahead of the parameter observer
+- (BOOL)recordersArmedAhead {
+    if (_recordButton.selected) {
+        return NO;
+    }
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if ([_midiQueueProcessor recorder:t].record) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 - (void)setRecordState:(BOOL)state {
@@ -1758,7 +1776,7 @@
 
 - (void)applyRecordEnableState {
     for (int t = 0; t < MIDI_TRACKS; ++t) {
-        BOOL record = (_recordButton.selected && _state->track[t].recordEnabled.test());
+        BOOL record = (_state->recordArmed.test() && _state->track[t].recordEnabled.test());
         // a track that starts recording mid-take still needs its pre-take state
         // captured for the take's undo step
         if (record && _recordingUndoSnapshots != nil && _recordingUndoSnapshots[@(t)] == nil) {

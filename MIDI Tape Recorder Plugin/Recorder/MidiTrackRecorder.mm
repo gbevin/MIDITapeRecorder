@@ -23,6 +23,7 @@
     dispatch_queue_t _dispatchQueue;
     
     MidiRecorderState* _state;
+    BOOL _record;
     
     int16_t _lastRpnMsb[MIDI_CHANNELS];
     int16_t _lastRpnLsb[MIDI_CHANNELS];
@@ -85,80 +86,108 @@
 
 #pragma mark Transport
 
+- (BOOL)record {
+    __block BOOL record = NO;
+    dispatch_sync(_dispatchQueue, ^{
+        record = _record;
+    });
+    return record;
+}
+
 - (void)setRecord:(BOOL)record {
     __block BOOL finish_recording = NO;
 
     dispatch_barrier_sync(_dispatchQueue, ^{
-        if (_record == record) {
-            return;
-        }
-        
-        _record = record;
-
-        BOOL take_wrapped = _takeHasWrapped;
-
-        // changing the record state cancels any pending loop-record cycle capture
-        [self cancelLoopCaptureLocked];
-
-        // hand off (or drop) a final pass that was still deferred when the
-        // previous take ended, before this new take starts using the buffers
-        if (record == YES && _finishAwaitingBlend.load()) {
-            _finishAwaitingBlend = false;
-
-            MidiTrackState& track_state = _state->track[_ordinal];
-            if (track_state.pendingRecordedData == nullptr && _recordingData->getDuration() > 0.0) {
-                track_state.pendingRecordedData = std::move(_recordingData);
-                track_state.pendingRecordedPreview = std::move(_recordingPreview);
-                _state->processedBlendRecording[_ordinal].clear();
-            }
-
-            _recordingStartSampleSeconds = 0.0;
-            _recordingData.reset(new MidiRecordedData());
-            _recordingPreview.reset(new MidiRecordedPreview());
-        }
-
-        if (record == NO) {
-            if (_recordingData->getDuration() > 0.0) {
-                MidiTrackState& track_state = _state->track[_ordinal];
-
-                // a pass that played nothing keeps the existing content at the loop
-                // wrap; a stop partway through such a pass keeps it too, instead of
-                // blending the silence over the head of the loop
-                if (take_wrapped && !track_state.hasRecordedEvents.test()) {
-                    _recordingStartSampleSeconds = 0.0;
-                    _recordingData.reset(new MidiRecordedData());
-                    _recordingPreview.reset(new MidiRecordedPreview());
-                }
-                // when recording is stopped, we move the recording data to the recorded data
-                else if (track_state.pendingRecordedData == nullptr) {
-                    auto recorded_data = std::move(_recordingData);
-                    auto recorded_preview = std::move(_recordingPreview);
-
-                    _recordingStartSampleSeconds = 0.0;
-                    _recordingData.reset(new MidiRecordedData());
-                    _recordingPreview.reset(new MidiRecordedPreview());
-
-                    track_state.pendingRecordedData = std::move(recorded_data);
-                    track_state.pendingRecordedPreview = std::move(recorded_preview);
-                }
-                // if the stop raced a loop-record cycle capture whose full pass
-                // hasn't been blended yet, hold on to this partial pass and hand
-                // it off once the kernel has taken the previous one (flushDeferredFinish)
-                else {
-                    _finishAwaitingBlend = true;
-                }
-
-                // reset state
-                _state->processedResetRecording[_ordinal].test_and_set();
-                track_state.hasRecordedEvents.clear();
-
-                finish_recording = YES;
-            }
-        }
+        finish_recording = [self setRecordLocked:record];
     });
 
     if (_delegate && finish_recording) {
         [_delegate finishRecording:_ordinal];
+    }
+}
+
+// returns whether a take ended, so the caller can tell the delegate outside
+// the queue. must be called on _dispatchQueue.
+- (BOOL)setRecordLocked:(BOOL)record {
+    BOOL finish_recording = NO;
+
+    if (_record == record) {
+        return NO;
+    }
+    
+    _record = record;
+
+    BOOL take_wrapped = _takeHasWrapped;
+
+    // changing the record state cancels any pending loop-record cycle capture
+    [self cancelLoopCaptureLocked];
+
+    // hand off (or drop) a final pass that was still deferred when the
+    // previous take ended, before this new take starts using the buffers
+    if (record == YES && _finishAwaitingBlend.load()) {
+        _finishAwaitingBlend = false;
+
+        MidiTrackState& track_state = _state->track[_ordinal];
+        if (track_state.pendingRecordedData == nullptr && _recordingData->getDuration() > 0.0) {
+            track_state.pendingRecordedData = std::move(_recordingData);
+            track_state.pendingRecordedPreview = std::move(_recordingPreview);
+            _state->processedBlendRecording[_ordinal].clear();
+        }
+
+        _recordingStartSampleSeconds = 0.0;
+        _recordingData.reset(new MidiRecordedData());
+        _recordingPreview.reset(new MidiRecordedPreview());
+    }
+
+    if (record == NO) {
+        if (_recordingData->getDuration() > 0.0) {
+            MidiTrackState& track_state = _state->track[_ordinal];
+
+            // a pass that played nothing keeps the existing content at the loop
+            // wrap; a stop partway through such a pass keeps it too, instead of
+            // blending the silence over the head of the loop
+            if (take_wrapped && !track_state.hasRecordedEvents.test()) {
+                _recordingStartSampleSeconds = 0.0;
+                _recordingData.reset(new MidiRecordedData());
+                _recordingPreview.reset(new MidiRecordedPreview());
+            }
+            // when recording is stopped, we move the recording data to the recorded data
+            else if (track_state.pendingRecordedData == nullptr) {
+                auto recorded_data = std::move(_recordingData);
+                auto recorded_preview = std::move(_recordingPreview);
+
+                _recordingStartSampleSeconds = 0.0;
+                _recordingData.reset(new MidiRecordedData());
+                _recordingPreview.reset(new MidiRecordedPreview());
+
+                track_state.pendingRecordedData = std::move(recorded_data);
+                track_state.pendingRecordedPreview = std::move(recorded_preview);
+            }
+            // if the stop raced a loop-record cycle capture whose full pass
+            // hasn't been blended yet, hold on to this partial pass and hand
+            // it off once the kernel has taken the previous one (flushDeferredFinish)
+            else {
+                _finishAwaitingBlend = true;
+            }
+
+            // reset state
+            _state->processedResetRecording[_ordinal].test_and_set();
+            track_state.hasRecordedEvents.clear();
+
+            finish_recording = YES;
+        }
+    }
+
+    return finish_recording;
+}
+
+// the record parameters reach the kernel state as soon as the host sets them,
+// while the view controller arms the recorders later through its parameter
+// observer; a message that arrives in between must not fall through that gap
+// must be called on _dispatchQueue.
+- (void)armFromKernelStateLocked {
+    if (!_record && _state->recordArmed.test() && _state->track[_ordinal].recordEnabled.test()) {
+        [self setRecordLocked:YES];
     }
 }
 
@@ -524,6 +553,8 @@
 
 - (void)ping:(QueuedMidiMessage&)message {
     dispatch_barrier_sync(_dispatchQueue, ^{
+        [self armFromKernelStateLocked];
+
         // don't record if record enable isn't active
         if (!_record || !_recordingData) {
             return;
@@ -722,6 +753,8 @@
             }
         }
         
+        [self armFromKernelStateLocked];
+
         // don't record if record enable isn't active
         if (!_record || !_recordingData) {
             return;

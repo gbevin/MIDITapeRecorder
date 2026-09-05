@@ -1513,6 +1513,96 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
     XCTAssertEqual(h.finalizeAndGetRecorded(1).size(), 1u, @"the other armed track recorded the message from the same drain");
 }
 
+// the host sets the record parameters straight into the kernel state, while the
+// view controller arms the recorders later through its parameter observer; a
+// message arriving in between is recorded and starts the take
+- (void)testKernelArmedRecorderRecordsBeforeTheViewControllerArmsIt {
+    RecorderHarness h;
+    MidiRecorderState& state = h.kernel._state;
+    state.track[0].sourceCable = 0;
+    state.track[0].recordEnabled.test_and_set();
+    state.recordArmed.test_and_set();          // nobody calls setRecord:YES
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &state;
+    h.recorder(0).delegate = delegate;
+    state.playPositionBeats = 0.0;
+
+    h.beginBuffer(kDefaultTempo);
+    h.kernel.handleScheduledTransitions();
+    h.inject(kEventOffset, /*cable*/ 0, noteOn(kChannel1, kNoteC4, kVelocityOn));
+    h.endBuffer();
+    [h.qp processMidiQueue:&state.midiBuffer];
+
+    XCTAssertTrue(h.recorder(0).record, @"the recorder armed itself from the kernel state");
+    XCTAssertTrue(state.playActive.test(), @"the message started the take");
+
+    for (int b = 0; b < 4; ++b) {
+        h.beginBuffer(kDefaultTempo);
+        h.kernel.handleScheduledTransitions();
+        h.endBuffer();
+        [h.qp processMidiQueue:&state.midiBuffer];
+    }
+    XCTAssertEqual(h.finalizeAndGetRecorded(0).size(), 1u, @"the message that arrived before the view controller armed the recorder is recorded");
+}
+
+// the view controller's own arming call, arriving after the recorder armed itself,
+// must not restart the take that is already under way
+- (void)testLateViewControllerArmingKeepsTheSelfStartedTake {
+    RecorderHarness h;
+    MidiRecorderState& state = h.kernel._state;
+    state.track[0].sourceCable = 0;
+    state.track[0].recordEnabled.test_and_set();
+    state.recordArmed.test_and_set();
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &state;
+    h.recorder(0).delegate = delegate;
+    state.playPositionBeats = 0.0;
+
+    h.beginBuffer(kDefaultTempo);
+    h.kernel.handleScheduledTransitions();
+    h.inject(kEventOffset, /*cable*/ 0, noteOn(kChannel1, kNoteC4, kVelocityOn));
+    h.endBuffer();
+    [h.qp processMidiQueue:&state.midiBuffer];
+
+    [h.recorder(0) setRecord:YES];             // the observer catches up
+
+    for (int b = 0; b < 4; ++b) {
+        h.beginBuffer(kDefaultTempo);
+        h.kernel.handleScheduledTransitions();
+        if (b == 3) h.inject(kEventOffset, /*cable*/ 0, noteOn(kChannel1, kNoteE4, kVelocityOn));
+        h.endBuffer();
+        [h.qp processMidiQueue:&state.midiBuffer];
+    }
+    auto recorded = h.finalizeAndGetRecorded(0);
+    XCTAssertEqual(recorded.size(), 2u, @"both messages stay in the one take");
+    if (recorded.size() == 2) {
+        XCTAssertEqual(recorded[0].data[1], kNoteC4, @"the first message opens the take");
+        XCTAssertLessThan(recorded[0].offsetBeats, recorded[1].offsetBeats, @"the take was not restarted");
+    }
+}
+
+// an enabled track without the record parameter engaged records nothing
+- (void)testEnabledTrackWithoutRecordEngagedStaysIdle {
+    RecorderHarness h;
+    MidiRecorderState& state = h.kernel._state;
+    state.track[0].sourceCable = 0;
+    state.track[0].recordEnabled.test_and_set();
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &state;
+    h.recorder(0).delegate = delegate;
+    state.playPositionBeats = 0.0;
+
+    h.beginBuffer(kDefaultTempo);
+    h.kernel.handleScheduledTransitions();
+    h.inject(kEventOffset, /*cable*/ 0, noteOn(kChannel1, kNoteC4, kVelocityOn));
+    h.endBuffer();
+    [h.qp processMidiQueue:&state.midiBuffer];
+
+    XCTAssertFalse(h.recorder(0).record, @"the recorder stays off without the record parameter");
+    XCTAssertFalse(state.playActive.test(), @"nothing started the transport");
+    XCTAssertEqual(h.finalizeAndGetRecorded(0).size(), 0u, @"nothing was recorded");
+}
+
 // a burst that lands in a single render must not overflow the queue to the recorder
 - (void)testDenseBurstInOneRenderIsQueuedCompletely {
     RecorderHarness h;
