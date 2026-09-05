@@ -601,6 +601,12 @@
     return @[@"MIDI Out 1", @"MIDI Out 2", @"MIDI Out 3", @"MIDI Out 4"];
 }
 
+// dense MPE playback can emit a few hundred messages in one render, more than the
+// default host buffer holds
+- (NSInteger)MIDIOutputBufferSizeHint {
+    return 65536;
+}
+
 - (BOOL)supportsMPE {
     return YES;
 }

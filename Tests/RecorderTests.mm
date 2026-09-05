@@ -28,6 +28,25 @@
 #import "HostTrackFile.h"
 #import "HostSession.h"
 
+// what the view controller does when a recording starts the transport from its first message
+@interface AutoStartDelegate : NSObject <MidiTrackRecorderDelegate>
+@property (nonatomic) MidiRecorderState* state;
+@end
+@implementation AutoStartDelegate
+- (void)startRecord {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if (self.state->track[t].recordEnabled.test()) {
+            self.state->processedBeginRecording[t].clear();
+        }
+    }
+    self.state->playActive.test_and_set();
+    self.state->processedPlay.clear();
+}
+- (void)finishRecording:(int)ordinal {}
+- (void)finishImport:(int)ordinal {}
+- (void)invalidateRecording:(int)ordinal {}
+@end
+
 namespace {
 
 #pragma mark - Render configuration
@@ -127,6 +146,7 @@ struct OutputEvent {
 };
 
 // drives the real kernel + recorder classes through a hand-stepped render loop.
+
 struct RecorderHarness {
     MidiRecorderKernel kernel;
     MidiQueueProcessor* qp = nil;
@@ -1325,6 +1345,66 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
     for (size_t i = 0; i < recorded.size() && i < expected.size(); ++i) {
         XCTAssertEqualWithAccuracy(recorded[i].offsetBeats, expected[i], 0.01,
                                    @"recorded beats stay on the wall-clock integration");
+    }
+}
+
+
+#pragma mark - Self-started takes and dense input
+
+// without a host transport the first message starts the transport itself, a render or
+// more before play() runs; the messages after it must still be stamped relative to it
+- (void)testFirstMessageOfSelfStartedTakeLinesUpWithTheRest {
+    RecorderHarness h;
+    h.arm(0);
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &h.kernel._state;
+    h.recorder(0).delegate = delegate;
+    h.kernel._state.playPositionBeats = 0.0;
+
+    h.beginBuffer(kDefaultTempo);
+    h.kernel.handleScheduledTransitions();
+    double firstSample = h.absoluteSample(kEventOffset);
+    h.inject(kEventOffset, kChannel1, noteOn(kChannel1, kNoteC4, kVelocityOn));
+    h.endBuffer();
+    [h.qp processMidiQueue:&h.kernel._state.midiBuffer];   // the recorder starts the transport
+
+    const int later = 40;
+    double secondSample = 0.0;
+    for (int b = 0; b < later; ++b) {
+        h.beginBuffer(kDefaultTempo);
+        h.kernel.handleScheduledTransitions();               // play() runs on the first of these
+        if (b == later - 1) {
+            secondSample = h.absoluteSample(kEventOffset);
+            h.inject(kEventOffset, kChannel1, noteOn(kChannel1, kNoteD4, kVelocityOn));
+        }
+        h.endBuffer();
+        [h.qp processMidiQueue:&h.kernel._state.midiBuffer];
+    }
+
+    auto recorded = h.finalizeAndGetRecorded(0);
+    XCTAssertEqual(recorded.size(), 2u);
+    double expectedGap = (secondSample - firstSample) / kSampleRate * (kDefaultTempo / 60.0);
+    XCTAssertEqualWithAccuracy(recorded[1].offsetBeats - recorded[0].offsetBeats, expectedGap, 1e-6,
+                               @"the gap after the transport-starting message matches the arrival gap");
+}
+
+// a burst that lands in a single render must not overflow the queue to the recorder
+- (void)testDenseBurstInOneRenderIsQueuedCompletely {
+    RecorderHarness h;
+    h.armAndStart(0);
+
+    const int count = 2000;
+    h.beginBuffer(kDefaultTempo);
+    for (int i = 0; i < count; ++i) {
+        h.inject(kEventOffset, kChannel1, MidiMessage{{ uint8_t(0xB0), uint8_t(20 + i % 8), uint8_t(i % 128) }, 3});
+    }
+    h.endBuffer();
+
+    XCTAssertEqual(h.kernel._state.midiQueueDropped.load(), 0u, @"nothing dropped at the render thread");
+    auto recorded = h.finalizeAndGetRecorded(0);
+    XCTAssertEqual(recorded.size(), size_t(count), @"every message of the burst is recorded");
+    for (size_t i = 0; i < recorded.size(); ++i) {
+        XCTAssertEqual(recorded[i].data[2], uint8_t(i % 128), @"burst order is preserved");
     }
 }
 

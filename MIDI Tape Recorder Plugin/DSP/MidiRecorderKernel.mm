@@ -8,6 +8,8 @@
 
 #import "MidiRecorderKernel.h"
 
+#include <algorithm>
+
 #include "Constants.h"
 #include "Logging.h"
 #include "NoteTracker.h"
@@ -17,7 +19,7 @@
 #define DEBUG_MIDI_OUTPUT 0
 
 MidiRecorderKernel::MidiRecorderKernel() : _state() {
-    TPCircularBufferInit(&_state.midiBuffer, 16384);
+    TPCircularBufferInit(&_state.midiBuffer, MIDI_QUEUE_BYTES);
 }
 
 void MidiRecorderKernel::cleanup() {
@@ -550,7 +552,9 @@ void MidiRecorderKernel::handleBufferStart() {
         message.hasBeatTime = true;
     }
 
-    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+    if (!TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage))) {
+        _state.midiQueueDropped += 1;
+    }
 }
 
 void MidiRecorderKernel::handleScheduledTransitions() {
@@ -697,7 +701,17 @@ void MidiRecorderKernel::handleScheduledTransitions() {
 
     // play
     if (!_state.processedPlay.test_and_set()) {
-        _state.transportStartSampleSeconds = _ioState.timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+        double origin = _state.transportStartSampleSeconds;
+        if (!_isPlaying && origin != 0.0) {
+            // a recording already started the transport on its first message, at
+            // least a render ago; pick the playhead up where it would be by now so
+            // the messages that follow line up with that first one
+            double now = double(_ioState.timestamp->mSampleTime) / _ioState.sampleRate;
+            _state.playPositionBeats = std::max(0.0, (now - origin) * _state.secondsToBeats);
+        }
+        else {
+            _state.transportStartSampleSeconds = _ioState.timeSampleSeconds - _state.playPositionBeats * _state.beatsToSeconds;
+        }
         play();
     }
 
@@ -1050,5 +1064,7 @@ void MidiRecorderKernel::queueMIDIEvent(AUMIDIEvent const& midiEvent) {
     logQueuedMidiMessage(@"IN ", message);
 #endif
 
-    TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage));
+    if (!TPCircularBufferProduceBytes(&_state.midiBuffer, &message, sizeof(QueuedMidiMessage))) {
+        _state.midiQueueDropped += 1;
+    }
 }

@@ -9,6 +9,9 @@
 #pragma once
 
 const int MIDI_TRACKS = 4;
+// render-to-recorder MIDI queue, 32 bytes per message; sized so a burst of a few
+// thousand messages inside one 60 Hz drain doesn't drop anything
+const int MIDI_QUEUE_BYTES = 262144;
 const int MIDI_CHANNELS = 16;
 const int MIDI_NOTES = 128;
 

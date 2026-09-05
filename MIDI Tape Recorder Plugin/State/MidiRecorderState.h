@@ -103,6 +103,8 @@ struct MidiRecorderState {
     std::atomic_flag processedUIClearAllPostInvalidate      { true };
 
     TPCircularBuffer midiBuffer;
+    // messages the render thread couldn't queue because the recorder fell behind
+    std::atomic<uint32_t> midiQueueDropped { 0 };
     
     bool inactivePunchInOut();
     bool activePunchInOut();
