@@ -22,6 +22,7 @@
 #import "MidiQueueProcessor.h"
 #import "MidiTrackRecorder.h"
 #import "MidiRecorderAudioUnit.h"
+#import "MidiRecordingUndo.h"
 #import "MidiTrackView.h"
 #import "MPEButton.h"
 #import "Preferences.h"
@@ -35,7 +36,7 @@
 #import "ToolBarButton.h"
 #import "TrackButton.h"
 
-@interface AudioUnitViewController ()
+@interface AudioUnitViewController () <MidiRecordingUndoDelegate>
 
 @property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityInput1;
 @property (weak, nonatomic) IBOutlet ActivityIndicatorView* midiActivityInput2;
@@ -203,11 +204,7 @@
 
     BOOL _autoPlayFromRecord;
 
-    // Each armed track's recorded state captured when recording starts, keyed by
-    // track ordinal. Registered for undo when the take finishes, so a whole take
-    // (including a multi-cycle loop-record take whose intermediate passes were
-    // already blended) undoes as a single step.
-    NSMutableDictionary<NSNumber*, NSDictionary*>* _recordingUndoSnapshots;
+    MidiRecordingUndo* _recordingUndo;
     
     UIView* _activePannedMarker;
     CGPoint _autoPan;
@@ -231,6 +228,9 @@
         _recordingPump = nil;
         _renderReady = NO;
         
+        _recordingUndo = [MidiRecordingUndo new];
+        _recordingUndo.delegate = self;
+
         _mainUndoManager = [RecorderUndoManager new];
         _mainUndoManager.levelsOfUndo = 10;
         _mainUndoManager.groupsByEvent = NO;
@@ -754,10 +754,10 @@
         // capture each armed track's pre-take state; finishRecording registers it
         // for undo when the take ends
         if (state) {
-            self->_recordingUndoSnapshots = [NSMutableDictionary dictionary];
+            [self->_recordingUndo beginTake];
             for (int t = 0; t < MIDI_TRACKS; ++t) {
                 if (self->_state->track[t].recordEnabled.test()) {
-                    self->_recordingUndoSnapshots[@(t)] = [[self->_midiQueueProcessor recorder:t] recordedAsDict];
+                    [self->_recordingUndo captureTrack:t];
                 }
             }
         }
@@ -766,7 +766,7 @@
         [self updateRecordEnableState];
 
         if (!state) {
-            self->_recordingUndoSnapshots = nil;
+            [self->_recordingUndo endTake];
 
             AudioUnitViewController* __weak weak_self = self;
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -862,15 +862,7 @@
         
         _state->processedCropAll.clear();
 
-        _state->stopPositionSet.clear();
-        _state->stopPositionBeats = MAX(_state->stopPositionBeats.load() - _state->startPositionBeats.load(), 0.0);
-        _state->playPositionBeats = 0.0;
-        _state->startPositionSet.clear();
-        _state->startPositionBeats = 0.0;
-        _state->punchInPositionSet.clear();
-        _state->punchInPositionBeats = 0.0;
-        _state->punchOutPositionSet.clear();
-        _state->punchOutPositionBeats = _state->stopPositionBeats.load();
+        _state->cropPositions();
     }
 }
 
@@ -1779,8 +1771,8 @@
         BOOL record = (_state->recordArmed.test() && _state->track[t].recordEnabled.test());
         // a track that starts recording mid-take still needs its pre-take state
         // captured for the take's undo step
-        if (record && _recordingUndoSnapshots != nil && _recordingUndoSnapshots[@(t)] == nil) {
-            _recordingUndoSnapshots[@(t)] = [[_midiQueueProcessor recorder:t] recordedAsDict];
+        if (record) {
+            [_recordingUndo captureTrack:t];
         }
         [_midiQueueProcessor recorder:t].record = record;
     }
@@ -2158,18 +2150,8 @@
     _state->processedPlay.clear();
 }
 
-- (void)finishRecording:(int)ordinal {
-    // a take undoes as a whole: restore the state captured when recording started
-    // (a multi-cycle loop-record take has already blended its intermediate passes,
-    // so the state at stop time isn't the pre-take state)
-    NSDictionary* snapshot = _recordingUndoSnapshots[@(ordinal)];
-    if (snapshot != nil) {
-        [self registerRestoreForUndo:ordinal withData:snapshot];
-        [_recordingUndoSnapshots removeObjectForKey:@(ordinal)];
-    }
-    else {
-        [self registerRecordedForUndo:ordinal];
-    }
+- (void)finishRecording:(int)ordinal changedContent:(BOOL)changedContent {
+    [_recordingUndo finishTrack:ordinal changedContent:changedContent];
 
     _state->processedEndRecording[ordinal].clear();
 }
@@ -2180,7 +2162,10 @@
     MidiTrackState& track_state = _state->track[ordinal];
     track_state.recordedData = std::move(track_state.pendingRecordedData);
     track_state.recordedPreview = std::move(track_state.pendingRecordedPreview);
-    
+
+    // an import during a take replaces what the take started from
+    [_recordingUndo recaptureTrack:ordinal];
+
     [self withMidiTrack:ordinal view:^(MidiTrackView *view) {
         [view rebuild];
     }];
@@ -2191,7 +2176,7 @@
 - (void)invalidateRecording:(int)ordinal {
     // a track being cleared drops its pre-take snapshot, so a later record stop
     // can't restore content that was explicitly discarded
-    [_recordingUndoSnapshots removeObjectForKey:@(ordinal)];
+    [_recordingUndo discardTrack:ordinal];
 
     _state->processedNotesOff[ordinal].clear();
     _state->processedInvalidate[ordinal].clear();
@@ -2282,6 +2267,16 @@
     [self withMidiTrack:ordinal view:^(MidiTrackView* view) {
         [view rebuild];
     }];
+}
+
+#pragma mark - MidiRecordingUndoDelegate
+
+- (NSDictionary*)recordedStateForTrack:(int)track {
+    return [[_midiQueueProcessor recorder:track] recordedAsDict];
+}
+
+- (void)registerUndoRestoreForTrack:(int)track withState:(NSDictionary*)state {
+    [self registerRestoreForUndo:track withData:state];
 }
 
 - (void)registerRecordedForUndo:(int)ordinal {

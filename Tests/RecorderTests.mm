@@ -25,12 +25,15 @@
 #include "PlayheadDisplay.h"
 
 #import "MidiClockTempoTracker.h"
+#import "MidiRecordingUndo.h"
 #import "HostTrackFile.h"
 #import "HostSession.h"
 
 // what the view controller does when a recording starts the transport from its first message
 @interface AutoStartDelegate : NSObject <MidiTrackRecorderDelegate>
 @property (nonatomic) MidiRecorderState* state;
+@property (nonatomic) int finishCount;
+@property (nonatomic) BOOL lastChangedContent;
 @end
 @implementation AutoStartDelegate
 - (void)startRecord {
@@ -42,7 +45,11 @@
     self.state->playActive.test_and_set();
     self.state->processedPlay.clear();
 }
-- (void)finishRecording:(int)ordinal {}
+- (void)finishRecording:(int)ordinal changedContent:(BOOL)changedContent {
+    self.finishCount += 1;
+    self.lastChangedContent = changedContent;
+    self.state->processedEndRecording[ordinal].clear();
+}
 - (void)finishImport:(int)ordinal {}
 - (void)invalidateRecording:(int)ordinal {}
 @end
@@ -1319,6 +1326,458 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
 // "had events" decision is per track, so the silent track keeps its content, records
 // no empty overdub, and is not left with a pending pass, while track 0's overdub still
 // lands.
+// a silent punch pass that is stopped before the loop ever wraps must not blend its
+// empty punch window over the existing content.
+- (void)testSilentPunchPassStoppedBeforeAnyWrapKeepsContent {
+    RecorderHarness h;
+    startLoopRecord(h, /*loopRecord*/ NO);
+
+    const MidiMessage baseCC = controlChange(kChannel1, 0x14, 100);
+    h.loopBuffer(true, kEventOffset, /*cable*/ 0, baseCC);
+    for (int i = 0; i < 2; ++i) {
+        h.loopBuffer(false, 0, 0, MidiMessage());
+    }
+    [h.recorder(0) setRecord:NO];
+    h.applyScheduledTransitions();
+    h.captureRecording(0);
+    XCTAssertEqual(channelOnly(h.recordedMessages(0)).size(), 1u, @"base material is on the track");
+
+    // a second take over the existing content, with a punch window and no playing
+    h.kernel._state.punchInPositionBeats = 0.0;
+    h.kernel._state.punchOutPositionBeats = kLoopLengthBeats;
+    h.kernel._state.punchInOut.test_and_set();
+    h.kernel._state.playPositionBeats = 0.0;
+    h.kernel._state.processedBeginRecording[0].clear();
+    h.applyScheduledTransitions();
+    [h.recorder(0) setRecord:YES];
+
+    for (int i = 0; i < 2; ++i) {
+        h.loopBuffer(false, 0, 0, MidiMessage());
+    }
+    [h.recorder(0) setRecord:NO];
+    h.applyScheduledTransitions();
+    h.captureRecording(0);
+
+    const auto recorded = channelOnly(h.recordedMessages(0));
+    bool hasBase = false;
+    for (const auto& m : recorded) {
+        if (sameBytes(m, baseCC)) hasBase = true;
+    }
+    XCTAssertTrue(hasBase, @"a punch pass that recorded nothing leaves the existing content alone");
+}
+
+// a loop-record cycle that follows a silent cycle still covers the whole loop. the
+// reset that a silent cycle schedules is consumed by whichever ping the recorder
+// drains next, which can be one queued before the wrap, so the fresh pass must not
+// take its start from that ping's playhead at the end of the previous cycle.
+- (void)testLoopRecordPassAfterSilentCycleSpansTheWholeLoop {
+    const double loopLength = 1.0;
+    RecorderHarness h;
+    h.arm(0);
+    h.start();
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = loopLength;
+    h.kernel._state.repeatEnabled.test_and_set();
+    h.kernel._state.repeatActive.test_and_set();
+
+    // content from an earlier take, then loop record over it
+    const MidiMessage baseCC = controlChange(kChannel1, 0x14, 100);
+    h.loopBuffer(true, kEventOffset, /*cable*/ 0, baseCC);
+    h.loopBuffer(false, 0, 0, MidiMessage());
+    [h.recorder(0) setRecord:NO];
+    h.applyScheduledTransitions();
+    h.captureRecording(0);
+
+    h.kernel._state.loopRecord.test_and_set();
+    h.kernel._state.playPositionBeats = 0.0;
+    h.kernel._state.processedBeginRecording[0].clear();
+    h.applyScheduledTransitions();
+    [h.recorder(0) setRecord:YES];
+
+    const MidiMessage note = noteOn(kChannel1, kNoteC4, kVelocityOn);
+    std::vector<CapturedPass> captures;
+    driveLoopRecord(h, /*numCaptures*/ 1, [&](int pass, int buffer, MidiMessage& out) {
+        if (pass >= 2 && buffer == 1) { out = note; return true; }   // cycle 1 stays silent
+        return false;
+    }, captures);
+
+    XCTAssertEqual(captures.size(), 1u, @"the played cycle after a silent one captures");
+    if (captures.size() == 1) {
+        XCTAssertEqualWithAccuracy(captures[0].start, 0.0, 1e-9,
+            @"the pass starts at the loop head, not at the end of the silent cycle");
+        XCTAssertEqualWithAccuracy(captures[0].duration, loopLength, 1e-9,
+            @"the pass spans the whole loop");
+    }
+}
+
+// a loop-record cycle that records nothing must not paint over the track while it
+// runs. the recording preview is drawn in place of the recorded one wherever it has
+// started, so claiming the range before any event arrives blanks the existing
+// content on screen until the transport stops and the view is rebuilt.
+- (void)testSilentLoopCycleLeavesTheDrawnTrackAlone {
+    const double loopLength = 1.0;
+    RecorderHarness h;
+    h.arm(0);
+    h.start();
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = loopLength;
+    h.kernel._state.repeatEnabled.test_and_set();
+    h.kernel._state.repeatActive.test_and_set();
+
+    const MidiMessage note = noteOn(kChannel1, kNoteC4, kVelocityOn);
+    h.loopBuffer(true, kEventOffset, /*cable*/ 0, note);
+    h.loopBuffer(false, 0, 0, MidiMessage());
+    [h.recorder(0) setRecord:NO];
+    h.applyScheduledTransitions();
+    h.captureRecording(0);
+
+    int contentPixel = -1;
+    RecordedPreviewVector& pixels = h.kernel._state.track[0].recordedPreview->getPixels();
+    for (int p = 0; p < (int)pixels.size(); ++p) {
+        if (pixels[p].notes != 0 || pixels[p].events != 0) {
+            contentPixel = p;
+            break;
+        }
+    }
+    XCTAssertGreaterThanOrEqual(contentPixel, 0, @"the base take left something to draw");
+
+    // loop record over the base content without playing anything
+    h.kernel._state.loopRecord.test_and_set();
+    h.kernel._state.playPositionBeats = 0.0;
+    h.kernel._state.processedBeginRecording[0].clear();
+    h.applyScheduledTransitions();
+    [h.recorder(0) setRecord:YES];
+
+    for (int i = 0; i < 120; ++i) {          // several wraps of a one beat loop
+        h.loopBuffer(false, 0, 0, MidiMessage());
+    }
+
+    PreviewPixelData shown = [h.recorder(0) previewPixelData:contentPixel];
+    XCTAssertTrue(shown.notes != 0 || shown.events != 0,
+        @"a cycle that recorded nothing still draws the existing content");
+}
+
+// the first event of a pass claims the whole pass range for the recording preview at
+// once. while recording, the view only refreshes the beat at the playhead and the one
+// before it, so the claim has to ask for a redraw or the range keeps its stale drawing
+// until the take stops.
+- (void)testFirstEventOfAPassRequestsATrackRedraw {
+    RecorderHarness h;
+    h.arm(0);
+    h.start();
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = 2.0;
+    h.kernel._state.repeatEnabled.test_and_set();
+    h.kernel._state.repeatActive.test_and_set();
+
+    const MidiMessage note = noteOn(kChannel1, kNoteC4, kVelocityOn);
+    h.loopBuffer(true, kEventOffset, /*cable*/ 0, note);
+    h.loopBuffer(false, 0, 0, MidiMessage());
+    [h.recorder(0) setRecord:NO];
+    h.applyScheduledTransitions();
+    h.captureRecording(0);
+
+    h.kernel._state.loopRecord.test_and_set();
+    h.kernel._state.playPositionBeats = 0.0;
+    h.kernel._state.processedBeginRecording[0].clear();
+    h.applyScheduledTransitions();
+    [h.recorder(0) setRecord:YES];
+
+    // past the wrap, then silent for a while, so the pass covers the loop head
+    for (int i = 0; i < 100; ++i) {
+        h.loopBuffer(false, 0, 0, MidiMessage());
+    }
+    XCTAssertFalse([h.recorder(0) previewPixelData:1].dirty, @"nothing claimed while the pass is silent");
+
+    h.kernel._state.processedUIRebuildPreview[0].test_and_set();
+    h.loopBuffer(true, kEventOffset, /*cable*/ 0, note);
+
+    XCTAssertTrue([h.recorder(0) previewPixelData:1].dirty, @"the pass claims back to the loop head");
+    XCTAssertFalse(h.kernel._state.processedUIRebuildPreview[0].test(),
+        @"claiming the range asks the view to redraw the track");
+}
+
+// with a punch window the loop wrap falls outside it, so no MIDI and no ping carry the
+// recorder across the wrap. the pass still has to be captured there rather than waiting
+// for the next punch-in, otherwise the take keeps drawing as if it were still recording
+// for the rest of the loop.
+- (void)testLoopRecordPunchPassIsCapturedAtTheWrap {
+    RecorderHarness h;
+    h.arm(0);
+    h.start();
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = 2.0;
+    h.kernel._state.repeatEnabled.test_and_set();
+    h.kernel._state.repeatActive.test_and_set();
+    h.kernel._state.loopRecord.test_and_set();
+    h.kernel._state.punchInPositionBeats = 0.5;
+    h.kernel._state.punchOutPositionBeats = 1.5;
+    h.kernel._state.punchInOut.test_and_set();
+
+    const MidiMessage note = noteOn(kChannel1, kNoteC4, kVelocityOn);
+    const int contentPixel = (int)(0.7 * PIXELS_PER_BEAT);
+
+    double prevPlay = 0.0;
+    bool wrapped = false;
+    int buffersAfterWrap = 0;
+    for (int i = 0; i < 200 && buffersAfterWrap < 3; ++i) {
+        h.loopBuffer(i == 30, kEventOffset, /*cable*/ 0, note);   // buffer 30 sits inside the punch window
+        h.applyScheduledTransitions();
+        double play = h.kernel._state.playPositionBeats.load();
+        if (play < prevPlay) {
+            wrapped = true;
+        }
+        prevPlay = play;
+        if (wrapped) {
+            buffersAfterWrap += 1;
+        }
+    }
+
+    XCTAssertTrue(wrapped, @"the loop wrapped");
+    XCTAssertLessThan(h.kernel._state.playPositionBeats.load(), 0.5,
+        @"the playhead has not reached punch-in again yet");
+    XCTAssertFalse([h.recorder(0) previewPixelData:contentPixel].dirty,
+        @"the captured pass draws as recorded content once the loop wraps");
+}
+
+// the take has to be finished even when its final pass is empty, which is what a stop
+// outside the punch window leaves behind, otherwise the view controller is never told
+// the take ended and never registers it for undo.
+- (void)testStoppingALoopTakeOutsideThePunchWindowStillFinishesIt {
+    RecorderHarness h;
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &h.kernel._state;
+    h.recorder(0).delegate = delegate;
+    h.arm(0);
+    h.start();
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = 2.0;
+    h.kernel._state.repeatEnabled.test_and_set();
+    h.kernel._state.repeatActive.test_and_set();
+    h.kernel._state.loopRecord.test_and_set();
+    h.kernel._state.punchInPositionBeats = 0.5;
+    h.kernel._state.punchOutPositionBeats = 1.5;
+    h.kernel._state.punchInOut.test_and_set();
+
+    const MidiMessage note = noteOn(kChannel1, kNoteC4, kVelocityOn);
+    double prevPlay = 0.0;
+    int afterWrap = -1;
+    for (int i = 0; i < 200 && afterWrap < 2; ++i) {
+        h.loopBuffer(i == 30, kEventOffset, /*cable*/ 0, note);   // inside the punch window
+        h.applyScheduledTransitions();
+        double play = h.kernel._state.playPositionBeats.load();
+        if (play < prevPlay) {
+            afterWrap = 0;
+        }
+        else if (afterWrap >= 0) {
+            afterWrap += 1;
+        }
+        prevPlay = play;
+    }
+
+    XCTAssertLessThan(h.kernel._state.playPositionBeats.load(), 0.5, @"stopping outside the punch window");
+    XCTAssertEqual(delegate.finishCount, 0, @"the take is still running");
+
+    [h.recorder(0) setRecord:NO];
+
+    XCTAssertEqual(delegate.finishCount, 1, @"ending the take tells the delegate, which registers the undo step");
+}
+
+// a take always ends, however little it recorded: the kernel keeps the track marked as
+// recording until the delegate has been told, so a take that never reached its punch
+// window used to leave the track recording after the transport had stopped.
+- (void)testTakeThatNeverRecordsStillEndsTheTake {
+    for (int punched = 0; punched <= 1; ++punched) {
+        RecorderHarness h;
+        AutoStartDelegate* delegate = [AutoStartDelegate new];
+        delegate.state = &h.kernel._state;
+        h.recorder(0).delegate = delegate;
+        h.kernel._state.startPositionBeats = 0.0;
+        h.kernel._state.stopPositionBeats = 4.0;
+        h.arm(0);
+        h.start();
+        h.kernel._state.recordArmed.test_and_set();
+        if (punched) {
+            // a window the playhead never reaches below
+            h.kernel._state.punchInPositionBeats = 3.0;
+            h.kernel._state.punchOutPositionBeats = 3.5;
+            h.kernel._state.punchInOut.test_and_set();
+        }
+
+        for (int i = 0; i < 20; ++i) {
+            h.loopBuffer(false, 0, 0, MidiMessage());
+            h.applyScheduledTransitions();
+        }
+
+        h.kernel._state.recordArmed.clear();
+        [h.recorder(0) setRecord:NO];
+        h.applyScheduledTransitions();
+
+        XCTAssertEqual(delegate.finishCount, 1, @"the take ended (punch %d)", punched);
+        XCTAssertFalse(delegate.lastChangedContent, @"it changed nothing (punch %d)", punched);
+        XCTAssertFalse(h.kernel._state.track[0].recording.test(),
+            @"the kernel stopped recording the track (punch %d)", punched);
+    }
+}
+
+// a take that did record reports that it changed the track, so it gets an undo step
+- (void)testTakeThatRecordsReportsThatItChangedTheTrack {
+    RecorderHarness h;
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &h.kernel._state;
+    h.recorder(0).delegate = delegate;
+    h.kernel._state.startPositionBeats = 0.0;
+    h.kernel._state.stopPositionBeats = 4.0;
+    h.arm(0);
+    h.start();
+    h.kernel._state.recordArmed.test_and_set();
+
+    h.loopBuffer(true, kEventOffset, /*cable*/ 0, noteOn(kChannel1, kNoteC4, kVelocityOn));
+    h.applyScheduledTransitions();
+    h.loopBuffer(false, 0, 0, MidiMessage());
+    h.applyScheduledTransitions();
+
+    h.kernel._state.recordArmed.clear();
+    [h.recorder(0) setRecord:NO];
+    h.applyScheduledTransitions();
+
+    XCTAssertEqual(delegate.finishCount, 1);
+    XCTAssertTrue(delegate.lastChangedContent, @"the take changed the track");
+}
+
+// cropping with Record engaged must still crop the track. ending the take through the
+// delegate made the kernel treat the cropped data as a finished take and blend it,
+// which consumed it before the crop could apply it and left the track empty.
+- (void)testCropWhileRecordIsEngagedStillCropsTheTrack {
+    for (int recordEngaged = 0; recordEngaged <= 1; ++recordEngaged) {
+        RecorderHarness h;
+        AutoStartDelegate* delegate = [AutoStartDelegate new];
+        delegate.state = &h.kernel._state;
+        h.recorder(0).delegate = delegate;
+        h.kernel._state.startPositionBeats = 0.0;
+        h.kernel._state.stopPositionBeats = 100.0;
+        h.arm(0);
+        h.start();
+
+        const MidiMessage early = noteOn(kChannel1, 60, kVelocityOn);
+        const MidiMessage late = noteOn(kChannel1, 62, kVelocityOn);
+        for (int i = 0; i < 85; ++i) {
+            bool inject = (i == 10) || (i == 80);
+            h.loopBuffer(inject, kEventOffset, /*cable*/ 0, (i == 10) ? early : late);
+            h.applyScheduledTransitions();
+        }
+        [h.recorder(0) setRecord:NO];
+        h.applyScheduledTransitions();
+        h.captureRecording(0);
+        XCTAssertEqual(channelOnly(h.recordedMessages(0)).size(), 2u, @"both notes are on the track");
+
+        if (recordEngaged) {
+            h.kernel._state.recordArmed.test_and_set();
+            [h.recorder(0) setRecord:YES];
+        }
+
+        h.kernel._state.startPositionBeats = 1.0;
+        h.kernel._state.stopPositionBeats = 2.0;
+        [h.recorder(0) crop];
+        h.applyScheduledTransitions();
+        h.kernel._state.processedCropAll.clear();
+        h.applyScheduledTransitions();
+
+        XCTAssertTrue(h.kernel._state.track[0].recordedData != nullptr,
+            @"the track still has its content (record engaged %d)", recordEngaged);
+        const auto recorded = channelOnly(h.recordedMessages(0));
+        XCTAssertEqual(recorded.size(), 1u, @"only what was inside the crop range is left (record engaged %d)", recordEngaged);
+        for (const auto& m : recorded) {
+            XCTAssertEqual(m.data[1], 62, @"the note before the crop range is gone");
+            XCTAssertEqualWithAccuracy(m.offsetBeats, 0.858, 0.01, @"what is left is shifted to the new start");
+        }
+        if (h.kernel._state.track[0].recordedData) {
+            XCTAssertEqualWithAccuracy(h.kernel._state.track[0].recordedData->getDuration(), 1.0, 1e-9,
+                @"the track is as long as the crop range, which is what the markers follow");
+        }
+    }
+}
+
+// cropping while a take is running ends that take and drops its pass: the pass was
+// recorded against the uncropped timeline, so blending it in afterwards left it at its
+// uncropped offsets, and it survived into whatever take came next.
+- (void)testCropDuringATakeEndsItAndDropsTheUncroppedPass {
+    RecorderHarness h;
+    AutoStartDelegate* delegate = [AutoStartDelegate new];
+    delegate.state = &h.kernel._state;
+    h.recorder(0).delegate = delegate;
+    h.kernel._state.startPositionBeats = 1.0;
+    h.kernel._state.stopPositionBeats = 3.0;
+    h.arm(0);
+    h.start();
+    h.kernel._state.recordArmed.test_and_set();
+
+    const MidiMessage beforeCrop = noteOn(kChannel1, 60, kVelocityOn);
+    for (int i = 0; i < 55; ++i) {
+        h.loopBuffer(i == 50, kEventOffset, /*cable*/ 0, beforeCrop);
+        h.applyScheduledTransitions();
+    }
+
+    [h.recorder(0) crop];
+    h.kernel._state.processedCropAll.clear();
+    h.applyScheduledTransitions();
+
+    // a new take after the crop
+    const MidiMessage afterCrop = noteOn(kChannel1, 62, kVelocityOn);
+    h.kernel._state.processedBeginRecording[0].clear();
+    h.applyScheduledTransitions();
+    [h.recorder(0) setRecord:YES];
+    for (int i = 0; i < 20; ++i) {
+        h.loopBuffer(i == 10, kEventOffset, /*cable*/ 0, afterCrop);
+        h.applyScheduledTransitions();
+    }
+    h.kernel._state.recordArmed.clear();
+    [h.recorder(0) setRecord:NO];
+    for (int i = 0; i < 4; ++i) {
+        h.applyScheduledTransitions();
+        [h.recorder(0) flushDeferredFinish];
+    }
+    h.captureRecording(0);
+
+    const auto recorded = channelOnly(h.recordedMessages(0));
+    XCTAssertEqual(recorded.size(), 1u, @"only the take that followed the crop is on the track");
+    for (const auto& m : recorded) {
+        XCTAssertEqual(m.data[1], 62, @"the pass from before the crop did not survive into the next take");
+    }
+}
+
+// without a punch window every loop-record cycle spans the whole loop, so each played
+// cycle captures and then replaces the one before it rather than adding to it.
+- (void)testLoopRecordWithoutPunchWindowReplacesTheWholeLoopEachCycle {
+    RecorderHarness h;
+    startLoopRecord(h);
+
+    const MidiMessage cc1 = controlChange(kChannel1, 0x14, 100);
+    const MidiMessage cc2 = controlChange(kChannel1, 0x15, 100);
+    const MidiMessage cc3 = controlChange(kChannel1, 0x16, 100);
+
+    std::vector<CapturedPass> captures;
+    driveLoopRecord(h, /*numCaptures*/ 3, [&](int pass, int buffer, MidiMessage& out) {
+        if (buffer != 1) return false;
+        if (pass == 1) { out = cc1; return true; }
+        if (pass == 2) { out = cc2; return true; }
+        if (pass == 3) { out = cc3; return true; }
+        return false;
+    }, captures);
+
+    XCTAssertEqual(captures.size(), 3u, @"every played cycle captures a pass");
+    for (const auto& capture : captures) {
+        XCTAssertEqualWithAccuracy(capture.start, 0.0, 1e-9, @"a pass spans the loop from its start");
+        XCTAssertEqualWithAccuracy(capture.duration, kLoopLengthBeats, 1e-9, @"a pass spans the loop to its end");
+    }
+
+    const auto recorded = channelOnly(h.recordedMessages(0));
+    XCTAssertEqual(recorded.size(), 1u, @"only the last cycle survives");
+    if (recorded.size() == 1) {
+        XCTAssertTrue(sameBytes(recorded[0], cc3), @"the surviving material is the last cycle's");
+    }
+}
+
 - (void)testLoopRecordMultiTrackSilentTrackKeepsContent {
     RecorderHarness h;
     h.arm(0);
@@ -2235,3 +2694,314 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
 }
 
 @end
+
+#pragma mark - Recording undo
+
+// stands in for the view controller: hands out each track's current recorded state
+// and records what the take asks to register for undo
+@interface UndoDelegateSpy : NSObject <MidiRecordingUndoDelegate>
+@property (nonatomic) NSMutableDictionary<NSNumber*, NSDictionary*>* content;
+@property (nonatomic) NSMutableArray<NSArray*>* registrations;
+@end
+
+@implementation UndoDelegateSpy
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        _content = [NSMutableDictionary dictionary];
+        _registrations = [NSMutableArray array];
+    }
+    return self;
+}
+- (NSDictionary*)recordedStateForTrack:(int)track {
+    return _content[@(track)];
+}
+- (void)registerUndoRestoreForTrack:(int)track withState:(NSDictionary*)state {
+    [_registrations addObject:@[@(track), state]];
+}
+@end
+
+@interface MidiRecordingUndoTests : XCTestCase
+@end
+
+@implementation MidiRecordingUndoTests {
+    MidiRecordingUndo* _undo;
+    UndoDelegateSpy* _spy;
+}
+
+- (void)setUp {
+    _spy = [UndoDelegateSpy new];
+    _undo = [MidiRecordingUndo new];
+    _undo.delegate = _spy;
+}
+
+- (void)setContent:(NSString*)value forTrack:(int)track {
+    _spy.content[@(track)] = @{ @"content" : value };
+}
+
+- (NSString*)registeredValueAtIndex:(NSUInteger)index {
+    return ((NSDictionary*)_spy.registrations[index][1])[@"content"];
+}
+
+// the take registers the state from before it started, not the state it produced
+- (void)testTakeRegistersThePreTakeState {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [self setContent:@"after" forTrack:0];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 1u);
+    XCTAssertEqualObjects([self registeredValueAtIndex:0], @"before");
+    XCTAssertEqualObjects(_spy.registrations[0][0], @0);
+}
+
+// clearing a track while the take runs registers its own undo step, so the take must
+// not add one of its own: doing so restored the state the take had just produced,
+// which is an undo step that changes nothing
+- (void)testClearedTrackRegistersNothingWhenTheTakeEnds {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [_undo discardTrack:0];
+    [self setContent:@"recorded after the clear" forTrack:0];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+- (void)testTrackArmedMidTakeRegistersItsOwnPreTakeState {
+    [self setContent:@"t0 before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [self setContent:@"t1 before" forTrack:1];
+    [_undo captureTrack:1];
+
+    [_undo finishTrack:0 changedContent:YES];
+    [_undo finishTrack:1 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 2u);
+    XCTAssertEqualObjects([self registeredValueAtIndex:0], @"t0 before");
+    XCTAssertEqualObjects([self registeredValueAtIndex:1], @"t1 before");
+}
+
+// only the first capture of a take is the pre-take one, however often the parameter
+// observer re-applies the record enables while the take runs
+- (void)testRepeatedCaptureKeepsTheFirstStateOfTheTake {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [self setContent:@"mid take" forTrack:0];
+    [_undo captureTrack:0];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 1u);
+    XCTAssertEqualObjects([self registeredValueAtIndex:0], @"before");
+}
+
+- (void)testATrackRegistersOnlyOncePerTake {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [_undo finishTrack:0 changedContent:YES];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 1u);
+}
+
+- (void)testWithoutATakeNothingIsCapturedOrRegistered {
+    [self setContent:@"before" forTrack:0];
+
+    XCTAssertFalse(_undo.takeInProgress);
+    [_undo captureTrack:0];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+- (void)testEndingTheTakeDropsWhatWasNotRegistered {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+    XCTAssertTrue(_undo.takeInProgress);
+
+    [_undo endTake];
+    XCTAssertFalse(_undo.takeInProgress);
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+// a take that left the track exactly as it found it needs no undo step of its own
+- (void)testTakeThatChangedNothingRegistersNothing {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [_undo finishTrack:0 changedContent:NO];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+// and it does not leave its snapshot behind for a later take to register
+- (void)testTakeThatChangedNothingDropsItsSnapshot {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+    [_undo finishTrack:0 changedContent:NO];
+
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+// an import during a take replaces the state the take started from, so undoing the
+// take returns to the imported content instead of reverting the import as well
+- (void)testRecaptureReplacesThePreTakeState {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [self setContent:@"imported" forTrack:0];
+    [_undo recaptureTrack:0];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 1u);
+    XCTAssertEqualObjects([self registeredValueAtIndex:0], @"imported");
+}
+
+- (void)testRecaptureOutsideATakeKeepsNothing {
+    [self setContent:@"imported" forTrack:0];
+
+    [_undo recaptureTrack:0];
+    [_undo finishTrack:0 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+// a track that was never armed has no pre-take state and registers nothing
+- (void)testUnarmedTrackRegistersNothing {
+    [self setContent:@"before" forTrack:0];
+    [_undo beginTake];
+    [_undo captureTrack:0];
+
+    [_undo finishTrack:2 changedContent:YES];
+
+    XCTAssertEqual(_spy.registrations.count, 0u);
+}
+
+@end
+
+#pragma mark - Crop positions
+
+@interface CropPositionTests : XCTestCase
+@end
+
+@implementation CropPositionTests {
+    MidiRecorderState _state;
+}
+
+- (void)setUp {
+    _state.startPositionBeats = 2.0;      // cropping to [2, 6] of a longer session
+    _state.stopPositionBeats = 6.0;
+    _state.startPositionSet.test_and_set();
+    _state.stopPositionSet.test_and_set();
+    _state.punchInOut.test_and_set();
+}
+
+- (void)setPunchFrom:(double)in to:(double)out {
+    _state.punchInPositionBeats = in;
+    _state.punchOutPositionBeats = out;
+    _state.punchInPositionSet.test_and_set();
+    _state.punchOutPositionSet.test_and_set();
+}
+
+// the crop range becomes the whole session and stops being a user placed range
+- (void)testTheCropRangeBecomesTheWholeSession {
+    [self setPunchFrom:3.0 to:5.0];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.startPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.stopPositionBeats.load(), 4.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.playPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertFalse(_state.startPositionSet.test());
+    XCTAssertFalse(_state.stopPositionSet.test());
+}
+
+// a punch range wholly inside the crop keeps its place, shifted to the new start
+- (void)testPunchRangeInsideTheCropIsKept {
+    [self setPunchFrom:3.0 to:5.0];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.punchInPositionBeats.load(), 1.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.punchOutPositionBeats.load(), 3.0, 1e-9);
+    XCTAssertTrue(_state.punchInPositionSet.test(), @"it is still a placed marker");
+    XCTAssertTrue(_state.punchOutPositionSet.test());
+}
+
+// a punch range that runs past either edge is clamped to what is left
+- (void)testPunchRangeOverlappingTheCropIsClamped {
+    [self setPunchFrom:1.0 to:7.0];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.punchInPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.punchOutPositionBeats.load(), 4.0, 1e-9);
+    XCTAssertTrue(_state.punchInPositionSet.test());
+    XCTAssertTrue(_state.punchOutPositionSet.test());
+}
+
+- (void)testPunchRangeOverlappingOnlyTheStartIsClamped {
+    [self setPunchFrom:1.0 to:3.0];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.punchInPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.punchOutPositionBeats.load(), 1.0, 1e-9);
+    XCTAssertTrue(_state.punchInPositionSet.test());
+}
+
+// a punch range entirely before what is kept has nothing to carry across
+- (void)testPunchRangeBeforeTheCropIsReset {
+    [self setPunchFrom:0.5 to:1.5];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.punchInPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.punchOutPositionBeats.load(), 4.0, 1e-9);
+    XCTAssertFalse(_state.punchInPositionSet.test(), @"it is no longer a placed marker");
+    XCTAssertFalse(_state.punchOutPositionSet.test());
+}
+
+- (void)testPunchRangeAfterTheCropIsReset {
+    [self setPunchFrom:7.0 to:8.0];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.punchInPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.punchOutPositionBeats.load(), 4.0, 1e-9);
+    XCTAssertFalse(_state.punchInPositionSet.test());
+    XCTAssertFalse(_state.punchOutPositionSet.test());
+}
+
+// cropping to nothing leaves no session to place markers in
+- (void)testEmptyCropRangeLeavesEverythingAtZero {
+    _state.startPositionBeats = 3.0;
+    _state.stopPositionBeats = 3.0;
+    [self setPunchFrom:3.0 to:3.0];
+
+    _state.cropPositions();
+
+    XCTAssertEqualWithAccuracy(_state.stopPositionBeats.load(), 0.0, 1e-9);
+    XCTAssertEqualWithAccuracy(_state.punchOutPositionBeats.load(), 0.0, 1e-9);
+}
+
+@end
+

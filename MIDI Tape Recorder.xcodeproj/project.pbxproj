@@ -24,6 +24,7 @@
 		AF0000000000000000000011 /* DSPKernel.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3857275338EE00342496 /* DSPKernel.mm */; };
 		AF0000000000000000000012 /* MidiTrackRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */; };
 		AF0000000000000000000013 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
+		AF0000000000000000000099 /* MidiRecordingUndo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1600000000000000002 /* MidiRecordingUndo.mm */; };
 		AF0000000000000000000014 /* MidiRecordedData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DB27675C5F00A6BAB7 /* MidiRecordedData.cpp */; };
 		AF0000000000000000000015 /* MidiRecordedPreview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26BE25DE2767604D00A6BAB7 /* MidiRecordedPreview.cpp */; };
 		AF0000000000000000000016 /* RecordedMidiMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 262A75AC276E911B00FE6FDF /* RecordedMidiMessage.cpp */; };
@@ -54,6 +55,7 @@
 		26B140892754590300748F00 /* TPCircularBuffer+AudioBufferList.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140842754590300748F00 /* TPCircularBuffer+AudioBufferList.c */; };
 		26B1408C2754590300748F00 /* TPCircularBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B140872754590300748F00 /* TPCircularBuffer.c */; };
 		26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B140902754717900748F00 /* MidiQueueProcessor.mm */; };
+		26B1600000000000000003 /* MidiRecordingUndo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1600000000000000002 /* MidiRecordingUndo.mm */; };
 		26B1D1FC275E3E86003A8A48 /* MidiHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */; };
 		26B1D1FE275E4005003A8A48 /* GraphicsHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */; };
 		26BB3831275338B200342496 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26BB3830275338B200342496 /* AppDelegate.m */; };
@@ -175,6 +177,8 @@
 		26B140882754590300748F00 /* TPCircularBuffer+AudioBufferList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TPCircularBuffer+AudioBufferList.h"; sourceTree = "<group>"; };
 		26B1408F2754717700748F00 /* MidiQueueProcessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiQueueProcessor.h; sourceTree = "<group>"; };
 		26B140902754717900748F00 /* MidiQueueProcessor.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiQueueProcessor.mm; sourceTree = "<group>"; };
+		26B1600000000000000001 /* MidiRecordingUndo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiRecordingUndo.h; sourceTree = "<group>"; };
+		26B1600000000000000002 /* MidiRecordingUndo.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiRecordingUndo.mm; sourceTree = "<group>"; };
 		26B1D1FA275E39B8003A8A48 /* MidiHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MidiHelper.h; sourceTree = "<group>"; };
 		26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MidiHelper.mm; sourceTree = "<group>"; };
 		26B1D1FD275E3FD0003A8A48 /* GraphicsHelper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicsHelper.mm; sourceTree = "<group>"; };
@@ -407,6 +411,8 @@
 				260EF237276A285E00FC6C65 /* MidiPreviewProvider.h */,
 				26B1408F2754717700748F00 /* MidiQueueProcessor.h */,
 				26B140902754717900748F00 /* MidiQueueProcessor.mm */,
+				26B1600000000000000001 /* MidiRecordingUndo.h */,
+				26B1600000000000000002 /* MidiRecordingUndo.mm */,
 				26C540C22757C11B004E4813 /* MidiTrackRecorder.h */,
 				26C540C32757C11B004E4813 /* MidiTrackRecorder.mm */,
 				26C540C72757D4F4004E4813 /* MidiTrackRecorderDelegate.h */,
@@ -746,6 +752,7 @@
 				26BE25DC27675CD000A6BAB7 /* MidiRecordedData.cpp in Sources */,
 				26BB3863275338EE00342496 /* AudioUnitViewController.mm in Sources */,
 				26B140912754719600748F00 /* MidiQueueProcessor.mm in Sources */,
+				26B1600000000000000003 /* MidiRecordingUndo.mm in Sources */,
 				26F36168276B957400077518 /* NoteState.cpp in Sources */,
 				26C49D182756D04400A6FAB4 /* MidiTrackView.mm in Sources */,
 				26BB3858275338EE00342496 /* DSPKernel.mm in Sources */,
@@ -782,6 +789,7 @@
 				AF0000000000000000000011 /* DSPKernel.mm in Sources */,
 				AF0000000000000000000012 /* MidiTrackRecorder.mm in Sources */,
 				AF0000000000000000000013 /* MidiQueueProcessor.mm in Sources */,
+				AF0000000000000000000099 /* MidiRecordingUndo.mm in Sources */,
 				AF0000000000000000000014 /* MidiRecordedData.cpp in Sources */,
 				AF0000000000000000000015 /* MidiRecordedPreview.cpp in Sources */,
 				AF0000000000000000000016 /* RecordedMidiMessage.cpp in Sources */,

@@ -106,6 +106,8 @@ struct MidiRecorderState {
     // messages the render thread couldn't queue because the recorder fell behind
     std::atomic<uint32_t> midiQueueDropped { 0 };
     
+    void cropPositions();
+
     bool inactivePunchInOut();
     bool activePunchInOut();
 };

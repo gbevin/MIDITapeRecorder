@@ -51,6 +51,16 @@
     <li>Fixed other armed tracks missing the message that starts the transport when several tracks record at once.</li>
     <li>Fixed stopping a loop recording partway through a silent pass erasing the start of the loop.</li>
     <li>Fixed MIDI arriving right after Record is engaged from the host being dropped until the tracks were armed.</li>
+    <li>Fixed recording over existing content erasing the recorded range when nothing was played.</li>
+    <li>Fixed continuous loop recording losing what was played after a silent cycle.</li>
+    <li>Fixed existing content disappearing from the display while a recording pass that played nothing was running.</li>
+    <li>Fixed a loop recording pass inside a punch in and out region only being added to the track when the playhead returned to the punch-in point.</li>
+    <li>Fixed clearing a track while it was recording leaving behind an undo step that did nothing.</li>
+    <li>Fixed a recording that captured nothing creating an undo step that did nothing.</li>
+    <li>Fixed a track staying armed for recording after a take that never reached its punch in and out region.</li>
+    <li>Fixed undoing a take also reverting a MIDI file imported into that track while it was recording.</li>
+    <li>Fixed cropping while recording leaving the take that was running in the uncropped timeline, where it reappeared during the next recording.</li>
+    <li>Cropping now keeps the punch in and out markers where they were, adapting them to the cropped take instead of resetting them to its full length.</li>
   </ul>
 
   <h2>v2.0.1</h2>

@@ -17,7 +17,7 @@ class RecordedMidiMessage;
 @protocol MidiTrackRecorderDelegate <NSObject>
 
 - (void)startRecord;
-- (void)finishRecording:(int)ordinal;
+- (void)finishRecording:(int)ordinal changedContent:(BOOL)changedContent;
 - (void)finishImport:(int)ordinal;
 - (void)invalidateRecording:(int)ordinal;
 

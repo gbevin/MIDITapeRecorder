@@ -45,15 +45,9 @@
     // check it cheaply without going through the dispatch queue.
     std::atomic<bool> _finishAwaitingBlend;
 
-    // set once a continuous loop-record take has captured at least one full
-    // pass. after that every new pass covers the whole loop, so we pin its
-    // start to the loop start for the overdub blend.
-    BOOL _takeHasCapturedPass;
-
-    // set once the take has run through a loop wrap, whether that pass was
-    // captured or reset as silent; from then on a stop partway through a
-    // silent pass keeps the existing content instead of blending the silence
-    BOOL _takeHasWrapped;
+    // set once this take has handed a loop-record pass off to be blended, so the
+    // take still ends properly when its final pass turns out to be empty
+    BOOL _takeHasCommittedPass;
 }
 
 - (instancetype)initWithOrdinal:(int)ordinal {
@@ -77,8 +71,7 @@
         _recordingPreview.reset(new MidiRecordedPreview());
         _lastPassOffsetBeats = 0.0;
         _finishAwaitingBlend = false;
-        _takeHasCapturedPass = NO;
-        _takeHasWrapped = NO;
+        _takeHasCommittedPass = NO;
     }
 
     return self;
@@ -96,20 +89,25 @@
 
 - (void)setRecord:(BOOL)record {
     __block BOOL finish_recording = NO;
+    __block BOOL changed_content = NO;
 
     dispatch_barrier_sync(_dispatchQueue, ^{
-        finish_recording = [self setRecordLocked:record];
+        finish_recording = [self setRecordLocked:record changedContent:&changed_content];
     });
 
     if (_delegate && finish_recording) {
-        [_delegate finishRecording:_ordinal];
+        [_delegate finishRecording:_ordinal changedContent:changed_content];
     }
 }
 
-// returns whether a take ended, so the caller can tell the delegate outside
-// the queue. must be called on _dispatchQueue.
-- (BOOL)setRecordLocked:(BOOL)record {
+// returns whether a take ended, so the caller can tell the delegate outside the
+// queue, and reports through changedContent whether that take altered the track.
+// must be called on _dispatchQueue.
+- (BOOL)setRecordLocked:(BOOL)record changedContent:(BOOL*)changedContent {
     BOOL finish_recording = NO;
+    if (changedContent) {
+        *changedContent = NO;
+    }
 
     if (_record == record) {
         return NO;
@@ -117,7 +115,7 @@
     
     _record = record;
 
-    BOOL take_wrapped = _takeHasWrapped;
+    BOOL take_committed_pass = _takeHasCommittedPass;
 
     // changing the record state cancels any pending loop-record cycle capture
     [self cancelLoopCaptureLocked];
@@ -140,13 +138,15 @@
     }
 
     if (record == NO) {
-        if (_recordingData->getDuration() > 0.0) {
-            MidiTrackState& track_state = _state->track[_ordinal];
+        MidiTrackState& track_state = _state->track[_ordinal];
 
-            // a pass that played nothing keeps the existing content at the loop
-            // wrap; a stop partway through such a pass keeps it too, instead of
-            // blending the silence over the head of the loop
-            if (take_wrapped && !track_state.hasRecordedEvents.test()) {
+        // an earlier pass of this take was already blended in
+        BOOL changed_content = take_committed_pass;
+
+        if (_recordingData->getDuration() > 0.0) {
+            // a pass that recorded nothing leaves the existing content alone
+            // instead of blending its silence over the range it covered
+            if (!track_state.hasRecordedEvents.test()) {
                 _recordingStartSampleSeconds = 0.0;
                 _recordingData.reset(new MidiRecordedData());
                 _recordingPreview.reset(new MidiRecordedPreview());
@@ -162,19 +162,27 @@
 
                 track_state.pendingRecordedData = std::move(recorded_data);
                 track_state.pendingRecordedPreview = std::move(recorded_preview);
+
+                changed_content = YES;
             }
             // if the stop raced a loop-record cycle capture whose full pass
             // hasn't been blended yet, hold on to this partial pass and hand
             // it off once the kernel has taken the previous one (flushDeferredFinish)
             else {
                 _finishAwaitingBlend = true;
+
+                changed_content = YES;
             }
+        }
 
-            // reset state
-            _state->processedResetRecording[_ordinal].test_and_set();
-            track_state.hasRecordedEvents.clear();
+        // the take is over however little it managed to record, and it always ends:
+        // the kernel only stops recording the track once the delegate has been told
+        _state->processedResetRecording[_ordinal].test_and_set();
+        track_state.hasRecordedEvents.clear();
 
-            finish_recording = YES;
+        finish_recording = YES;
+        if (changedContent) {
+            *changedContent = changed_content;
         }
     }
 
@@ -187,7 +195,7 @@
 // must be called on _dispatchQueue.
 - (void)armFromKernelStateLocked {
     if (!_record && _state->recordArmed.test() && _state->track[_ordinal].recordEnabled.test()) {
-        [self setRecordLocked:YES];
+        [self setRecordLocked:YES changedContent:nil];
     }
 }
 
@@ -465,8 +473,7 @@
 - (void)cancelLoopCaptureLocked {
     _state->processedCaptureRecording[_ordinal].test_and_set();
     _lastPassOffsetBeats = 0.0;
-    _takeHasCapturedPass = NO;
-    _takeHasWrapped = NO;
+    _takeHasCommittedPass = NO;
 }
 
 // captures a pending loop-record pass when the message stream crosses the loop
@@ -528,8 +535,7 @@
         // so its own blend covers the head of the loop instead of starting at the
         // first message after the wrap
         [self pinPassStartLocked];
-        _takeHasCapturedPass = YES;
-        _takeHasWrapped = YES;
+        _takeHasCommittedPass = YES;
 
         // cancel any pending no-events reset and clear the per-cycle event marker
         _state->processedResetRecording[_ordinal].test_and_set();
@@ -587,13 +593,10 @@
             _recordingData.reset(new MidiRecordedData());
             _recordingPreview.reset(new MidiRecordedPreview());
             _lastPassOffsetBeats = 0.0;
-            _takeHasWrapped = YES;
-            // mid-take, after we've captured a loop pass, the fresh pass still
-            // covers the whole loop; keep its start pinned so old material can't
-            // survive at the head of the next blend
-            if (_takeHasCapturedPass) {
-                [self pinPassStartLocked];
-            }
+            // this reset comes from a loop wrap, so the fresh pass covers the whole
+            // loop; pin its start there rather than let a ping queued before the wrap
+            // stamp it at the end of the cycle that just ended
+            [self pinPassStartLocked];
         }
 
         // if punch in/out is enabled, only record during the punch in/out positions
@@ -615,8 +618,10 @@
         
         _recordingData->populateUpToBeat(_recordingData->getDuration());
         
-        // update the preview in case of gaps
-        if (_recordingPreview) {
+        // the preview is drawn in place of the recorded one wherever it has started,
+        // so it only claims the pass range once the pass has recorded something and
+        // a cycle that plays nothing leaves the track as it looks
+        if (_recordingPreview && !_recordingData->empty()) {
             _recordingPreview->setStartIfNeeded(_recordingData->getStart());
             _recordingPreview->updateWithOffsetBeats(_recordingData->getDuration());
         }
@@ -823,6 +828,8 @@
 #if DEBUG_MIDI_RECORD
         logRecordedMidiMessage(_ordinal, @"REC", recorded_message);
 #endif
+        BOOL first_of_pass = _recordingData->empty();
+
         _recordingData->addMessageToBeat(recorded_message);
         _state->track[_ordinal].hasRecordedEvents.test_and_set();
         
@@ -830,6 +837,12 @@
         if (_recordingPreview) {
             _recordingPreview->setStartIfNeeded(_recordingData->getStart());
             _recordingPreview->updateWithMessage(recorded_message);
+        }
+
+        // this claims the whole pass range at once, which the per-beat refresh
+        // during recording doesn't reach, so ask for the track to be redrawn
+        if (first_of_pass) {
+            _state->processedUIRebuildPreview[_ordinal].clear();
         }
     });
 }
@@ -857,9 +870,30 @@
     });
 }
 
+// ends a take without committing its pass, for an edit that replaces the timeline
+// the pass was recorded against. must be called on _dispatchQueue.
+- (void)dropTakeLocked {
+    if (!_record) {
+        return;
+    }
+
+    _record = NO;
+
+    _recordingStartSampleSeconds = 0.0;
+    _recordingData.reset(new MidiRecordedData());
+    _recordingPreview.reset(new MidiRecordedPreview());
+
+    _state->processedResetRecording[_ordinal].test_and_set();
+    _state->track[_ordinal].hasRecordedEvents.clear();
+}
+
 - (void)crop {
     dispatch_barrier_sync(_dispatchQueue, ^{
-        _record = NO;
+        // a take in progress recorded against the uncropped timeline, so it ends here
+        // instead of blending its pass into the cropped content afterwards. the
+        // delegate is deliberately not told: ending a take through it makes the kernel
+        // blend, which would consume the cropped data before the crop is applied
+        [self dropTakeLocked];
 
         // cropping cancels any pending loop-record cycle capture or deferred finish
         [self cancelLoopCaptureLocked];

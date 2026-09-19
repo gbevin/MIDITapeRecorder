@@ -531,8 +531,21 @@ bool MidiRecorderKernel::isRecording() {
     return false;
 }
 
+// a take in progress on any track, whether or not the playhead is inside the punch
+// window; the recorder is pinged either way because the loop wrap can fall outside
+// the window and that is where a pass is captured
+bool MidiRecorderKernel::hasRecordingTrack() {
+    for (int t = 0; t < MIDI_TRACKS; ++t) {
+        if (_state.track[t].recording.test()) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 void MidiRecorderKernel::handleBufferStart() {
-    if (!isRecording()) {
+    if (!hasRecordingTrack()) {
         return;
     }
     
