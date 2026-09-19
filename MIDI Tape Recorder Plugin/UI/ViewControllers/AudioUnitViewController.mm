@@ -23,6 +23,8 @@
 #import "MidiTrackRecorder.h"
 #import "MidiRecorderAudioUnit.h"
 #import "MidiRecordingUndo.h"
+#import "RangeOverlayView.h"
+#import "TracksScrollView.h"
 #import "MidiTrackView.h"
 #import "MPEButton.h"
 #import "Preferences.h"
@@ -129,7 +131,7 @@
 @property (weak, nonatomic) IBOutlet ToolBarButton* importButton3;
 @property (weak, nonatomic) IBOutlet ToolBarButton* importButton4;
 
-@property (weak, nonatomic) IBOutlet UIScrollView* tracks;
+@property (weak, nonatomic) IBOutlet TracksScrollView* tracks;
 
 @property (weak, nonatomic) IBOutlet TimelineView* timeline;
 @property (weak, nonatomic) IBOutlet UITapGestureRecognizer* timelineTapGesture;
@@ -143,7 +145,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* cropLeftLeading;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* cropLeftPanGesture;
 
-@property (weak, nonatomic) IBOutlet UIView* cropOverlayCenter;
+@property (weak, nonatomic) IBOutlet RangeOverlayView* cropOverlayCenter;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* cropOverlayPanGesture;
 
 @property (weak, nonatomic) IBOutlet UIView* cropOverlayRight;
@@ -155,7 +157,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint* punchInLeading;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* punchInPanGesture;
 
-@property (weak, nonatomic) IBOutlet UIView* punchOverlay;
+@property (weak, nonatomic) IBOutlet RangeOverlayView* punchOverlay;
 @property (weak, nonatomic) IBOutlet UIPanGestureRecognizer* punchOverlayPanGesture;
 
 @property (weak, nonatomic) IBOutlet PunchOutView* punchOut;
@@ -2037,6 +2039,11 @@
     
     // punch overlay
     _punchOverlay.hidden = _punchIn.hidden || _punchOut.hidden;
+
+    // the range bodies are only dragged on the timeline, so that is the only place
+    // they take touches; below it they would cover the markers they sit over
+    _cropOverlayCenter.grabHeight = _timeline.frame.size.height;
+    _punchOverlay.grabHeight = _timeline.frame.size.height;
 }
 
 - (void)renderMpeIndicators {

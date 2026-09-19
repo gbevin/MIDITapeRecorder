@@ -8,5 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CropLeftView : UIView
+#import "TimelineMarker.h"
+
+@interface CropLeftView : UIView <TimelineMarker>
 @end

@@ -519,7 +519,7 @@ RECORDER</string>
                                     <constraint firstItem="t63-nw-aik" firstAttribute="centerY" secondItem="bKj-4Y-TLw" secondAttribute="centerY" id="zhB-Sv-eUW"/>
                                 </constraints>
                             </view>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tCM-sv-7no" userLabel="Tracks">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tCM-sv-7no" userLabel="Tracks" customClass="TracksScrollView">
                                 <rect key="frame" x="89" y="50" width="437" height="236"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ud8-UP-NVa" userLabel="Space Helper">
@@ -580,14 +580,32 @@ RECORDER</string>
                                         <rect key="frame" x="10" y="0.0" width="50.5" height="236"/>
                                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ukq-6Z-BDO" userLabel="Crop Overlay Center">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ukq-6Z-BDO" userLabel="Crop Overlay Center" customClass="RangeOverlayView">
                                         <rect key="frame" x="10" y="0.0" width="0.0" height="236"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="s9g-Ms-5Dc" appends="YES" id="BkS-HH-2AH"/>
                                         </connections>
                                     </view>
-                                    <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VMc-Bx-bLD" userLabel="Crop Left" customClass="CropLeftView">
+                                    <view alpha="0.10000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4h-05-372" userLabel="Punch Overlay" customClass="RangeOverlayView">
+                                        <rect key="frame" x="10" y="0.0" width="0.0" height="236"/>
+                                        <color key="backgroundColor" name="Red"/>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="q0h-LC-ndn" appends="YES" id="dVe-9K-fMJ"/>
+                                        </connections>
+                                    </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
+                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="236"/>
+                                        <color key="backgroundColor" systemColor="secondaryLabelColor"/>
+                                        <gestureRecognizers/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="31" id="Xru-0r-srh"/>
+                                        </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
+                                        </connections>
+                                    </view>
+                                            <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VMc-Bx-bLD" userLabel="Crop Left" customClass="CropLeftView">
                                         <rect key="frame" x="-5.5" y="0.0" width="31" height="236"/>
                                         <color key="backgroundColor" name="Green"/>
                                         <gestureRecognizers/>
@@ -611,24 +629,8 @@ RECORDER</string>
                                             <outletCollection property="gestureRecognizers" destination="frJ-wJ-GTJ" appends="YES" id="E36-QM-ojA"/>
                                         </connections>
                                     </view>
-                                    <view alpha="0.10000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c4h-05-372" userLabel="Punch Overlay">
-                                        <rect key="frame" x="10" y="0.0" width="0.0" height="236"/>
-                                        <color key="backgroundColor" name="Red"/>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="q0h-LC-ndn" appends="YES" id="dVe-9K-fMJ"/>
-                                        </connections>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L2y-q6-jop" userLabel="Playhead" customClass="PlayheadView">
-                                        <rect key="frame" x="-5.5" y="0.0" width="31" height="236"/>
-                                        <color key="backgroundColor" systemColor="secondaryLabelColor"/>
-                                        <gestureRecognizers/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="31" id="Xru-0r-srh"/>
-                                        </constraints>
-                                        <connections>
-                                            <outletCollection property="gestureRecognizers" destination="Sbs-GL-zew" appends="YES" id="U1r-KA-Ogm"/>
-                                        </connections>
-                                    </view>
+                                    
+                                    
                                     <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4B3-p1-vNp" userLabel="Punch In" customClass="PunchInView">
                                         <rect key="frame" x="-5.5" y="0.0" width="31" height="236"/>
                                         <color key="backgroundColor" name="Red"/>

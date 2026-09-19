@@ -39,7 +39,6 @@
     [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
     [path moveToPoint:CGPointMake(x, 0.0)];
     [path addLineToPoint:CGPointMake(x - 8.0, 0.0)];
-    [path addLineToPoint:CGPointMake(x - 8.0, 0.0)];
     [path addLineToPoint:CGPointMake(x, 8.0)];
     [path addLineToPoint:CGPointMake(x, 0.0)];
 
@@ -50,6 +49,11 @@
     _punchOutLayer.strokeColor = [UIColor colorNamed:@"Red"].CGColor;
 
     [self.layer addSublayer:_punchOutLayer];
+}
+
+
+- (BOOL)flagAtTop {
+    return YES;
 }
 
 @end

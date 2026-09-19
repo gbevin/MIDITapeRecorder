@@ -8,5 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PunchOutView : UIView
+#import "TimelineMarker.h"
+
+@interface PunchOutView : UIView <TimelineMarker>
 @end

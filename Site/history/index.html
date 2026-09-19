@@ -61,6 +61,7 @@
     <li>Fixed undoing a take also reverting a MIDI file imported into that track while it was recording.</li>
     <li>Fixed cropping while recording leaving the take that was running in the uncropped timeline, where it reappeared during the next recording.</li>
     <li>Cropping now keeps the punch in and out markers where they were, adapting them to the cropped take instead of resetting them to its full length.</li>
+    <li>The crop and punch in and out markers can now be grabbed anywhere along their line even where they overlap, the nearest line winning; two markers on the same spot are told apart by their flags, the punch markers at the top and the crop markers at the bottom.</li>
   </ul>
 
   <h2>v2.0.1</h2>

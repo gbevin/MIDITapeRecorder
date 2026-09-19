@@ -26,6 +26,7 @@
 
 #import "MidiClockTempoTracker.h"
 #import "MidiRecordingUndo.h"
+#include "TimelineMarkerHitTest.h"
 #import "HostTrackFile.h"
 #import "HostSession.h"
 
@@ -3005,3 +3006,70 @@ void driveLoopRecord(RecorderHarness& h, int numCaptures,
 
 @end
 
+#pragma mark - Timeline marker hit testing
+
+@interface TimelineMarkerHitTestTests : XCTestCase
+@end
+
+@implementation TimelineMarkerHitTestTests
+
+// the crop markers carry their flag at the bottom, the punch markers at the top
+static const TimelineMarkerCandidate kCropMarker = { 100.0, false };
+static const TimelineMarkerCandidate kPunchMarker = { 100.0, true };
+
+- (int)chooseFrom:(std::vector<TimelineMarkerCandidate>)markers atX:(double)x y:(double)y {
+    return chooseTimelineMarker(markers.data(), (int)markers.size(), x, y, 200.0);
+}
+
+- (void)testATouchOnTheLineGrabsIt {
+    XCTAssertEqual([self chooseFrom:{ kCropMarker } atX:100.0 y:20.0], 0);
+    XCTAssertEqual([self chooseFrom:{ kCropMarker } atX:100.0 y:180.0], 0, @"the whole line is grabbable");
+}
+
+- (void)testATouchWellAwayFromEveryLineGrabsNothing {
+    XCTAssertEqual([self chooseFrom:{ kCropMarker } atX:130.0 y:100.0], -1);
+}
+
+- (void)testATouchWithinReachOfTheLineGrabsIt {
+    XCTAssertEqual([self chooseFrom:{ kCropMarker } atX:100.0 + MARKER_GRAB_RADIUS - 1.0 y:100.0], 0);
+    XCTAssertEqual([self chooseFrom:{ kCropMarker } atX:100.0 + MARKER_GRAB_RADIUS + 1.0 y:100.0], -1);
+}
+
+// a marker is never unreachable just because another is drawn over it
+- (void)testTheNearerLineWinsWhateverTheOrder {
+    std::vector<TimelineMarkerCandidate> markers = { { 100.0, false }, { 110.0, true } };
+    XCTAssertEqual([self chooseFrom:markers atX:101.0 y:100.0], 0);
+    XCTAssertEqual([self chooseFrom:markers atX:109.0 y:100.0], 1);
+
+    std::vector<TimelineMarkerCandidate> reversed = { { 110.0, true }, { 100.0, false } };
+    XCTAssertEqual([self chooseFrom:reversed atX:101.0 y:100.0], 1);
+    XCTAssertEqual([self chooseFrom:reversed atX:109.0 y:100.0], 0);
+}
+
+// markers on the same spot are told apart by the end the touch is nearer
+- (void)testMarkersOnTheSameSpotAreToldApartByTheGrabbedEnd {
+    std::vector<TimelineMarkerCandidate> stacked = { kCropMarker, kPunchMarker };
+
+    XCTAssertEqual([self chooseFrom:stacked atX:100.0 y:20.0], 1, @"near the top grabs the punch marker");
+    XCTAssertEqual([self chooseFrom:stacked atX:100.0 y:180.0], 0, @"near the bottom grabs the crop marker");
+
+    std::vector<TimelineMarkerCandidate> other_order = { kPunchMarker, kCropMarker };
+    XCTAssertEqual([self chooseFrom:other_order atX:100.0 y:20.0], 0);
+    XCTAssertEqual([self chooseFrom:other_order atX:100.0 y:180.0], 1);
+}
+
+// near enough to count as the same spot, so the grabbed end still decides
+- (void)testMarkersAlmostOnTheSameSpotAlsoUseTheGrabbedEnd {
+    std::vector<TimelineMarkerCandidate> stacked = { { 100.0, false }, { 100.0 + MARKER_SAME_PLACE, true } };
+    XCTAssertEqual([self chooseFrom:stacked atX:100.0 y:20.0], 1);
+    XCTAssertEqual([self chooseFrom:stacked atX:100.0 y:180.0], 0);
+}
+
+// two markers of the same kind on the same spot still resolve to one of them
+- (void)testTwoMarkersOfTheSameKindOnTheSameSpotStillGrabOne {
+    std::vector<TimelineMarkerCandidate> stacked = { kCropMarker, kCropMarker };
+    XCTAssertEqual([self chooseFrom:stacked atX:100.0 y:20.0], 0);
+    XCTAssertEqual([self chooseFrom:stacked atX:100.0 y:180.0], 0);
+}
+
+@end

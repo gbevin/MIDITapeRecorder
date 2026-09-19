@@ -37,11 +37,10 @@
     CGFloat x = self.frame.size.width / 2.0;
     [path moveToPoint:CGPointMake(x, 0.0)];
     [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
-    [path moveToPoint:CGPointMake(x, 0.0)];
-    [path addLineToPoint:CGPointMake(x - 8.0, 0.0)];
-    [path addLineToPoint:CGPointMake(x - 8.0, 0.0)];
-    [path addLineToPoint:CGPointMake(x, 8.0)];
-    [path addLineToPoint:CGPointMake(x, 0.0)];
+    [path moveToPoint:CGPointMake(x, self.frame.size.height)];
+    [path addLineToPoint:CGPointMake(x - 8.0, self.frame.size.height)];
+    [path addLineToPoint:CGPointMake(x, self.frame.size.height - 8.0)];
+    [path addLineToPoint:CGPointMake(x, self.frame.size.height)];
 
     _cropRightLayer.path = path.CGPath;
     _cropRightLayer.opacity = 1.0;
@@ -50,6 +49,11 @@
     _cropRightLayer.strokeColor = [UIColor colorNamed:@"Gray0"].CGColor;
 
     [self.layer addSublayer:_cropRightLayer];
+}
+
+
+- (BOOL)flagAtTop {
+    return NO;
 }
 
 @end

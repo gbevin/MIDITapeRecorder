@@ -47,6 +47,10 @@
 		2682D465276D4A270076D20B /* RecorderUndoManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2682D464276D4A270076D20B /* RecorderUndoManager.mm */; };
 		26855186276EC6C90082909E /* MidiRecorderState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26855185276EC6980082909E /* MidiRecorderState.cpp */; };
 		268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A930B27616A2200B2D74A /* PlayheadView.mm */; };
+		26B1600000000000000013 /* RangeOverlayView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1600000000000000012 /* RangeOverlayView.mm */; };
+		26B1600000000000000024 /* TracksScrollView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 26B1600000000000000023 /* TracksScrollView.mm */; };
+		26B1600000000000000033 /* TimelineMarkerHitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26B1600000000000000032 /* TimelineMarkerHitTest.cpp */; };
+		AF0000000000000000000098 /* TimelineMarkerHitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 26B1600000000000000032 /* TimelineMarkerHitTest.cpp */; };
 		268A930F276186EC00B2D74A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268A930E276186EC00B2D74A /* QuartzCore.framework */; };
 		268A93142762793000B2D74A /* MPEButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 268A93132762793000B2D74A /* MPEButton.mm */; };
 		268A93162762817800B2D74A /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 268A93152762817800B2D74A /* MainInterface.storyboard */; };
@@ -161,6 +165,13 @@
 		2682D464276D4A270076D20B /* RecorderUndoManager.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RecorderUndoManager.mm; sourceTree = "<group>"; };
 		26855185276EC6980082909E /* MidiRecorderState.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MidiRecorderState.cpp; sourceTree = "<group>"; };
 		268A930B27616A2200B2D74A /* PlayheadView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayheadView.mm; sourceTree = "<group>"; };
+		26B1600000000000000011 /* RangeOverlayView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RangeOverlayView.h; sourceTree = "<group>"; };
+		26B1600000000000000012 /* RangeOverlayView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RangeOverlayView.mm; sourceTree = "<group>"; };
+		26B1600000000000000021 /* TimelineMarker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimelineMarker.h; sourceTree = "<group>"; };
+		26B1600000000000000022 /* TracksScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TracksScrollView.h; sourceTree = "<group>"; };
+		26B1600000000000000023 /* TracksScrollView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = TracksScrollView.mm; sourceTree = "<group>"; };
+		26B1600000000000000031 /* TimelineMarkerHitTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimelineMarkerHitTest.h; sourceTree = "<group>"; };
+		26B1600000000000000032 /* TimelineMarkerHitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TimelineMarkerHitTest.cpp; sourceTree = "<group>"; };
 		268A930C27616A2300B2D74A /* PlayheadView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayheadView.h; sourceTree = "<group>"; };
 		268A930E276186EC00B2D74A /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		268A93122762793000B2D74A /* MPEButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MPEButton.h; sourceTree = "<group>"; };
@@ -347,6 +358,11 @@
 				26C49D172756D04400A6FAB4 /* MidiTrackView.mm */,
 				268A930C27616A2300B2D74A /* PlayheadView.h */,
 				268A930B27616A2200B2D74A /* PlayheadView.mm */,
+				26B1600000000000000011 /* RangeOverlayView.h */,
+				26B1600000000000000012 /* RangeOverlayView.mm */,
+				26B1600000000000000021 /* TimelineMarker.h */,
+				26B1600000000000000022 /* TracksScrollView.h */,
+				26B1600000000000000023 /* TracksScrollView.mm */,
 				266465EE27597987002D4459 /* PopupView.h */,
 				266465EF27597988002D4459 /* PopupView.mm */,
 				26F36169276CA0DD00077518 /* PunchInView.h */,
@@ -539,6 +555,8 @@
 				26B1D1FA275E39B8003A8A48 /* MidiHelper.h */,
 				26B1D1FB275E3E4D003A8A48 /* MidiHelper.mm */,
 				AF0000000000000000000071 /* MidiRecorderParamIds.h */,
+				26B1600000000000000031 /* TimelineMarkerHitTest.h */,
+				26B1600000000000000032 /* TimelineMarkerHitTest.cpp */,
 				26F36160276B0BDB00077518 /* Preferences.h */,
 				26F36161276B0BDB00077518 /* Preferences.mm */,
 				2682D463276D4A270076D20B /* RecorderUndoManager.h */,
@@ -759,6 +777,9 @@
 				26C49D1B2756D41700A6FAB4 /* TimelineView.mm in Sources */,
 				262A75AD276E915400FE6FDF /* RecordedMidiMessage.cpp in Sources */,
 				268A930D27616A2300B2D74A /* PlayheadView.mm in Sources */,
+				26B1600000000000000013 /* RangeOverlayView.mm in Sources */,
+				26B1600000000000000024 /* TracksScrollView.mm in Sources */,
+				26B1600000000000000033 /* TimelineMarkerHitTest.cpp in Sources */,
 				26C578C6277151140046D75B /* Logging.mm in Sources */,
 				26C578C327712C550046D75B /* TrackButton.mm in Sources */,
 				26F36165276B0D0200077518 /* URLHelper.mm in Sources */,
@@ -794,6 +815,7 @@
 				AF0000000000000000000015 /* MidiRecordedPreview.cpp in Sources */,
 				AF0000000000000000000016 /* RecordedMidiMessage.cpp in Sources */,
 				AF0000000000000000000017 /* MidiRecorderState.cpp in Sources */,
+				AF0000000000000000000098 /* TimelineMarkerHitTest.cpp in Sources */,
 				AF0000000000000000000018 /* NoteState.cpp in Sources */,
 				AF0000000000000000000019 /* NoteTracker.cpp in Sources */,
 				AF000000000000000000001A /* MidiHelper.mm in Sources */,
