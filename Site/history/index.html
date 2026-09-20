@@ -47,22 +47,23 @@
   <h2>v2.0.2</h2>
 
   <ul>
-    <li>Fixed the first recorded event of a take landing slightly early when the recording starts the transport.</li>
+    <li>Moved the crop marker flags to the bottom so two markers on the same position can be told apart.</li>
+    <li>Improved cropping to keep the punch in and out markers, adapting them to the cropped take.</li>
     <li>Raised the MIDI buffer sizes so dense playing and MPE expression are not dropped.</li>
+    <li>Fixed the first recorded event of a take landing slightly early when the recording starts the transport.</li>
     <li>Fixed other armed tracks missing the message that starts the transport when several tracks record at once.</li>
     <li>Fixed stopping a loop recording partway through a silent pass erasing the start of the loop.</li>
     <li>Fixed MIDI arriving right after Record is engaged from the host being dropped until the tracks were armed.</li>
     <li>Fixed recording over existing content erasing the recorded range when nothing was played.</li>
     <li>Fixed continuous loop recording losing what was played after a silent cycle.</li>
-    <li>Fixed existing content disappearing from the display while a recording pass that played nothing was running.</li>
-    <li>Fixed a loop recording pass inside a punch in and out region only being added to the track when the playhead returned to the punch-in point.</li>
+    <li>Fixed the track display blanking while a recording pass that played nothing was running.</li>
+    <li>Fixed a loop recording pass inside a punch in and out region only being added when the playhead returned to the punch-in point.</li>
     <li>Fixed clearing a track while it was recording leaving behind an undo step that did nothing.</li>
     <li>Fixed a recording that captured nothing creating an undo step that did nothing.</li>
-    <li>Fixed a track staying armed for recording after a take that never reached its punch in and out region.</li>
+    <li>Fixed a recording never finishing when the playhead never reached the punch in and out region.</li>
     <li>Fixed undoing a take also reverting a MIDI file imported into that track while it was recording.</li>
-    <li>Fixed cropping while recording leaving the take that was running in the uncropped timeline, where it reappeared during the next recording.</li>
-    <li>Cropping now keeps the punch in and out markers where they were, adapting them to the cropped take instead of resetting them to its full length.</li>
-    <li>The crop and punch in and out markers can now be grabbed anywhere along their line even where they overlap, the nearest line winning; two markers on the same spot are told apart by their flags, the punch markers at the top and the crop markers at the bottom.</li>
+    <li>Fixed cropping while recording leaving the running take behind in the uncropped timeline.</li>
+    <li>Fixed crop and punch markers being impossible to grab where another marker or range covers them.</li>
   </ul>
 
   <h2>v2.0.1</h2>
