@@ -37,7 +37,8 @@
             if (local.y < CGRectGetMinY(frame) || local.y > CGRectGetMaxY(frame)) {
                 continue;
             }
-            candidates.push_back({ CGRectGetMidX(frame), ((id<TimelineMarker>)marker).flagAtTop });
+            const bool flag_at_top = ((id<TimelineMarker>)marker).flagAtTop;
+            candidates.push_back({ CGRectGetMidX(frame), flag_at_top });
             [reachable addObject:marker];
         }
 
